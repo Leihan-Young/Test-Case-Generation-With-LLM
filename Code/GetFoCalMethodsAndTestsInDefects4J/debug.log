@@ -1,0 +1,196 @@
+DEBUG:root:getFoCalMethodsAndTests(defects4j_path=/Code/defects4j,output_path=./output,temp_path=./tmp)
+DEBUG:root:project=Chart,bug_id=1
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=1b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=1f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/1,project=Chart)
+DEBUG:root:result=[('org.jfree.chart.renderer.category.junit.AbstractCategoryItemRendererTests::test2947660\n', [('/org/jfree/chart/renderer/category/junit/AbstractCategoryItemRendererTests.java', 'test2947660', 409)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=1)
+DEBUG:root:test_code_path=org.jfree.chart.renderer.category.junit.AbstractCategoryItemRendererTests::test2947660
+,parse_stack=[('/org/jfree/chart/renderer/category/junit/AbstractCategoryItemRendererTests.java', 'test2947660', 409)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/chart/renderer/category/junit/AbstractCategoryItemRendererTests.java,method_name=test2947660,target_line_number=409)
+DEBUG:root:define_line=395
+DEBUG:root:start=392,end=411
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/1/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/chart/renderer/category/junit/AbstractCategoryItemRendererTests.java,lines=['    /**\n', '     * A test that reproduces the problem reported in bug 2947660.\n', '     */\n', '    public void test2947660() {\n', '        AbstractCategoryItemRenderer r = new LineAndShapeRenderer();\n', '        assertNotNull(r.getLegendItems());\n', '        assertEquals(0, r.getLegendItems().getItemCount());\n', '\n', '        DefaultCategoryDataset dataset = new DefaultCategoryDataset();\n', '        CategoryPlot plot = new CategoryPlot();\n', '        plot.setDataset(dataset);\n', '        plot.setRenderer(r);\n', '        assertEquals(0, r.getLegendItems().getItemCount());\n', '\n', '        dataset.addValue(1.0, "S1", "C1");\n', '        LegendItemCollection lic = r.getLegendItems();\n', '        assertEquals(1, lic.getItemCount());\n', '        assertEquals("S1", lic.get(0).getLabel());\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=1)
+DEBUG:root:copyFile(output_path=./output/Chart/1/1/bugSrcCode/AbstractCategoryItemRenderer.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/1/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.java)
+DEBUG:root:copyFile(output_path=./output/Chart/1/1/bug_additional/AbstractRenderer.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/renderer/AbstractRenderer.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/1/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/renderer/AbstractRenderer.java)
+DEBUG:root:project=Chart,bug_id=2
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=2b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=2f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/2,project=Chart)
+DEBUG:root:result=[('org.jfree.data.general.junit.DatasetUtilitiesTests::testBug2849731_2\n', [('/org/jfree/data/general/junit/DatasetUtilitiesTests.java', 'testBug2849731_2', 1276)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=2)
+DEBUG:root:test_code_path=org.jfree.data.general.junit.DatasetUtilitiesTests::testBug2849731_2
+,parse_stack=[('/org/jfree/data/general/junit/DatasetUtilitiesTests.java', 'testBug2849731_2', 1276)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,method_name=testBug2849731_2,target_line_number=1276)
+DEBUG:root:define_line=1269
+DEBUG:root:start=1266,end=1288
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/2/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,lines=['    /**\n', '     * Another test for bug 2849731.\n', '     */\n', '    public void testBug2849731_2() {\n', '        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();\n', '        XYIntervalSeries s = new XYIntervalSeries("S1");\n', '        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);\n', '        d.addSeries(s);\n', '        Range r = DatasetUtilities.iterateDomainBounds(d);\n', '        assertEquals(1.0, r.getLowerBound(), EPSILON);\n', '        assertEquals(1.0, r.getUpperBound(), EPSILON);\n', '\n', '        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);\n', '        r = DatasetUtilities.iterateDomainBounds(d);\n', '        assertEquals(1.0, r.getLowerBound(), EPSILON);\n', '        assertEquals(1.5, r.getUpperBound(), EPSILON);\n', '\n', '        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);\n', '        r = DatasetUtilities.iterateDomainBounds(d);\n', '        assertEquals(0.5, r.getLowerBound(), EPSILON);\n', '        assertEquals(1.5, r.getUpperBound(), EPSILON);\n', '    }\n'])
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,method_name=createCategoryDataset1,target_line_number=947)
+DEBUG:root:define_line=947
+DEBUG:root:start=942,end=957
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,method_name=createCategoryDataset2,target_line_number=963)
+DEBUG:root:define_line=963
+DEBUG:root:start=958,end=971
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,method_name=createXYDataset1,target_line_number=978)
+DEBUG:root:define_line=978
+DEBUG:root:start=973,end=993
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/general/junit/DatasetUtilitiesTests.java,method_name=createTableXYDataset1,target_line_number=999)
+DEBUG:root:define_line=999
+DEBUG:root:start=994,end=1014
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=2)
+DEBUG:root:copyFile(output_path=./output/Chart/2/1/bugSrcCode/DatasetUtilities.java,src_path=./tmp/Chart/bug/source/org/jfree/data/general/DatasetUtilities.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/2/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/general/DatasetUtilities.java)
+DEBUG:root:project=Chart,bug_id=3
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=3b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=3f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/3,project=Chart)
+DEBUG:root:result=[('org.jfree.data.time.junit.TimeSeriesTests::testCreateCopy3\n', [('/org/jfree/data/time/junit/TimeSeriesTests.java', 'testCreateCopy3', 607)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=3)
+DEBUG:root:test_code_path=org.jfree.data.time.junit.TimeSeriesTests::testCreateCopy3
+,parse_stack=[('/org/jfree/data/time/junit/TimeSeriesTests.java', 'testCreateCopy3', 607)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimeSeriesTests.java,method_name=testCreateCopy3,target_line_number=607)
+DEBUG:root:define_line=596
+DEBUG:root:start=590,end=612
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/3/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimeSeriesTests.java,lines=['    /**\n', '     * Checks that the min and max y values are updated correctly when copying\n', '     * a subset.\n', '     *\n', '     * @throws java.lang.CloneNotSupportedException\n', '     */\n', '    public void testCreateCopy3() throws CloneNotSupportedException {\n', '        TimeSeries s1 = new TimeSeries("S1");\n', '        s1.add(new Year(2009), 100.0);\n', '        s1.add(new Year(2010), 101.0);\n', '        s1.add(new Year(2011), 102.0);\n', '        assertEquals(100.0, s1.getMinY(), EPSILON);\n', '        assertEquals(102.0, s1.getMaxY(), EPSILON);\n', '\n', '        TimeSeries s2 = s1.createCopy(0, 1);\n', '        assertEquals(100.0, s2.getMinY(), EPSILON);\n', '        assertEquals(101.0, s2.getMaxY(), EPSILON);\n', '\n', '        TimeSeries s3 = s1.createCopy(1, 2);\n', '        assertEquals(101.0, s3.getMinY(), EPSILON);\n', '        assertEquals(102.0, s3.getMaxY(), EPSILON);\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=3)
+DEBUG:root:copyFile(output_path=./output/Chart/3/1/bugSrcCode/TimeSeries.java,src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimeSeries.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/3/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimeSeries.java)
+DEBUG:root:copyFile(output_path=./output/Chart/3/1/bug_additional/Series.java,src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/3/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:project=Chart,bug_id=4
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=4b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=4f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/4,project=Chart)
+DEBUG:root:result=[('org.jfree.chart.axis.junit.LogAxisTests::testXYAutoRange1\n', [('/org/jfree/chart/axis/junit/LogAxisTests.java', 'testXYAutoRange1', 260)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=4)
+DEBUG:root:test_code_path=org.jfree.chart.axis.junit.LogAxisTests::testXYAutoRange1
+,parse_stack=[('/org/jfree/chart/axis/junit/LogAxisTests.java', 'testXYAutoRange1', 260)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/chart/axis/junit/LogAxisTests.java,method_name=testXYAutoRange1,target_line_number=260)
+DEBUG:root:define_line=252
+DEBUG:root:start=248,end=275
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/4/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/chart/axis/junit/LogAxisTests.java,lines=['    /**\n', '     * Checks that the auto-range for the domain axis on an XYPlot is\n', '     * working as expected.\n', '     */\n', '    public void testXYAutoRange1() {\n', '        XYSeries series = new XYSeries("Series 1");\n', '        series.add(1.0, 1.0);\n', '        series.add(2.0, 2.0);\n', '        series.add(3.0, 3.0);\n', '        XYSeriesCollection dataset = new XYSeriesCollection();\n', '        dataset.addSeries(series);\n', '        JFreeChart chart = ChartFactory.createScatterPlot(\n', '            "Test",\n', '            "X",\n', '            "Y",\n', '            dataset,\n', '            PlotOrientation.VERTICAL,\n', '            false,\n', '            false,\n', '            false\n', '        );\n', '        XYPlot plot = (XYPlot) chart.getPlot();\n', '        LogAxis axis = new LogAxis("Log(Y)");\n', '        plot.setRangeAxis(axis);\n', '        assertEquals(0.9465508226401592, axis.getLowerBound(), EPSILON);\n', '        assertEquals(3.1694019256486126, axis.getUpperBound(), EPSILON);\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=4)
+DEBUG:root:copyFile(output_path=./output/Chart/4/1/bugSrcCode/XYPlot.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/plot/XYPlot.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/4/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/plot/XYPlot.java)
+DEBUG:root:copyFile(output_path=./output/Chart/4/1/bug_additional/Plot.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/plot/Plot.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/4/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/plot/Plot.java)
+DEBUG:root:project=Chart,bug_id=5
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=5b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=5f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/5,project=Chart)
+DEBUG:root:result=[('org.jfree.data.xy.junit.XYSeriesTests::testBug1955483\n', [('/org/jfree/data/xy/junit/XYSeriesTests.java', 'testBug1955483', 479)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=5)
+DEBUG:root:test_code_path=org.jfree.data.xy.junit.XYSeriesTests::testBug1955483
+,parse_stack=[('/org/jfree/data/xy/junit/XYSeriesTests.java', 'testBug1955483', 479)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/xy/junit/XYSeriesTests.java,method_name=testBug1955483,target_line_number=479)
+DEBUG:root:define_line=475
+DEBUG:root:start=472,end=483
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/5/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/xy/junit/XYSeriesTests.java,lines=['    /**\n', '     * Another test for the addOrUpdate() method.\n', '     */\n', '    public void testBug1955483() {\n', '        XYSeries series = new XYSeries("Series", true, true);\n', '        series.addOrUpdate(1.0, 1.0);\n', '        series.addOrUpdate(1.0, 2.0);\n', '        assertEquals(new Double(1.0), series.getY(0));\n', '        assertEquals(new Double(2.0), series.getY(1));\n', '        assertEquals(2, series.getItemCount());\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=5)
+DEBUG:root:copyFile(output_path=./output/Chart/5/1/bugSrcCode/XYSeries.java,src_path=./tmp/Chart/bug/source/org/jfree/data/xy/XYSeries.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/5/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/xy/XYSeries.java)
+DEBUG:root:copyFile(output_path=./output/Chart/5/1/bug_additional/Series.java,src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/5/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:project=Chart,bug_id=6
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=6b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=6f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/6,project=Chart)
+DEBUG:root:result=[('org.jfree.chart.util.junit.ShapeListTests::testSerialization\n', [('/org/jfree/chart/util/junit/ShapeListTests.java', 'testSerialization', 151)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=6)
+DEBUG:root:test_code_path=org.jfree.chart.util.junit.ShapeListTests::testSerialization
+,parse_stack=[('/org/jfree/chart/util/junit/ShapeListTests.java', 'testSerialization', 151)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/chart/util/junit/ShapeListTests.java,method_name=testSerialization,target_line_number=151)
+DEBUG:root:define_line=127
+DEBUG:root:start=124,end=153
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/6/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/chart/util/junit/ShapeListTests.java,lines=['    /**\n', '     * Serialize an instance, restore it, and check for equality.\n', '     */\n', '    public void testSerialization() {\n', '\n', '        ShapeList l1 = new ShapeList();\n', '        l1.setShape(0, new Rectangle(1, 2, 3, 4));\n', '        l1.setShape(1, new Line2D.Double(1.0, 2.0, 3.0, 4.0));\n', '        l1.setShape(2, null);\n', '\n', '        ShapeList l2 = null;\n', '\n', '        try {\n', '            ByteArrayOutputStream buffer = new ByteArrayOutputStream();\n', '            ObjectOutput out = new ObjectOutputStream(buffer);\n', '            out.writeObject(l1);\n', '            out.close();\n', '\n', '            ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(\n', '            \t\tbuffer.toByteArray()));\n', '            l2 = (ShapeList) in.readObject();\n', '            in.close();\n', '        }\n', '        catch (Exception e) {\n', '            e.printStackTrace();\n', '        }\n', '        assertEquals(l1, l2);\n', '\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=6)
+DEBUG:root:copyFile(output_path=./output/Chart/6/1/bugSrcCode/ShapeList.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/util/ShapeList.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/6/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/util/ShapeList.java)
+DEBUG:root:copyFile(output_path=./output/Chart/6/1/bug_additional/AbstractObjectList.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/util/AbstractObjectList.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/6/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/util/AbstractObjectList.java)
+DEBUG:root:project=Chart,bug_id=7
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=7b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=7f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/7,project=Chart)
+DEBUG:root:result=[('org.jfree.data.time.junit.TimePeriodValuesTests::testGetMaxMiddleIndex\n', [('/org/jfree/data/time/junit/TimePeriodValuesTests.java', 'testGetMaxMiddleIndex', 377)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=7)
+DEBUG:root:test_code_path=org.jfree.data.time.junit.TimePeriodValuesTests::testGetMaxMiddleIndex
+,parse_stack=[('/org/jfree/data/time/junit/TimePeriodValuesTests.java', 'testGetMaxMiddleIndex', 377)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimePeriodValuesTests.java,method_name=testGetMaxMiddleIndex,target_line_number=377)
+DEBUG:root:define_line=366
+DEBUG:root:start=363,end=378
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/7/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimePeriodValuesTests.java,lines=['    /**\n', '     * Some tests for the getMaxMiddleIndex() method.\n', '     */\n', '    public void testGetMaxMiddleIndex() {\n', '        TimePeriodValues s = new TimePeriodValues("Test");\n', '        assertEquals(-1, s.getMaxMiddleIndex());\n', '        s.add(new SimpleTimePeriod(100L, 200L), 1.0);\n', '        assertEquals(0, s.getMaxMiddleIndex());\n', '        s.add(new SimpleTimePeriod(300L, 400L), 2.0);\n', '        assertEquals(1, s.getMaxMiddleIndex());\n', '        s.add(new SimpleTimePeriod(0L, 50L), 3.0);\n', '        assertEquals(1, s.getMaxMiddleIndex());\n', '        s.add(new SimpleTimePeriod(150L, 200L), 4.0);\n', '        assertEquals(1, s.getMaxMiddleIndex());\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=7)
+DEBUG:root:copyFile(output_path=./output/Chart/7/1/bugSrcCode/TimePeriodValues.java,src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimePeriodValues.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/7/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimePeriodValues.java)
+DEBUG:root:copyFile(output_path=./output/Chart/7/1/bug_additional/Series.java,src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/7/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:project=Chart,bug_id=8
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=8b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=8f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/8,project=Chart)
+DEBUG:root:result=[('org.jfree.data.time.junit.WeekTests::testConstructor\n', [('/org/jfree/data/time/junit/WeekTests.java', 'testConstructor', 530)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=8)
+DEBUG:root:test_code_path=org.jfree.data.time.junit.WeekTests::testConstructor
+,parse_stack=[('/org/jfree/data/time/junit/WeekTests.java', 'testConstructor', 530)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/WeekTests.java,method_name=testConstructor,target_line_number=530)
+DEBUG:root:define_line=503
+DEBUG:root:start=500,end=537
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/8/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/WeekTests.java,lines=['    /**\n', '     * A test for a problem in constructing a new Week instance.\n', '     */\n', '    public void testConstructor() {\n', '        Locale savedLocale = Locale.getDefault();\n', '        TimeZone savedZone = TimeZone.getDefault();\n', '        Locale.setDefault(new Locale("da", "DK"));\n', '        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Copenhagen"));\n', '        GregorianCalendar cal = (GregorianCalendar) Calendar.getInstance(\n', '                TimeZone.getDefault(), Locale.getDefault());\n', '\n', '        // first day of week is monday\n', '        assertEquals(Calendar.MONDAY, cal.getFirstDayOfWeek());\n', '        cal.set(2007, Calendar.AUGUST, 26, 1, 0, 0);\n', '        cal.set(Calendar.MILLISECOND, 0);\n', '        Date t = cal.getTime();\n', '        Week w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"));\n', '        assertEquals(34, w.getWeek());\n', '\n', '        Locale.setDefault(Locale.US);\n', '        TimeZone.setDefault(TimeZone.getTimeZone("US/Detroit"));\n', '        cal = (GregorianCalendar) Calendar.getInstance(TimeZone.getDefault());\n', '        // first day of week is Sunday\n', '        assertEquals(Calendar.SUNDAY, cal.getFirstDayOfWeek());\n', '        cal.set(2007, Calendar.AUGUST, 26, 1, 0, 0);\n', '        cal.set(Calendar.MILLISECOND, 0);\n', '\n', '        t = cal.getTime();\n', '        w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"));\n', '        assertEquals(35, w.getWeek());\n', '        w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"),\n', '                new Locale("da", "DK"));\n', '        assertEquals(34, w.getWeek());\n', '\n', '        Locale.setDefault(savedLocale);\n', '        TimeZone.setDefault(savedZone);\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=8)
+DEBUG:root:copyFile(output_path=./output/Chart/8/1/bugSrcCode/Week.java,src_path=./tmp/Chart/bug/source/org/jfree/data/time/Week.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/8/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/time/Week.java)
+DEBUG:root:copyFile(output_path=./output/Chart/8/1/bug_additional/RegularTimePeriod.java,src_path=./tmp/Chart/bug/source/org/jfree/data/time/RegularTimePeriod.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/8/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/time/RegularTimePeriod.java)
+DEBUG:root:project=Chart,bug_id=9
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=9b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=9f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/9,project=Chart)
+DEBUG:root:result=[('org.jfree.data.time.junit.TimeSeriesTests::testBug1864222\n', [('/org/jfree/data/time/junit/TimeSeriesTests.java', 'testBug1864222', 829)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=9)
+DEBUG:root:test_code_path=org.jfree.data.time.junit.TimeSeriesTests::testBug1864222
+,parse_stack=[('/org/jfree/data/time/junit/TimeSeriesTests.java', 'testBug1864222', 829)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimeSeriesTests.java,method_name=testBug1864222,target_line_number=829)
+DEBUG:root:define_line=822
+DEBUG:root:start=819,end=835
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/9/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/data/time/junit/TimeSeriesTests.java,lines=['    /**\n', '     * Test for bug report 1864222.\n', '     */\n', '    public void testBug1864222() {\n', '        TimeSeries s = new TimeSeries("S");\n', '        s.add(new Day(19, 8, 2005), 1);\n', '        s.add(new Day(31, 1, 2006), 1);\n', '        boolean pass = true;\n', '        try {\n', '            s.createCopy(new Day(1, 12, 2005), new Day(18, 1, 2006));\n', '        }\n', '        catch (CloneNotSupportedException e) {\n', '            pass = false;\n', '        }\n', '        assertTrue(pass);\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=9)
+DEBUG:root:copyFile(output_path=./output/Chart/9/1/bugSrcCode/TimeSeries.java,src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimeSeries.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/9/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/time/TimeSeries.java)
+DEBUG:root:copyFile(output_path=./output/Chart/9/1/bug_additional/Series.java,src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/9/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/data/general/Series.java)
+DEBUG:root:project=Chart,bug_id=10
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=10b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=10f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/10,project=Chart)
+DEBUG:root:result=[('org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::testGenerateURLFragment\n', [('/org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java', 'testGenerateURLFragment', 80)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=10)
+DEBUG:root:test_code_path=org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::testGenerateURLFragment
+,parse_stack=[('/org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java', 'testGenerateURLFragment', 80)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java,method_name=testGenerateURLFragment,target_line_number=80)
+DEBUG:root:define_line=74
+DEBUG:root:start=71,end=82
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/10/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java,lines=['    /**\n', '     * Some checks for the generateURLFragment() method.\n', '     */\n', '    public void testGenerateURLFragment() {\n', '        StandardToolTipTagFragmentGenerator g\n', '                = new StandardToolTipTagFragmentGenerator();\n', '        assertEquals(" title=\\"abc\\" alt=\\"\\"", g.generateToolTipFragment("abc"));\n', '        assertEquals(" title=\\"Series &quot;A&quot;, 100.0\\" alt=\\"\\"",\n', '                g.generateToolTipFragment("Series \\"A\\", 100.0"));\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=10)
+DEBUG:root:copyFile(output_path=./output/Chart/10/1/bugSrcCode/StandardToolTipTagFragmentGenerator.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/imagemap/StandardToolTipTagFragmentGenerator.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/10/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/imagemap/StandardToolTipTagFragmentGenerator.java)
+DEBUG:root:project=Chart,bug_id=11
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=11b,project_src_path=./tmp/Chart/bug)
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=11f,project_src_path=./tmp/Chart/fix)
+DEBUG:root:parseTriggerTestsFile(trigger_tests_path=/Code/defects4j/framework/projects/Chart/trigger_tests/11,project=Chart)
+DEBUG:root:result=[('org.jfree.chart.util.junit.ShapeUtilitiesTests::testEqualGeneralPaths\n', [('/org/jfree/chart/util/junit/ShapeUtilitiesTests.java', 'testEqualGeneralPaths', 212)])]
+DEBUG:root:getLoadedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=11)
+DEBUG:root:test_code_path=org.jfree.chart.util.junit.ShapeUtilitiesTests::testEqualGeneralPaths
+,parse_stack=[('/org/jfree/chart/util/junit/ShapeUtilitiesTests.java', 'testEqualGeneralPaths', 212)]
+DEBUG:root:getJavaCodeMethod(java_file_path=./tmp/Chart/bug/tests/org/jfree/chart/util/junit/ShapeUtilitiesTests.java,method_name=testEqualGeneralPaths,target_line_number=212)
+DEBUG:root:define_line=190
+DEBUG:root:start=187,end=246
+DEBUG:root:writeJavaClassWithLines(output_path=./output/Chart/11/1/triggerCode.java,java_code_path=./tmp/Chart/bug/tests/org/jfree/chart/util/junit/ShapeUtilitiesTests.java,lines=['    /**\n', '     * Some checks for the equal(GeneralPath, GeneralPath) method.\n', '     */\n', '    public void testEqualGeneralPaths() {\n', '        GeneralPath g1 = new GeneralPath();\n', '        g1.moveTo(1.0f, 2.0f);\n', '        g1.lineTo(3.0f, 4.0f);\n', '        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g1.closePath();\n', '        GeneralPath g2 = new GeneralPath();\n', '        g2.moveTo(1.0f, 2.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g2.closePath();\n', '        assertTrue(ShapeUtilities.equal(g1, g2));\n', '\n', '        g2 = new GeneralPath();\n', '        g2.moveTo(11.0f, 22.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g2.closePath();\n', '        assertFalse(ShapeUtilities.equal(g1, g2));\n', '\n', '        g2 = new GeneralPath();\n', '        g2.moveTo(1.0f, 2.0f);\n', '        g2.lineTo(33.0f, 44.0f);\n', '        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g2.closePath();\n', '        assertFalse(ShapeUtilities.equal(g1, g2));\n', '\n', '        g2 = new GeneralPath();\n', '        g2.moveTo(1.0f, 2.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);\n', '        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g2.closePath();\n', '        assertFalse(ShapeUtilities.equal(g1, g2));\n', '\n', '        g2 = new GeneralPath();\n', '        g2.moveTo(1.0f, 2.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);\n', '        g2.closePath();\n', '        assertFalse(ShapeUtilities.equal(g1, g2));\n', '\n', '        g2 = new GeneralPath();\n', '        g2.moveTo(1.0f, 2.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);\n', '        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);\n', '        g2.lineTo(3.0f, 4.0f);\n', '        g2.closePath();\n', '        assertFalse(ShapeUtilities.equal(g1, g2));\n', '    }\n'])
+DEBUG:root:getModifiedClasses(defects4j_path=/Code/defects4j,project=Chart,bug_id=11)
+DEBUG:root:copyFile(output_path=./output/Chart/11/1/bugSrcCode/ShapeUtilities.java,src_path=./tmp/Chart/bug/source/org/jfree/chart/util/ShapeUtilities.java)
+DEBUG:root:getExtendsFiles(output_path=./output/Chart/11/1/bug_additional/, src_path=./tmp/Chart/bug/source/org/jfree/chart/util/ShapeUtilities.java)
+DEBUG:root:project=Chart,bug_id=12
+DEBUG:root:checkOutSrcCode(defects4j_path=/Code/defects4j,project=Chart,version_id=12b,project_src_path=./tmp/Chart/bug)

@@ -1,0 +1,7 @@
+ public void testRMS() throws EstimationException {
+        EstimationProblem problem = new TestProblem1();
+        AbstractEstimator estimator = new GaussNewtonEstimator(new LevenbergMarquardtOptimizer());
+        estimator.estimate(problem);
+        double rms = estimator.getRMS(problem);
+        assertEquals(0, rms, Precision.EPSILON);
+    }

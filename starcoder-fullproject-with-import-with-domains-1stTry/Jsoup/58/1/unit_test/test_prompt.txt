@@ -1,0 +1,124 @@
+package org.jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+import org.jsoup.helper.DataUtil;
+import org.jsoup.helper.HttpConnection;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+/**
+ The core public access point to the jsoup functionality.
+
+ @author Jonathan Hedley */
+public class Jsoup {
+    /**
+     * Get safe HTML from untrusted input HTML, by parsing input HTML and filtering it through a white-list of
+     * permitted tags and attributes.
+     * <p>The HTML is treated as a body fragment; it's expected the cleaned HTML will be used within the body of an
+     * existing document. If you want to clean full documents, use {@link Cleaner#clean(Document)} instead, and add
+     * structural tags (<code>html, head, body</code> etc) to the whitelist.
+     *
+     * @param bodyHtml input untrusted HTML (body fragment)
+     * @param baseUri URL to resolve relative URLs against
+     * @param whitelist white-list of permitted HTML elements
+     * @param outputSettings document output settings; use to control pretty-printing and entity escape modes
+     * @return safe HTML (body fragment)
+     * @see Cleaner#clean(Document)
+     */
+    public static String clean(String bodyHtml, String baseUri, Whitelist whitelist, Document.OutputSettings outputSettings);
+    /**
+     Test if the input body HTML has only tags and attributes allowed by the Whitelist. Useful for form validation.
+     <p>The input HTML should still be run through the cleaner to set up enforced attributes, and to tidy the output.
+     <p>Assumes the HTML is a body fragment (i.e. will be used in an existing HTML document body.)
+     @param bodyHtml HTML to test
+     @param whitelist whitelist to test against
+     @return true if no tags or attributes were removed; false otherwise
+     @see #clean(String, org.jsoup.safety.Whitelist) 
+     */
+    public static boolean isValid(String bodyHtml, Whitelist whitelist);
+}
+package org.jsoup.parser;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import java.util.List;
+/**
+ * Parses HTML into a {@link org.jsoup.nodes.Document}. Generally best to use one of the  more convenient parse methods
+ * in {@link org.jsoup.Jsoup}.
+ */
+public class Parser {
+    private static final int DEFAULT_MAX_ERRORS = 0; // by default, error tracking is disabled.
+    private TreeBuilder treeBuilder;
+    private int maxErrors = DEFAULT_MAX_ERRORS;
+    private ParseErrorList errors;
+    private ParseSettings settings;
+    /**
+     * Parse a fragment of HTML into a list of nodes. The context element, if supplied, supplies parsing context.
+     *
+     * @param fragmentHtml the fragment of HTML to parse
+     * @param context (optional) the element that this HTML fragment is being parsed for (i.e. for inner HTML). This
+     * provides stack context (for implicit element creation).
+     * @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     *
+     * @return list of nodes parsed from the input HTML. Note that the context element, if supplied, is not modified.
+     */
+    public static List<Node> parseFragment(String fragmentHtml, Element context, String baseUri);
+}
+package org.jsoup.safety;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.ParseErrorList;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+/**
+ The whitelist based HTML cleaner. Use to ensure that end-user provided HTML contains only the elements and attributes
+ that you are expecting; no junk, and no cross-site scripting attacks!
+ <p>
+ The HTML cleaner parses the input as HTML and then runs it through a white-list, so the output HTML can only contain
+ HTML that is allowed by the whitelist.
+ </p>
+ <p>
+ It is assumed that the input HTML is a body fragment; the clean methods only pull from the source's body, and the
+ canned white-lists only allow body contained tags.
+ </p>
+ <p>
+ Rather than interacting directly with a Cleaner object, generally see the {@code clean} methods in {@link org.jsoup.Jsoup}.
+ </p>
+ */
+public class Cleaner {
+    private Whitelist whitelist;
+    /**
+     Creates a new, clean document, from the original dirty document, containing only elements allowed by the whitelist.
+     The original document is not modified. Only elements from the dirt document's <code>body</code> are used.
+     @param dirtyDocument Untrusted base document to clean.
+     @return cleaned document.
+     */
+    public Document clean(Document dirtyDocument);
+    /**
+     Determines if the input document <b>body</b>is valid, against the whitelist. It is considered valid if all the tags and attributes
+     in the input HTML are allowed by the whitelist, and that there is no content in the <code>head</code>.
+     <p>
+     This method can be used as a validator for user input. An invalid document will still be cleaned successfully
+     using the {@link #clean(Document)} document. If using as a validator, it is recommended to still clean the document
+     to ensure enforced attributes are set correctly, and that the output is tidied.
+     </p>
+     @param dirtyDocument document to test
+     @return true if no tags or attributes need to be removed; false if they do
+     */
+    public boolean isValid(Document dirtyDocument);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

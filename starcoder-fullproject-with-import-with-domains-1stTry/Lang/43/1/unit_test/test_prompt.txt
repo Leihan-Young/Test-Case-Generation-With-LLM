@@ -1,0 +1,83 @@
+package org.apache.commons.lang.text;
+import java.text.Format;
+import java.text.MessageFormat;
+import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import org.apache.commons.lang.Validate;
+/**
+ * Extends <code>java.text.MessageFormat</code> to allow pluggable/additional formatting
+ * options for embedded format elements.  Client code should specify a registry
+ * of <code>FormatFactory</code> instances associated with <code>String</code>
+ * format names.  This registry will be consulted when the format elements are 
+ * parsed from the message pattern.  In this way custom patterns can be specified,
+ * and the formats supported by <code>java.text.MessageFormat</code> can be overridden
+ * at the format and/or format style level (see MessageFormat).  A "format element"
+ * embedded in the message pattern is specified (<b>()?</b> signifies optionality):<br />
+ * <code>{</code><i>argument-number</i><b>(</b><code>,</code><i>format-name</i><b>(</b><code>,</code><i>format-style</i><b>)?)?</b><code>}</code>
+ *
+ * <p>
+ * <i>format-name</i> and <i>format-style</i> values are trimmed of surrounding whitespace
+ * in the manner of <code>java.text.MessageFormat</code>.  If <i>format-name</i> denotes
+ * <code>FormatFactory formatFactoryInstance</code> in <code>registry</code>, a <code>Format</code>
+ * matching <i>format-name</i> and <i>format-style</i> is requested from
+ * <code>formatFactoryInstance</code>.  If this is successful, the <code>Format</code>
+ * found is used for this format element.
+ * </p>
+ *
+ * <p>NOTICE: The various subformat mutator methods are considered unnecessary; they exist on the parent
+ * class to allow the type of customization which it is the job of this class to provide in
+ * a configurable fashion.  These methods have thus been disabled and will throw
+ * <code>UnsupportedOperationException</code> if called.
+ * </p>
+ * 
+ * <p>Limitations inherited from <code>java.text.MessageFormat</code>:
+ * <ul>
+ * <li>When using "choice" subformats, support for nested formatting instructions is limited
+ *     to that provided by the base class.</li>
+ * <li>Thread-safety of <code>Format</code>s, including <code>MessageFormat</code> and thus
+ *     <code>ExtendedMessageFormat</code>, is not guaranteed.</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Matt Benson
+ * @author Niall Pemberton
+ * @since 2.4
+ * @version $Id$
+ */
+public class ExtendedMessageFormat extends MessageFormat {
+    private static final long serialVersionUID = -2362048321261811743L;
+    private static final String DUMMY_PATTERN = "";
+    private static final String ESCAPED_QUOTE = "''";
+    private static final char START_FMT = ',';
+    private static final char END_FE = '}';
+    /**
+     * {@inheritDoc}
+     */
+    public String toPattern();
+    /**
+     * Consume a quoted string, adding it to <code>appendTo</code> if
+     * specified.
+     * 
+     * @param pattern pattern to parse
+     * @param pos current parse position
+     * @param appendTo optional StringBuffer to append
+     * @param escapingOn whether to process escaped quotes
+     * @return <code>appendTo</code>
+     */
+    private StringBuffer appendQuotedString(String pattern, ParsePosition pos,
+            StringBuffer appendTo, boolean escapingOn);
+    /**
+     * Apply the specified pattern.
+     * 
+     * @param pattern String
+     */
+    public final void applyPattern(String pattern);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

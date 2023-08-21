@@ -1,0 +1,20 @@
+ private void doTestPrint(Partial partial, String expected) {
+        assertEquals(expected, partial.toString());
+        assertEquals(expected, partial.toString(ISODateTimeFormat.date()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateHourMinute()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateHourMinuteSecond()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateTime()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateTimeNoMillis()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.hourMinute()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.hourMinuteSecond()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.hourMinuteSecondMillis()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.time()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.timeNoMillis()));
+    }
+    private void doTestISO(Partial partial, String expected) {
+        assertEquals(expected, partial.toString(ISODateTimeFormat.date()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateHourMinute()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateHourMinuteSecond()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateTime()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.dateTimeNoMillis()));
+        assertEquals(expected, partial.toString(ISODateTimeFormat.hourMinut

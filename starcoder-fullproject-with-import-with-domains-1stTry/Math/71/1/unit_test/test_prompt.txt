@@ -1,0 +1,111 @@
+package org.apache.commons.math.ode.nonstiff;
+import org.apache.commons.math.ode.AbstractIntegrator;
+import org.apache.commons.math.ode.DerivativeException;
+import org.apache.commons.math.ode.FirstOrderDifferentialEquations;
+import org.apache.commons.math.ode.IntegratorException;
+import org.apache.commons.math.ode.events.CombinedEventsManager;
+import org.apache.commons.math.ode.sampling.AbstractStepInterpolator;
+import org.apache.commons.math.ode.sampling.DummyStepInterpolator;
+import org.apache.commons.math.ode.sampling.StepHandler;
+/**
+ * This class implements the common part of all fixed step Runge-Kutta
+ * integrators for Ordinary Differential Equations.
+ *
+ * <p>These methods are explicit Runge-Kutta methods, their Butcher
+ * arrays are as follows :
+ * <pre>
+ *    0  |
+ *   c2  | a21
+ *   c3  | a31  a32
+ *   ... |        ...
+ *   cs  | as1  as2  ...  ass-1
+ *       |--------------------------
+ *       |  b1   b2  ...   bs-1  bs
+ * </pre>
+ * </p>
+ *
+ * @see EulerIntegrator
+ * @see ClassicalRungeKuttaIntegrator
+ * @see GillIntegrator
+ * @see MidpointIntegrator
+ * @version $Revision$ $Date$
+ * @since 1.2
+ */
+public abstract class RungeKuttaIntegrator extends AbstractIntegrator {
+    private final double[] c;
+    private final double[][] a;
+    private final double[] b;
+    private final RungeKuttaStepInterpolator prototype;
+    private final double step;
+  /** {@inheritDoc} */
+  public double integrate(final FirstOrderDifferentialEquations equations,
+                          final double t0, final double[] y0,
+                          final double t, final double[] y)
+  throws DerivativeException, IntegratorException;
+}
+package org.apache.commons.math.ode.nonstiff;
+import org.apache.commons.math.ode.DerivativeException;
+import org.apache.commons.math.ode.FirstOrderDifferentialEquations;
+import org.apache.commons.math.ode.IntegratorException;
+import org.apache.commons.math.ode.events.CombinedEventsManager;
+import org.apache.commons.math.ode.sampling.AbstractStepInterpolator;
+import org.apache.commons.math.ode.sampling.DummyStepInterpolator;
+import org.apache.commons.math.ode.sampling.StepHandler;
+/**
+ * This class implements the common part of all embedded Runge-Kutta
+ * integrators for Ordinary Differential Equations.
+ *
+ * <p>These methods are embedded explicit Runge-Kutta methods with two
+ * sets of coefficients allowing to estimate the error, their Butcher
+ * arrays are as follows :
+ * <pre>
+ *    0  |
+ *   c2  | a21
+ *   c3  | a31  a32
+ *   ... |        ...
+ *   cs  | as1  as2  ...  ass-1
+ *       |--------------------------
+ *       |  b1   b2  ...   bs-1  bs
+ *       |  b'1  b'2 ...   b's-1 b's
+ * </pre>
+ * </p>
+ *
+ * <p>In fact, we rather use the array defined by ej = bj - b'j to
+ * compute directly the error rather than computing two estimates and
+ * then comparing them.</p>
+ *
+ * <p>Some methods are qualified as <i>fsal</i> (first same as last)
+ * methods. This means the last evaluation of the derivatives in one
+ * step is the same as the first in the next step. Then, this
+ * evaluation can be reused from one step to the next one and the cost
+ * of such a method is really s-1 evaluations despite the method still
+ * has s stages. This behaviour is true only for successful steps, if
+ * the step is rejected after the error estimation phase, no
+ * evaluation is saved. For an <i>fsal</i> method, we have cs = 1 and
+ * asi = bi for all i.</p>
+ *
+ * @version $Revision$ $Date$
+ * @since 1.2
+ */
+public abstract class EmbeddedRungeKuttaIntegrator
+  extends AdaptiveStepsizeIntegrator {
+    private final boolean fsal;
+    private final double[] c;
+    private final double[][] a;
+    private final double[] b;
+    private final RungeKuttaStepInterpolator prototype;
+    private final double exp;
+    private double safety;
+    private double minReduction;
+    private double maxGrowth;
+  /** {@inheritDoc} */
+  @Override
+  public double integrate(final FirstOrderDifferentialEquations equations,
+                          final double t0, final double[] y0,
+                          final double t, final double[] y)
+  throws DerivativeException, IntegratorException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

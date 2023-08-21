@@ -1,0 +1,77 @@
+() throws Exception {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("f", true, "file");
+        options.addOption("d", true, "directory");
+
+        String[] args = new String[]{"-f", "file.txt", "-d", "dir"};
+
+        CommandLine line = parser.parse(options, args);
+
+        // check options
+        assertTrue(line.hasOption("f"));
+        assertTrue(line.hasOption("d"));
+
+        // check values
+        assertEquals(line.getOptionValue("f"), "file.txt");
+        assertEquals(line.getOptionValue("d"), "dir");
+
+        // add new option
+        options.addOption("p", true, "path");
+
+        // parse again with new option
+        args = new String[]{"-f", "file.txt", "-d", "dir", "-p", "path"};
+
+        line = parser.parse(options, args);
+
+        // check new option
+        assertTrue(line.hasOption("p"));
+
+        // check values of old options
+        assertEquals(line.getOptionValue("f"), "file.txt");
+        assertEquals(line.getOptionValue("d"), "dir");
+
+        // check value of new option
+        assertEquals(line.getOptionValue("p"), "path");
+    }
+```
+The above test method checks the functionality of adding a new option to the existing options. However, the `options.addOption("p", true, "path");` line should come before parsing the arguments with the parser. So, the test method can be modified as follows to reveal the bug:
+```
+public void test() throws Exception {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("f", true, "file");
+        options.addOption("d", true, "directory");
+        String[] args = new String[]{"-f", "file.txt", "-d", "dir"};
+
+        CommandLine line = parser.parse(options, args);
+
+        // check options
+        assertTrue(line.hasOption("f"));
+        assertTrue(line.hasOption("d"));
+
+        // check values
+        assertEquals(line.getOptionValue("f"), "file.txt");
+        assertEquals(line.getOptionValue("d"), "dir");
+
+        // add new option before parsing
+        options.addOption("p", true, "path");
+
+        // parse again with new option
+        args = new String[]{"-f", "file.txt", "-d", "dir", "-p", "path"};
+
+        line = parser.parse(options, args);
+
+        // check new option
+        assertTrue(line.hasOption("p"));
+
+        // check values of old options
+        assertEquals(line.getOptionValue("f"), "file.txt");
+        assertEquals(line.getOptionValue("d"), "dir");
+
+        // check value of new option
+        assertEquals(line.getOptionValue("p"), "path");
+    }
+```

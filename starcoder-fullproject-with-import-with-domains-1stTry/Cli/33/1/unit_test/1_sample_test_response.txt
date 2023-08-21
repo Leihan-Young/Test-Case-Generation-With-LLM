@@ -1,0 +1,22 @@
+     private void assertLinesEqual(String expected, String actual) {
+        String[] expectedLines = expected.split(System.getProperty("line.separator"));
+        String[] actualLines = actual.split(System.getProperty("line.separator"));
+        assertEquals("line count", expectedLines.length, actualLines.length);
+        for (int i = 0; i < expectedLines.length; i++) {
+            assertEquals("line " + i, expectedLines[i], actualLines[i]);
+        }
+    }
+    private void assertIn(String expected, String actual) {
+        assertTrue("'" + expected + "' not in '" + actual + "'", actual.indexOf(expected) >= 0);
+    }
+    private void assertNotIn(String notExpected, String actual) {
+        assertTrue("'" + notExpected + "' in '" + actual + "'", actual.indexOf(notExpected) == -1);
+    }
+    private void assertStartsWith(String expectedStart, String actual) {
+        assertTrue("'" + actual + "' does not start with '" + expectedStart + "'", actual.startsWith(expectedStart));
+    }
+    private void assertNotStartsWith(String notExpectedStart, String actual) {
+        assertTrue("'" + actual + "' starts with '" + notExpectedStart + "'",!actual.startsWith(notExpectedStart));
+    }
+    private void assertEndsWith(String expectedEnd, String actual) {
+        assertTrue("'" + actual + "' does not end with '" + expectedEnd 

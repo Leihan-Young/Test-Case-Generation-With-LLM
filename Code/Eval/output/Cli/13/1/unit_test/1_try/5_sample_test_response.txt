@@ -1,0 +1,13 @@
+BugInArgumentImpl() throws OptionException {
+        final DefaultOptionBuilder builder = new DefaultOptionBuilder();
+        final Argument arg = builder.withMinimum(1).create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(arg);
+
+        final WriteableCommandLine result = parser.parse(new String[] { "value1", "value2" });
+
+        assertEquals(Arrays.asList("value1", "value2"), result.getValues(arg, null));
+    }
+```
+The above test method tests the `ArgumentImpl` class with a minimum value of 1. It expects the parser to parse the arguments "value1" and "value2" and add them to the result. However, due to a bug in the `processValues` method of `ArgumentImpl`, the values are not added to the result. The fix for this bug is to change the line `arguments.remove();` to `arguments.previous();` in the `processValues` method.

@@ -1,0 +1,139 @@
+package org.apache.commons.math3.analysis.differentiation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.NumberIsTooLargeException;
+import org.apache.commons.math3.util.ArithmeticUtils;
+import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.util.MathArrays;
+/** Class holding "compiled" computation rules for derivative structures.
+ * <p>This class implements the computation rules described in Dan Kalman's paper <a
+ * href="http://www.math.american.edu/People/kalman/pdffiles/mmgautodiff.pdf">Doubly
+ * Recursive Multivariate Automatic Differentiation</a>, Mathematics Magazine, vol. 75,
+ * no. 3, June 2002. However, in order to avoid performances bottlenecks, the recursive
+ * rules are "compiled" once in an unfold form. This class does this recursion unrolling
+ * and stores the computation rules as simple loops with pre-computed indirection arrays.</p>
+ * <p>
+ * This class maps all derivative computation into single dimension arrays that hold the
+ * value and partial derivatives. The class does not hold these arrays, which remains under
+ * the responsibility of the caller. For each combination of number of free parameters and
+ * derivation order, only one compiler is necessary, and this compiler will be used to
+ * perform computations on all arrays provided to it, which can represent hundreds or
+ * thousands of different parameters kept together with all theur partial derivatives.
+ * </p>
+ * <p>
+ * The arrays on which compilers operate contain only the partial derivatives together
+ * with the 0<sup>th</sup> derivative, i.e. the value. The partial derivatives are stored in
+ * a compiler-specific order, which can be retrieved using methods {@link
+ * #getPartialDerivativeIndex(int...) getPartialDerivativeIndex} and {@link
+ * #getPartialDerivativeOrders(int)}. The value is guaranteed to be stored as the first element
+ * (i.e. the {@link #getPartialDerivativeIndex(int...) getPartialDerivativeIndex} method returns
+ * 0 when called with 0 for all derivation orders and {@link #getPartialDerivativeOrders(int)
+ * getPartialDerivativeOrders} returns an array filled with 0 when called with 0 as the index).
+ * </p>
+ * <p>
+ * Note that the ordering changes with number of parameters and derivation order. For example
+ * given 2 parameters x and y, df/dy is stored at index 2 when derivation order is set to 1 (in
+ * this case the array has three elements: f, df/dx and df/dy). If derivation order is set to
+ * 2, then df/dy will be stored at index 3 (in this case the array has six elements: f, df/dx,
+ * df/dxdx, df/dy, df/dxdy and df/dydy).
+ * </p>
+ * <p>
+ * Given this structure, users can perform some simple operations like adding, subtracting
+ * or multiplying constants and negating the elements by themselves, knowing if they want to
+ * mutate their array or create a new array. These simple operations are not provided by
+ * the compiler. The compiler provides only the more complex operations between several arrays.
+ * </p>
+ * <p>This class is mainly used as the engine for scalar variable {@link DerivativeStructure}.
+ * It can also be used directly to hold several variables in arrays for more complex data
+ * structures. User can for example store a vector of n variables depending on three x, y
+ * and z free parameters in one array as follows:
+ * <pre>
+ *   // parameter 0 is x, parameter 1 is y, parameter 2 is z
+ *   int parameters = 3;
+ *   DSCompiler compiler = DSCompiler.getCompiler(parameters, order);
+ *   int size = compiler.getSize();
+ *
+ *   // pack all elements in a single array
+ *   double[] array = new double[n * size];
+ *   for (int i = 0; i < n; ++i) {
+ *
+ *     // we know value is guaranteed to be the first element
+ *     array[i * size] = v[i];
+ *
+ *     // we don't know where first derivatives are stored, so we ask the compiler
+ *     array[i * size + compiler.getPartialDerivativeIndex(1, 0, 0) = dvOnDx[i][0];
+ *     array[i * size + compiler.getPartialDerivativeIndex(0, 1, 0) = dvOnDy[i][0];
+ *     array[i * size + compiler.getPartialDerivativeIndex(0, 0, 1) = dvOnDz[i][0];
+ *
+ *     // we let all higher order derivatives set to 0
+ *
+ *   }
+ * </pre>
+ * Then in another function, user can perform some operations on all elements stored
+ * in the single array, such as a simple product of all variables:
+ * <pre>
+ *   // compute the product of all elements
+ *   double[] product = new double[size];
+ *   prod[0] = 1.0;
+ *   for (int i = 0; i < n; ++i) {
+ *     double[] tmp = product.clone();
+ *     compiler.multiply(tmp, 0, array, i * size, product, 0);
+ *   }
+ *
+ *   // value
+ *   double p = product[0];
+ *
+ *   // first derivatives
+ *   double dPdX = product[compiler.getPartialDerivativeIndex(1, 0, 0)];
+ *   double dPdY = product[compiler.getPartialDerivativeIndex(0, 1, 0)];
+ *   double dPdZ = product[compiler.getPartialDerivativeIndex(0, 0, 1)];
+ *
+ *   // cross derivatives (assuming order was at least 2)
+ *   double dPdXdX = product[compiler.getPartialDerivativeIndex(2, 0, 0)];
+ *   double dPdXdY = product[compiler.getPartialDerivativeIndex(1, 1, 0)];
+ *   double dPdXdZ = product[compiler.getPartialDerivativeIndex(1, 0, 1)];
+ *   double dPdYdY = product[compiler.getPartialDerivativeIndex(0, 2, 0)];
+ *   double dPdYdZ = product[compiler.getPartialDerivativeIndex(0, 1, 1)];
+ *   double dPdZdZ = product[compiler.getPartialDerivativeIndex(0, 0, 2)];
+ * </p>
+ * @see DerivativeStructure
+ * @version $Id$
+ * @since 3.1
+ */
+public class DSCompiler {
+    private final int parameters;
+    private final int order;
+    private final int[][] sizes;
+    private final int[][] derivativesIndirection;
+    private final int[] lowerIndirection;
+    private final int[][][] multIndirection;
+    private final int[][][] compIndirection;
+    /** Compute two arguments arc tangent of a derivative structure.
+     * @param y array holding the first operand
+     * @param yOffset offset of the first operand in its array
+     * @param x array holding the second operand
+     * @param xOffset offset of the second operand in its array
+     * @param result array where result must be stored (for
+     * two arguments arc tangent the result array <em>cannot</em>
+     * be the input array)
+     * @param resultOffset offset of the result in its array
+     */
+    public void atan2(final double[] y, final int yOffset,
+                      final double[] x, final int xOffset,
+                      final double[] result, final int resultOffset);
+    /** Get the number of free parameters.
+     * @return number of free parameters
+     */
+    public int getFreeParameters();
+    /** Get the derivation order.
+     * @return derivation order
+     */
+    public int getOrder();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

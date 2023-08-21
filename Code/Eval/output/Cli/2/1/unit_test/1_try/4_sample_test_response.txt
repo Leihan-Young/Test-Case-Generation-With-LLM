@@ -1,0 +1,22 @@
+PosixParserBug() 
+        throws ParseException 
+    {
+        final String debugOpt = "debug";
+        Option debug = OptionBuilder
+                .withArgName(debugOpt)
+                .withDescription("turn on debugging")
+                .withLongOpt(debugOpt)
+                .hasArg()
+                .create('d');
+        Options options = new Options();
+        options.addOption(debug);
+
+        CommandLine commandLine = new PosixParser().parse(options, new String[]{"-dtrue"});
+
+        assertEquals("true", commandLine.getOptionValue(debugOpt));
+        assertEquals("true", commandLine.getOptionValue('d'));
+        assertTrue(commandLine.hasOption('d'));
+        assertTrue(commandLine.hasOption(debugOpt));
+    }
+```
+The bug in this program is that if the argument to an option is directly attached to the option letter (without space), the parser does not separate them properly. The expected behavior is that the option value should be "true", but the actual behavior is that the option value is "dtrue". This can be fixed by modifying the `PosixParser` class's `burstToken` method to split the token into the option letter and the option value if they are attached without space.

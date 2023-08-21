@@ -1,0 +1,9 @@
+     public void testEncodeString() throws Exception {
+        assertEquals("", Base64.encodeBase64String(new byte[0]));
+        assertEquals("Zg==", Base64.encodeBase64String(new byte[] { 0x00 }));
+        assertEquals("Zm8=", Base64.encodeBase64String(new byte[] { 0x00, 0x01 }));
+        assertEquals("Zm9v", Base64.encodeBase64String(new byte[] { 0x00, 0x01, 0x02 }));
+        assertEquals("Zm9vYg==", Base64.encodeBase64String(new byte[] { 0x00, 0x01, 0x02, 0x03 }));
+        assertEquals("Zm9vYmE=", Base64.encodeBase64String(new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04 }));
+        assertEquals("Zm9vYmFy", Base64.encodeBase64String(new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 }));
+    }

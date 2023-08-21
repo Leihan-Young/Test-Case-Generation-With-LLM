@@ -1,0 +1,22 @@
+ private Options createOptions() {
+        Options options = new Options();
+        options.addOption("a", false, "toggle -a");
+        options.addOption("b", false, "toggle -b");
+        options.addOption("c", false, "toggle -c");
+        options.addOption("d", false, "toggle -d");
+        options.addOption("e", false, "toggle -e");
+        options.addOption("f", false, "toggle -f");
+        options.addOption("g", false, "toggle -g");
+        options.addOption("h", false, "toggle -h");
+        options.addOption("i", false, "toggle -i");
+        options.addOption("j", false, "toggle -j");
+        options.addOption("k", false, "toggle -k");
+        options.addOption("l", false, "toggle -l");
+        options.addOption("m", false, "toggle -m");
+        options.addOption("n", false, "toggle -n");
+        options.addOption("o", false, "toggle -o");
+        options.addOption("p", false, "toggle -p");
+        options.addOption("q", false, "toggle -q");
+        options.addOption("r", false, "toggle -r");
+        options.addOption("s", false, "toggle -s");
+        option

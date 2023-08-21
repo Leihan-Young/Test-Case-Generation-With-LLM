@@ -1,0 +1,28 @@
+PosixParserBug() throws ParseException {
+    final String debugOpt = "debug";
+    Option debug = OptionBuilder
+            .withArgName(debugOpt)
+            .withDescription("turn on debugging")
+            .withLongOpt(debugOpt)
+            .hasArg()
+            .create('d');
+    Options options = new Options();
+    options.addOption(debug);
+    CommandLine commandLine = new PosixParser().parse(options, new String[]{"-d", "true"});
+
+    // The bug: the following assertions are incorrect
+    assertEquals("true", commandLine.getOptionValue(debugOpt));
+    assertEquals("true", commandLine.getOptionValue('d'));
+    assertTrue(commandLine.hasOption('d'));
+    assertTrue(commandLine.hasOption(debugOpt));
+
+    // Correct assertions
+    assertEquals("true", commandLine.getOptionValues(debugOpt)[0]);
+    assertEquals("true", commandLine.getOptionValues('d')[0]);
+    assertTrue(commandLine.hasOption('d'));
+    assertTrue(commandLine.hasOption(debugOpt));
+}
+``` 
+
+Explanation:
+The bug in the original code is that the `getOptionValue` method is used to retrieve the value of the `-d` option, which is incorrect since the `hasArg()` method is used to indicate that this option requires an argument. Therefore, the correct way to retrieve the value of the `-d` option is to use the `getOptionValues` method, which returns an array of values for the given option. The corrected assertions in the test method reflect this change.

@@ -1,0 +1,6 @@
+     public void testConjugate() {
+        assertEquals(new Complex(1, 2).conjugate(), new Complex(1, -2));
+        assertEquals(Complex.NaN.conjugate(), Complex.NaN);
+        assertEquals(Complex.INF.conjugate(), Complex.INF);
+        assertEquals(Complex.ZERO.conjugate(), Complex.ZERO);
+    }

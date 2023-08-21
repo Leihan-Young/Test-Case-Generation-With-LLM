@@ -1,0 +1,12 @@
+     public void testAddAllChar() {
+        char[] array1 = { 'a', 'b', 'c' };
+        char[] array2 = { '1', '2', '3' };
+        char[] array3 = ArrayUtils.addAll(array1, array2);
+        assertEquals(6, array3.length);
+        assertEquals('a', array3[0]);
+        assertEquals('b', array3[1]);
+        assertEquals('c', array3[2]);
+        assertEquals('1', array3[3]);
+        assertEquals('2', array3[4]);
+        assertEquals('3', array3[5]);
+    }

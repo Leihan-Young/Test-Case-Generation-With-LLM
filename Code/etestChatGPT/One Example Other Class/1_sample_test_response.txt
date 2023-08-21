@@ -1,0 +1,24 @@
+AddOption() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option testOption =
+        obuilder
+            .withShortName("t")
+            .withArgument(abuilder.withName("test").create())
+            .create();
+
+    final Group options = gbuilder.create();
+
+    final WriteableCommandLineImpl cmdLine = new WriteableCommandLineImpl();
+    cmdLine.addOption(testOption);
+
+    assertTrue(cmdLine.hasOption("t"));
+    assertEquals("test", cmdLine.getOption("t").getArguments().get(0).getName());
+}
+```
+
+Explanation: The original test method only tests the ability of the program to handle quoted argument values, but doesn't reveal any potential bugs in the code. 
+
+The new test method, on the other hand, tests the addOption() method of the WriteableCommandLineImpl class. It creates a new option with a short name "t" and an argument with name "test", adds it to a new WriteableCommandLineImpl object, and then checks if the object correctly recognizes the option and its argument. This test can reveal any bugs related to adding options to the command line.

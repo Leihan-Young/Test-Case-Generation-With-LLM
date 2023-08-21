@@ -1,0 +1,27 @@
+ private static Element create(String html) {
+        return Parser.parseBodyFragment(html, "").child(0);
+    }
+    private static void assertText(String html, String expectedText) {
+        assertEquals(expectedText, create(html).text());
+    }
+    private static void assertOwnText(String html, String expectedText) {
+        assertEquals(expectedText, create(html).ownText());
+    }
+    private static void assertTextNodes(String html, String... expectedTexts) {
+        Elements elements = create(html).textNodes();
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertEquals(expectedTexts[i], elements.get(i).text());
+    }
+    private static void assertOwnTextNodes(String html, String... expectedTexts) {
+        Elements elements = create(html).ownTextNodes();
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertEquals(expectedTexts[i], elements.get(i).text());
+    }
+    private static void assertHtml(String html, String expectedHtml) {
+        assertEquals(expectedHtml, create(html).html());
+    }
+    private static void assertOuterHtml(String html, String expectedHtml) {
+        assertEquals(expectedHtml, create(html).outerHtml());
+    

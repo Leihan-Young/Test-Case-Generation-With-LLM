@@ -1,0 +1,3409 @@
+Getting Chart-14 focal context...
+focal_context=/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -----------
+ * XYPlot.java
+ * -----------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Craig MacFarlane;
+ *                   Mark Watson (www.markwatson.com);
+ *                   Jonathan Nash;
+ *                   Gideon Krause;
+ *                   Klaus Rheinwald;
+ *                   Xavier Poinsard;
+ *                   Richard Atkinson;
+ *                   Arnaud Lelievre;
+ *                   Nicolas Brodu;
+ *                   Eduardo Ramalho;
+ *                   Sergei Ivanov;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 18-Sep-2001 : Updated header and fixed DOS encoding problem (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 19-Oct-2001 : Removed the code for drawing the visual representation of each
+ *               data point into a separate class StandardXYItemRenderer.
+ *               This will make it easier to add variations to the way the
+ *               charts are drawn.  Based on code contributed by Mark
+ *               Watson (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 20-Nov-2001 : Fixed clipping bug that shows up when chart is displayed
+ *               inside JScrollPane (DG);
+ * 12-Dec-2001 : Removed unnecessary 'throws' clauses from constructor (DG);
+ * 13-Dec-2001 : Added skeleton code for tooltips.  Added new constructor. (DG);
+ * 16-Jan-2002 : Renamed the tooltips class (DG);
+ * 22-Jan-2002 : Added DrawInfo class, incorporating tooltips and crosshairs.
+ *               Crosshairs based on code by Jonathan Nash (DG);
+ * 05-Feb-2002 : Added alpha-transparency setting based on code by Sylvain
+ *               Vieujot (DG);
+ * 26-Feb-2002 : Updated getMinimumXXX() and getMaximumXXX() methods to handle
+ *               special case when chart is null (DG);
+ * 28-Feb-2002 : Renamed Datasets.java --> DatasetUtilities.java (DG);
+ * 28-Mar-2002 : The plot now registers with the renderer as a property change
+ *               listener.  Also added a new constructor (DG);
+ * 09-Apr-2002 : Removed the transRangeZero from the renderer.drawItem()
+ *               method.  Moved the tooltip generator into the renderer (DG);
+ * 23-Apr-2002 : Fixed bug in methods for drawing horizontal and vertical
+ *               lines (DG);
+ * 13-May-2002 : Small change to the draw() method so that it works for
+ *               OverlaidXYPlot also (DG);
+ * 25-Jun-2002 : Removed redundant import (DG);
+ * 20-Aug-2002 : Renamed getItemRenderer() --> getRenderer(), and
+ *               setXYItemRenderer() --> setRenderer() (DG);
+ * 28-Aug-2002 : Added mechanism for (optional) plot annotations (DG);
+ * 02-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 09-Jan-2003 : Further additions to the grid settings, plus integrated plot
+ *               border bug fix contributed by Gideon Krause (DG);
+ * 22-Jan-2003 : Removed monolithic constructor (DG);
+ * 04-Mar-2003 : Added 'no data' message, see bug report 691634.  Added
+ *               secondary range markers using code contributed by Klaus
+ *               Rheinwald (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 03-Apr-2003 : Added setDomainAxisLocation() method (DG);
+ * 30-Apr-2003 : Moved annotation drawing into a separate method (DG);
+ * 01-May-2003 : Added multi-pass mechanism for renderers (DG);
+ * 02-May-2003 : Changed axis locations from int to AxisLocation (DG);
+ * 15-May-2003 : Added an orientation attribute (DG);
+ * 02-Jun-2003 : Removed range axis compatibility test (DG);
+ * 05-Jun-2003 : Added domain and range grid bands (sponsored by Focus Computer
+ *               Services Ltd) (DG);
+ * 26-Jun-2003 : Fixed bug (757303) in getDataRange() method (DG);
+ * 02-Jul-2003 : Added patch from bug report 698646 (secondary axes for
+ *               overlaid plots) (DG);
+ * 23-Jul-2003 : Added support for multiple secondary datasets, axes and
+ *               renderers (DG);
+ * 27-Jul-2003 : Added support for stacked XY area charts (RA);
+ * 19-Aug-2003 : Implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug where change to secondary datasets didn't generate
+ *               change event (797466) (DG)
+ * 08-Sep-2003 : Added internationalization via use of properties
+ *               resourceBundle (RFE 690236) (AL);
+ * 08-Sep-2003 : Changed ValueAxis API (DG);
+ * 08-Sep-2003 : Fixes for serialization (NB);
+ * 16-Sep-2003 : Changed ChartRenderingInfo --> PlotRenderingInfo (DG);
+ * 17-Sep-2003 : Fixed zooming to include secondary domain axes (DG);
+ * 18-Sep-2003 : Added getSecondaryDomainAxisCount() and
+ *               getSecondaryRangeAxisCount() methods suggested by Eduardo
+ *               Ramalho (RFE 808548) (DG);
+ * 23-Sep-2003 : Split domain and range markers into foreground and
+ *               background (DG);
+ * 06-Oct-2003 : Fixed bug in clearDomainMarkers() and clearRangeMarkers()
+ *               methods.  Fixed bug (815876) in addSecondaryRangeMarker()
+ *               method.  Added new addSecondaryDomainMarker methods (see bug
+ *               id 815869) (DG);
+ * 10-Nov-2003 : Added getSecondaryDomain/RangeAxisMappedToDataset() methods
+ *               requested by Eduardo Ramalho (DG);
+ * 24-Nov-2003 : Removed unnecessary notification when updating axis anchor
+ *               values (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 25-Feb-2004 : Replaced CrosshairInfo with CrosshairState (DG);
+ * 12-Mar-2004 : Fixed bug where primary renderer is always used to determine
+ *               range type (DG);
+ * 22-Mar-2004 : Fixed cloning bug (DG);
+ * 23-Mar-2004 : Fixed more cloning bugs (DG);
+ * 07-Apr-2004 : Fixed problem with axis range when the secondary renderer is
+ *               stacked, see this post in the forum:
+ *               http://www.jfree.org/phpBB2/viewtopic.php?t=8204 (DG);
+ * 07-Apr-2004 : Added get/setDatasetRenderingOrder() methods (DG);
+ * 26-Apr-2004 : Added option to fill quadrant areas in the background of the
+ *               plot (DG);
+ * 27-Apr-2004 : Removed major distinction between primary and secondary
+ *               datasets, renderers and axes (DG);
+ * 30-Apr-2004 : Modified to make use of the new getRangeExtent() method in the
+ *               renderer interface (DG);
+ * 13-May-2004 : Added optional fixedLegendItems attribute (DG);
+ * 19-May-2004 : Added indexOf() method (DG);
+ * 03-Jun-2004 : Fixed zooming bug (DG);
+ * 18-Aug-2004 : Added removedAnnotation() method (by tkram01) (DG);
+ * 05-Oct-2004 : Modified storage type for dataset-to-axis maps (DG);
+ * 06-Oct-2004 : Modified getDataRange() method to use renderer to determine
+ *               the x-value range (now matches behaviour for y-values).  Added
+ *               getDomainAxisIndex() method (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 25-Nov-2004 : Small update to clone() implementation (DG);
+ * 22-Feb-2005 : Changed axis offsets from Spacer --> RectangleInsets (DG);
+ * 24-Feb-2005 : Added indexOf(XYItemRenderer) method (DG);
+ * 21-Mar-2005 : Register plot as change listener in setRenderer() method (DG);
+ * 21-Apr-2005 : Added get/setSeriesRenderingOrder() methods (ET);
+ * 26-Apr-2005 : Removed LOGGER (DG);
+ * 04-May-2005 : Fixed serialization of domain and range markers (DG);
+ * 05-May-2005 : Removed unused draw() method (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 01-Jun-2005 : Added clearDomainMarkers(int) method to match 
+ *               clearRangeMarkers(int) (DG);
+ * 06-Jun-2005 : Fixed equals() method to handle GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 06-Jul-2005 : Fixed crosshair bug (id = 1233336) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 26-Jan-2006 : Added getAnnotations() method (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 13-Oct-2006 : Fixed initialisation of CrosshairState - see bug report 
+ *               1565168 (DG);
+ * 22-Nov-2006 : Fixed equals() and cloning() for quadrant attributes, plus 
+ *               API doc updates (DG);
+ * 29-Nov-2006 : Added argument checks (DG);
+ * 15-Jan-2007 : Fixed bug in drawRangeMarkers() (DG);
+ * 07-Feb-2007 : Fixed bug 1654215, renderer with no dataset (DG);
+ * 26-Feb-2007 : Added missing setDomainAxisLocation() and 
+ *               setRangeAxisLocation() methods (DG);
+ * 02-Mar-2007 : Fix for crosshair positioning with horizontal orientation
+ *               (see patch 1671648 by Sergei Ivanov) (DG);
+ * 13-Mar-2007 : Added null argument checks for crosshair attributes (DG);
+ * 23-Mar-2007 : Added domain zero base line facility (DG);
+ * 04-May-2007 : Render only visible data items if possible (DG);
+ * 24-May-2007 : Fixed bug in render method for an empty series (DG);
+ * 07-Jun-2007 : Modified drawBackground() to pass orientation to 
+ *               fillBackground() for handling GradientPaint (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 27-Jun-2007 : Updated drawDomainGridlines() method for renamed method in
+ *               XYItemRenderer interface.
+ * 24-Sep-2007 : Added new zoom methods (DG);
+ * 26-Sep-2007 : Include index value in IllegalArgumentExceptions (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 12-Nov-2007 : Fixed bug in equals() method for domain and range tick
+ *               band paint attributes (DG);
+ * 27-Nov-2007 : Added new setFixedDomain/RangeAxisSpace() methods (DG);
+ * 04-Jan-2008 : Fix for quadrant painting error - see patch 1849564 (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.XYDataset;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+        RendererChangeListener, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxisMap;
+    private Map datasetToRangeAxisMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------
+ * CategoryPlot.java
+ * -----------------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Jeremy Bowman;
+ *                   Arnaud Lelievre;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 21-Aug-2001 : Added standard header. Fixed DOS encoding problem (DG);
+ * 18-Sep-2001 : Updated header (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 23-Oct-2001 : Changed intro and trail gaps on bar plots to use percentage of 
+ *               available space rather than a fixed number of units (DG);
+ * 12-Dec-2001 : Changed constructors to protected (DG);
+ * 13-Dec-2001 : Added tooltips (DG);
+ * 16-Jan-2002 : Increased maximum intro and trail gap percents, plus added 
+ *               some argument checking code.  Thanks to Taoufik Romdhane for 
+ *               suggesting this (DG);
+ * 05-Feb-2002 : Added accessor methods for the tooltip generator, incorporated
+ *               alpha-transparency for Plot and subclasses (DG);
+ * 06-Mar-2002 : Updated import statements (DG);
+ * 14-Mar-2002 : Renamed BarPlot.java --> CategoryPlot.java, and changed code 
+ *               to use the CategoryItemRenderer interface (DG);
+ * 22-Mar-2002 : Dropped the getCategories() method (DG);
+ * 23-Apr-2002 : Moved the dataset from the JFreeChart class to the Plot 
+ *               class (DG);
+ * 29-Apr-2002 : New methods to support printing values at the end of bars, 
+ *               contributed by Jeremy Bowman (DG);
+ * 11-May-2002 : New methods for label visibility and overlaid plot support, 
+ *               contributed by Jeremy Bowman (DG);
+ * 06-Jun-2002 : Removed the tooltip generator, this is now stored with the 
+ *               renderer.  Moved constants into the CategoryPlotConstants 
+ *               interface.  Updated Javadoc comments (DG);
+ * 10-Jun-2002 : Overridden datasetChanged() method to update the upper and 
+ *               lower bound on the range axis (if necessary), updated 
+ *               Javadocs (DG);
+ * 25-Jun-2002 : Removed redundant imports (DG);
+ * 20-Aug-2002 : Changed the constructor for Marker (DG);
+ * 28-Aug-2002 : Added listener notification to setDomainAxis() and 
+ *               setRangeAxis() (DG);
+ * 23-Sep-2002 : Added getLegendItems() method and fixed errors reported by 
+ *               Checkstyle (DG);
+ * 28-Oct-2002 : Changes to the CategoryDataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 07-Nov-2002 : Renamed labelXXX as valueLabelXXX (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 19-Nov-2002 : Added axis location parameters to constructor (DG);
+ * 17-Jan-2003 : Moved to com.jrefinery.chart.plot package (DG);
+ * 14-Feb-2003 : Fixed bug in auto-range calculation for secondary axis (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 02-May-2003 : Moved render() method up from subclasses. Added secondary 
+ *               range markers. Added an attribute to control the dataset 
+ *               rendering order.  Added a drawAnnotations() method.  Changed 
+ *               the axis location from an int to an AxisLocation (DG);
+ * 07-May-2003 : Merged HorizontalCategoryPlot and VerticalCategoryPlot into 
+ *               this class (DG);
+ * 02-Jun-2003 : Removed check for range axis compatibility (DG);
+ * 04-Jul-2003 : Added a domain gridline position attribute (DG);
+ * 21-Jul-2003 : Moved DrawingSupplier to Plot superclass (DG);
+ * 19-Aug-2003 : Added equals() method and implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug 797466 (no change event when secondary dataset 
+ *               changes) (DG);
+ * 02-Sep-2003 : Fixed bug 795209 (wrong dataset checked in render2 method) and
+ *               790407 (initialise method) (DG);
+ * 08-Sep-2003 : Added internationalization via use of properties 
+ *               resourceBundle (RFE 690236) (AL); 
+ * 08-Sep-2003 : Fixed bug (wrong secondary range axis being used).  Changed 
+ *               ValueAxis API (DG);
+ * 10-Sep-2003 : Fixed bug in setRangeAxis() method (DG);
+ * 15-Sep-2003 : Fixed two bugs in serialization, implemented 
+ *               PublicCloneable (DG);
+ * 23-Oct-2003 : Added event notification for changes to renderer (DG);
+ * 26-Nov-2003 : Fixed bug (849645) in clearRangeMarkers() method (DG);
+ * 03-Dec-2003 : Modified draw method to accept anchor (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 10-Mar-2004 : Fixed bug in axis range calculation when secondary renderer is
+ *               stacked (DG);
+ * 12-May-2004 : Added fixed legend items (DG);
+ * 19-May-2004 : Added check for null legend item from renderer (DG);
+ * 02-Jun-2004 : Updated the DatasetRenderingOrder class (DG);
+ * 05-Nov-2004 : Renamed getDatasetsMappedToRangeAxis() 
+ *               --> datasetsMappedToRangeAxis(), and ensured that returned 
+ *               list doesn't contain null datasets (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 07-Jan-2005 : Renamed getRangeExtent() --> findRangeBounds() in 
+ *               CategoryItemRenderer (DG);
+ * 04-May-2005 : Fixed serialization of range markers (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 02-Jun-2005 : Added support for domain markers (DG);
+ * 06-Jun-2005 : Fixed equals() method for use with GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 16-Jun-2005 : Added getDomainAxisCount() and getRangeAxisCount() methods, to
+ *               match XYPlot (see RFE 1220495) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 11-Jan-2006 : Added configureRangeAxes() to rendererChanged(), since the
+ *               renderer might influence the axis range (DG);
+ * 27-Jan-2006 : Added various null argument checks (DG);
+ * 18-Aug-2006 : Added getDatasetCount() method, plus a fix for bug drawing 
+ *               category labels, thanks to Adriaan Joubert (1277726) (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 30-Oct-2006 : Added getDomainAxisIndex(), datasetsMappedToDomainAxis() and 
+ *               getCategoriesForAxis() methods (DG);
+ * 22-Nov-2006 : Fire PlotChangeEvent from setColumnRenderingOrder() and
+ *               setRowRenderingOrder() (DG);
+ * 29-Nov-2006 : Fix for bug 1605207 (IntervalMarker exceeds bounds of data 
+ *               area) (DG);
+ * 26-Feb-2007 : Fix for bug 1669218 (setDomainAxisLocation() notify argument
+ *               ignored) (DG);
+ * 13-Mar-2007 : Added null argument checks for setRangeCrosshairPaint() and
+ *               setRangeCrosshairStroke(), fixed clipping for 
+ *               annotations (DG);
+ * 07-Jun-2007 : Override drawBackground() for new GradientPaint handling (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Updated annotation handling (DG);
+ * 10-Jul-2007 : Added getRangeAxisIndex(ValueAxis) method (DG);
+ * 24-Sep-2007 : Implemented new zoom methods (DG);
+ * 25-Oct-2007 : Added some argument checks (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 14-Nov-2007 : Added missing event notifications (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker)
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(int, Marker, Layer)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker, Layer)
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     * 
+     * @see #addRangeMarker(int, Marker, Layer, boolean)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+
+Getting Chart-14 test prefix...
+oracle_focal_context=/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -----------
+ * XYPlot.java
+ * -----------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Craig MacFarlane;
+ *                   Mark Watson (www.markwatson.com);
+ *                   Jonathan Nash;
+ *                   Gideon Krause;
+ *                   Klaus Rheinwald;
+ *                   Xavier Poinsard;
+ *                   Richard Atkinson;
+ *                   Arnaud Lelievre;
+ *                   Nicolas Brodu;
+ *                   Eduardo Ramalho;
+ *                   Sergei Ivanov;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 18-Sep-2001 : Updated header and fixed DOS encoding problem (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 19-Oct-2001 : Removed the code for drawing the visual representation of each
+ *               data point into a separate class StandardXYItemRenderer.
+ *               This will make it easier to add variations to the way the
+ *               charts are drawn.  Based on code contributed by Mark
+ *               Watson (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 20-Nov-2001 : Fixed clipping bug that shows up when chart is displayed
+ *               inside JScrollPane (DG);
+ * 12-Dec-2001 : Removed unnecessary 'throws' clauses from constructor (DG);
+ * 13-Dec-2001 : Added skeleton code for tooltips.  Added new constructor. (DG);
+ * 16-Jan-2002 : Renamed the tooltips class (DG);
+ * 22-Jan-2002 : Added DrawInfo class, incorporating tooltips and crosshairs.
+ *               Crosshairs based on code by Jonathan Nash (DG);
+ * 05-Feb-2002 : Added alpha-transparency setting based on code by Sylvain
+ *               Vieujot (DG);
+ * 26-Feb-2002 : Updated getMinimumXXX() and getMaximumXXX() methods to handle
+ *               special case when chart is null (DG);
+ * 28-Feb-2002 : Renamed Datasets.java --> DatasetUtilities.java (DG);
+ * 28-Mar-2002 : The plot now registers with the renderer as a property change
+ *               listener.  Also added a new constructor (DG);
+ * 09-Apr-2002 : Removed the transRangeZero from the renderer.drawItem()
+ *               method.  Moved the tooltip generator into the renderer (DG);
+ * 23-Apr-2002 : Fixed bug in methods for drawing horizontal and vertical
+ *               lines (DG);
+ * 13-May-2002 : Small change to the draw() method so that it works for
+ *               OverlaidXYPlot also (DG);
+ * 25-Jun-2002 : Removed redundant import (DG);
+ * 20-Aug-2002 : Renamed getItemRenderer() --> getRenderer(), and
+ *               setXYItemRenderer() --> setRenderer() (DG);
+ * 28-Aug-2002 : Added mechanism for (optional) plot annotations (DG);
+ * 02-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 09-Jan-2003 : Further additions to the grid settings, plus integrated plot
+ *               border bug fix contributed by Gideon Krause (DG);
+ * 22-Jan-2003 : Removed monolithic constructor (DG);
+ * 04-Mar-2003 : Added 'no data' message, see bug report 691634.  Added
+ *               secondary range markers using code contributed by Klaus
+ *               Rheinwald (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 03-Apr-2003 : Added setDomainAxisLocation() method (DG);
+ * 30-Apr-2003 : Moved annotation drawing into a separate method (DG);
+ * 01-May-2003 : Added multi-pass mechanism for renderers (DG);
+ * 02-May-2003 : Changed axis locations from int to AxisLocation (DG);
+ * 15-May-2003 : Added an orientation attribute (DG);
+ * 02-Jun-2003 : Removed range axis compatibility test (DG);
+ * 05-Jun-2003 : Added domain and range grid bands (sponsored by Focus Computer
+ *               Services Ltd) (DG);
+ * 26-Jun-2003 : Fixed bug (757303) in getDataRange() method (DG);
+ * 02-Jul-2003 : Added patch from bug report 698646 (secondary axes for
+ *               overlaid plots) (DG);
+ * 23-Jul-2003 : Added support for multiple secondary datasets, axes and
+ *               renderers (DG);
+ * 27-Jul-2003 : Added support for stacked XY area charts (RA);
+ * 19-Aug-2003 : Implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug where change to secondary datasets didn't generate
+ *               change event (797466) (DG)
+ * 08-Sep-2003 : Added internationalization via use of properties
+ *               resourceBundle (RFE 690236) (AL);
+ * 08-Sep-2003 : Changed ValueAxis API (DG);
+ * 08-Sep-2003 : Fixes for serialization (NB);
+ * 16-Sep-2003 : Changed ChartRenderingInfo --> PlotRenderingInfo (DG);
+ * 17-Sep-2003 : Fixed zooming to include secondary domain axes (DG);
+ * 18-Sep-2003 : Added getSecondaryDomainAxisCount() and
+ *               getSecondaryRangeAxisCount() methods suggested by Eduardo
+ *               Ramalho (RFE 808548) (DG);
+ * 23-Sep-2003 : Split domain and range markers into foreground and
+ *               background (DG);
+ * 06-Oct-2003 : Fixed bug in clearDomainMarkers() and clearRangeMarkers()
+ *               methods.  Fixed bug (815876) in addSecondaryRangeMarker()
+ *               method.  Added new addSecondaryDomainMarker methods (see bug
+ *               id 815869) (DG);
+ * 10-Nov-2003 : Added getSecondaryDomain/RangeAxisMappedToDataset() methods
+ *               requested by Eduardo Ramalho (DG);
+ * 24-Nov-2003 : Removed unnecessary notification when updating axis anchor
+ *               values (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 25-Feb-2004 : Replaced CrosshairInfo with CrosshairState (DG);
+ * 12-Mar-2004 : Fixed bug where primary renderer is always used to determine
+ *               range type (DG);
+ * 22-Mar-2004 : Fixed cloning bug (DG);
+ * 23-Mar-2004 : Fixed more cloning bugs (DG);
+ * 07-Apr-2004 : Fixed problem with axis range when the secondary renderer is
+ *               stacked, see this post in the forum:
+ *               http://www.jfree.org/phpBB2/viewtopic.php?t=8204 (DG);
+ * 07-Apr-2004 : Added get/setDatasetRenderingOrder() methods (DG);
+ * 26-Apr-2004 : Added option to fill quadrant areas in the background of the
+ *               plot (DG);
+ * 27-Apr-2004 : Removed major distinction between primary and secondary
+ *               datasets, renderers and axes (DG);
+ * 30-Apr-2004 : Modified to make use of the new getRangeExtent() method in the
+ *               renderer interface (DG);
+ * 13-May-2004 : Added optional fixedLegendItems attribute (DG);
+ * 19-May-2004 : Added indexOf() method (DG);
+ * 03-Jun-2004 : Fixed zooming bug (DG);
+ * 18-Aug-2004 : Added removedAnnotation() method (by tkram01) (DG);
+ * 05-Oct-2004 : Modified storage type for dataset-to-axis maps (DG);
+ * 06-Oct-2004 : Modified getDataRange() method to use renderer to determine
+ *               the x-value range (now matches behaviour for y-values).  Added
+ *               getDomainAxisIndex() method (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 25-Nov-2004 : Small update to clone() implementation (DG);
+ * 22-Feb-2005 : Changed axis offsets from Spacer --> RectangleInsets (DG);
+ * 24-Feb-2005 : Added indexOf(XYItemRenderer) method (DG);
+ * 21-Mar-2005 : Register plot as change listener in setRenderer() method (DG);
+ * 21-Apr-2005 : Added get/setSeriesRenderingOrder() methods (ET);
+ * 26-Apr-2005 : Removed LOGGER (DG);
+ * 04-May-2005 : Fixed serialization of domain and range markers (DG);
+ * 05-May-2005 : Removed unused draw() method (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 01-Jun-2005 : Added clearDomainMarkers(int) method to match 
+ *               clearRangeMarkers(int) (DG);
+ * 06-Jun-2005 : Fixed equals() method to handle GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 06-Jul-2005 : Fixed crosshair bug (id = 1233336) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 26-Jan-2006 : Added getAnnotations() method (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 13-Oct-2006 : Fixed initialisation of CrosshairState - see bug report 
+ *               1565168 (DG);
+ * 22-Nov-2006 : Fixed equals() and cloning() for quadrant attributes, plus 
+ *               API doc updates (DG);
+ * 29-Nov-2006 : Added argument checks (DG);
+ * 15-Jan-2007 : Fixed bug in drawRangeMarkers() (DG);
+ * 07-Feb-2007 : Fixed bug 1654215, renderer with no dataset (DG);
+ * 26-Feb-2007 : Added missing setDomainAxisLocation() and 
+ *               setRangeAxisLocation() methods (DG);
+ * 02-Mar-2007 : Fix for crosshair positioning with horizontal orientation
+ *               (see patch 1671648 by Sergei Ivanov) (DG);
+ * 13-Mar-2007 : Added null argument checks for crosshair attributes (DG);
+ * 23-Mar-2007 : Added domain zero base line facility (DG);
+ * 04-May-2007 : Render only visible data items if possible (DG);
+ * 24-May-2007 : Fixed bug in render method for an empty series (DG);
+ * 07-Jun-2007 : Modified drawBackground() to pass orientation to 
+ *               fillBackground() for handling GradientPaint (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 27-Jun-2007 : Updated drawDomainGridlines() method for renamed method in
+ *               XYItemRenderer interface.
+ * 24-Sep-2007 : Added new zoom methods (DG);
+ * 26-Sep-2007 : Include index value in IllegalArgumentExceptions (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 12-Nov-2007 : Fixed bug in equals() method for domain and range tick
+ *               band paint attributes (DG);
+ * 27-Nov-2007 : Added new setFixedDomain/RangeAxisSpace() methods (DG);
+ * 04-Jan-2008 : Fix for quadrant painting error - see patch 1849564 (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.XYDataset;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+        RendererChangeListener, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxisMap;
+    private Map datasetToRangeAxisMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------
+ * CategoryPlot.java
+ * -----------------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Jeremy Bowman;
+ *                   Arnaud Lelievre;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 21-Aug-2001 : Added standard header. Fixed DOS encoding problem (DG);
+ * 18-Sep-2001 : Updated header (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 23-Oct-2001 : Changed intro and trail gaps on bar plots to use percentage of 
+ *               available space rather than a fixed number of units (DG);
+ * 12-Dec-2001 : Changed constructors to protected (DG);
+ * 13-Dec-2001 : Added tooltips (DG);
+ * 16-Jan-2002 : Increased maximum intro and trail gap percents, plus added 
+ *               some argument checking code.  Thanks to Taoufik Romdhane for 
+ *               suggesting this (DG);
+ * 05-Feb-2002 : Added accessor methods for the tooltip generator, incorporated
+ *               alpha-transparency for Plot and subclasses (DG);
+ * 06-Mar-2002 : Updated import statements (DG);
+ * 14-Mar-2002 : Renamed BarPlot.java --> CategoryPlot.java, and changed code 
+ *               to use the CategoryItemRenderer interface (DG);
+ * 22-Mar-2002 : Dropped the getCategories() method (DG);
+ * 23-Apr-2002 : Moved the dataset from the JFreeChart class to the Plot 
+ *               class (DG);
+ * 29-Apr-2002 : New methods to support printing values at the end of bars, 
+ *               contributed by Jeremy Bowman (DG);
+ * 11-May-2002 : New methods for label visibility and overlaid plot support, 
+ *               contributed by Jeremy Bowman (DG);
+ * 06-Jun-2002 : Removed the tooltip generator, this is now stored with the 
+ *               renderer.  Moved constants into the CategoryPlotConstants 
+ *               interface.  Updated Javadoc comments (DG);
+ * 10-Jun-2002 : Overridden datasetChanged() method to update the upper and 
+ *               lower bound on the range axis (if necessary), updated 
+ *               Javadocs (DG);
+ * 25-Jun-2002 : Removed redundant imports (DG);
+ * 20-Aug-2002 : Changed the constructor for Marker (DG);
+ * 28-Aug-2002 : Added listener notification to setDomainAxis() and 
+ *               setRangeAxis() (DG);
+ * 23-Sep-2002 : Added getLegendItems() method and fixed errors reported by 
+ *               Checkstyle (DG);
+ * 28-Oct-2002 : Changes to the CategoryDataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 07-Nov-2002 : Renamed labelXXX as valueLabelXXX (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 19-Nov-2002 : Added axis location parameters to constructor (DG);
+ * 17-Jan-2003 : Moved to com.jrefinery.chart.plot package (DG);
+ * 14-Feb-2003 : Fixed bug in auto-range calculation for secondary axis (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 02-May-2003 : Moved render() method up from subclasses. Added secondary 
+ *               range markers. Added an attribute to control the dataset 
+ *               rendering order.  Added a drawAnnotations() method.  Changed 
+ *               the axis location from an int to an AxisLocation (DG);
+ * 07-May-2003 : Merged HorizontalCategoryPlot and VerticalCategoryPlot into 
+ *               this class (DG);
+ * 02-Jun-2003 : Removed check for range axis compatibility (DG);
+ * 04-Jul-2003 : Added a domain gridline position attribute (DG);
+ * 21-Jul-2003 : Moved DrawingSupplier to Plot superclass (DG);
+ * 19-Aug-2003 : Added equals() method and implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug 797466 (no change event when secondary dataset 
+ *               changes) (DG);
+ * 02-Sep-2003 : Fixed bug 795209 (wrong dataset checked in render2 method) and
+ *               790407 (initialise method) (DG);
+ * 08-Sep-2003 : Added internationalization via use of properties 
+ *               resourceBundle (RFE 690236) (AL); 
+ * 08-Sep-2003 : Fixed bug (wrong secondary range axis being used).  Changed 
+ *               ValueAxis API (DG);
+ * 10-Sep-2003 : Fixed bug in setRangeAxis() method (DG);
+ * 15-Sep-2003 : Fixed two bugs in serialization, implemented 
+ *               PublicCloneable (DG);
+ * 23-Oct-2003 : Added event notification for changes to renderer (DG);
+ * 26-Nov-2003 : Fixed bug (849645) in clearRangeMarkers() method (DG);
+ * 03-Dec-2003 : Modified draw method to accept anchor (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 10-Mar-2004 : Fixed bug in axis range calculation when secondary renderer is
+ *               stacked (DG);
+ * 12-May-2004 : Added fixed legend items (DG);
+ * 19-May-2004 : Added check for null legend item from renderer (DG);
+ * 02-Jun-2004 : Updated the DatasetRenderingOrder class (DG);
+ * 05-Nov-2004 : Renamed getDatasetsMappedToRangeAxis() 
+ *               --> datasetsMappedToRangeAxis(), and ensured that returned 
+ *               list doesn't contain null datasets (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 07-Jan-2005 : Renamed getRangeExtent() --> findRangeBounds() in 
+ *               CategoryItemRenderer (DG);
+ * 04-May-2005 : Fixed serialization of range markers (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 02-Jun-2005 : Added support for domain markers (DG);
+ * 06-Jun-2005 : Fixed equals() method for use with GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 16-Jun-2005 : Added getDomainAxisCount() and getRangeAxisCount() methods, to
+ *               match XYPlot (see RFE 1220495) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 11-Jan-2006 : Added configureRangeAxes() to rendererChanged(), since the
+ *               renderer might influence the axis range (DG);
+ * 27-Jan-2006 : Added various null argument checks (DG);
+ * 18-Aug-2006 : Added getDatasetCount() method, plus a fix for bug drawing 
+ *               category labels, thanks to Adriaan Joubert (1277726) (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 30-Oct-2006 : Added getDomainAxisIndex(), datasetsMappedToDomainAxis() and 
+ *               getCategoriesForAxis() methods (DG);
+ * 22-Nov-2006 : Fire PlotChangeEvent from setColumnRenderingOrder() and
+ *               setRowRenderingOrder() (DG);
+ * 29-Nov-2006 : Fix for bug 1605207 (IntervalMarker exceeds bounds of data 
+ *               area) (DG);
+ * 26-Feb-2007 : Fix for bug 1669218 (setDomainAxisLocation() notify argument
+ *               ignored) (DG);
+ * 13-Mar-2007 : Added null argument checks for setRangeCrosshairPaint() and
+ *               setRangeCrosshairStroke(), fixed clipping for 
+ *               annotations (DG);
+ * 07-Jun-2007 : Override drawBackground() for new GradientPaint handling (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Updated annotation handling (DG);
+ * 10-Jul-2007 : Added getRangeAxisIndex(ValueAxis) method (DG);
+ * 24-Sep-2007 : Implemented new zoom methods (DG);
+ * 25-Oct-2007 : Added some argument checks (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 14-Nov-2007 : Added missing event notifications (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker)
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker, Layer)
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(int, Marker, Layer)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     * 
+     * @see #addRangeMarker(int, Marker, Layer, boolean)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Default constructor.
+     */
+    public CategoryPlot() {
+        this(null, null, null, null);
+    }
+    /**
+     * Creates a new plot.
+     *
+     * @param dataset  the dataset (<code>null</code> permitted).
+     * @param domainAxis  the domain axis (<code>null</code> permitted).
+     * @param rangeAxis  the range axis (<code>null</code> permitted).
+     * @param renderer  the item renderer (<code>null</code> permitted).
+     *
+     */
+    public CategoryPlot(CategoryDataset dataset,
+                        CategoryAxis domainAxis,
+                        ValueAxis rangeAxis,
+                        CategoryItemRenderer renderer) {
+
+        super();
+
+        this.orientation = PlotOrientation.VERTICAL;
+
+        // allocate storage for dataset, axes and renderers
+        this.domainAxes = new ObjectList();
+        this.domainAxisLocations = new ObjectList();
+        this.rangeAxes = new ObjectList();
+        this.rangeAxisLocations = new ObjectList();
+        
+        this.datasetToDomainAxisMap = new ObjectList();
+        this.datasetToRangeAxisMap = new ObjectList();
+
+        this.renderers = new ObjectList();
+
+        this.datasets = new ObjectList();
+        this.datasets.set(0, dataset);
+        if (dataset != null) {
+            dataset.addChangeListener(this);
+        }
+
+        this.axisOffset = new RectangleInsets(4.0, 4.0, 4.0, 4.0);
+
+        setDomainAxisLocation(AxisLocation.BOTTOM_OR_LEFT, false);
+        setRangeAxisLocation(AxisLocation.TOP_OR_LEFT, false);
+
+        this.renderers.set(0, renderer);
+        if (renderer != null) {
+            renderer.setPlot(this);
+            renderer.addChangeListener(this);
+        }
+
+        this.domainAxes.set(0, domainAxis);
+        this.mapDatasetToDomainAxis(0, 0);
+        if (domainAxis != null) {
+            domainAxis.setPlot(this);
+            domainAxis.addChangeListener(this);
+        }
+        this.drawSharedDomainAxis = false;
+
+        this.rangeAxes.set(0, rangeAxis);
+        this.mapDatasetToRangeAxis(0, 0);
+        if (rangeAxis != null) {
+            rangeAxis.setPlot(this);
+            rangeAxis.addChangeListener(this);
+        }
+        
+        configureDomainAxes();
+        configureRangeAxes();
+
+        this.domainGridlinesVisible = DEFAULT_DOMAIN_GRIDLINES_VISIBLE;
+        this.domainGridlinePosition = CategoryAnchor.MIDDLE;
+        this.domainGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.domainGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.rangeGridlinesVisible = DEFAULT_RANGE_GRIDLINES_VISIBLE;
+        this.rangeGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.rangeGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.foregroundDomainMarkers = new HashMap();
+        this.backgroundDomainMarkers = new HashMap();
+        this.foregroundRangeMarkers = new HashMap();
+        this.backgroundRangeMarkers = new HashMap();
+
+        Marker baseline = new ValueMarker(0.0, new Color(0.8f, 0.8f, 0.8f, 
+                0.5f), new BasicStroke(1.0f), new Color(0.85f, 0.85f, 0.95f, 
+                0.5f), new BasicStroke(1.0f), 0.6f);
+        addRangeMarker(baseline, Layer.BACKGROUND);
+
+        this.anchorValue = 0.0;
+
+        this.rangeCrosshairVisible = DEFAULT_CROSSHAIR_VISIBLE;
+        this.rangeCrosshairValue = 0.0;
+        this.rangeCrosshairStroke = DEFAULT_CROSSHAIR_STROKE;
+        this.rangeCrosshairPaint = DEFAULT_CROSSHAIR_PAINT;
+        
+        this.annotations = new java.util.ArrayList();
+
+    }
+}
+
+test_class_path=org/jfree/chart/plot/junit/CategoryPlotTests.java, test_prefix=    public void testRemoveRangeMarker() {
+    	CategoryPlot plot = new CategoryPlot();
+    	_tmp_var_0_ = plot.removeRangeMarker(new ValueMarker(0.5));
+    	$ASSERT$
+    }
+
+Constructing unit test prompt for Chart-14
+unit_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -----------
+ * XYPlot.java
+ * -----------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Craig MacFarlane;
+ *                   Mark Watson (www.markwatson.com);
+ *                   Jonathan Nash;
+ *                   Gideon Krause;
+ *                   Klaus Rheinwald;
+ *                   Xavier Poinsard;
+ *                   Richard Atkinson;
+ *                   Arnaud Lelievre;
+ *                   Nicolas Brodu;
+ *                   Eduardo Ramalho;
+ *                   Sergei Ivanov;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 18-Sep-2001 : Updated header and fixed DOS encoding problem (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 19-Oct-2001 : Removed the code for drawing the visual representation of each
+ *               data point into a separate class StandardXYItemRenderer.
+ *               This will make it easier to add variations to the way the
+ *               charts are drawn.  Based on code contributed by Mark
+ *               Watson (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 20-Nov-2001 : Fixed clipping bug that shows up when chart is displayed
+ *               inside JScrollPane (DG);
+ * 12-Dec-2001 : Removed unnecessary 'throws' clauses from constructor (DG);
+ * 13-Dec-2001 : Added skeleton code for tooltips.  Added new constructor. (DG);
+ * 16-Jan-2002 : Renamed the tooltips class (DG);
+ * 22-Jan-2002 : Added DrawInfo class, incorporating tooltips and crosshairs.
+ *               Crosshairs based on code by Jonathan Nash (DG);
+ * 05-Feb-2002 : Added alpha-transparency setting based on code by Sylvain
+ *               Vieujot (DG);
+ * 26-Feb-2002 : Updated getMinimumXXX() and getMaximumXXX() methods to handle
+ *               special case when chart is null (DG);
+ * 28-Feb-2002 : Renamed Datasets.java --> DatasetUtilities.java (DG);
+ * 28-Mar-2002 : The plot now registers with the renderer as a property change
+ *               listener.  Also added a new constructor (DG);
+ * 09-Apr-2002 : Removed the transRangeZero from the renderer.drawItem()
+ *               method.  Moved the tooltip generator into the renderer (DG);
+ * 23-Apr-2002 : Fixed bug in methods for drawing horizontal and vertical
+ *               lines (DG);
+ * 13-May-2002 : Small change to the draw() method so that it works for
+ *               OverlaidXYPlot also (DG);
+ * 25-Jun-2002 : Removed redundant import (DG);
+ * 20-Aug-2002 : Renamed getItemRenderer() --> getRenderer(), and
+ *               setXYItemRenderer() --> setRenderer() (DG);
+ * 28-Aug-2002 : Added mechanism for (optional) plot annotations (DG);
+ * 02-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 09-Jan-2003 : Further additions to the grid settings, plus integrated plot
+ *               border bug fix contributed by Gideon Krause (DG);
+ * 22-Jan-2003 : Removed monolithic constructor (DG);
+ * 04-Mar-2003 : Added 'no data' message, see bug report 691634.  Added
+ *               secondary range markers using code contributed by Klaus
+ *               Rheinwald (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 03-Apr-2003 : Added setDomainAxisLocation() method (DG);
+ * 30-Apr-2003 : Moved annotation drawing into a separate method (DG);
+ * 01-May-2003 : Added multi-pass mechanism for renderers (DG);
+ * 02-May-2003 : Changed axis locations from int to AxisLocation (DG);
+ * 15-May-2003 : Added an orientation attribute (DG);
+ * 02-Jun-2003 : Removed range axis compatibility test (DG);
+ * 05-Jun-2003 : Added domain and range grid bands (sponsored by Focus Computer
+ *               Services Ltd) (DG);
+ * 26-Jun-2003 : Fixed bug (757303) in getDataRange() method (DG);
+ * 02-Jul-2003 : Added patch from bug report 698646 (secondary axes for
+ *               overlaid plots) (DG);
+ * 23-Jul-2003 : Added support for multiple secondary datasets, axes and
+ *               renderers (DG);
+ * 27-Jul-2003 : Added support for stacked XY area charts (RA);
+ * 19-Aug-2003 : Implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug where change to secondary datasets didn't generate
+ *               change event (797466) (DG)
+ * 08-Sep-2003 : Added internationalization via use of properties
+ *               resourceBundle (RFE 690236) (AL);
+ * 08-Sep-2003 : Changed ValueAxis API (DG);
+ * 08-Sep-2003 : Fixes for serialization (NB);
+ * 16-Sep-2003 : Changed ChartRenderingInfo --> PlotRenderingInfo (DG);
+ * 17-Sep-2003 : Fixed zooming to include secondary domain axes (DG);
+ * 18-Sep-2003 : Added getSecondaryDomainAxisCount() and
+ *               getSecondaryRangeAxisCount() methods suggested by Eduardo
+ *               Ramalho (RFE 808548) (DG);
+ * 23-Sep-2003 : Split domain and range markers into foreground and
+ *               background (DG);
+ * 06-Oct-2003 : Fixed bug in clearDomainMarkers() and clearRangeMarkers()
+ *               methods.  Fixed bug (815876) in addSecondaryRangeMarker()
+ *               method.  Added new addSecondaryDomainMarker methods (see bug
+ *               id 815869) (DG);
+ * 10-Nov-2003 : Added getSecondaryDomain/RangeAxisMappedToDataset() methods
+ *               requested by Eduardo Ramalho (DG);
+ * 24-Nov-2003 : Removed unnecessary notification when updating axis anchor
+ *               values (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 25-Feb-2004 : Replaced CrosshairInfo with CrosshairState (DG);
+ * 12-Mar-2004 : Fixed bug where primary renderer is always used to determine
+ *               range type (DG);
+ * 22-Mar-2004 : Fixed cloning bug (DG);
+ * 23-Mar-2004 : Fixed more cloning bugs (DG);
+ * 07-Apr-2004 : Fixed problem with axis range when the secondary renderer is
+ *               stacked, see this post in the forum:
+ *               http://www.jfree.org/phpBB2/viewtopic.php?t=8204 (DG);
+ * 07-Apr-2004 : Added get/setDatasetRenderingOrder() methods (DG);
+ * 26-Apr-2004 : Added option to fill quadrant areas in the background of the
+ *               plot (DG);
+ * 27-Apr-2004 : Removed major distinction between primary and secondary
+ *               datasets, renderers and axes (DG);
+ * 30-Apr-2004 : Modified to make use of the new getRangeExtent() method in the
+ *               renderer interface (DG);
+ * 13-May-2004 : Added optional fixedLegendItems attribute (DG);
+ * 19-May-2004 : Added indexOf() method (DG);
+ * 03-Jun-2004 : Fixed zooming bug (DG);
+ * 18-Aug-2004 : Added removedAnnotation() method (by tkram01) (DG);
+ * 05-Oct-2004 : Modified storage type for dataset-to-axis maps (DG);
+ * 06-Oct-2004 : Modified getDataRange() method to use renderer to determine
+ *               the x-value range (now matches behaviour for y-values).  Added
+ *               getDomainAxisIndex() method (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 25-Nov-2004 : Small update to clone() implementation (DG);
+ * 22-Feb-2005 : Changed axis offsets from Spacer --> RectangleInsets (DG);
+ * 24-Feb-2005 : Added indexOf(XYItemRenderer) method (DG);
+ * 21-Mar-2005 : Register plot as change listener in setRenderer() method (DG);
+ * 21-Apr-2005 : Added get/setSeriesRenderingOrder() methods (ET);
+ * 26-Apr-2005 : Removed LOGGER (DG);
+ * 04-May-2005 : Fixed serialization of domain and range markers (DG);
+ * 05-May-2005 : Removed unused draw() method (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 01-Jun-2005 : Added clearDomainMarkers(int) method to match 
+ *               clearRangeMarkers(int) (DG);
+ * 06-Jun-2005 : Fixed equals() method to handle GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 06-Jul-2005 : Fixed crosshair bug (id = 1233336) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 26-Jan-2006 : Added getAnnotations() method (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 13-Oct-2006 : Fixed initialisation of CrosshairState - see bug report 
+ *               1565168 (DG);
+ * 22-Nov-2006 : Fixed equals() and cloning() for quadrant attributes, plus 
+ *               API doc updates (DG);
+ * 29-Nov-2006 : Added argument checks (DG);
+ * 15-Jan-2007 : Fixed bug in drawRangeMarkers() (DG);
+ * 07-Feb-2007 : Fixed bug 1654215, renderer with no dataset (DG);
+ * 26-Feb-2007 : Added missing setDomainAxisLocation() and 
+ *               setRangeAxisLocation() methods (DG);
+ * 02-Mar-2007 : Fix for crosshair positioning with horizontal orientation
+ *               (see patch 1671648 by Sergei Ivanov) (DG);
+ * 13-Mar-2007 : Added null argument checks for crosshair attributes (DG);
+ * 23-Mar-2007 : Added domain zero base line facility (DG);
+ * 04-May-2007 : Render only visible data items if possible (DG);
+ * 24-May-2007 : Fixed bug in render method for an empty series (DG);
+ * 07-Jun-2007 : Modified drawBackground() to pass orientation to 
+ *               fillBackground() for handling GradientPaint (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 27-Jun-2007 : Updated drawDomainGridlines() method for renamed method in
+ *               XYItemRenderer interface.
+ * 24-Sep-2007 : Added new zoom methods (DG);
+ * 26-Sep-2007 : Include index value in IllegalArgumentExceptions (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 12-Nov-2007 : Fixed bug in equals() method for domain and range tick
+ *               band paint attributes (DG);
+ * 27-Nov-2007 : Added new setFixedDomain/RangeAxisSpace() methods (DG);
+ * 04-Jan-2008 : Fix for quadrant painting error - see patch 1849564 (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.XYDataset;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+        RendererChangeListener, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxisMap;
+    private Map datasetToRangeAxisMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------
+ * CategoryPlot.java
+ * -----------------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Jeremy Bowman;
+ *                   Arnaud Lelievre;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 21-Aug-2001 : Added standard header. Fixed DOS encoding problem (DG);
+ * 18-Sep-2001 : Updated header (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 23-Oct-2001 : Changed intro and trail gaps on bar plots to use percentage of 
+ *               available space rather than a fixed number of units (DG);
+ * 12-Dec-2001 : Changed constructors to protected (DG);
+ * 13-Dec-2001 : Added tooltips (DG);
+ * 16-Jan-2002 : Increased maximum intro and trail gap percents, plus added 
+ *               some argument checking code.  Thanks to Taoufik Romdhane for 
+ *               suggesting this (DG);
+ * 05-Feb-2002 : Added accessor methods for the tooltip generator, incorporated
+ *               alpha-transparency for Plot and subclasses (DG);
+ * 06-Mar-2002 : Updated import statements (DG);
+ * 14-Mar-2002 : Renamed BarPlot.java --> CategoryPlot.java, and changed code 
+ *               to use the CategoryItemRenderer interface (DG);
+ * 22-Mar-2002 : Dropped the getCategories() method (DG);
+ * 23-Apr-2002 : Moved the dataset from the JFreeChart class to the Plot 
+ *               class (DG);
+ * 29-Apr-2002 : New methods to support printing values at the end of bars, 
+ *               contributed by Jeremy Bowman (DG);
+ * 11-May-2002 : New methods for label visibility and overlaid plot support, 
+ *               contributed by Jeremy Bowman (DG);
+ * 06-Jun-2002 : Removed the tooltip generator, this is now stored with the 
+ *               renderer.  Moved constants into the CategoryPlotConstants 
+ *               interface.  Updated Javadoc comments (DG);
+ * 10-Jun-2002 : Overridden datasetChanged() method to update the upper and 
+ *               lower bound on the range axis (if necessary), updated 
+ *               Javadocs (DG);
+ * 25-Jun-2002 : Removed redundant imports (DG);
+ * 20-Aug-2002 : Changed the constructor for Marker (DG);
+ * 28-Aug-2002 : Added listener notification to setDomainAxis() and 
+ *               setRangeAxis() (DG);
+ * 23-Sep-2002 : Added getLegendItems() method and fixed errors reported by 
+ *               Checkstyle (DG);
+ * 28-Oct-2002 : Changes to the CategoryDataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 07-Nov-2002 : Renamed labelXXX as valueLabelXXX (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 19-Nov-2002 : Added axis location parameters to constructor (DG);
+ * 17-Jan-2003 : Moved to com.jrefinery.chart.plot package (DG);
+ * 14-Feb-2003 : Fixed bug in auto-range calculation for secondary axis (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 02-May-2003 : Moved render() method up from subclasses. Added secondary 
+ *               range markers. Added an attribute to control the dataset 
+ *               rendering order.  Added a drawAnnotations() method.  Changed 
+ *               the axis location from an int to an AxisLocation (DG);
+ * 07-May-2003 : Merged HorizontalCategoryPlot and VerticalCategoryPlot into 
+ *               this class (DG);
+ * 02-Jun-2003 : Removed check for range axis compatibility (DG);
+ * 04-Jul-2003 : Added a domain gridline position attribute (DG);
+ * 21-Jul-2003 : Moved DrawingSupplier to Plot superclass (DG);
+ * 19-Aug-2003 : Added equals() method and implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug 797466 (no change event when secondary dataset 
+ *               changes) (DG);
+ * 02-Sep-2003 : Fixed bug 795209 (wrong dataset checked in render2 method) and
+ *               790407 (initialise method) (DG);
+ * 08-Sep-2003 : Added internationalization via use of properties 
+ *               resourceBundle (RFE 690236) (AL); 
+ * 08-Sep-2003 : Fixed bug (wrong secondary range axis being used).  Changed 
+ *               ValueAxis API (DG);
+ * 10-Sep-2003 : Fixed bug in setRangeAxis() method (DG);
+ * 15-Sep-2003 : Fixed two bugs in serialization, implemented 
+ *               PublicCloneable (DG);
+ * 23-Oct-2003 : Added event notification for changes to renderer (DG);
+ * 26-Nov-2003 : Fixed bug (849645) in clearRangeMarkers() method (DG);
+ * 03-Dec-2003 : Modified draw method to accept anchor (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 10-Mar-2004 : Fixed bug in axis range calculation when secondary renderer is
+ *               stacked (DG);
+ * 12-May-2004 : Added fixed legend items (DG);
+ * 19-May-2004 : Added check for null legend item from renderer (DG);
+ * 02-Jun-2004 : Updated the DatasetRenderingOrder class (DG);
+ * 05-Nov-2004 : Renamed getDatasetsMappedToRangeAxis() 
+ *               --> datasetsMappedToRangeAxis(), and ensured that returned 
+ *               list doesn't contain null datasets (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 07-Jan-2005 : Renamed getRangeExtent() --> findRangeBounds() in 
+ *               CategoryItemRenderer (DG);
+ * 04-May-2005 : Fixed serialization of range markers (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 02-Jun-2005 : Added support for domain markers (DG);
+ * 06-Jun-2005 : Fixed equals() method for use with GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 16-Jun-2005 : Added getDomainAxisCount() and getRangeAxisCount() methods, to
+ *               match XYPlot (see RFE 1220495) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 11-Jan-2006 : Added configureRangeAxes() to rendererChanged(), since the
+ *               renderer might influence the axis range (DG);
+ * 27-Jan-2006 : Added various null argument checks (DG);
+ * 18-Aug-2006 : Added getDatasetCount() method, plus a fix for bug drawing 
+ *               category labels, thanks to Adriaan Joubert (1277726) (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 30-Oct-2006 : Added getDomainAxisIndex(), datasetsMappedToDomainAxis() and 
+ *               getCategoriesForAxis() methods (DG);
+ * 22-Nov-2006 : Fire PlotChangeEvent from setColumnRenderingOrder() and
+ *               setRowRenderingOrder() (DG);
+ * 29-Nov-2006 : Fix for bug 1605207 (IntervalMarker exceeds bounds of data 
+ *               area) (DG);
+ * 26-Feb-2007 : Fix for bug 1669218 (setDomainAxisLocation() notify argument
+ *               ignored) (DG);
+ * 13-Mar-2007 : Added null argument checks for setRangeCrosshairPaint() and
+ *               setRangeCrosshairStroke(), fixed clipping for 
+ *               annotations (DG);
+ * 07-Jun-2007 : Override drawBackground() for new GradientPaint handling (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Updated annotation handling (DG);
+ * 10-Jul-2007 : Added getRangeAxisIndex(ValueAxis) method (DG);
+ * 24-Sep-2007 : Implemented new zoom methods (DG);
+ * 25-Oct-2007 : Added some argument checks (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 14-Nov-2007 : Added missing event notifications (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker)
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(int, Marker, Layer)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker, Layer)
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     * 
+     * @see #addRangeMarker(int, Marker, Layer, boolean)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-14 unit test
+Invoke failed:This model's maximum context length is 4097 tokens. However, your messages resulted in 8859 tokens. Please reduce the length of the messages.
+Fail to invoke LLM(gpt-3.5-turbo for unit test)
+Finished invoking LLM(gpt-3.5-turbo) for Chart-14 unit test
+Constructing oracle test prompt for Chart-14
+oracle_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -----------
+ * XYPlot.java
+ * -----------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Craig MacFarlane;
+ *                   Mark Watson (www.markwatson.com);
+ *                   Jonathan Nash;
+ *                   Gideon Krause;
+ *                   Klaus Rheinwald;
+ *                   Xavier Poinsard;
+ *                   Richard Atkinson;
+ *                   Arnaud Lelievre;
+ *                   Nicolas Brodu;
+ *                   Eduardo Ramalho;
+ *                   Sergei Ivanov;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 18-Sep-2001 : Updated header and fixed DOS encoding problem (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 19-Oct-2001 : Removed the code for drawing the visual representation of each
+ *               data point into a separate class StandardXYItemRenderer.
+ *               This will make it easier to add variations to the way the
+ *               charts are drawn.  Based on code contributed by Mark
+ *               Watson (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 20-Nov-2001 : Fixed clipping bug that shows up when chart is displayed
+ *               inside JScrollPane (DG);
+ * 12-Dec-2001 : Removed unnecessary 'throws' clauses from constructor (DG);
+ * 13-Dec-2001 : Added skeleton code for tooltips.  Added new constructor. (DG);
+ * 16-Jan-2002 : Renamed the tooltips class (DG);
+ * 22-Jan-2002 : Added DrawInfo class, incorporating tooltips and crosshairs.
+ *               Crosshairs based on code by Jonathan Nash (DG);
+ * 05-Feb-2002 : Added alpha-transparency setting based on code by Sylvain
+ *               Vieujot (DG);
+ * 26-Feb-2002 : Updated getMinimumXXX() and getMaximumXXX() methods to handle
+ *               special case when chart is null (DG);
+ * 28-Feb-2002 : Renamed Datasets.java --> DatasetUtilities.java (DG);
+ * 28-Mar-2002 : The plot now registers with the renderer as a property change
+ *               listener.  Also added a new constructor (DG);
+ * 09-Apr-2002 : Removed the transRangeZero from the renderer.drawItem()
+ *               method.  Moved the tooltip generator into the renderer (DG);
+ * 23-Apr-2002 : Fixed bug in methods for drawing horizontal and vertical
+ *               lines (DG);
+ * 13-May-2002 : Small change to the draw() method so that it works for
+ *               OverlaidXYPlot also (DG);
+ * 25-Jun-2002 : Removed redundant import (DG);
+ * 20-Aug-2002 : Renamed getItemRenderer() --> getRenderer(), and
+ *               setXYItemRenderer() --> setRenderer() (DG);
+ * 28-Aug-2002 : Added mechanism for (optional) plot annotations (DG);
+ * 02-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 09-Jan-2003 : Further additions to the grid settings, plus integrated plot
+ *               border bug fix contributed by Gideon Krause (DG);
+ * 22-Jan-2003 : Removed monolithic constructor (DG);
+ * 04-Mar-2003 : Added 'no data' message, see bug report 691634.  Added
+ *               secondary range markers using code contributed by Klaus
+ *               Rheinwald (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 03-Apr-2003 : Added setDomainAxisLocation() method (DG);
+ * 30-Apr-2003 : Moved annotation drawing into a separate method (DG);
+ * 01-May-2003 : Added multi-pass mechanism for renderers (DG);
+ * 02-May-2003 : Changed axis locations from int to AxisLocation (DG);
+ * 15-May-2003 : Added an orientation attribute (DG);
+ * 02-Jun-2003 : Removed range axis compatibility test (DG);
+ * 05-Jun-2003 : Added domain and range grid bands (sponsored by Focus Computer
+ *               Services Ltd) (DG);
+ * 26-Jun-2003 : Fixed bug (757303) in getDataRange() method (DG);
+ * 02-Jul-2003 : Added patch from bug report 698646 (secondary axes for
+ *               overlaid plots) (DG);
+ * 23-Jul-2003 : Added support for multiple secondary datasets, axes and
+ *               renderers (DG);
+ * 27-Jul-2003 : Added support for stacked XY area charts (RA);
+ * 19-Aug-2003 : Implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug where change to secondary datasets didn't generate
+ *               change event (797466) (DG)
+ * 08-Sep-2003 : Added internationalization via use of properties
+ *               resourceBundle (RFE 690236) (AL);
+ * 08-Sep-2003 : Changed ValueAxis API (DG);
+ * 08-Sep-2003 : Fixes for serialization (NB);
+ * 16-Sep-2003 : Changed ChartRenderingInfo --> PlotRenderingInfo (DG);
+ * 17-Sep-2003 : Fixed zooming to include secondary domain axes (DG);
+ * 18-Sep-2003 : Added getSecondaryDomainAxisCount() and
+ *               getSecondaryRangeAxisCount() methods suggested by Eduardo
+ *               Ramalho (RFE 808548) (DG);
+ * 23-Sep-2003 : Split domain and range markers into foreground and
+ *               background (DG);
+ * 06-Oct-2003 : Fixed bug in clearDomainMarkers() and clearRangeMarkers()
+ *               methods.  Fixed bug (815876) in addSecondaryRangeMarker()
+ *               method.  Added new addSecondaryDomainMarker methods (see bug
+ *               id 815869) (DG);
+ * 10-Nov-2003 : Added getSecondaryDomain/RangeAxisMappedToDataset() methods
+ *               requested by Eduardo Ramalho (DG);
+ * 24-Nov-2003 : Removed unnecessary notification when updating axis anchor
+ *               values (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 25-Feb-2004 : Replaced CrosshairInfo with CrosshairState (DG);
+ * 12-Mar-2004 : Fixed bug where primary renderer is always used to determine
+ *               range type (DG);
+ * 22-Mar-2004 : Fixed cloning bug (DG);
+ * 23-Mar-2004 : Fixed more cloning bugs (DG);
+ * 07-Apr-2004 : Fixed problem with axis range when the secondary renderer is
+ *               stacked, see this post in the forum:
+ *               http://www.jfree.org/phpBB2/viewtopic.php?t=8204 (DG);
+ * 07-Apr-2004 : Added get/setDatasetRenderingOrder() methods (DG);
+ * 26-Apr-2004 : Added option to fill quadrant areas in the background of the
+ *               plot (DG);
+ * 27-Apr-2004 : Removed major distinction between primary and secondary
+ *               datasets, renderers and axes (DG);
+ * 30-Apr-2004 : Modified to make use of the new getRangeExtent() method in the
+ *               renderer interface (DG);
+ * 13-May-2004 : Added optional fixedLegendItems attribute (DG);
+ * 19-May-2004 : Added indexOf() method (DG);
+ * 03-Jun-2004 : Fixed zooming bug (DG);
+ * 18-Aug-2004 : Added removedAnnotation() method (by tkram01) (DG);
+ * 05-Oct-2004 : Modified storage type for dataset-to-axis maps (DG);
+ * 06-Oct-2004 : Modified getDataRange() method to use renderer to determine
+ *               the x-value range (now matches behaviour for y-values).  Added
+ *               getDomainAxisIndex() method (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 25-Nov-2004 : Small update to clone() implementation (DG);
+ * 22-Feb-2005 : Changed axis offsets from Spacer --> RectangleInsets (DG);
+ * 24-Feb-2005 : Added indexOf(XYItemRenderer) method (DG);
+ * 21-Mar-2005 : Register plot as change listener in setRenderer() method (DG);
+ * 21-Apr-2005 : Added get/setSeriesRenderingOrder() methods (ET);
+ * 26-Apr-2005 : Removed LOGGER (DG);
+ * 04-May-2005 : Fixed serialization of domain and range markers (DG);
+ * 05-May-2005 : Removed unused draw() method (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 01-Jun-2005 : Added clearDomainMarkers(int) method to match 
+ *               clearRangeMarkers(int) (DG);
+ * 06-Jun-2005 : Fixed equals() method to handle GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 06-Jul-2005 : Fixed crosshair bug (id = 1233336) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 26-Jan-2006 : Added getAnnotations() method (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 13-Oct-2006 : Fixed initialisation of CrosshairState - see bug report 
+ *               1565168 (DG);
+ * 22-Nov-2006 : Fixed equals() and cloning() for quadrant attributes, plus 
+ *               API doc updates (DG);
+ * 29-Nov-2006 : Added argument checks (DG);
+ * 15-Jan-2007 : Fixed bug in drawRangeMarkers() (DG);
+ * 07-Feb-2007 : Fixed bug 1654215, renderer with no dataset (DG);
+ * 26-Feb-2007 : Added missing setDomainAxisLocation() and 
+ *               setRangeAxisLocation() methods (DG);
+ * 02-Mar-2007 : Fix for crosshair positioning with horizontal orientation
+ *               (see patch 1671648 by Sergei Ivanov) (DG);
+ * 13-Mar-2007 : Added null argument checks for crosshair attributes (DG);
+ * 23-Mar-2007 : Added domain zero base line facility (DG);
+ * 04-May-2007 : Render only visible data items if possible (DG);
+ * 24-May-2007 : Fixed bug in render method for an empty series (DG);
+ * 07-Jun-2007 : Modified drawBackground() to pass orientation to 
+ *               fillBackground() for handling GradientPaint (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 27-Jun-2007 : Updated drawDomainGridlines() method for renamed method in
+ *               XYItemRenderer interface.
+ * 24-Sep-2007 : Added new zoom methods (DG);
+ * 26-Sep-2007 : Include index value in IllegalArgumentExceptions (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 12-Nov-2007 : Fixed bug in equals() method for domain and range tick
+ *               band paint attributes (DG);
+ * 27-Nov-2007 : Added new setFixedDomain/RangeAxisSpace() methods (DG);
+ * 04-Jan-2008 : Fix for quadrant painting error - see patch 1849564 (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.XYDataset;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+        RendererChangeListener, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxisMap;
+    private Map datasetToRangeAxisMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------
+ * CategoryPlot.java
+ * -----------------
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Jeremy Bowman;
+ *                   Arnaud Lelievre;
+ *                   Richard West, Advanced Micro Devices, Inc.;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 21-Aug-2001 : Added standard header. Fixed DOS encoding problem (DG);
+ * 18-Sep-2001 : Updated header (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 23-Oct-2001 : Changed intro and trail gaps on bar plots to use percentage of 
+ *               available space rather than a fixed number of units (DG);
+ * 12-Dec-2001 : Changed constructors to protected (DG);
+ * 13-Dec-2001 : Added tooltips (DG);
+ * 16-Jan-2002 : Increased maximum intro and trail gap percents, plus added 
+ *               some argument checking code.  Thanks to Taoufik Romdhane for 
+ *               suggesting this (DG);
+ * 05-Feb-2002 : Added accessor methods for the tooltip generator, incorporated
+ *               alpha-transparency for Plot and subclasses (DG);
+ * 06-Mar-2002 : Updated import statements (DG);
+ * 14-Mar-2002 : Renamed BarPlot.java --> CategoryPlot.java, and changed code 
+ *               to use the CategoryItemRenderer interface (DG);
+ * 22-Mar-2002 : Dropped the getCategories() method (DG);
+ * 23-Apr-2002 : Moved the dataset from the JFreeChart class to the Plot 
+ *               class (DG);
+ * 29-Apr-2002 : New methods to support printing values at the end of bars, 
+ *               contributed by Jeremy Bowman (DG);
+ * 11-May-2002 : New methods for label visibility and overlaid plot support, 
+ *               contributed by Jeremy Bowman (DG);
+ * 06-Jun-2002 : Removed the tooltip generator, this is now stored with the 
+ *               renderer.  Moved constants into the CategoryPlotConstants 
+ *               interface.  Updated Javadoc comments (DG);
+ * 10-Jun-2002 : Overridden datasetChanged() method to update the upper and 
+ *               lower bound on the range axis (if necessary), updated 
+ *               Javadocs (DG);
+ * 25-Jun-2002 : Removed redundant imports (DG);
+ * 20-Aug-2002 : Changed the constructor for Marker (DG);
+ * 28-Aug-2002 : Added listener notification to setDomainAxis() and 
+ *               setRangeAxis() (DG);
+ * 23-Sep-2002 : Added getLegendItems() method and fixed errors reported by 
+ *               Checkstyle (DG);
+ * 28-Oct-2002 : Changes to the CategoryDataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 07-Nov-2002 : Renamed labelXXX as valueLabelXXX (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 19-Nov-2002 : Added axis location parameters to constructor (DG);
+ * 17-Jan-2003 : Moved to com.jrefinery.chart.plot package (DG);
+ * 14-Feb-2003 : Fixed bug in auto-range calculation for secondary axis (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 02-May-2003 : Moved render() method up from subclasses. Added secondary 
+ *               range markers. Added an attribute to control the dataset 
+ *               rendering order.  Added a drawAnnotations() method.  Changed 
+ *               the axis location from an int to an AxisLocation (DG);
+ * 07-May-2003 : Merged HorizontalCategoryPlot and VerticalCategoryPlot into 
+ *               this class (DG);
+ * 02-Jun-2003 : Removed check for range axis compatibility (DG);
+ * 04-Jul-2003 : Added a domain gridline position attribute (DG);
+ * 21-Jul-2003 : Moved DrawingSupplier to Plot superclass (DG);
+ * 19-Aug-2003 : Added equals() method and implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug 797466 (no change event when secondary dataset 
+ *               changes) (DG);
+ * 02-Sep-2003 : Fixed bug 795209 (wrong dataset checked in render2 method) and
+ *               790407 (initialise method) (DG);
+ * 08-Sep-2003 : Added internationalization via use of properties 
+ *               resourceBundle (RFE 690236) (AL); 
+ * 08-Sep-2003 : Fixed bug (wrong secondary range axis being used).  Changed 
+ *               ValueAxis API (DG);
+ * 10-Sep-2003 : Fixed bug in setRangeAxis() method (DG);
+ * 15-Sep-2003 : Fixed two bugs in serialization, implemented 
+ *               PublicCloneable (DG);
+ * 23-Oct-2003 : Added event notification for changes to renderer (DG);
+ * 26-Nov-2003 : Fixed bug (849645) in clearRangeMarkers() method (DG);
+ * 03-Dec-2003 : Modified draw method to accept anchor (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 10-Mar-2004 : Fixed bug in axis range calculation when secondary renderer is
+ *               stacked (DG);
+ * 12-May-2004 : Added fixed legend items (DG);
+ * 19-May-2004 : Added check for null legend item from renderer (DG);
+ * 02-Jun-2004 : Updated the DatasetRenderingOrder class (DG);
+ * 05-Nov-2004 : Renamed getDatasetsMappedToRangeAxis() 
+ *               --> datasetsMappedToRangeAxis(), and ensured that returned 
+ *               list doesn't contain null datasets (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 07-Jan-2005 : Renamed getRangeExtent() --> findRangeBounds() in 
+ *               CategoryItemRenderer (DG);
+ * 04-May-2005 : Fixed serialization of range markers (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 02-Jun-2005 : Added support for domain markers (DG);
+ * 06-Jun-2005 : Fixed equals() method for use with GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 16-Jun-2005 : Added getDomainAxisCount() and getRangeAxisCount() methods, to
+ *               match XYPlot (see RFE 1220495) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 11-Jan-2006 : Added configureRangeAxes() to rendererChanged(), since the
+ *               renderer might influence the axis range (DG);
+ * 27-Jan-2006 : Added various null argument checks (DG);
+ * 18-Aug-2006 : Added getDatasetCount() method, plus a fix for bug drawing 
+ *               category labels, thanks to Adriaan Joubert (1277726) (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 30-Oct-2006 : Added getDomainAxisIndex(), datasetsMappedToDomainAxis() and 
+ *               getCategoriesForAxis() methods (DG);
+ * 22-Nov-2006 : Fire PlotChangeEvent from setColumnRenderingOrder() and
+ *               setRowRenderingOrder() (DG);
+ * 29-Nov-2006 : Fix for bug 1605207 (IntervalMarker exceeds bounds of data 
+ *               area) (DG);
+ * 26-Feb-2007 : Fix for bug 1669218 (setDomainAxisLocation() notify argument
+ *               ignored) (DG);
+ * 13-Mar-2007 : Added null argument checks for setRangeCrosshairPaint() and
+ *               setRangeCrosshairStroke(), fixed clipping for 
+ *               annotations (DG);
+ * 07-Jun-2007 : Override drawBackground() for new GradientPaint handling (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Updated annotation handling (DG);
+ * 10-Jul-2007 : Added getRangeAxisIndex(ValueAxis) method (DG);
+ * 24-Sep-2007 : Implemented new zoom methods (DG);
+ * 25-Oct-2007 : Added some argument checks (DG);
+ * 05-Nov-2007 : Applied patch 1823697, by Richard West, for removal of domain
+ *               and range markers (DG);
+ * 14-Nov-2007 : Added missing event notifications (DG);
+ * 25-Mar-2008 : Added new methods with optional notification - see patch
+ *               1913751 (DG);
+ * 07-Apr-2008 : Fixed NPE in removeDomainMarker() and 
+ *               removeRangeMarker() (DG);
+ * 
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for the range axis and sends a {@link PlotChangeEvent} 
+     * to all registered listeners.
+     *
+     * @param marker the marker.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker)
+     */
+    public boolean removeRangeMarker(Marker marker) {
+        return removeRangeMarker(marker, Layer.FOREGROUND);
+    }
+    /**
+     * Removes a marker for the range axis in the specified layer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param marker the marker (<code>null</code> not permitted).
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(Marker, Layer)
+     */
+    public boolean removeRangeMarker(Marker marker, Layer layer) {
+        return removeRangeMarker(0, marker, layer);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.7
+     * 
+     * @see #addRangeMarker(int, Marker, Layer)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer) {
+    	return removeRangeMarker(index, marker, layer, true);
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     * 
+     * @see #addRangeMarker(int, Marker, Layer, boolean)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Default constructor.
+     */
+    public CategoryPlot() {
+        this(null, null, null, null);
+    }
+    /**
+     * Creates a new plot.
+     *
+     * @param dataset  the dataset (<code>null</code> permitted).
+     * @param domainAxis  the domain axis (<code>null</code> permitted).
+     * @param rangeAxis  the range axis (<code>null</code> permitted).
+     * @param renderer  the item renderer (<code>null</code> permitted).
+     *
+     */
+    public CategoryPlot(CategoryDataset dataset,
+                        CategoryAxis domainAxis,
+                        ValueAxis rangeAxis,
+                        CategoryItemRenderer renderer) {
+
+        super();
+
+        this.orientation = PlotOrientation.VERTICAL;
+
+        // allocate storage for dataset, axes and renderers
+        this.domainAxes = new ObjectList();
+        this.domainAxisLocations = new ObjectList();
+        this.rangeAxes = new ObjectList();
+        this.rangeAxisLocations = new ObjectList();
+        
+        this.datasetToDomainAxisMap = new ObjectList();
+        this.datasetToRangeAxisMap = new ObjectList();
+
+        this.renderers = new ObjectList();
+
+        this.datasets = new ObjectList();
+        this.datasets.set(0, dataset);
+        if (dataset != null) {
+            dataset.addChangeListener(this);
+        }
+
+        this.axisOffset = new RectangleInsets(4.0, 4.0, 4.0, 4.0);
+
+        setDomainAxisLocation(AxisLocation.BOTTOM_OR_LEFT, false);
+        setRangeAxisLocation(AxisLocation.TOP_OR_LEFT, false);
+
+        this.renderers.set(0, renderer);
+        if (renderer != null) {
+            renderer.setPlot(this);
+            renderer.addChangeListener(this);
+        }
+
+        this.domainAxes.set(0, domainAxis);
+        this.mapDatasetToDomainAxis(0, 0);
+        if (domainAxis != null) {
+            domainAxis.setPlot(this);
+            domainAxis.addChangeListener(this);
+        }
+        this.drawSharedDomainAxis = false;
+
+        this.rangeAxes.set(0, rangeAxis);
+        this.mapDatasetToRangeAxis(0, 0);
+        if (rangeAxis != null) {
+            rangeAxis.setPlot(this);
+            rangeAxis.addChangeListener(this);
+        }
+        
+        configureDomainAxes();
+        configureRangeAxes();
+
+        this.domainGridlinesVisible = DEFAULT_DOMAIN_GRIDLINES_VISIBLE;
+        this.domainGridlinePosition = CategoryAnchor.MIDDLE;
+        this.domainGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.domainGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.rangeGridlinesVisible = DEFAULT_RANGE_GRIDLINES_VISIBLE;
+        this.rangeGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.rangeGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.foregroundDomainMarkers = new HashMap();
+        this.backgroundDomainMarkers = new HashMap();
+        this.foregroundRangeMarkers = new HashMap();
+        this.backgroundRangeMarkers = new HashMap();
+
+        Marker baseline = new ValueMarker(0.0, new Color(0.8f, 0.8f, 0.8f, 
+                0.5f), new BasicStroke(1.0f), new Color(0.85f, 0.85f, 0.95f, 
+                0.5f), new BasicStroke(1.0f), 0.6f);
+        addRangeMarker(baseline, Layer.BACKGROUND);
+
+        this.anchorValue = 0.0;
+
+        this.rangeCrosshairVisible = DEFAULT_CROSSHAIR_VISIBLE;
+        this.rangeCrosshairValue = 0.0;
+        this.rangeCrosshairStroke = DEFAULT_CROSSHAIR_STROKE;
+        this.rangeCrosshairPaint = DEFAULT_CROSSHAIR_PAINT;
+        
+        this.annotations = new java.util.ArrayList();
+
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testRemoveRangeMarker() {
+    	CategoryPlot plot = new CategoryPlot();
+    	_tmp_var_0_ = plot.removeRangeMarker(new ValueMarker(0.5));
+    	$ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-14 oracle test
+Invoke failed:This model's maximum context length is 4097 tokens. However, your messages resulted in 9351 tokens. Please reduce the length of the messages.
+Fail to invoke LLM(gpt-3.5-turbo for oracle test)
+Finished invoking LLM(gpt-3.5-turbo) for Chart-14 oracle test
+unit_res_in_bug=Invoke LLM failed,unit_res_in_fix=Invoke LLM failed,oracle_res_in_bug=Invoke LLM failed,oracle_res_in_fix=Invoke LLM failed

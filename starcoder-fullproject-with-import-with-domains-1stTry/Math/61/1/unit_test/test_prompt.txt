@@ -1,0 +1,44 @@
+package org.apache.commons.math.distribution;
+import java.io.Serializable;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.special.Gamma;
+import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math.util.FastMath;
+/**
+ * Implementation for the {@link PoissonDistribution}.
+ *
+ * @version $Revision$ $Date$
+ */
+public class PoissonDistributionImpl extends AbstractIntegerDistribution
+        implements PoissonDistribution, Serializable {
+    public static final int DEFAULT_MAX_ITERATIONS = 10000000;
+    public static final double DEFAULT_EPSILON = 1E-12;
+    private static final long serialVersionUID = -3349935121172596109L;
+    private NormalDistribution normal;
+    private double mean;
+    private int maxIterations = DEFAULT_MAX_ITERATIONS;
+    private double epsilon = DEFAULT_EPSILON;
+    /**
+     * The probability distribution function P(X <= x) for a Poisson
+     * distribution.
+     *
+     * @param x the value at which the PDF is evaluated.
+     * @return Poisson distribution function evaluated at x
+     * @throws MathException if the cumulative probability can not be computed
+     *             due to convergence or other numerical errors.
+     */
+    @Override
+    public double cumulativeProbability(int x) throws MathException;
+    /**
+     * Get the Poisson mean for the distribution.
+     *
+     * @return the Poisson mean for the distribution.
+     */
+    public double getMean();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

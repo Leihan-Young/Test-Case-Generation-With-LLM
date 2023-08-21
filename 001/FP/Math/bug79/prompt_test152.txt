@@ -1,0 +1,43 @@
+package org.apache.commons.math.util;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import org.apache.commons.math.MathRuntimeException;
+/**
+ * Some useful additions to the built-in functions in {@link Math}.
+ * @version $Revision$ $Date$
+ */
+public final class MathUtils {
+    public static final double EPSILON = 0x1.0p-53;
+    public static final double SAFE_MIN = 0x1.0p-1022;
+    public static final double TWO_PI = 2 * Math.PI;
+    private static final byte  NB = (byte)-1;
+    private static final short NS = (short)-1;
+    private static final byte  PB = (byte)1;
+    private static final short PS = (short)1;
+    private static final byte  ZB = (byte)0;
+    private static final short ZS = (short)0;
+    private static final int NAN_GAP = 4 * 1024 * 1024;
+    private static final long SGN_MASK = 0x8000000000000000L;
+    /**
+     * Calculates the L<sub>2</sub> (Euclidean) distance between two points.
+     *
+     * @param p1 the first point
+     * @param p2 the second point
+     * @return the L<sub>2</sub> distance between the two points
+     */
+    public static double distance(double[] p1, double[] p2) {
+        double sum = 0;
+        for (int i = 0; i < p1.length; i++) {
+            final double dp = p1[i] - p2[i];
+            sum += dp * dp;
+        }
+        return Math.sqrt(sum);
+    }
+}
+
+  public void test152()  throws Throwable  {
+      double[] doubleArray0 = new double[3];
+      double double0 = MathUtils.distance(doubleArray0, doubleArray0);<FILL-HERE>
+}
+

@@ -1,0 +1,7 @@
+TimeSeriesAdd() {
+    TimeSeries series = new TimeSeries("Test Series");
+    RegularTimePeriod period = new Second(new Date());
+    Double value = 10.0;
+    series.add(period, value);
+    assertEquals(value, series.getValue(period)); // bug: expected value is null, actual value is 10.0
+}

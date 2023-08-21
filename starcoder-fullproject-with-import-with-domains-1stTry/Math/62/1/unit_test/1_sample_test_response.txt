@@ -1,0 +1,22 @@
+     public void testMultiStart() {
+        UnivariateRealFunction func = new UnivariateRealFunction() {
+            public double value(double x) {
+                return x * x;
+            }
+        };
+        MultiStartUnivariateRealOptimizer optim =
+            new MultiStartUnivariateRealOptimizer(new BrentOptimizer(1e-10, 1e-10));
+        optim.setMaxEvaluations(100);
+        optim.setStartConfiguration(new UnivariateRealPointValuePair[] {
+            new UnivariateRealPointValuePair(1.0, 0.0),
+            new UnivariateRealPointValuePair(2.0, 0.0),
+            new UnivariateRealPointValuePair(3.0, 0.0),
+            new UnivariateRealPointValuePair(4.0, 0.0),
+            new UnivariateRealPointValuePair(5.0, 0.0),
+            new UnivariateRealPointValuePair(6.0, 0.0),
+            new UnivariateRealPointValuePair(7.0, 0.0),
+            new UnivariateRealPointValuePair(8.0, 0.0),
+            new UnivariateRealPointValuePair(9.0, 0.0),
+            new UnivariateRealPointValuePair(10.0, 0.0),
+            new UnivariateRealPointValuePair(11.0, 0.0),
+            new UnivariateRealPointValuePair

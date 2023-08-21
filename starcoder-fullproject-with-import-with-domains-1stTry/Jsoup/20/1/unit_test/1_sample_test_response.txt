@@ -1,0 +1,30 @@
+ public void testCharsetPattern() {
+        Matcher m = DataUtil.charsetPattern.matcher("text/html;charset=UTF-8");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html; charset=UTF-8");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html;charset = UTF-8");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html; charset = UTF-8");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html;charset=\"UTF-8\"");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html; charset=\"UTF-8\"");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = DataUtil.charsetPattern.matcher("text/html;charset = \"UTF-8\"");
+        assertTrue(m.find());
+        assertEquals("UTF-8", m.group(1));
+
+        m = Dat

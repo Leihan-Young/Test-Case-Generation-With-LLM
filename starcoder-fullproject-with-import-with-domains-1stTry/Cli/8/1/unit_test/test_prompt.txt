@@ -1,0 +1,54 @@
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ **/
+public class HelpFormatter {
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    /**
+     * Returns the 'newLine'.
+     *
+     * @return the 'newLine'
+     */
+    public String getNewLine();
+    /**
+     * <p>Render the specified text and return the rendered Options
+     * in a StringBuffer.</p>
+     *
+     * @param sb The StringBuffer to place the rendered text into.
+     * @param width The number of characters to display per line
+     * @param nextLineTabStop The position on the next line for the first tab.
+     * @param text The text to be rendered.
+     *
+     * @return the StringBuffer with the rendered Options contents.
+     */
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
+                                             int nextLineTabStop, String text);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

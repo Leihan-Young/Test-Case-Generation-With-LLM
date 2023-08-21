@@ -1,0 +1,25 @@
+MatchingOptions() {
+        Option optionA = new Option("a", "apple", false, "description of a");
+        Option optionB = new Option("b", "banana", false, "description of b");
+        Option optionC = new Option("c", "cherry", false, "description of c");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        opts.addOption(optionB);
+        opts.addOption(optionC);
+        List<String> matchingOpts = opts.getMatchingOptions("b");
+        assertEquals(1, matchingOpts.size());
+        assertTrue(matchingOpts.contains("banana"));
+    }
+``` 
+The bug in the code is that the `getOption()` method does not work properly. It returns null when it should be returning the correct `Option` object. This can be fixed by modifying the `getOption()` method as follows:
+
+```
+public Option getOption(String opt) {
+    opt = Util.stripLeadingHyphens(opt);
+    Option option = shortOpts.get(opt);
+    if (option == null) {
+        option = longOpts.get(opt);
+    }
+    return option;
+}
+```

@@ -1,0 +1,32 @@
+     public void testMidString() {
+        StrBuilder sb = new StrBuilder();
+        try {
+            sb.midString(0, -1);
+            fail();
+        } catch (IllegalArgumentException ex) {}
+        try {
+            sb.midString(-1, 0);
+            fail();
+        } catch (IllegalArgumentException ex) {}
+        try {
+            sb.midString(-1, -1);
+            fail();
+        } catch (IllegalArgumentException ex) {}
+        try {
+            sb.midString(1, -1);
+            fail();
+        } catch (IllegalArgumentException ex) {}
+        assertEquals("", sb.midString(0, 0));
+        assertEquals("", sb.midString(-1, 0));
+        assertEquals("", sb.midString(1, 0));
+        assertEquals("", sb.midString(0, -1));
+        assertEquals("", sb.midString(-1, -1));
+        assertEquals("", sb.midString(1, -1));
+        assertEquals("", sb.midString(10, 0));
+        assertEquals("", sb.midString(-10, 0));
+        assertEquals("", sb.midString(10, -1));
+        assertEquals("", sb.midString(-10, -1));
+        assertEquals("", sb.midString(10, 10));
+        assertEquals("", sb.midString(-10, 10));
+        assertEquals("", sb.midString(10, -10));
+        assertEquals("", s

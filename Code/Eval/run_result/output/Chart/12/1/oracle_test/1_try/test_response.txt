@@ -1,0 +1,10 @@
+Constructor() {
+    // Test the constructor with no dataset
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset());
+
+    // Test the constructor with a dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    plot = new MultiplePiePlot(dataset);
+    assertTrue(dataset.hasListener(plot));
+}

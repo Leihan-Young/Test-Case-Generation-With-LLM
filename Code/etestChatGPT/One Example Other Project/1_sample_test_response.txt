@@ -1,0 +1,23 @@
+WriteableCommandLineImpl() {
+    Option option1 = new OptionImpl("option1");
+    Option option2 = new OptionImpl("option2");
+
+    WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+    commandLine.addOption(option1);
+    commandLine.addOption(option2);
+
+    List<String> values = new ArrayList<>();
+    values.add("value1");
+    values.add("value2");
+
+    commandLine.addValue(option1, values);
+
+    assertTrue(commandLine.hasOption(option1));
+    assertFalse(commandLine.hasOption(option2));
+
+    List<String> retrievedValues = commandLine.getValues(option1, null);
+    assertEquals(values, retrievedValues);
+}
+``` 
+
+The bug in the program is in the `getValues()` method. It always returns the default values instead of the actual values when no default values are provided. The test method above can reveal the bug by adding a list of values to an option and then retrieving them using the `getValues()` method, passing null as the default value. The expected result is the list of values added, but the actual result is the default values instead.

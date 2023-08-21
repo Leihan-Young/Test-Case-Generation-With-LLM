@@ -1,0 +1,279 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * ---------------------
+ * TimePeriodValues.java
+ * ---------------------
+ * (C) Copyright 2003-2008, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 22-Apr-2003 : Version 1 (DG);
+ * 30-Jul-2003 : Added clone and equals methods while testing (DG);
+ * 11-Mar-2005 : Fixed bug in bounds recalculation - see bug report 
+ *               1161329 (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 03-Oct-2006 : Fixed NullPointerException in equals(), fire change event in 
+ *               add() method, updated API docs (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 29-Jun-2007 : Changed first parameter in constructors from String to 
+ *               Comparable (DG);
+ * 07-Apr-2008 : Fixed bug with maxMiddleIndex in updateBounds() (DG);
+ *
+ */
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * A structure containing zero, one or many {@link TimePeriodValue} instances.  
+ * The time periods can overlap, and are maintained in the order that they are 
+ * added to the collection.
+ * <p>
+ * This is similar to the {@link TimeSeries} class, except that the time 
+ * periods can have irregular lengths.
+ */
+public class TimePeriodValues extends Series implements Serializable {
+    private String domain;
+    private String range;
+    private List data;
+    private int minStartIndex = -1;
+    private int maxStartIndex = -1;
+    private int minMiddleIndex = -1;
+    private int maxMiddleIndex = -1;
+    private int minEndIndex = -1;
+    private int maxEndIndex = -1;
+    /**
+     * Adds a data item to the series and sends a {@link SeriesChangeEvent} to
+     * all registered listeners.
+     *
+     * @param item  the item (<code>null</code> not permitted).
+     */
+    public void add(TimePeriodValue item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Null item not allowed.");
+        }
+        this.data.add(item);
+        updateBounds(item.getPeriod(), this.data.size() - 1);
+        fireSeriesChanged();
+    }
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value.
+     * 
+     * @see #add(TimePeriod, Number)
+     */
+    public void add(TimePeriod period, double value) {
+        TimePeriodValue item = new TimePeriodValue(period, value);
+        add(item);
+    }
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value (<code>null</code> permitted).
+     */
+    public void add(TimePeriod period, Number value) {
+        TimePeriodValue item = new TimePeriodValue(period, value);
+        add(item);
+    }
+    /**
+     * Update the index values for the maximum and minimum bounds.
+     * 
+     * @param period  the time period.
+     * @param index  the index of the time period.
+     */
+    private void updateBounds(TimePeriod period, int index) {
+        
+        long start = period.getStart().getTime();
+        long end = period.getEnd().getTime();
+        long middle = start + ((end - start) / 2);
+
+        if (this.minStartIndex >= 0) {
+            long minStart = getDataItem(this.minStartIndex).getPeriod()
+                .getStart().getTime();
+            if (start < minStart) {
+                this.minStartIndex = index;           
+            }
+        }
+        else {
+            this.minStartIndex = index;
+        }
+        
+        if (this.maxStartIndex >= 0) {
+            long maxStart = getDataItem(this.maxStartIndex).getPeriod()
+                .getStart().getTime();
+            if (start > maxStart) {
+                this.maxStartIndex = index;           
+            }
+        }
+        else {
+            this.maxStartIndex = index;
+        }
+        
+        if (this.minMiddleIndex >= 0) {
+            long s = getDataItem(this.minMiddleIndex).getPeriod().getStart()
+                .getTime();
+            long e = getDataItem(this.minMiddleIndex).getPeriod().getEnd()
+                .getTime();
+            long minMiddle = s + (e - s) / 2;
+            if (middle < minMiddle) {
+                this.minMiddleIndex = index;           
+            }
+        }
+        else {
+            this.minMiddleIndex = index;
+        }
+        
+        if (this.maxMiddleIndex >= 0) {
+            long s = getDataItem(this.minMiddleIndex).getPeriod().getStart()
+                .getTime();
+            long e = getDataItem(this.minMiddleIndex).getPeriod().getEnd()
+                .getTime();
+            long maxMiddle = s + (e - s) / 2;
+            if (middle > maxMiddle) {
+                this.maxMiddleIndex = index;           
+            }
+        }
+        else {
+            this.maxMiddleIndex = index;
+        }
+        
+        if (this.minEndIndex >= 0) {
+            long minEnd = getDataItem(this.minEndIndex).getPeriod().getEnd()
+                .getTime();
+            if (end < minEnd) {
+                this.minEndIndex = index;           
+            }
+        }
+        else {
+            this.minEndIndex = index;
+        }
+       
+        if (this.maxEndIndex >= 0) {
+            long maxEnd = getDataItem(this.maxEndIndex).getPeriod().getEnd()
+                .getTime();
+            if (end > maxEnd) {
+                this.maxEndIndex = index;           
+            }
+        }
+        else {
+            this.maxEndIndex = index;
+        }
+        
+    }
+    /**
+     * Returns the index of the time period with the maximum middle 
+     * milliseconds.
+     * 
+     * @return The index.
+     */
+    public int getMaxMiddleIndex() {
+        return this.maxMiddleIndex;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+[assistant]:TimePeriodValues() {
+    TimePeriodValues values = new TimePeriodValues();
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(0), new Date(1000)), 10));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(0, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(0, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(0, values.getMaxEndIndex());
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(1000), new Date(2000)), 20));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(1, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(1, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(1, values.getMaxEndIndex());
+}
+```
+The test method tests the `TimePeriodValues` class by adding two `TimePeriodValue` objects to it and verifying that the index values for the maximum and minimum bounds are updated correctly. The bug in the program could be that the `getMaxMiddleIndex()` method returns an incorrect value.
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: no suitable constructor found for TimePeriodValues()
+[javac]     TimePeriodValues values = new TimePeriodValues();
+[javac]                               ^
+[javac]     constructor TimePeriodValues.TimePeriodValues(Comparable,String,String) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac]     constructor TimePeriodValues.TimePeriodValues(Comparable) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac] Note: Some input files use or override a deprecated API.
+[javac] Note: Recompile with -Xlint:deprecation for details.
+
+```
+public void test
+[assistant]:TimePeriodValues() {
+    TimePeriodValues values = new TimePeriodValues("Test Data", "Value");
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(0), new Date(1000)), 10));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(0, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(0, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(0, values.getMaxEndIndex());
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(1000), new Date(2000)), 20));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(1, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(1, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(1, values.getMaxEndIndex());
+}
+```
+The error occurred because the `TimePeriodValues` class constructor requires two parameters, a `Comparable` object and two strings, for the series name and the domain axis label respectively. Therefore, the test code has been updated to include these parameters when creating a new instance of `TimePeriodValues`.
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: no suitable constructor found for TimePeriodValues(String,String)
+[javac]     TimePeriodValues values = new TimePeriodValues("Test Data", "Value");
+[javac]                               ^
+[javac]     constructor TimePeriodValues.TimePeriodValues(Comparable,String,String) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac]     constructor TimePeriodValues.TimePeriodValues(Comparable) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+
+```
+public void test

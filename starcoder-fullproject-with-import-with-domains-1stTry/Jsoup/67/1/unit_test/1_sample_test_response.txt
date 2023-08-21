@@ -1,0 +1,39 @@
+ private void assertStartTag(String html) {
+        assertStartTag(html, "");
+    }
+    private void assertStartTag(String html, String expectedName) {
+        assertStartTag(html, expectedName, false);
+    }
+    private void assertStartTag(String html, String expectedName, boolean selfClosing) {
+        Node node = parse(html);
+        assertNotNull(node);
+        assertTrue(node instanceof Element);
+        Element el = (Element) node;
+        assertEquals(expectedName, el.tagName());
+        assertEquals(selfClosing, el.isSelfClosing());
+    }
+    private void assertEndTag(String html) {
+        assertEndTag(html, "");
+    }
+    private void assertEndTag(String html, String expectedName) {
+        Node node = parse(html);
+        assertNotNull(node);
+        assertTrue(node instanceof Element);
+        Element el = (Element);
+        assertEquals(expectedName, el.tagName());
+    }
+    private void assertText(String html) {
+        Node node = parse(html);
+        assertNotNull(node);
+        assertTrue(node instanceof TextNode);
+        TextNode textNode = (TextNode);
+        assertEquals(html, textNode.getWholeText());
+    }
+    private void assertComment(String html) {
+        Node node = parse(html);
+        assertNotNull(node);
+        assertTrue(node instanceof Comment);
+        Comment comment = (Comment);
+        assertEquals(html, comment.getData());
+    }
+  

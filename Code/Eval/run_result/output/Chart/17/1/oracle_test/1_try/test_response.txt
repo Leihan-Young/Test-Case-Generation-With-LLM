@@ -1,0 +1,17 @@
+Bug1832432() {
+    TimeSeries s1 = new TimeSeries("Series");
+    TimeSeries s2 = null;
+    try {
+        s2 = (TimeSeries) s1.clone();
+    }
+    catch (CloneNotSupportedException e) {
+        fail("Clone should be supported");
+    }
+    assertTrue("Series objects should not be the same", s1 != s2);
+    assertTrue("Series classes should be the same", s1.getClass() == s2.getClass());
+    assertEquals("Series objects should be equal", s1, s2);
+
+    // test independence
+    s1.add(new Day(1, 1, 2007), 100.0);
+    assertNotEquals("Series objects should not be equal", s1, s2);
+}

@@ -1,0 +1,32 @@
+() {
+    // create options
+    Option help = new Option("h", "help", false, "display help message");
+    Option version = new Option("v", "version", false, "display version information");
+    Option input = OptionBuilder.withArgName("file").hasArg().withDescription("input file").create("i");
+    Option output = OptionBuilder.withArgName("file").hasArg().withDescription("output file").create("o");
+
+    // create options collection
+    Options options = new Options();
+    options.addOption(help);
+    options.addOption(version);
+    options.addOption(input);
+    options.addOption(output);
+
+    // create help formatter
+    HelpFormatter formatter = new HelpFormatter();
+
+    // test printUsage method
+    StringWriter out = new StringWriter();
+    formatter.printUsage(new PrintWriter(out), 80, "myapp", options);
+    assertEquals("usage: myapp [-h] [-v] [-i <file>] [-o <file>]\n", out.toString());
+
+    // test printHelp method
+    out.getBuffer().setLength(0);
+    formatter.printHelp(new PrintWriter(out), 80, "myapp", "", options, 2, 2, "");
+    assertEquals("usage: myapp [-h] [-v] [-i <file>] [-o <file>]\n\n" +
+                 "options:\n" +
+                 " -h,--help             display help message\n" +
+                 " -i <file>             input file\n" +
+                 " -o <file>             output file\n" +
+                 " -v,--version          display version information\n", out.toString());
+}

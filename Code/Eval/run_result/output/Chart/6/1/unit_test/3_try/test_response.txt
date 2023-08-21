@@ -1,0 +1,23 @@
+ShapeListEquals() {
+    ShapeList list1 = new ShapeList();
+    ShapeList list2 = new ShapeList();
+    java.awt.geom.Rectangle2D shape1 = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    java.awt.geom.Rectangle2D shape2 = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    java.awt.geom.Rectangle2D shape3 = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 2.0, 2.0);
+    list1.add(shape1);
+    list2.add(shape3);
+
+    // test equality of empty lists
+    assertTrue(list1.equals(list2));
+
+    // test inequality of lists with different shapes
+    list1.setObject(0, shape1);
+    list2.setObject(0, shape3);
+    assertFalse(list1.equals(list2));
+
+    // test equality of lists with same shapes
+    list2.setObject(0, shape2);
+    assertTrue(list1.equals(list2));
+}
+```
+Note: This code assumes that all necessary imports have been done.

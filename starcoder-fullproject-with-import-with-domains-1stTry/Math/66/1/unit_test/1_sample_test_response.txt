@@ -1,0 +1,13 @@
+     public void testNoBracketing() {
+        UnivariateRealFunction f = new UnivariateRealFunction() {
+            public double value(double x) {
+                return x * x;
+            }
+        };
+        try {
+            new BrentOptimizer().optimize(f, GoalType.MINIMIZE, 0, 1);
+            fail("an exception should have been thrown");
+        } catch (MathUserException e) {
+            // expected
+        }
+    }

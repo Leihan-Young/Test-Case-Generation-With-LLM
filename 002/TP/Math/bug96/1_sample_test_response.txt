@@ -1,0 +1,5 @@
+  public void newTestMethod_test31()  throws Throwable  {
+      Complex complex0 = Complex.ZERO;
+      Complex complex1 = complex0.ZERO.cos();
+      assertEquals(Complex.ONE, complex1);
+  }

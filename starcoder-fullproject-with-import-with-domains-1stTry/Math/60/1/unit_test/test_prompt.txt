@@ -1,0 +1,50 @@
+package org.apache.commons.math.distribution;
+import java.io.Serializable;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.exception.NotStrictlyPositiveException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.special.Erf;
+import org.apache.commons.math.util.FastMath;
+/**
+ * Default implementation of
+ * {@link org.apache.commons.math.distribution.NormalDistribution}.
+ *
+ * @version $Revision$ $Date$
+ */
+public class NormalDistributionImpl extends AbstractContinuousDistribution
+        implements NormalDistribution, Serializable {
+    public static final double DEFAULT_INVERSE_ABSOLUTE_ACCURACY = 1e-9;
+    private static final long serialVersionUID = 8589540077390120676L;
+    private static final double SQRT2PI = FastMath.sqrt(2 * FastMath.PI);
+    private final double mean;
+    private final double standardDeviation;
+    private final double solverAbsoluteAccuracy;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double density(double x);
+    /**
+     * For this distribution, {@code X}, this method returns {@code P(X < x)}.
+     * If {@code x}is more than 40 standard deviations from the mean, 0 or 1 is returned,
+     * as in these cases the actual value is within {@code Double.MIN_VALUE} of 0 or 1.
+     *
+     * @param x Value at which the CDF is evaluated.
+     * @return CDF evaluated at {@code x}.
+     * @throws MathException if the algorithm fails to converge
+     */
+    public double cumulativeProbability(double x) throws MathException;
+    /**
+     * {@inheritDoc}
+     */
+    public double getMean();
+    /**
+     * {@inheritDoc}
+     */
+    public double getStandardDeviation();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,10 @@
+     private void roundTrip(String html) {
+        roundTrip(html, html);
+    }
+    private void roundTrip(String in, String out) {
+        Document doc = Jsoup.parse(in);
+        assertEquals(out, doc.body().html());
+    }
+    public void testUnclosedComment() {
+        roundTrip("<!---->");
+    }

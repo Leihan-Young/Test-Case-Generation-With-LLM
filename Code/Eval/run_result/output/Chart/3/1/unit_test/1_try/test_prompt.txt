@@ -1,0 +1,76 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.event.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * Represents a sequence of zero or more data items in the form (period, value)
+ * where 'period' is some instance of a subclass of {@link RegularTimePeriod}.
+ * The time series will ensure that (a) all data items have the same type of
+ * period (for example, {@link Day}) and (b) that each period appears at
+ * most one time in the series.
+ */
+public class TimeSeries extends Series implements Cloneable, Serializable {
+    private static final long serialVersionUID = -5032960206869675528L;
+    private String domain;
+    private String range;
+    private int maximumItemCount;
+    private long maximumItemAge;
+    private double minY;
+    private double maxY;
+    /**
+     * Creates a new timeseries by copying a subset of the data in this time
+     * series.
+     *
+     * @param start  the index of the first time period to copy.
+     * @param end  the index of the last time period to copy.
+     *
+     * @return A series containing a copy of this times series from start until
+     *         end.
+     *
+     * @throws CloneNotSupportedException if there is a cloning problem.
+     */
+    public TimeSeries createCopy(int start, int end)
+            throws CloneNotSupportedException {
+        if (start < 0) {
+            throw new IllegalArgumentException("Requires start >= 0.");
+        }
+        if (end < start) {
+            throw new IllegalArgumentException("Requires start <= end.");
+        }
+        TimeSeries copy = (TimeSeries) super.clone();
+        copy.data = new java.util.ArrayList();
+        if (this.data.size() > 0) {
+            for (int index = start; index <= end; index++) {
+                TimeSeriesDataItem item
+                        = (TimeSeriesDataItem) this.data.get(index);
+                TimeSeriesDataItem clone = (TimeSeriesDataItem) item.clone();
+                try {
+                    copy.add(clone);
+                }
+                catch (SeriesException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return copy;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

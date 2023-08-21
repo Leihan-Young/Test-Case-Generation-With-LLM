@@ -1,0 +1,20 @@
+() throws Exception {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption( "h", "help", false, "print this message" );
+        options.addOption( "v", "version", false, "print the version information and exit" );
+        options.addOption( "f", "file", true, "use given file for operation" );
+        // add a required option
+        OptionBuilder.isRequired();
+        options.addOption( OptionBuilder.create("r") );
+        String[] args = new String[]{"-f", "myfile.txt", "-r"};
+
+        CommandLine line = parser.parse( options, args );
+
+        assertTrue( line.hasOption( "f" ) );
+        assertEquals( "myfile.txt", line.getOptionValue( "f" ) );
+        assertTrue( line.hasOption( "r" ) );
+    }
+```
+The above test method checks if a required option is properly set. It should fail if the required option is not set as expected.

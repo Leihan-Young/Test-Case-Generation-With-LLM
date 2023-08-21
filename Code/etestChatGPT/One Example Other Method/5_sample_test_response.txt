@@ -1,0 +1,10 @@
+GetValuesReturnsEmptyListWhenOptionNotPresent() throws Exception {
+    Parser parser = createDefaultValueParser(new String[]{"100", "1000"});
+    String[] args = new String[]{"-a"};
+    CommandLine cl = parser.parse(args);
+    CommandLine cmd = cl;
+    assertNotNull(cmd);
+    List a = cmd.getValues("-a");
+    assertEquals(Collections.EMPTY_LIST, a);
+}
+```

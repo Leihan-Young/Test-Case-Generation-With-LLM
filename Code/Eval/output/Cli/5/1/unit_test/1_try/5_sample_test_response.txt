@@ -1,0 +1,6 @@
+StripLeadingAndTrailingQuotes() {
+        String input = "\"quoted string\"";
+        String expectedOutput = "quoted string";
+        String actualOutput = Util.stripLeadingAndTrailingQuotes(input);
+        assertEquals(expectedOutput, actualOutput);
+    }

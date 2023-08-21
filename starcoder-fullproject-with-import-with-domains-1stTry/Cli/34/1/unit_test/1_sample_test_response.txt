@@ -1,0 +1,29 @@
+     private void assertOptionEquals(Option expected, Option actual) {
+        assertEquals(expected.getOpt(), actual.getOpt());
+        assertEquals(expected.getLongOpt(), actual.getLongOpt());
+        assertEquals(expected.hasArg(), actual.hasArg());
+        assertEquals(expected.hasArgs(), actual.hasArgs());
+        assertEquals(expected.isRequired(), actual.isRequired());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(expected.getValueSeparator(), actual.getValueSeparator());
+    }
+    private void assertArrayEquals(Object[] expected, Object[] actual) {
+        assertEquals(expected.length, actual.length);
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
+    }
+    private void assertArrayEquals(String[] expected, String[] actual) {
+        assertEquals(expected.length, actual.length);
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
+    }
+    private void assertArrayEquals(int[] expected, int[] actual) {
+        assertEquals(expected.length, actual.length);
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
+    }
+    private void assertArrayEquals(long[] expected, long[] actual) {
+        assertEquals(expected

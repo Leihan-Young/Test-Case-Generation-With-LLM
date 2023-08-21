@@ -1,0 +1,63 @@
+MandatoryGroupBug() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+        final Option b = obuilder.withShortName("b").create();
+        final Option c = obuilder.withShortName("c").create();
+
+        final Group options = gbuilder.withOption(a).withOption(b).withOption(c).withMaximum(2).withMinimum(1).create();
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] {});
+            fail("Expected MissingOptionException not caught");
+        } catch (final OptionException exp) {
+            assertEquals("Missing option -a|-b|-c", exp.getMessage());
+        }
+
+        try {
+            parser.parse(new String[] { "-a" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-b" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-c" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-c" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-b", "-c" });
+        } catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b", "-c" });
+            fail("Expected UnexpectedOptionException not caught");
+        } catch (final OptionException exp) {
+            assertEquals("Unexpected -c while processing -a|-b|-c", exp.getMessage());
+        }
+    }
+```

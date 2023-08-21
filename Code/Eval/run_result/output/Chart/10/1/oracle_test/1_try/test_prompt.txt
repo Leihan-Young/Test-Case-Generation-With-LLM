@@ -1,0 +1,49 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Creates a new instance.
+     */
+    public StandardToolTipTagFragmentGenerator() {
+        super();
+    }
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        _tmp_var_0_ = " title=\"abc\" alt=\"\"";
+        _tmp_var_1_ =  g.generateToolTipFragment("abc");
+        $ASSERT$
+        _tmp_var_2_ = " title=\"Series &quot;A&quot;;
+        _tmp_var_3_ =  100.0\" alt=\"\"";
+        _tmp_var_4_ =  g.generateToolTipFragment("Series \"A\", 100.0");
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

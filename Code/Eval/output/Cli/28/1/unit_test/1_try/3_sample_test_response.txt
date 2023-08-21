@@ -1,0 +1,22 @@
+() throws Exception {
+    Option opt1 = new Option("a", "arg1", true, "argument 1");
+    Option opt2 = new Option("b", "arg2", true, "argument 2");
+
+    Options options = new Options();
+    options.addOption(opt1);
+    options.addOption(opt2);
+
+    CommandLineParser parser = new PosixParser();
+
+    String[] args = new String[] { "-a", "value1", "-b" };
+
+    // This should throw a ParseException because "-b" does not have a corresponding value
+    CommandLine line = parser.parse(options, args);
+
+    assertTrue(line.hasOption("a"));
+    assertEquals(line.getOptionValue("a"), "value1");
+    assertTrue(line.hasOption("b"));
+    assertNull(line.getOptionValue("b")); // The bug is here - it should throw an exception instead of returning null
+}
+
+```

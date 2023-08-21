@@ -1,0 +1,26 @@
+MinMaxCategoryRenderer() {
+    // create a dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1, "Series 1", "Category 1");
+    dataset.addValue(2, "Series 1", "Category 2");
+    dataset.addValue(3, "Series 2", "Category 1");
+    dataset.addValue(4, "Series 2", "Category 2");
+    
+    // create a chart
+    JFreeChart chart = ChartFactory.createBarChart("Test Chart", "Category", "Value", dataset);
+    CategoryPlot plot = chart.getCategoryPlot();
+    
+    // create a renderer with a bug
+    MinMaxCategoryRenderer renderer = new MinMaxCategoryRenderer();
+    renderer.setObjectIcon(new RectangleIcon(8, 8));
+    renderer.setMinIcon(new RectangleIcon(8, 8));
+    renderer.setMaxIcon(new RectangleIcon(8, 8));
+    plot.setRenderer(renderer);
+    
+    // show the chart
+    ChartFrame frame = new ChartFrame("Test", chart);
+    frame.pack();
+    frame.setVisible(true);
+}
+```
+The bug is that the min and max icons are not being displayed in the chart.

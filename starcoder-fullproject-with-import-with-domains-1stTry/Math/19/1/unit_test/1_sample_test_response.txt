@@ -1,0 +1,19 @@
+     /**
+     * Test of optimize method, of class CMAESOptimizer.
+     */
+    @Test
+    public void testOptimize() {
+        System.out.println("optimize");
+        CMAESOptimizer instance = new CMAESOptimizer();
+        try {
+            instance.optimize(100, new MultivariateFunction() {
+
+                public double value(double[] point) {
+                    return 0;
+                }
+            });
+            fail("an exception should have been thrown");
+        } catch (TooManyEvaluationsException e) {
+            // expected
+        }
+    }

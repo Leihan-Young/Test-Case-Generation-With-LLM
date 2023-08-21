@@ -1,0 +1,22 @@
+GetRangeBounds() {
+    DefaultBoxAndWhiskerCategoryDataset d1 
+            = new DefaultBoxAndWhiskerCategoryDataset();
+    d1.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 
+            new ArrayList()), "R1", "C1");
+    Range expectedRange1 = new Range(7.0, 8.0);
+    Range actualRange1 = d1.getRangeBounds(false);
+    assertEquals(expectedRange1, actualRange1);
+    Range expectedRange2 = new Range(7.0, 8.0);
+    Range actualRange2 = d1.getRangeBounds(true);
+    assertEquals(expectedRange2, actualRange2);
+    
+    d1.add(new BoxAndWhiskerItem(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 
+            new ArrayList()), "R1", "C1");
+    Range expectedRange3 = new Range(7.0, 8.5);
+    Range actualRange3 = d1.getRangeBounds(false);
+    assertEquals(expectedRange3, actualRange3);
+    Range expectedRange4 = new Range(6.5, 9.0);
+    Range actualRange4 = d1.getRangeBounds(true);
+    assertEquals(expectedRange4, actualRange4);
+    
+    d1.add(new BoxAndWhiskerItem(2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5

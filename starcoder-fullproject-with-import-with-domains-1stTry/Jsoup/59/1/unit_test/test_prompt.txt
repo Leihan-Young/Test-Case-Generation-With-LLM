@@ -1,0 +1,21 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.BooleanAttribute;
+/**
+ * Parse tokens for the Tokeniser.
+ */
+abstract class Token {
+    /**
+     * Reset the data represent by this token, for reuse. Prevents the need to create transfer objects for every
+     * piece of data, which immediately get GCed.
+     */
+    abstract Token reset();
+
+    static void reset(StringBuilder sb);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

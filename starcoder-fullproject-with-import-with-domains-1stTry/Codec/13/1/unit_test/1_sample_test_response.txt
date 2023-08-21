@@ -1,0 +1,21 @@
+     private void testDoubleMetaphone(final String value, final String expected) {
+        assertEquals(expected, new DoubleMetaphone().doubleMetaphone(value));
+    }
+    private void testDoubleMetaphone(final String value, final String expected, final boolean alternate) {
+        assertEquals(expected, new DoubleMetaphone().doubleMetaphone(value, alternate));
+    }
+    private void testIsDoubleMetaphoneEqual(final String value1, final String value2) {
+        assertTrue(new DoubleMetaphone().isDoubleMetaphoneEqual(value1, value2));
+    }
+    private void testIsDoubleMetaphoneEqual(final String value1, final String value2, final boolean alternate) {
+        assertTrue(new DoubleMetaphone().isDoubleMetaphoneEqual(value1, value2, alternate));
+    }
+    private void testIsNotDoubleMetaphoneEqual(final String value1, final String value2) {
+        assertFalse(new DoubleMetaphone().isDoubleMetaphoneEqual(value1, value2));
+    }
+    private void testIsNotDoubleMetaphoneEqual(final String value1, final String value2, final boolean alternate) {
+        assertFalse(new DoubleMetaphone().isDoubleMetaphoneEqual(value1, value2, alternate));
+    }
+    public void testDoubleMetaphone() {
+        testDoubleMetaphone(null, null);
+      

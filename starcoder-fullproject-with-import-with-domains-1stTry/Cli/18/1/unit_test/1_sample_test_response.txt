@@ -1,0 +1,27 @@
+     private void assertArrayEquals(Object[] expecteds, Object[] actuals) {
+        assertEquals(expecteds.length, actuals.length);
+        for (int i = 0; i < expecteds.length; i++) {
+            assertEquals(expecteds[i], actuals[i]);
+        }
+    }
+    private void assertArrayEquals(String[] expecteds, String[] actuals) {
+        assertEquals(expecteds.length, actuals.length);
+        for (int i = 0; i < expecteds.length; i++) {
+            assertEquals(expecteds[i], actuals[i]);
+        }
+    }
+    private void assertArrayEquals(int[] expecteds, int[] actuals) {
+        assertEquals(expecteds.length, actuals.length);
+        for (int i = 0; i < expecteds.length; i++) {
+            assertEquals(expecteds[i], actuals[i]);
+        }
+    }
+    private void assertArrayEquals(long[] expecteds, long[] actuals) {
+        assertEquals(expecteds.length, actuals.length);
+        for (int i = 0; i < expecteds.length; i++) {
+            assertEquals(expecteds[i], actuals[i]);
+        }
+    }
+    private void assertArrayEquals(short[] expecteds, short[] actuals) {
+        assertEquals(expecteds.length, actuals.length);
+        for (int i 

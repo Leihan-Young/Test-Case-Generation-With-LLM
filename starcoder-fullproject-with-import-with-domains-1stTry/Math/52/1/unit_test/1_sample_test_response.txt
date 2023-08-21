@@ -1,0 +1,7 @@
+   public void testIdentity() {
+        Rotation r = new Rotation(1.0, 0.0, 0.0, 0.0, false);
+        Assert.assertEquals(1.0, r.getQ0(), 1.0e-15);
+        Assert.assertEquals(0.0, r.getQ1(), 1.0e-15);
+        Assert.assertEquals(0.0, r.getQ2(), 1.0e-15);
+        Assert.assertEquals(0.0, r.getQ3(), 1.0e-15);
+    }

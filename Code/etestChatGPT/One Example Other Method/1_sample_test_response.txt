@@ -1,0 +1,47 @@
+DefaultValue() throws Exception {
+    Parser parser = createDefaultValueParser(new String[]{"100", "1000"});
+    String[] args = new String[]{"-b"};
+    CommandLine cl = parser.parse(args);
+    WriteableCommandLineImpl cmd = (WriteableCommandLineImpl) cl;
+
+    // Set default values for option "-b"
+    List<String> defaultValues = new ArrayList<>();
+    defaultValues.add("500");
+    cmd.setDefaultValues(cmd.getOption("-b"), defaultValues);
+
+    // Verify that getValues("-b") returns the default values
+    List<String> b = cmd.getValues("-b");
+    assertEquals(defaultValues, b);
+
+    // Add a value to option "-b"
+    cmd.addValue(cmd.getOption("-b"), "10000");
+
+    // Verify that getValues("-b") returns both the default value and the added value
+    b = cmd.getValues("-b");
+    assertEquals(2, b.size());
+    assertTrue(b.containsAll(defaultValues));
+    assertTrue(b.contains("10000"));
+
+    // Set default values for option "-c"
+    defaultValues.clear();
+    defaultValues.add("true");
+    cmd.setDefaultValues(cmd.getOption("-c"), defaultValues);
+
+    // Verify that getValues("-c") returns the default value
+    List<String> c = cmd.getValues("-c");
+    assertEquals(defaultValues, c);
+
+    // Add a switch value to option "-c"
+    cmd.addSwitch(cmd.getOption("-c"), true);
+
+    // Verify that getSwitch("-c") returns true
+    assertTrue(cmd.getSwitch(cmd.getOption("-c"), false));
+
+    // Add a property to option "-a"
+    cmd.addProperty(cmd.getOption("-a"), "key", "value");
+
+    // Verify that getProperty("-a", "key") returns "value"
+    assertEquals("value", cmd.getProperty(cmd.getOption("-a"), "key", null));
+}
+```
+The above test method tests the `WriteableCommandLineImpl` class to verify that it correctly handles default values, adding values, adding switches, and adding properties. The bug in the program is that when calling `getValues()` method on an option that has no values and no default values, it returns an empty list instead of returning the default values set using `setDefaultValues()` method. The above test method reveals this bug by setting default values for option `-b`, adding a value to it, and then verifying that `getValues()` returns both the default value and the added value. It then sets default values for option `-c`, adds a switch value to it, and verifies that `getSwitch()` returns true. Finally, it adds a property to option `-a` and verifies that `getProperty()` returns the correct value.

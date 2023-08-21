@@ -1,0 +1,8 @@
+   public void testBracket() throws ConvergenceException, FunctionEvaluationException {
+        UnivariateRealFunction f = new UnivariateRealFunction() {
+            public double value(double x) {
+                return x * x - 2;
+            }
+        };
+        UnivariateRealSolverUtils.bracket(f, 1, 0, 2, 100);
+    }

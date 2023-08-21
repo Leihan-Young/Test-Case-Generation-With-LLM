@@ -1,0 +1,21 @@
+   private void checkNaN(final Vector3D v) {
+        Assert.assertTrue(Double.isNaN(v.getX()));
+        Assert.assertTrue(Double.isNaN(v.getY()));
+        Assert.assertTrue(Double.isNaN(v.getZ()));
+    }
+    private void checkCoordinates(final Vector3D v, final double x, final double y, final double z) {
+        Assert.assertEquals(x, v.getX(), 1.0e-15);
+        Assert.assertEquals(y, v.getY(), 1.0e-15);
+        Assert.assertEquals(z, v.getZ(), 1.0e-15);
+    }
+    private void checkNorm(final Vector3D v, final double expected) {
+        Assert.assertEquals(expected, v.getNorm(), 1.0e-15);
+    }
+    private void checkNormSq(final Vector3D v, final double expected) {
+        Assert.assertEquals(expected, v.getNormSq(), 1.0e-15);
+    }
+    private void checkDistance(final Vector3D v1, final Vector3D v2, final double expected) {
+        Assert.assertEquals(expected, v1.distance(v2), 1.0e-15);
+        Assert.assertEquals(expected, v2.distance(v1), 1.0e-15);
+    }
+    privat

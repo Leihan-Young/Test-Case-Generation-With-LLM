@@ -1,0 +1,34 @@
+ private Document parse(String html) {
+        return parse(html, "");
+    }
+    private Document parse(String html, String baseUri) {
+        return Parser.parse(html, baseUri, Parser.htmlParser());
+    }
+    private Elements select(String html, String selector) {
+        return parse(html).select(selector);
+    }
+    private Element selectUnique(String html, String selector) {
+        Elements elements = parse(html).select(selector);
+        if (elements.size() == 0)
+            return null;
+        else if (elements.size() == 1)
+            return elements.first();
+        else
+            fail("Found " + elements.size() + " elements for selector " + selector);
+        return null;
+    }
+    private void assertSelect(String html, String selector, String... results) {
+        Elements elements = parse(html).select(selector);
+        assertEquals(results.length, elements.size());
+        for (int i = 0; i < results.length; i++) {
+            assertEquals(results[i], elements.get(i).outerHtml());
+        }
+    }
+    private void assertNotSelect(String html, String selector) {
+        Elements elements = parse(html).select(selector);
+        assertEquals(0, elements.size());
+    }
+    private void assertText(String html, String text) {
+        assertEquals(text, parse(html).text());
+    }
+    privat

@@ -1,0 +1,35 @@
+ private static Whitelist whitelist() {
+        return Whitelist.relaxed();
+    }
+    private static Document parse(String html) {
+        return Jsoup.parseBodyFragment(html);
+    }
+    private static String clean(String html) {
+        return clean(html, "");
+    }
+    private static String clean(String html, String baseUri) {
+        return clean(html, baseUri, whitelist());
+    }
+    private static String clean(String html, Whitelist whitelist) {
+        return clean(html, "", whitelist);
+    }
+    private static String clean(String html, String baseUri, Whitelist whitelist) {
+        Document doc = Jsoup.parseBodyFragment(html, baseUri);
+        return clean(doc, whitelist).body().html();
+    }
+    private static Document clean(Document doc, Whitelist whitelist) {
+        Cleaner cleaner = new Cleaner(whitelist);
+        return cleaner.clean(doc);
+    }
+    private void assertCanClean(String html) {
+        assertCanClean(html, html);
+    }
+    private void assertCanClean(String html, String expectedHtml) {
+        assertCanClean(html, "", expectedHtml);
+    }
+    private void assertCanClean(String html, String baseUri, String expectedHtml) {
+        assertEquals(expectedHtml, clean(html, baseUri));
+    }
+    private void assertCantClean(String html) {
+        assertCantClean(html, "");
+  

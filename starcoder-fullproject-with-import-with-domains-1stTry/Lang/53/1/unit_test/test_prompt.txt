@@ -1,0 +1,197 @@
+package org.apache.commons.lang.time;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TimeZone;
+/**
+ * <p>A suite of utilities surrounding the use of the
+ * {@link java.util.Calendar} and {@link java.util.Date} object.</p>
+ *
+ * @author <a href="mailto:sergek@lokitech.com">Serge Knystautas</a>
+ * @author Stephen Colebourne
+ * @author Janek Bogucki
+ * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
+ * @author Phil Steitz
+ * @since 2.0
+ * @version $Id$
+ */
+public class DateUtils {
+    public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("GMT");
+    public static final long MILLIS_PER_SECOND = 1000;
+    public static final long MILLIS_PER_MINUTE = 60 * MILLIS_PER_SECOND;
+    public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
+    public static final long MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
+    public final static int SEMI_MONTH = 1001;
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with, either <code>Date</code>
+     *  or <code>Calendar</code>
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date
+     *  is <code>null</code>
+     * @throws ClassCastException if the object type is not a
+     *  <code>Date</code> or <code>Calendar</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date truncate(Object date, int field);
+    /**
+     * Adds to a date returning a new object.
+     * The original date object is unchanged.
+     *
+     * @param date  the date, not null
+     * @param calendarField  the calendar field to add to
+     * @param amount  the amount to add, may be negative
+     * @return the new date object with the amount added
+     * @throws IllegalArgumentException if the date is null
+     */
+    public static Date add(Date date, int calendarField, int amount);
+    /**
+     * <p>Internal calculation method.</p>
+     * 
+     * @param val  the calendar
+     * @param field  the field constant
+     * @param round  true to round, false to truncate
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    private static void modify(Calendar val, int field, boolean round);
+    /**
+     * <p>Round this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if this was passed with HOUR, it would return
+     * 28 Mar 2002 14:00:00.000. If this was passed with MONTH, it
+     * would return 1 April 2002 0:00:00.000.</p>
+     * 
+     * <p>For a date in a timezone that handles the change to daylight
+     * saving time, rounding to Calendar.HOUR_OF_DAY will behave as follows.
+     * Suppose daylight saving time begins at 02:00 on March 30. Rounding a 
+     * date that crosses this time would produce the following values:
+     * <ul>
+     * <li>March 30, 2003 01:10 rounds to March 30, 2003 01:00</li>
+     * <li>March 30, 2003 01:40 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:10 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:40 rounds to March 30, 2003 04:00</li>
+     * </ul>
+     * </p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date (a different object)
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Calendar round(Calendar date, int field);
+    /**
+     * <p>Round this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if this was passed with HOUR, it would return
+     * 28 Mar 2002 14:00:00.000. If this was passed with MONTH, it
+     * would return 1 April 2002 0:00:00.000.</p>
+     * 
+     * <p>For a date in a timezone that handles the change to daylight
+     * saving time, rounding to Calendar.HOUR_OF_DAY will behave as follows.
+     * Suppose daylight saving time begins at 02:00 on March 30. Rounding a 
+     * date that crosses this time would produce the following values:
+     * <ul>
+     * <li>March 30, 2003 01:10 rounds to March 30, 2003 01:00</li>
+     * <li>March 30, 2003 01:40 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:10 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:40 rounds to March 30, 2003 04:00</li>
+     * </ul>
+     * </p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date round(Date date, int field);
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date (a different object)
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Calendar truncate(Calendar date, int field);
+    /**
+     * <p>Round this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if this was passed with HOUR, it would return
+     * 28 Mar 2002 14:00:00.000. If this was passed with MONTH, it
+     * would return 1 April 2002 0:00:00.000.</p>
+     * 
+     * <p>For a date in a timezone that handles the change to daylight
+     * saving time, rounding to Calendar.HOUR_OF_DAY will behave as follows.
+     * Suppose daylight saving time begins at 02:00 on March 30. Rounding a 
+     * date that crosses this time would produce the following values:
+     * <ul>
+     * <li>March 30, 2003 01:10 rounds to March 30, 2003 01:00</li>
+     * <li>March 30, 2003 01:40 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:10 rounds to March 30, 2003 03:00</li>
+     * <li>March 30, 2003 02:40 rounds to March 30, 2003 04:00</li>
+     * </ul>
+     * </p>
+     * 
+     * @param date  the date to work with, either Date or Calendar
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ClassCastException if the object type is not a <code>Date</code>
+     *  or <code>Calendar</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date round(Object date, int field);
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date truncate(Date date, int field);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

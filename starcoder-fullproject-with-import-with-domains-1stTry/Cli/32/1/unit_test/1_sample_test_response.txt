@@ -1,0 +1,24 @@
+ private void assertLinesEqual(String expected, String actual) {
+        String[] expectedLines = expected.split(System.getProperty("line.separator"));
+        String[] actualLines = actual.split(System.getProperty("line.separator"));
+        assertEquals("line count", expectedLines.length, actualLines.length);
+        for (int i = 0; i < expectedLines.length; i++) {
+            assertEquals("line " + i, expectedLines[i], actualLines[i]);
+        }
+    }
+    private void assertLineLength(String expected, int length) {
+        String[] lines = expected.split(System.getProperty("line.separator"));
+        for (int i = 0; i < lines.length; i++) {
+            assertEquals("line " + i, length, lines[i].length());
+        }
+    }
+    private void assertLineWrap(String expected, int length) {
+        String[] lines = expected.split(System.getProperty("line.separator"));
+        for (int i = 0; i < lines.length; i++) {
+            assertTrue("line " + i, lines[i].length() <= length);
+        }
+    }
+    private void assertLineWrap(String expected, int length, int tabLength) {
+        String[] lines = expected.split(System.getProperty("line.separator"));
+        for (int i = 0; i < lines.length; i++) {
+            assertTru

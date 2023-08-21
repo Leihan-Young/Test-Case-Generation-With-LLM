@@ -1,0 +1,43 @@
+package org.jsoup.select;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.nodes.Element;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+/**
+ * Base combining (and, or) evaluator.
+ */
+abstract class CombiningEvaluator extends Evaluator {
+}
+package org.jsoup.select;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.TokenQueue;
+/**
+ * Parses a CSS selector into an Evaluator tree.
+ */
+class QueryParser {
+    private TokenQueue tq;
+    private String query;
+    private List<Evaluator> evals = new ArrayList<Evaluator>();
+    /**
+     * Parse a CSS query into an Evaluator.
+     * @param query CSS query
+     * @return Evaluator
+     */
+    public static Evaluator parse(String query);
+    /**
+     * Parse the query
+     * @return Evaluator
+     */
+    Evaluator parse();
+    private void combinator(char combinator);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

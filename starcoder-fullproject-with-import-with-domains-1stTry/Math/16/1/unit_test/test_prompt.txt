@@ -1,0 +1,232 @@
+package org.apache.commons.math3.util;
+import java.io.PrintStream;
+/**
+ * Faster, more accurate, portable alternative to {@link Math} and
+ * {@link StrictMath} for large scale computation.
+ * <p>
+ * FastMath is a drop-in replacement for both Math and StrictMath. This
+ * means that for any method in Math (say {@code Math.sin(x)} or
+ * {@code Math.cbrt(y)}), user can directly change the class and use the
+ * methods as is (using {@code FastMath.sin(x)} or {@code FastMath.cbrt(y)}
+ * in the previous example).
+ * </p>
+ * <p>
+ * FastMath speed is achieved by relying heavily on optimizing compilers
+ * to native code present in many JVMs today and use of large tables.
+ * The larger tables are lazily initialised on first use, so that the setup
+ * time does not penalise methods that don't need them.
+ * </p>
+ * <p>
+ * Note that FastMath is
+ * extensively used inside Apache Commons Math, so by calling some algorithms,
+ * the overhead when the the tables need to be intialised will occur
+ * regardless of the end-user calling FastMath methods directly or not.
+ * Performance figures for a specific JVM and hardware can be evaluated by
+ * running the FastMathTestPerformance tests in the test directory of the source
+ * distribution.
+ * </p>
+ * <p>
+ * FastMath accuracy should be mostly independent of the JVM as it relies only
+ * on IEEE-754 basic operations and on embedded tables. Almost all operations
+ * are accurate to about 0.5 ulp throughout the domain range. This statement,
+ * of course is only a rough global observed behavior, it is <em>not</em> a
+ * guarantee for <em>every</em> double numbers input (see William Kahan's <a
+ * href="http://en.wikipedia.org/wiki/Rounding#The_table-maker.27s_dilemma">Table
+ * Maker's Dilemma</a>).
+ * </p>
+ * <p>
+ * FastMath additionally implements the following methods not found in Math/StrictMath:
+ * <ul>
+ * <li>{@link #asinh(double)}</li>
+ * <li>{@link #acosh(double)}</li>
+ * <li>{@link #atanh(double)}</li>
+ * </ul>
+ * The following methods are found in Math/StrictMath since 1.6 only, they are provided
+ * by FastMath even in 1.5 Java virtual machines
+ * <ul>
+ * <li>{@link #copySign(double, double)}</li>
+ * <li>{@link #getExponent(double)}</li>
+ * <li>{@link #nextAfter(double,double)}</li>
+ * <li>{@link #nextUp(double)}</li>
+ * <li>{@link #scalb(double, int)}</li>
+ * <li>{@link #copySign(float, float)}</li>
+ * <li>{@link #getExponent(float)}</li>
+ * <li>{@link #nextAfter(float,double)}</li>
+ * <li>{@link #nextUp(float)}</li>
+ * <li>{@link #scalb(float, int)}</li>
+ * </ul>
+ * </p>
+ * @version $Id$
+ * @since 2.2
+ */
+public class FastMath {
+    public static final double PI = 105414357.0 / 33554432.0 + 1.984187159361080883e-9;
+    public static final double E = 2850325.0 / 1048576.0 + 8.254840070411028747e-8;
+    private static final boolean RECOMPUTE_TABLES_AT_RUNTIME = false;
+    private static final double LN_2_A = 0.693147063255310059;
+    private static final double LN_2_B = 1.17304635250823482e-7;
+    /**
+     * Get the high order bits from the mantissa.
+     * Equivalent to adding and subtracting HEX_40000 but also works for very large numbers
+     *
+     * @param d the value to split
+     * @return the high order part of the mantissa
+     */
+    private static double doubleHighPart(double d);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static long max(final long a, final long b);
+    /**
+     * Compute least significant bit (Unit in Last Position) for a number.
+     * @param x number from which ulp is requested
+     * @return ulp(x)
+     */
+    public static float ulp(float x);
+    /**
+     * Computes the <a href="http://mathworld.wolfram.com/Logarithm.html">
+     * logarithm</a> in a given base.
+     *
+     * Returns {@code NaN} if either argument is negative.
+     * If {@code base} is 0 and {@code x} is positive, 0 is returned.
+     * If {@code base} is positive and {@code x} is 0,
+     * {@code Double.NEGATIVE_INFINITY} is returned.
+     * If both arguments are 0, the result is {@code NaN}.
+     *
+     * @param base Base of the logarithm, must be greater than 0.
+     * @param x Argument, must be greater than 0.
+     * @return the value of the logarithm, i.e. the number {@code y} such that
+     * <code>base<sup>y</sup> = x</code>.
+     * @since 1.2 (previously in {@code MathUtils}, moved as of version 3.0)
+     */
+    public static double log(double base, double x);
+    /** Compute the square root of a number.
+     * <p><b>Note:</b> this implementation currently delegates to {@link Math#sqrt}
+     * @param a number on which evaluation is done
+     * @return square root of a
+     */
+    public static double sqrt(final double a);
+    /** Compute the hyperbolic sine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic sine of x
+     */
+    public static double sinh(double x);
+    /** Compute the hyperbolic cosine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic cosine of x
+     */
+    public static double cosh(double x);
+    /**
+     * Exponential function.
+     *
+     * Computes exp(x), function result is nearly rounded.   It will be correctly
+     * rounded to the theoretical value for 99.9% of input values, otherwise it will
+     * have a 1 UPL error.
+     *
+     * Method:
+     *    Lookup intVal = exp(int(x))
+     *    Lookup fracVal = exp(int(x-int(x) / 1024.0) * 1024.0 );
+     *    Compute z as the exponential of the remaining bits by a polynomial minus one
+     *    exp(x) = intVal * fracVal * (1 + z)
+     *
+     * Accuracy:
+     *    Calculation is done with 63 bits of precision, so result should be correctly
+     *    rounded for 99.9% of input values, with less than 1 ULP error otherwise.
+     *
+     * @param x   a double
+     * @return double e<sup>x</sup>
+     */
+    public static double exp(double x);
+    /**
+     * Natural logarithm.
+     *
+     * @param x   a double
+     * @return log(x)
+     */
+    public static double log(final double x);
+    /**
+     * Absolute value.
+     * @param x number from which absolute value is requested
+     * @return abs(x)
+     */
+    public static float abs(final float x);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static float max(final float a, final float b);
+    /**
+     * Compute least significant bit (Unit in Last Position) for a number.
+     * @param x number from which ulp is requested
+     * @return ulp(x)
+     */
+    public static double ulp(double x);
+    /**
+     * Internal helper method for exponential function.
+     * @param x original argument of the exponential function
+     * @param extra extra bits of precision on input (To Be Confirmed)
+     * @param hiPrec extra bits of precision on output (To Be Confirmed)
+     * @return exp(x)
+     */
+    private static double exp(double x, double extra, double[] hiPrec);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static int max(final int a, final int b);
+    /**
+     * Absolute value.
+     * @param x number from which absolute value is requested
+     * @return abs(x)
+     */
+    public static int abs(final int x);
+    /**
+     * Power function.  Compute x^y.
+     *
+     * @param x   a double
+     * @param y   a double
+     * @return double
+     */
+    public static double pow(double x, double y);
+    /**
+     * Absolute value.
+     * @param x number from which absolute value is requested
+     * @return abs(x)
+     */
+    public static double abs(double x);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static double max(final double a, final double b);
+    /**
+     * Internal helper method for natural logarithm function.
+     * @param x original argument of the natural logarithm function
+     * @param hiPrec extra bits of precision on output (To Be Confirmed)
+     * @return log(x)
+     */
+    private static double log(final double x, final double[] hiPrec);
+    /**
+     * Absolute value.
+     * @param x number from which absolute value is requested
+     * @return abs(x)
+     */
+    public static long abs(final long x);
+    /**
+     * Raise a double to an int power.
+     *
+     * @param d Number to raise.
+     * @param e Exponent.
+     * @return d<sup>e</sup>
+     */
+    public static double pow(double d, int e);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

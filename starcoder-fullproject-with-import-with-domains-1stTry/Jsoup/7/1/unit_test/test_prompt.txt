@@ -1,0 +1,31 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.Tag;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ A HTML Document.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Document extends Element {
+    private OutputSettings outputSettings = new OutputSettings();
+    /**
+     Normalise the document. This happens after the parse phase so generally does not need to be called.
+     Moves any text content that is not in the body element into the body.
+     @return this document after normalisation
+     */
+    public Document normalise();
+    private void normaliseTextNodes(Element element);
+    /**
+     Create a valid, empty shell of a document, suitable for adding more elements to.
+     @param baseUri baseUri of document
+     @return document with html, head, and body elements.
+     */
+    static public Document createShell(String baseUri);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

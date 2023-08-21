@@ -1,0 +1,22 @@
+PosixParser() throws Exception {
+        // create options
+        Options options = new Options();
+        options.addOption("a", false, "option a");
+        options.addOption("b", true, "option b");
+
+        // create parser
+        CommandLineParser parser = new PosixParser();
+
+        // test with valid arguments
+        String[] args1 = {"-a", "-b", "value"};
+        CommandLine cmd1 = parser.parse(options, args1);
+        assertTrue(cmd1.hasOption("a"));
+        assertTrue(cmd1.hasOption("b"));
+        assertEquals("value", cmd1.getOptionValue("b"));
+
+        // test with invalid arguments
+        String[] args2 = {"-c", "value"};
+        CommandLine cmd2 = parser.parse(options, args2);
+        assertFalse(cmd2.hasOption("c"));
+    }
+```

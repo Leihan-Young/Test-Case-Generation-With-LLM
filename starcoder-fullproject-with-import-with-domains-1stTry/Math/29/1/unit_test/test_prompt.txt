@@ -1,0 +1,75 @@
+package org.apache.commons.math3.linear;
+import java.io.Serializable;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.util.OpenIntToDoubleHashMap;
+import org.apache.commons.math3.util.OpenIntToDoubleHashMap.Iterator;
+import org.apache.commons.math3.util.FastMath;
+/**
+ * This class implements the {@link RealVector} interface with a
+ * {@link OpenIntToDoubleHashMap} backing store.
+ * @version $Id$
+ * @since 2.0
+*/
+public class OpenMapRealVector extends SparseRealVector
+    implements Serializable {
+    public static final double DEFAULT_ZERO_TOLERANCE = 1.0e-12;
+    private static final long serialVersionUID = 8772222695580707260L;
+    private final OpenIntToDoubleHashMap entries;
+    private final int virtualSize;
+    private final double epsilon;
+    /**
+     * Optimized method to subtract OpenMapRealVectors.
+     *
+     * @param v Vector to subtract from {@code this}.
+     * @return the difference of {@code this} and {@code v}.
+     * @throws org.apache.commons.math3.exception.DimensionMismatchException
+     * if the dimensions do not match.
+     */
+    public OpenMapRealVector subtract(OpenMapRealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector ebeMultiply(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public int getDimension();
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector append(double d);
+    /**
+     * Optimized method to append a OpenMapRealVector.
+     * @param v vector to append
+     * @return The result of appending {@code v} to self
+     */
+    public OpenMapRealVector append(OpenMapRealVector v);
+    /**
+     * Optimized method to add two OpenMapRealVectors.
+     * It copies the larger vector, then iterates over the smaller.
+     *
+     * @param v Vector to add.
+     * @return the sum of {@code this} and {@code v}.
+     * @throws org.apache.commons.math3.exception.DimensionMismatchException
+     * if the dimensions do not match.
+     */
+    public OpenMapRealVector add(OpenMapRealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public RealVector add(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector ebeDivide(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public RealVector subtract(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector append(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public double getEntry(int index);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

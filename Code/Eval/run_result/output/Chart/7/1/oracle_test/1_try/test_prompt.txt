@@ -1,0 +1,135 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * A structure containing zero, one or many {@link TimePeriodValue} instances.  
+ * The time periods can overlap, and are maintained in the order that they are 
+ * added to the collection.
+ * <p>
+ * This is similar to the {@link TimeSeries} class, except that the time 
+ * periods can have irregular lengths.
+ */
+public class TimePeriodValues extends Series implements Serializable {
+    private String domain;
+    private String range;
+    private List data;
+    private int minStartIndex = -1;
+    private int maxStartIndex = -1;
+    private int minMiddleIndex = -1;
+    private int maxMiddleIndex = -1;
+    private int minEndIndex = -1;
+    private int maxEndIndex = -1;
+    /**
+     * Returns the index of the time period with the maximum middle 
+     * milliseconds.
+     * 
+     * @return The index.
+     */
+    public int getMaxMiddleIndex() {
+        return this.maxMiddleIndex;
+    }
+    /**
+     * Adds a data item to the series and sends a {@link SeriesChangeEvent} to
+     * all registered listeners.
+     *
+     * @param item  the item (<code>null</code> not permitted).
+     */
+    public void add(TimePeriodValue item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Null item not allowed.");
+        }
+        this.data.add(item);
+        updateBounds(item.getPeriod(), this.data.size() - 1);
+        fireSeriesChanged();
+    }
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value.
+     * 
+     * @see #add(TimePeriod, Number)
+     */
+    public void add(TimePeriod period, double value) {
+        TimePeriodValue item = new TimePeriodValue(period, value);
+        add(item);
+    }
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value (<code>null</code> permitted).
+     */
+    public void add(TimePeriod period, Number value) {
+        TimePeriodValue item = new TimePeriodValue(period, value);
+        add(item);
+    }
+    /**
+     * Creates a new (empty) collection of time period values.
+     *
+     * @param name  the name of the series (<code>null</code> not permitted).
+     */
+    public TimePeriodValues(Comparable name) {
+        this(name, DEFAULT_DOMAIN_DESCRIPTION, DEFAULT_RANGE_DESCRIPTION);
+    }
+    /**
+     * Creates a new time series that contains no data.
+     * <P>
+     * Descriptions can be specified for the domain and range.  One situation
+     * where this is helpful is when generating a chart for the time series -
+     * axis labels can be taken from the domain and range description.
+     *
+     * @param name  the name of the series (<code>null</code> not permitted).
+     * @param domain  the domain description.
+     * @param range  the range description.
+     */
+    public TimePeriodValues(Comparable name, String domain, String range) {
+        super(name);
+        this.domain = domain;
+        this.range = range;
+        this.data = new ArrayList();
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGetMaxMiddleIndex() {
+        TimePeriodValues s = new TimePeriodValues("Test");
+        _tmp_var_0_ = -1;
+        _tmp_var_1_ =  s.getMaxMiddleIndex();
+        $ASSERT$
+        s.add(new SimpleTimePeriod(100L, 200L), 1.0);
+        _tmp_var_2_ = 0;
+        _tmp_var_3_ =  s.getMaxMiddleIndex();
+        $ASSERT$
+        s.add(new SimpleTimePeriod(300L, 400L), 2.0);
+        _tmp_var_4_ = 1;
+        _tmp_var_5_ =  s.getMaxMiddleIndex();
+        $ASSERT$
+        s.add(new SimpleTimePeriod(0L, 50L), 3.0);
+        _tmp_var_6_ = 1;
+        _tmp_var_7_ =  s.getMaxMiddleIndex();
+        $ASSERT$
+        s.add(new SimpleTimePeriod(150L, 200L), 4.0);
+        _tmp_var_8_ = 1;
+        _tmp_var_9_ =  s.getMaxMiddleIndex();
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

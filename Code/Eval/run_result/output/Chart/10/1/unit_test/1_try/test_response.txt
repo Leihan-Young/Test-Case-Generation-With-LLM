@@ -1,0 +1,22 @@
+GenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+```
+# Bug Description:
+The bug in the program is that when the `toolTipText` argument contains double quotes, the returned HTML string will be invalid because the double quotes will not be properly escaped. This can cause issues when the HTML code is rendered in a browser. For example, if `toolTipText` is `"This "is" a tooltip"`, the returned HTML string will be `title="This "is" a tooltip" alt=""`, which is invalid HTML syntax. To fix this bug, the double quotes in `toolTipText` need to be escaped properly before they are concatenated with the HTML string. One way to do this is to replace any double quotes in `toolTipText` with the HTML entity `&quot;`.

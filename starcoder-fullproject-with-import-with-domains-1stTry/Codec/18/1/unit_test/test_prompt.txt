@@ -1,0 +1,118 @@
+package org.apache.commons.codec.binary;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.codec.Charsets;
+/**
+ * Converts String to and from bytes using the encodings required by the Java specification. These encodings are
+ * specified in <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">
+ * Standard charsets</a>.
+ *
+ * <p>This class is immutable and thread-safe.</p>
+ *
+ * @see CharEncoding
+ * @see <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+ * @version $Id$
+ * @since 1.4
+ */
+public class StringUtils {
+    /**
+     * Constructs a new <code>String</code> by decoding the specified array of bytes using the given charset.
+     * <p>
+     * This method catches {@link UnsupportedEncodingException} and re-throws it as {@link IllegalStateException}, which
+     * should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.
+     * </p>
+     *
+     * @param bytes
+     *            The bytes to be decoded into characters, may be <code>null</code>
+     * @param charsetName
+     *            The name of a required {@link java.nio.charset.Charset}
+     * @return A new <code>String</code> decoded from the specified array of bytes using the given charset,
+     *         or <code>null</code> if the input byte array was <code>null</code>.
+     * @throws IllegalStateException
+     *             Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a
+     *             required charset name.
+     * @see CharEncoding
+     * @see String#String(byte[], String)
+     */
+    public static String newString(final byte[] bytes, final String charsetName);
+    /**
+     * Calls {@link String#getBytes(Charset)}
+     *
+     * @param string
+     *            The string to encode (if null, return null).
+     * @param charset
+     *            The {@link Charset} to encode the <code>String</code>
+     * @return the encoded bytes
+     */
+    private static byte[] getBytes(final String string, final Charset charset);
+    /**
+     * <p>
+     * Compares two CharSequences, returning <code>true</code> if they represent equal sequences of characters.
+     * </p>
+     *
+     * <p>
+     * <code>null</code>s are handled without exceptions. Two <code>null</code> references are considered to be equal.
+     * The comparison is case sensitive.
+     * </p>
+     *
+     * <pre>
+     * StringUtils.equals(null, null)   = true
+     * StringUtils.equals(null, "abc")  = false
+     * StringUtils.equals("abc", null)  = false
+     * StringUtils.equals("abc", "abc") = true
+     * StringUtils.equals("abc", "ABC") = false
+     * </pre>
+     *
+     * <p>
+     * Copied from Apache Commons Lang r1583482 on April 10, 2014 (day of 3.3.2 release).
+     * </p>
+     *
+     * @see Object#equals(Object)
+     * @param cs1
+     *            the first CharSequence, may be <code>null</code>
+     * @param cs2
+     *            the second CharSequence, may be <code>null</code>
+     * @return <code>true</code> if the CharSequences are equal (case-sensitive), or both <code>null</code>
+     * @since 1.10
+     */
+    public static boolean equals(final CharSequence cs1, final CharSequence cs2);
+    /**
+     * Constructs a new <code>String</code> by decoding the specified array of bytes using the given charset.
+     *
+     * @param bytes
+     *            The bytes to be decoded into characters
+     * @param charset
+     *            The {@link Charset} to encode the <code>String</code>; not {@code null}
+     * @return A new <code>String</code> decoded from the specified array of bytes using the given charset,
+     *         or <code>null</code> if the input byte array was <code>null</code>.
+     * @throws NullPointerException
+     *             Thrown if charset is {@code null}
+     */
+    private static String newString(final byte[] bytes, final Charset charset);
+    /**
+     * Encodes the given string into a sequence of bytes using the named charset, storing the result into a new byte
+     * array.
+     * <p>
+     * This method catches {@link UnsupportedEncodingException} and rethrows it as {@link IllegalStateException}, which
+     * should never happen for a required charset name. Use this method when the encoding is required to be in the JRE.
+     * </p>
+     *
+     * @param string
+     *            the String to encode, may be <code>null</code>
+     * @param charsetName
+     *            The name of a required {@link java.nio.charset.Charset}
+     * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
+     * @throws IllegalStateException
+     *             Thrown when a {@link UnsupportedEncodingException} is caught, which should never happen for a
+     *             required charset name.
+     * @see CharEncoding
+     * @see String#getBytes(String)
+     */
+    public static byte[] getBytesUnchecked(final String string, final String charsetName);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

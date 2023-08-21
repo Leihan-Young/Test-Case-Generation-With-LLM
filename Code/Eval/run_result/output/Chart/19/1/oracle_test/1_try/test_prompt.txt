@@ -1,0 +1,317 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Sets the range axis for the plot and sends a {@link PlotChangeEvent} to
+     * all registered listeners.
+     *
+     * @param axis  the axis (<code>null</code> permitted).
+     */
+    public void setRangeAxis(ValueAxis axis) {
+        setRangeAxis(0, axis);
+    }
+    /**
+     * Sets a range axis and sends a {@link PlotChangeEvent} to all registered
+     * listeners.
+     *
+     * @param index  the axis index.
+     * @param axis  the axis.
+     */
+    public void setRangeAxis(int index, ValueAxis axis) {
+        setRangeAxis(index, axis, true);
+    }
+    /**
+     * Sets a range axis and, if requested, sends a {@link PlotChangeEvent} to 
+     * all registered listeners.
+     *
+     * @param index  the axis index.
+     * @param axis  the axis.
+     * @param notify  notify listeners?
+     */
+    public void setRangeAxis(int index, ValueAxis axis, boolean notify) {
+        ValueAxis existing = (ValueAxis) this.rangeAxes.get(index);
+        if (existing != null) {
+            existing.removeChangeListener(this);
+        }
+        if (axis != null) {
+            axis.setPlot(this);
+        }
+        this.rangeAxes.set(index, axis);
+        if (axis != null) {
+            axis.configure();
+            axis.addChangeListener(this);
+        }
+        if (notify) {
+            notifyListeners(new PlotChangeEvent(this));
+        }
+    }
+    /**
+     * Returns the index of the specified axis, or <code>-1</code> if the axis
+     * is not assigned to the plot.
+     *
+     * @param axis  the axis (<code>null</code> not permitted).
+     *
+     * @return The axis index.
+     * 
+     * @see #getRangeAxis(int)
+     * @see #getDomainAxisIndex(CategoryAxis)
+     * 
+     * @since 1.0.7
+     */
+    public int getRangeAxisIndex(ValueAxis axis) {
+        int result = this.rangeAxes.indexOf(axis);
+        if (result < 0) { // try the parent plot
+            Plot parent = getParent();
+            if (parent instanceof CategoryPlot) {
+                CategoryPlot p = (CategoryPlot) parent;
+                result = p.getRangeAxisIndex(axis);
+            }
+        }
+        return result;
+    }
+    /**
+     * Default constructor.
+     */
+    public CategoryPlot() {
+        this(null, null, null, null);
+    }
+    /**
+     * Creates a new plot.
+     *
+     * @param dataset  the dataset (<code>null</code> permitted).
+     * @param domainAxis  the domain axis (<code>null</code> permitted).
+     * @param rangeAxis  the range axis (<code>null</code> permitted).
+     * @param renderer  the item renderer (<code>null</code> permitted).
+     *
+     */
+    public CategoryPlot(CategoryDataset dataset,
+                        CategoryAxis domainAxis,
+                        ValueAxis rangeAxis,
+                        CategoryItemRenderer renderer) {
+
+        super();
+
+        this.orientation = PlotOrientation.VERTICAL;
+
+        // allocate storage for dataset, axes and renderers
+        this.domainAxes = new ObjectList();
+        this.domainAxisLocations = new ObjectList();
+        this.rangeAxes = new ObjectList();
+        this.rangeAxisLocations = new ObjectList();
+        
+        this.datasetToDomainAxisMap = new ObjectList();
+        this.datasetToRangeAxisMap = new ObjectList();
+
+        this.renderers = new ObjectList();
+
+        this.datasets = new ObjectList();
+        this.datasets.set(0, dataset);
+        if (dataset != null) {
+            dataset.addChangeListener(this);
+        }
+
+        this.axisOffset = new RectangleInsets(4.0, 4.0, 4.0, 4.0);
+
+        setDomainAxisLocation(AxisLocation.BOTTOM_OR_LEFT, false);
+        setRangeAxisLocation(AxisLocation.TOP_OR_LEFT, false);
+
+        this.renderers.set(0, renderer);
+        if (renderer != null) {
+            renderer.setPlot(this);
+            renderer.addChangeListener(this);
+        }
+
+        this.domainAxes.set(0, domainAxis);
+        this.mapDatasetToDomainAxis(0, 0);
+        if (domainAxis != null) {
+            domainAxis.setPlot(this);
+            domainAxis.addChangeListener(this);
+        }
+        this.drawSharedDomainAxis = false;
+
+        this.rangeAxes.set(0, rangeAxis);
+        this.mapDatasetToRangeAxis(0, 0);
+        if (rangeAxis != null) {
+            rangeAxis.setPlot(this);
+            rangeAxis.addChangeListener(this);
+        }
+        
+        configureDomainAxes();
+        configureRangeAxes();
+
+        this.domainGridlinesVisible = DEFAULT_DOMAIN_GRIDLINES_VISIBLE;
+        this.domainGridlinePosition = CategoryAnchor.MIDDLE;
+        this.domainGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.domainGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.rangeGridlinesVisible = DEFAULT_RANGE_GRIDLINES_VISIBLE;
+        this.rangeGridlineStroke = DEFAULT_GRIDLINE_STROKE;
+        this.rangeGridlinePaint = DEFAULT_GRIDLINE_PAINT;
+
+        this.foregroundDomainMarkers = new HashMap();
+        this.backgroundDomainMarkers = new HashMap();
+        this.foregroundRangeMarkers = new HashMap();
+        this.backgroundRangeMarkers = new HashMap();
+
+        Marker baseline = new ValueMarker(0.0, new Color(0.8f, 0.8f, 0.8f, 
+                0.5f), new BasicStroke(1.0f), new Color(0.85f, 0.85f, 0.95f, 
+                0.5f), new BasicStroke(1.0f), 0.6f);
+        addRangeMarker(baseline, Layer.BACKGROUND);
+
+        this.anchorValue = 0.0;
+
+        this.rangeCrosshairVisible = DEFAULT_CROSSHAIR_VISIBLE;
+        this.rangeCrosshairValue = 0.0;
+        this.rangeCrosshairStroke = DEFAULT_CROSSHAIR_STROKE;
+        this.rangeCrosshairPaint = DEFAULT_CROSSHAIR_PAINT;
+        
+        this.annotations = new java.util.ArrayList();
+
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGetRangeAxisIndex() {
+        CategoryAxis domainAxis1 = new CategoryAxis("X1");
+        NumberAxis rangeAxis1 = new NumberAxis("Y1");
+        NumberAxis rangeAxis2 = new NumberAxis("Y2");
+        CategoryPlot plot = new CategoryPlot(null, domainAxis1, rangeAxis1, 
+                null);
+        _tmp_var_0_ = 0;
+        _tmp_var_1_ =  plot.getRangeAxisIndex(rangeAxis1);
+        $ASSERT$
+        _tmp_var_2_ = -1;
+        _tmp_var_3_ =  plot.getRangeAxisIndex(rangeAxis2);
+        $ASSERT$
+        plot.setRangeAxis(1, rangeAxis2);
+        _tmp_var_4_ = 1;
+        _tmp_var_5_ =  plot.getRangeAxisIndex(rangeAxis2);
+        $ASSERT$
+        _tmp_var_6_ = -1;
+        _tmp_var_7_ =  plot.getRangeAxisIndex(new NumberAxis("Y2"));
+        $ASSERT$
+        boolean pass = false;
+        try {
+            plot.getRangeAxisIndex(null);
+        }
+        catch ($EXCEPTION$ e) {
+            pass = true;
+        }
+        _tmp_var_8_ = pass;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

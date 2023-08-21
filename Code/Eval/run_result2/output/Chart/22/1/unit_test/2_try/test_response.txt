@@ -1,0 +1,45 @@
+KeyedObjects2D() {
+    KeyedObjects2D data = new KeyedObjects2D();
+    data.setObject("value1", "row1", "column1");
+    data.setObject("value2", "row1", "column2");
+    data.setObject("value3", "row2", "column1");
+    assertEquals("value1", data.getObject("row1", "column1"));
+    assertEquals("value2", data.getObject("row1", "column2"));
+    assertEquals("value3", data.getObject("row2", "column1"));
+    // test removeObject
+    data.removeObject("row1", "column1");
+    assertNull(data.getObject("row1", "column1"));
+    // test removeRow
+    data.removeRow(0);
+    assertNull(data.getObject("row1", "column2"));
+    // test removeColumn
+    data.removeColumn("column1");
+    assertNull(data.getObject("row2", "column1"));
+    // test getObject with invalid rowKey
+    try {
+        data.getObject("invalidRowKey", "column1");
+        fail("Expected UnknownKeyException");
+    } catch (UnknownKeyException e) {
+        // pass
+    }
+    // test getObject with invalid columnKey
+    try {
+        data.getObject("row2", "invalidColumnKey");
+        fail("Expected UnknownKeyException");
+    } catch (UnknownKeyException e) {
+        // pass
+    }
+}
+``` 
+
+The bug in the program is that the `rows` list is not initialized before calling `rows.add(row)` in the `setObject` method. This causes a `NullPointerException` to be thrown when trying to add an object to a row that doesn't exist yet. 
+
+To fix this bug, we need to initialize the `rows` list in the constructor of the `KeyedObjects2D` class. Here's the updated code:
+
+```
+public KeyedObjects2D() {
+    this.rowKeys = new ArrayList();
+    this.columnKeys = new ArrayList();
+    this.rows = new ArrayList();
+}
+```

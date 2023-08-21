@@ -1,0 +1,67 @@
+package org.apache.commons.math.optimization.linear;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.math.linear.Array2DRowRealMatrix;
+import org.apache.commons.math.linear.MatrixUtils;
+import org.apache.commons.math.linear.RealMatrix;
+import org.apache.commons.math.linear.RealVector;
+import org.apache.commons.math.optimization.GoalType;
+import org.apache.commons.math.optimization.RealPointValuePair;
+import org.apache.commons.math.util.Precision;
+/**
+ * A tableau for use in the Simplex method.
+ *
+ * <p>
+ * Example:
+ * <pre>
+ *   W |  Z |  x1 |  x2 |  x- | s1 |  s2 |  a1 |  RHS
+ * ---------------------------------------------------
+ *  -1    0    0     0     0     0     0     1     0   &lt;= phase 1 objective
+ *   0    1   -15   -10    0     0     0     0     0   &lt;= phase 2 objective
+ *   0    0    1     0     0     1     0     0     2   &lt;= constraint 1
+ *   0    0    0     1     0     0     1     0     3   &lt;= constraint 2
+ *   0    0    1     1     0     0     0     1     4   &lt;= constraint 3
+ * </pre>
+ * W: Phase 1 objective function</br>
+ * Z: Phase 2 objective function</br>
+ * x1 &amp; x2: Decision variables</br>
+ * x-: Extra decision variable to allow for negative values</br>
+ * s1 &amp; s2: Slack/Surplus variables</br>
+ * a1: Artificial variable</br>
+ * RHS: Right hand side</br>
+ * </p>
+ * @version $Id$
+ * @since 2.0
+ */
+class SimplexTableau implements Serializable {
+    private static final String NEGATIVE_VAR_COLUMN_LABEL = "x-";
+    private static final int DEFAULT_ULPS = 10;
+    private static final long serialVersionUID = -1369660067587938365L;
+    private final LinearObjectiveFunction f;
+    private final List<LinearConstraint> constraints;
+    private final boolean restrictToNonNegative;
+    private final List<String> columnLabels = new ArrayList<String>();
+    private transient RealMatrix tableau;
+    private final int numDecisionVariables;
+    private final int numSlackVariables;
+    private int numArtificialVariables;
+    private final double epsilon;
+    private final int maxUlps;
+    /**
+     * Get the current solution.
+     *
+     * @return current solution
+     */
+    protected RealPointValuePair getSolution();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,5 @@
+ public void testEquals() {
+        GrayPaintScale s1 = new GrayPaintScale();
+        GrayPaintScale s2 = new GrayPaintScale();
+        assertTrue(s1.equals(s2));
+    }

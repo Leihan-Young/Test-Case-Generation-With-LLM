@@ -1,0 +1,5 @@
+ public void testEquals() {
+        TimeSeries s1 = new TimeSeries("S1");
+        TimeSeries s2 = new TimeSeries("S1");
+        assertTrue(s1.equals(s2));
+    }

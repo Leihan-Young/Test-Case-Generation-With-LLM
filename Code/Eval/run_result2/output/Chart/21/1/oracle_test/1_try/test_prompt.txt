@@ -1,0 +1,232 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * ----------------------------------------
+ * DefaultBoxAndWhiskerCategoryDataset.java
+ * ----------------------------------------
+ * (C) Copyright 2003-2007, by David Browning and Contributors.
+ *
+ * Original Author:  David Browning (for Australian Institute of Marine 
+ *                   Science);
+ * Contributor(s):   David Gilbert (for Object Refinery Limited);
+ *
+ * Changes
+ * -------
+ * 05-Aug-2003 : Version 1, contributed by David Browning (DG);
+ * 27-Aug-2003 : Moved from org.jfree.data --> org.jfree.data.statistics (DG);
+ * 12-Nov-2003 : Changed 'data' from private to protected and added a new 'add' 
+ *               method as proposed by Tim Bardzil.  Also removed old code (DG);
+ * 01-Mar-2004 : Added equals() method (DG);
+ * 18-Nov-2004 : Updates for changes in RangeInfo interface (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for the 1.0.0 
+ *               release (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 02-Feb-2007 : Removed author tags from all over JFreeChart sources (DG);
+ * 17-Apr-2007 : Fixed bug 1701822 (DG);
+ * 13-Jun-2007 : Fixed error in previous patch (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 28-Sep-2007 : Fixed cloning bug (DG);
+ * 02-Oct-2007 : Fixed bug in updating cached bounds (DG);
+ * 03-Oct-2007 : Fixed another bug in updating cached bounds (DG);
+ *
+ */
+package org.jfree.data.statistics;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.data.KeyedObjects2D;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.general.AbstractDataset;
+/**
+ * A convenience class that provides a default implementation of the
+ * {@link BoxAndWhiskerCategoryDataset} interface.
+ */
+public class DefaultBoxAndWhiskerCategoryDataset extends AbstractDataset
+        implements BoxAndWhiskerCategoryDataset, RangeInfo, PublicCloneable {
+    private double minimumRangeValue;
+    private int minimumRangeValueRow;
+    private int minimumRangeValueColumn;
+    private double maximumRangeValue;
+    private int maximumRangeValueRow;
+    private int maximumRangeValueColumn;
+    private Range rangeBounds;
+    /**
+     * Adds a list of values relating to one box-and-whisker entity to the 
+     * table.  The various median values are calculated.
+     *
+     * @param list  a collection of values from which the various medians will 
+     *              be calculated.
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #add(BoxAndWhiskerItem, Comparable, Comparable)
+     */
+    public void add(List list, Comparable rowKey, Comparable columnKey) {
+        BoxAndWhiskerItem item = BoxAndWhiskerCalculator
+                .calculateBoxAndWhiskerStatistics(list);
+        add(item, rowKey, columnKey);
+    }
+    /**
+     * Adds a list of values relating to one Box and Whisker entity to the 
+     * table.  The various median values are calculated.
+     *
+     * @param item  a box and whisker item (<code>null</code> not permitted).
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #add(List, Comparable, Comparable)
+     */
+    public void add(BoxAndWhiskerItem item, Comparable rowKey, 
+            Comparable columnKey) {
+
+        this.data.addObject(item, rowKey, columnKey);
+        
+        // update cached min and max values
+        int r = this.data.getRowIndex(rowKey);
+        int c = this.data.getColumnIndex(columnKey);
+        if ((this.maximumRangeValueRow == r && this.maximumRangeValueColumn 
+                == c) || (this.minimumRangeValueRow == r 
+                && this.minimumRangeValueColumn == c))  {
+            updateBounds();
+        }
+        
+            double minval = Double.NaN;
+            if (item.getMinOutlier() != null) {
+                minval = item.getMinOutlier().doubleValue();
+            }
+            double maxval = Double.NaN;
+            if (item.getMaxOutlier() != null) {
+                maxval = item.getMaxOutlier().doubleValue();
+            }
+        
+            if (Double.isNaN(this.maximumRangeValue)) {
+                this.maximumRangeValue = maxval;
+                this.maximumRangeValueRow = r;
+                this.maximumRangeValueColumn = c;
+            }
+            else if (maxval > this.maximumRangeValue) {
+                this.maximumRangeValue = maxval;
+                this.maximumRangeValueRow = r;
+                this.maximumRangeValueColumn = c;
+            }
+        
+            if (Double.isNaN(this.minimumRangeValue)) {
+                this.minimumRangeValue = minval;
+                this.minimumRangeValueRow = r;
+                this.minimumRangeValueColumn = c;
+            }
+            else if (minval < this.minimumRangeValue) {
+                this.minimumRangeValue = minval;
+                this.minimumRangeValueRow = r;
+                this.minimumRangeValueColumn = c;
+            }
+        
+        this.rangeBounds = new Range(this.minimumRangeValue,
+              this.maximumRangeValue);
+        fireDatasetChanged();
+
+    }
+    /**
+     * Creates a new dataset.
+     */
+    public DefaultBoxAndWhiskerCategoryDataset() {
+        this.data = new KeyedObjects2D();
+        this.minimumRangeValue = Double.NaN;
+        this.minimumRangeValueRow = -1;
+        this.minimumRangeValueColumn = -1;
+        this.maximumRangeValue = Double.NaN;
+        this.maximumRangeValueRow = -1;
+        this.maximumRangeValueColumn = -1;
+        this.rangeBounds = new Range(0.0, 0.0);
+    }
+    /**
+     * Returns the range of the values in this dataset's range.
+     *
+     * @param includeInterval  a flag that determines whether or not the
+     *                         y-interval is taken into account.
+     * 
+     * @return The range.
+     */
+    public Range getRangeBounds(boolean includeInterval) {
+        return this.rangeBounds;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGetRangeBounds() {
+        DefaultBoxAndWhiskerCategoryDataset d1 
+                = new DefaultBoxAndWhiskerCategoryDataset();
+        d1.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 
+                new ArrayList()), "R1", "C1");
+        _tmp_var_0_ = new Range(7.0, 8.0);
+        _tmp_var_1_ =  d1.getRangeBounds(false);
+        $ASSERT$
+        _tmp_var_2_ = new Range(7.0, 8.0);
+        _tmp_var_3_ =  d1.getRangeBounds(true);
+        $ASSERT$
+        
+        d1.add(new BoxAndWhiskerItem(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 
+                new ArrayList()), "R1", "C1");
+        _tmp_var_4_ = new Range(7.5, 8.5);
+        _tmp_var_5_ =  d1.getRangeBounds(false);
+        $ASSERT$
+        _tmp_var_6_ = new Range(7.5, 8.5);
+        _tmp_var_7_ =  d1.getRangeBounds(true);
+        $ASSERT$
+        
+        d1.add(new BoxAndWhiskerItem(2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 
+                new ArrayList()), "R2", "C1");
+        _tmp_var_8_ = new Range(7.5, 9.5);
+        _tmp_var_9_ =  d1.getRangeBounds(false);
+        $ASSERT$
+        _tmp_var_10_ = new Range(7.5, 9.5);
+        _tmp_var_11_ =  d1.getRangeBounds(true);
+        $ASSERT$
+        
+        // this replaces the entry with the current minimum value, but the new
+        // minimum value is now in a different item
+        d1.add(new BoxAndWhiskerItem(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 8.6, 9.6, 
+                new ArrayList()), "R1", "C1");
+        _tmp_var_12_ = new Range(8.5, 9.6);
+        _tmp_var_13_ =  d1.getRangeBounds(false);
+        $ASSERT$
+        _tmp_var_14_ = new Range(8.5, 9.6);
+        _tmp_var_15_ =  d1.getRangeBounds(true);
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

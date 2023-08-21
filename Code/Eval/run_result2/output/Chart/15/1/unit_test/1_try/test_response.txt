@@ -1,0 +1,13 @@
+PiePlot() {
+    // Create a pie dataset with one entry
+    DefaultPieDataset dataset = new DefaultPieDataset();
+    dataset.setValue("A", 1);
+
+    // Create a pie plot with default settings
+    PiePlot plot = new PiePlot();
+    plot.setDataset(dataset);
+
+    // Set the label generator to null
+    plot.setLabelGenerator(null);
+
+    // Create a chart and

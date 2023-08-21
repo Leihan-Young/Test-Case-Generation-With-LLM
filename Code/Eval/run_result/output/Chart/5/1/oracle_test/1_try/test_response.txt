@@ -1,0 +1,14 @@
+Bug1955483() {
+        XYSeries series = new XYSeries("Series", true, false); // changed allowDuplicateXValues to false
+        series.addOrUpdate(1.0, 1.0);
+        series.addOrUpdate(1.0, 2.0);
+        Double expected1 = new Double(1.0);
+        Double result1 = series.getY(0);
+        assertEquals(expected1, result1);
+        Double expected2 = new Double(2.0);
+        Double result2 = series.getY(1);
+        assertEquals(expected2, result2);
+        int expected3 = 1; // changed the expected value to reflect the change in allowDuplicateXValues
+        int result3 = series.getItemCount();
+        assertEquals(expected3, result3);
+}

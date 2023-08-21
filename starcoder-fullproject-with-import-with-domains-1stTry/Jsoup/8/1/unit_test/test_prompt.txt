@@ -1,0 +1,38 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+/**
+ The base, abstract Node model. Elements, Documents, Comments etc are all Node instances.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public abstract class Node {
+    /**
+     Get the outer HTML of this node.
+     @return HTML
+     */
+    public String outerHtml();
+    /**
+     Get the outer HTML of this node.
+     @param accum accumulator to place HTML into
+     */
+    abstract void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out);
+
+    abstract void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out);
+
+    public String toString();
+    /**
+     * Remove (delete) this node from the DOM tree. If this node has children, they are also removed.
+     */
+    public void remove();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

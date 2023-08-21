@@ -1,0 +1,15 @@
+OptionBuilder() {
+        Option opt = OptionBuilder.withLongOpt("output")
+                .withDescription("output file")
+                .hasArg()
+                .isRequired()
+                .create("o");
+        assertEquals("output", opt.getLongOpt());
+        assertEquals("output file", opt.getDescription());
+        assertTrue(opt.hasArg());
+        assertTrue(opt.isRequired());
+        assertEquals("o", opt.getOpt());
+    }
+``` 
+
+The bug in the program is that the `reset()` method is not implemented. It is declared but not implemented. As a result, when the `OptionBuilder` class is used to create multiple options, the values set for the previous option are retained and carried over to the next option. This can lead to unexpected behavior and incorrect options being created. To fix the bug, the `reset()` method should be implemented to reset all the static variables to their default values.

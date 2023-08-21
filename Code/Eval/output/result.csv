@@ -1,0 +1,3 @@
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total
+unit_test,2,23,5,0,30,0,2,0,6,0,38
+oracle_test,0,0,0,0,0,38,0,0,0,0,38

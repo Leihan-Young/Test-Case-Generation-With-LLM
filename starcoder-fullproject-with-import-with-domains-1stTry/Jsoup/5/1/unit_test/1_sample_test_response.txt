@@ -1,0 +1,17 @@
+ public void parsesSimpleDocument() {
+        String html = "<html><head><title>First parse</title></head><body><p>An <a href='/foo'>example</a> link.</p></body></html>";
+        Document doc = Parser.parse(html, "http://example.com/");
+        assertEquals("First parse", doc.title());
+        Element body = doc.body();
+        assertNotNull(body);
+        assertEquals(1, body.childNodeSize());
+        Element p = body.child(0);
+        assertNotNull(p);
+        assertEquals(1, p.childNodeSize());
+        Element a = p.child(0);
+        assertNotNull(a);
+        assertEquals(1, a.childNodeSize());
+        TextNode text = (TextNode) a.child(0);
+        assertEquals("example", text.getWholeText());
+        assertEquals("http://example.com/foo", a.attr("href"));
+    }

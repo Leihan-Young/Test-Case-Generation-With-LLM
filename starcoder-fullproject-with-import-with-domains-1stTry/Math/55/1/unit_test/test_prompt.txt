@@ -1,0 +1,57 @@
+package org.apache.commons.math.geometry;
+import java.io.Serializable;
+import org.apache.commons.math.exception.MathArithmeticException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math.util.FastMath;
+/**
+ * This class implements vectors in a three-dimensional space.
+ * <p>Instance of this class are guaranteed to be immutable.</p>
+ * @version $Revision$ $Date$
+ * @since 1.2
+ */
+public class Vector3D implements Serializable {
+  public static final Vector3D ZERO   = new Vector3D(0, 0, 0);
+  public static final Vector3D PLUS_I = new Vector3D(1, 0, 0);
+  public static final Vector3D MINUS_I = new Vector3D(-1, 0, 0);
+  public static final Vector3D PLUS_J = new Vector3D(0, 1, 0);
+  public static final Vector3D MINUS_J = new Vector3D(0, -1, 0);
+  public static final Vector3D PLUS_K = new Vector3D(0, 0, 1);
+  public static final Vector3D MINUS_K = new Vector3D(0, 0, -1);
+  public static final Vector3D NaN = new Vector3D(Double.NaN, Double.NaN, Double.NaN);
+  private static final long serialVersionUID = 5133268763396045979L;
+  private final double x;
+  private final double y;
+  private final double z;
+  /** Get the abscissa of the vector.
+   * @return abscissa of the vector
+   * @see #Vector3D(double, double, double)
+   */
+  public double getX();
+  /** Compute the dot-product of two vectors.
+   * @param v1 first vector
+   * @param v2 second vector
+   * @return the dot product v1.v2
+   */
+  public static double dotProduct(Vector3D v1, Vector3D v2);
+  /** Compute the cross-product of two vectors.
+   * @param v1 first vector
+   * @param v2 second vector
+   * @return the cross product v1 ^ v2 as a new Vector
+   */
+  public static Vector3D crossProduct(final Vector3D v1, final Vector3D v2);
+  /** Get the ordinate of the vector.
+   * @return ordinate of the vector
+   * @see #Vector3D(double, double, double)
+   */
+  public double getY();
+  /** Get the height of the vector.
+   * @return height of the vector
+   * @see #Vector3D(double, double, double)
+   */
+  public double getZ();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

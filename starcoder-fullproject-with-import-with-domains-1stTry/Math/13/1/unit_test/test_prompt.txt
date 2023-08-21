@@ -1,0 +1,68 @@
+package org.apache.commons.math3.optimization.general;
+import org.apache.commons.math3.analysis.DifferentiableMultivariateVectorFunction;
+import org.apache.commons.math3.analysis.FunctionUtils;
+import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
+import org.apache.commons.math3.analysis.differentiation.MultivariateDifferentiableVectorFunction;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.DiagonalMatrix;
+import org.apache.commons.math3.linear.DecompositionSolver;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.QRDecomposition;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.optimization.OptimizationData;
+import org.apache.commons.math3.optimization.InitialGuess;
+import org.apache.commons.math3.optimization.Target;
+import org.apache.commons.math3.optimization.Weight;
+import org.apache.commons.math3.optimization.ConvergenceChecker;
+import org.apache.commons.math3.optimization.DifferentiableMultivariateVectorOptimizer;
+import org.apache.commons.math3.optimization.PointVectorValuePair;
+import org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateVectorOptimizer;
+import org.apache.commons.math3.util.FastMath;
+/**
+ * Base class for implementing least squares optimizers.
+ * It handles the boilerplate methods associated to thresholds settings,
+ * Jacobian and error estimation.
+ * <br/>
+ * This class constructs the Jacobian matrix of the function argument in method
+ * {@link BaseAbstractMultivariateVectorOptimizer#optimize(int,MultivariateVectorFunction,OptimizationData[])
+ * optimize} and assumes that the rows of that matrix iterate on the model
+ * functions while the columns iterate on the parameters; thus, the numbers
+ * of rows is equal to the dimension of the
+ * {@link org.apache.commons.math3.optimization.Target Target} while
+ * the number of columns is equal to the dimension of the
+ * {@link org.apache.commons.math3.optimization.InitialGuess InitialGuess}.
+ *
+ * @version $Id$
+ * @deprecated As of 3.1 (to be removed in 4.0).
+ * @since 1.2
+ */
+public abstract class AbstractLeastSquaresOptimizer
+    extends BaseAbstractMultivariateVectorOptimizer<DifferentiableMultivariateVectorFunction>
+    implements DifferentiableMultivariateVectorOptimizer {
+    private static final double DEFAULT_SINGULARITY_THRESHOLD = 1e-14;
+    /**
+     * Computes the residuals.
+     * The residual is the difference between the observed (target)
+     * values and the model (objective function) value.
+     * There is one residual for each element of the vector-valued
+     * function.
+     *
+     * @param objectiveValue Value of the the objective function. This is
+     * the value returned from a call to
+     * {@link #computeObjectiveValue(double[]) computeObjectiveValue}
+     * (whose array argument contains the model parameters).
+     * @return the residuals.
+     * @throws DimensionMismatchException if {@code params} has a wrong
+     * length.
+     * @since 3.1
+     */
+    protected double[] computeResiduals(double[] objectiveValue);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

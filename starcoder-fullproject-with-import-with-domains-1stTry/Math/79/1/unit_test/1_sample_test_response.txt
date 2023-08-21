@@ -1,0 +1,5 @@
+ public void testDistance() {
+        double[] p1 = new double[] { 0, 0 };
+        double[] p2 = new double[] { 3, 4 };
+        assertEquals(5, MathUtils.distance(p1, p2));
+    }

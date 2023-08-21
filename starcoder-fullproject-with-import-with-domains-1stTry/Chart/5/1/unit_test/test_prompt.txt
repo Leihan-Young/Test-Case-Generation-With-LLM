@@ -1,0 +1,61 @@
+package org.jfree.data.xy;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * Represents a sequence of zero or more data items in the form (x, y).  By
+ * default, items in the series will be sorted into ascending order by x-value,
+ * and duplicate x-values are permitted.  Both the sorting and duplicate
+ * defaults can be changed in the constructor.  Y-values can be
+ * <code>null</code> to represent missing values.
+ */
+public class XYSeries extends Series implements Cloneable, Serializable {
+    private int maximumItemCount = Integer.MAX_VALUE;
+    private boolean autoSort;
+    private boolean allowDuplicateXValues;
+    /**
+     * Adds or updates an item in the series and sends a
+     * {@link SeriesChangeEvent} to all registered listeners.
+     *
+     * @param x  the x-value (<code>null</code> not permitted).
+     * @param y  the y-value (<code>null</code> permitted).
+     *
+     * @return A copy of the overwritten data item, or <code>null</code> if no
+     *         item was overwritten.
+     */
+    public XYDataItem addOrUpdate(Number x, Number y);
+    /**
+     * Adds or updates an item in the series and sends a
+     * {@link SeriesChangeEvent} to all registered listeners.
+     *
+     * @param x  the x-value.
+     * @param y  the y-value.
+     *
+     * @return The item that was overwritten, if any.
+     *
+     * @since 1.0.10
+     */
+    public XYDataItem addOrUpdate(double x, double y);
+    /**
+     * Returns the number of items in the series.
+     *
+     * @return The item count.
+     */
+    public int getItemCount();
+    /**
+     * Returns the y-value at the specified index.
+     *
+     * @param index  the index (zero-based).
+     *
+     * @return The y-value (possibly <code>null</code>).
+     */
+    public Number getY(int index);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

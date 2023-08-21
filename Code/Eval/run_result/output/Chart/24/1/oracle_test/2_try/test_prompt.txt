@@ -1,0 +1,162 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.renderer;
+import java.awt.Color;
+import java.awt.Paint;
+import java.io.Serializable;
+import org.jfree.chart.util.PublicCloneable;
+/**
+ * A paint scale that returns shades of gray.
+ * 
+ * @since 1.0.4
+ */
+public class GrayPaintScale 
+        implements PaintScale, PublicCloneable, Serializable {
+    private double lowerBound;
+    private double upperBound;
+    /**
+     * Returns a paint for the specified value.
+     * 
+     * @param value  the value (must be within the range specified by the
+     *         lower and upper bounds for the scale).
+     * 
+     * @return A paint for the specified value.
+     */
+    public Paint getPaint(double value) {
+        double v = Math.max(value, this.lowerBound);
+        v = Math.min(v, this.upperBound);
+        int g = (int) ((value - this.lowerBound) / (this.upperBound 
+                - this.lowerBound) * 255.0);
+        return new Color(g, g, g);
+    }
+    /**
+     * Tests this <code>GrayPaintScale</code> instance for equality with an
+     * arbitrary object.  This method returns <code>true</code> if and only
+     * if:
+     * <ul>
+     * <li><code>obj</code> is not <code>null</code>;</li>
+     * <li><code>obj</code> is an instance of <code>GrayPaintScale</code>;</li>
+     * </ul>
+     * 
+     * @param obj  the object (<code>null</code> permitted).
+     * 
+     * @return A boolean.
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof GrayPaintScale)) {
+            return false;
+        }
+        GrayPaintScale that = (GrayPaintScale) obj;
+        if (this.lowerBound != that.lowerBound) {
+            return false;
+        }
+        if (this.upperBound != that.upperBound) {
+            return false;
+        }
+        return true;    
+    }
+    /**
+     * Creates a new <code>GrayPaintScale</code> instance with default values.
+     */
+    public GrayPaintScale() {
+        this(0.0, 1.0);
+    }
+    /**
+     * Creates a new paint scale for values in the specified range.
+     * 
+     * @param lowerBound  the lower bound.
+     * @param upperBound  the upper bound.
+     * 
+     * @throws IllegalArgumentException if <code>lowerBound</code> is not
+     *       less than <code>upperBound</code>.
+     */
+    public GrayPaintScale(double lowerBound, double upperBound) {
+        if (lowerBound >= upperBound) {
+            throw new IllegalArgumentException(
+                    "Requires lowerBound < upperBound.");
+        }
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGetPaint() {
+        GrayPaintScale gps = new GrayPaintScale();
+        Color c = (Color) gps.getPaint(0.0);
+        _tmp_var_0_ = c.equals(Color.black);
+        $ASSERT$
+        c = (Color) gps.getPaint(1.0);
+        _tmp_var_1_ = c.equals(Color.white);
+        $ASSERT$
+        
+        // check lookup values that are outside the bounds - see bug report
+        // 1767315
+        c = (Color) gps.getPaint(-0.5);
+        _tmp_var_2_ = c.equals(Color.black);
+        $ASSERT$
+        c = (Color) gps.getPaint(1.5);
+        _tmp_var_3_ = c.equals(Color.white);
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+[assistant]:GetPaint() {
+        GrayPaintScale gps = new GrayPaintScale();
+        Color c = (Color) gps.getPaint(0.0);
+        assertTrue(c.equals(Color.black));
+        c = (Color) gps.getPaint(1.0);
+        assertTrue(c.equals(Color.white));
+        
+        // check lookup values that are outside the bounds - see bug report
+        // 1767315
+        c = (Color) gps.getPaint(-0.5);
+        assertTrue(c.equals(Color.black));
+        c = (Color) gps.getPaint(1.5);
+        assertTrue(c.equals(Color.white));
+        
+        // check lookup values within the bounds
+        c = (Color) gps.getPaint(0.5);
+        int g = (int) ((0.5 - gps.lowerBound) / (gps.upperBound 
+                - gps.lowerBound) * 255.0);
+        Color expected = new Color(g, g, g);
+        assertEquals(expected, c);
+        c = (Color) gps.getPaint(0.8);
+        g = (int) ((0.8 - gps.lowerBound) / (gps.upperBound 
+                - gps.lowerBound) * 255.0);
+        expected = new Color(g, g, g);
+        assertEquals(expected, c);
+    }
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: lowerBound has private access in GrayPaintScale
+[javac]         int g = (int) ((0.5 - gps.lowerBound) / (gps.upperBound 
+[javac]                                  ^
+[javac]error: upperBound has private access in GrayPaintScale
+[javac]         int g = (int) ((0.5 - gps.lowerBound) / (gps.upperBound 
+[javac]                                                     ^
+[javac]error: lowerBound has private access in GrayPaintScale
+[javac]                 - gps.lowerBound) * 255.0);
+[javac]                      ^
+[javac]error: lowerBound has private access in GrayPaintScale
+[javac]         g = (int) ((0.8 - gps.lowerBound) / (gps.upperBound 
+[javac]                              ^
+[javac]error: upperBound has private access in GrayPaintScale
+[javac]         g = (int) ((0.8 - gps.lowerBound) / (gps.upperBound 
+[javac]                                                 ^
+[javac]error: lowerBound has private access in GrayPaintScale
+[javac]                 - gps.lowerBound) * 255.0);
+[javac]                      ^
+
+```
+public void test

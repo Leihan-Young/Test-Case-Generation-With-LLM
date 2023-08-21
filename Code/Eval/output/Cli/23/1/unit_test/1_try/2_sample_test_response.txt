@@ -1,0 +1,18 @@
+RenderWrappedText() {
+        HelpFormatter formatter = new HelpFormatter();
+        StringBuffer sb = new StringBuffer();
+        String text = "This is a very long text that should be wrapped around because it is too long to fit in one line";
+        int width = 20;
+        int nextLineTabStop = 10;
+        formatter.renderWrappedText(sb, width, nextLineTabStop, text);
+        String result = sb.toString();
+        String[] lines = result.split(System.getProperty("line.separator"));
+        for (String line : lines) {
+            assertTrue(line.length() <= width);
+            if (line.startsWith("          ")) {
+                assertEquals(line.charAt(10), ' ');
+            }
+        }
+    }
+```
+This test method checks if the `renderWrappedText()` method correctly wraps long texts and pads each line with the specified number of spaces. It also checks if the padding is correct by testing the character at the specified tab stop position. If the method is bugged, it may not wrap the text correctly or pad the lines with the correct number of spaces.

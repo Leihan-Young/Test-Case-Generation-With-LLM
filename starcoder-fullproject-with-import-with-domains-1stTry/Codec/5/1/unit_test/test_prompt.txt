@@ -1,0 +1,66 @@
+package org.apache.commons.codec.binary;
+import java.math.BigInteger;
+import org.apache.commons.codec.BinaryDecoder;
+import org.apache.commons.codec.BinaryEncoder;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
+/**
+ * Provides Base64 encoding and decoding as defined by RFC 2045.
+ * 
+ * <p>
+ * This class implements section <cite>6.8. Base64 Content-Transfer-Encoding</cite> from RFC 2045 <cite>Multipurpose
+ * Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</cite> by Freed and Borenstein.
+ * </p>
+ * <p>
+ * The class can be parameterized in the following manner with various constructors:
+ * <ul>
+ * <li>URL-safe mode: Default off.</li>
+ * <li>Line length: Default 76. Line length that aren't multiples of 4 will still essentially end up being multiples of
+ * 4 in the encoded data.
+ * <li>Line separator: Default is CRLF ("\r\n")</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Since this class operates directly on byte streams, and not character streams, it is hard-coded to only encode/decode
+ * character encodings which are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, UTF-8, etc).
+ * </p>
+ * 
+ * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
+ * @author Apache Software Foundation
+ * @since 1.0
+ * @version $Id$
+ */
+public class Base64 implements BinaryEncoder, BinaryDecoder {
+    private static final int DEFAULT_BUFFER_RESIZE_FACTOR = 2;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    public static final int MIME_CHUNK_SIZE = 76;
+    public static final int PEM_CHUNK_SIZE = 64;
+    /**
+     * <p>
+     * Decodes all of the provided data, starting at inPos, for inAvail bytes. Should be called at least twice: once
+     * with the data to decode, and once with inAvail set to "-1" to alert decoder that EOF has been reached. The "-1"
+     * call is not necessary when decoding, but it doesn't hurt, either.
+     * </p>
+     * <p>
+     * Ignores all non-base64 characters. This is how chunked (e.g. 76 character) data is handled, since CR and LF are
+     * silently ignored, but has implications for other bytes, too. This method subscribes to the garbage-in,
+     * garbage-out philosophy: it will not check the provided data for validity.
+     * </p>
+     * <p>
+     * Thanks to "commons" project in ws.apache.org for the bitwise operations, and general approach.
+     * http://svn.apache.org/repos/asf/webservices/commons/trunk/modules/util/
+     * </p>
+     * 
+     * @param in
+     *            byte[] array of ascii data to base64 decode.
+     * @param inPos
+     *            Position to start reading data from.
+     * @param inAvail
+     *            Amount of bytes available from input for encoding.
+     */
+    void decode(byte[] in, int inPos, int inAvail);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

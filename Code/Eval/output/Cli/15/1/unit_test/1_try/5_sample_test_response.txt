@@ -1,0 +1,46 @@
+GetValues() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final Option a = obuilder.withShortName("a").create();
+        
+        final WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+        List<String> defaultValues = new ArrayList<>();
+        defaultValues.add("default1");
+        defaultValues.add("default2");
+        commandLine.setDefaultValues(a, defaultValues);
+        
+        List<String> values = new ArrayList<>();
+        values.add("value1");
+        values.add("value2");
+        commandLine.addValue(a, values);
+
+        List<String> result = commandLine.getValues(a, defaultValues);
+        assertEquals("Result size is incorrect", 2, result.size());
+        assertEquals("Result does not contain expected value", "value1", result.get(0));
+        assertEquals("Result does not contain expected value", "value2", result.get(1));
+    }
+```
+The bug in the `getValues()` method is that if there are more default values than specified, it incorrectly adds them to the list. The correct behavior should be to only add the number of default values specified. To fix this, we can modify the code to check the size of the default values and only add the number specified. Here is the corrected code for the `getValues()` method:
+```
+public List getValues(final Option option, List defaultValues) {
+    // initialize the return list
+    List valueList = (List) values.get(option);
+
+    // grab the correct default values
+    if ((valueList == null) || valueList.isEmpty()) {
+        valueList = defaultValues;
+    }
+
+    // augment the list with the default values
+    if ((valueList == null) || valueList.isEmpty()) {
+        valueList = (List) this.defaultValues.get(option);
+    } else if (defaultValues != null && defaultValues.size() > 0) {
+        int numDefaultsToAdd = Math.min(defaultValues.size(), valueList.size());
+        for (int i = 0; i < numDefaultsToAdd; i++) {
+            valueList.set(i, defaultValues.get(i));
+        }
+    }
+
+    return valueList == null ? Collections.EMPTY_LIST : valueList;
+}
+```
+This code checks if there are default values to add and if so, adds only the specified number of defaults to the list.

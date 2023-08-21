@@ -1,0 +1,57 @@
+GroupValidation() throws Exception {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option a = obuilder.withShortName("a").create();
+    final Option b = obuilder.withShortName("b").create();
+
+    final Group options =
+        gbuilder
+            .withOption(a)
+            .withOption(b)
+            .withMaximum(2)
+            .withMinimum(1)
+            .create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(options);
+
+    try {
+        parser.parse(new String[] {});
+        fail("Expected MissingOptionException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Missing option -a|-b", exp.getMessage());
+    }
+
+    try {
+        parser.parse(new String[] { "-a" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingOptionException caught");
+    }
+
+    try {
+        parser.parse(new String[] { "-b" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingOptionException caught");
+    }
+
+    try {
+        parser.parse(new String[] { "-a", "-b", "-b" });
+        fail("Expected UnexpectedOptionException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Unexpected -b while processing -a|-b", exp.getMessage());
+    }
+
+    try {
+        parser.parse(new String[] { "-a", "-a" });
+        fail("Expected TooManyArgumentsException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Expected only 2 arguments but received 3",
+                     exp.getMessage());
+    }
+}
+```
+The above test method checks the following conditions:
+- It checks if the group is validated correctly for minimum and maximum number of options.
+- It also checks if the TooManyArgumentsException is thrown when too many arguments are passed.
+- It checks if the UnexpectedOptionException is thrown when an unexpected option is passed.

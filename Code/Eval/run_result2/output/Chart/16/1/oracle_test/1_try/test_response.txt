@@ -1,0 +1,7 @@
+GetCategoryIndex() {
+    // check an empty dataset
+    DefaultIntervalCategoryDataset empty = new DefaultIntervalCategoryDataset(new double[0][0], new double[0][0]);
+    int expectedIndex = -1;
+    int actualIndex = empty.getCategoryIndex("ABC");
+    assertEquals(expectedIndex, actualIndex);
+}

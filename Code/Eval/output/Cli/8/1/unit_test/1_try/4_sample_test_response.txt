@@ -1,0 +1,22 @@
+() {
+    // use the default parser
+    CommandLineParser parser = new DefaultParser();
+    Options options = new Options();
+    options.addOption("a", true, "Option A");
+    options.addOption("b", true, "Option B");
+    options.addOption("c", true, "Option C");
+
+    String[] args = new String[]{"-a", "valueA", "-b", "valueB"};
+
+    try {
+        CommandLine line = parser.parse(options, args);
+
+        assertEquals(line.getOptionValue("a"), "valueA");
+        assertEquals(line.getOptionValue("b"), "valueB");
+        assertNull(line.getOptionValue("c")); // expecting null, as "c" option is not provided
+    } catch (ParseException exp) {
+        fail("Unexpected exception:" + exp.getMessage());
+    }
+}
+```
+This test method expects the value of option "c" to be null as it is not provided in the arguments. However, the current implementation of the program does not return null and throws a NullPointerException instead. This reveals a bug in the program that needs to be fixed.

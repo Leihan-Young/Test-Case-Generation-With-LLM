@@ -1,0 +1,12 @@
+ public void testSerialization() throws Exception {
+        Week w1 = new Week(2002, 1);
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutput out = new ObjectOutputStream(buffer);
+        out.writeObject(w1);
+        out.close();
+        ObjectInput in = new ObjectInputStream(
+                new ByteArrayInputStream(buffer.toByteArray()));
+        Week w2 = (Week) in.readObject();
+        in.close();
+        assertEquals(w1, w2);
+    }

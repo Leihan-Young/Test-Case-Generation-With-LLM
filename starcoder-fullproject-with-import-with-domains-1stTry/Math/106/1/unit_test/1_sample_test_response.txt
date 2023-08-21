@@ -1,0 +1,7 @@
+ public void testParse() {
+        ProperFractionFormat format = new ProperFractionFormat();
+        assertEquals(new Fraction(1, 2), format.parse("1/2"));
+        assertEquals(new Fraction(-1, 2), format.parse("-1/2"));
+        assertEquals(new Fraction(1, -2), format.parse("1/-2"));
+        assertEquals(new Fraction(-1, -2), format.parse("-1/-2"));
+    }

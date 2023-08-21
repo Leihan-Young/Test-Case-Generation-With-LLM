@@ -1,0 +1,15 @@
+StatisticalBarRenderer() {
+    StatisticalCategoryDataset dataset = new DefaultStatisticalCategoryDataset();
+    dataset.add(1.0, 0.5, "S1", "C1");
+    dataset.add(2.0, 1.0, "S1", "C2");
+    dataset.add(3.0, 1.5, "S1", "C3");
+    CategoryAxis domainAxis = new CategoryAxis("Category");
+    ValueAxis rangeAxis = new NumberAxis("Value");
+    StatisticalBarRenderer renderer = new StatisticalBarRenderer();
+    CategoryPlot plot = new CategoryPlot(dataset, domainAxis, rangeAxis, renderer);
+    JFreeChart chart = new JFreeChart(plot);
+    BufferedImage image = chart.createBufferedImage(500, 300);
+    assertNotNull(image);
+}
+```
+The test code creates a `StatisticalCategoryDataset` with three data points and passes it to a `CategoryPlot` with a `StatisticalBarRenderer`. It then creates a `JFreeChart` object with the plot and creates a buffered image from the chart. The test checks that the image is not null.

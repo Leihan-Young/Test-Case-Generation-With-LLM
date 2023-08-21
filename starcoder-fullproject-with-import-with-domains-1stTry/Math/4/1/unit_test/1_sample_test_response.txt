@@ -1,0 +1,24 @@
+   private void checkLineLineIntersection(final double x1, final double y1,
+                                           final double x2, final double y2,
+                                           final double x3, final double y3,
+                                           final double x4, final double y4,
+                                           final double x,  final double y,
+                                           final boolean includeEndPoints) {
+        // setup
+        final Vector2D p1 = new Vector2D(x1, y1);
+        final Vector2D p2 = new Vector2D(x2, y2);
+        final Line line1 = new Line(p1, p2, TEST_TOLERANCE);
+        final Vector2D p3 = new Vector2D(x3, y3);
+        final Vector2D p4 = new Vector2D(x4, y4);
+        final Line line2 = new Line(p3, p4, TEST_TOLERANCE);
+        // action
+        final Vector2D result = line1.intersection(line2, includeEndPoints);
+        // check
+        if (result == null) {
+            Assert.assertTrue(line1.intersection(line2, includeEndPoints) == null);
+        } else {
+            Assert.assertEquals(0, result.distance(new Vector2D(x, y)));
+        }
+    }
+    private void checkLineLineNoIntersection(final double x1, final double y1,
+                                             final double x2, final double y

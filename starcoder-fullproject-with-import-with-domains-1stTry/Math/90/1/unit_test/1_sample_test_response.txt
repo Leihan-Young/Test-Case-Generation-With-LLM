@@ -1,0 +1,6 @@
+ public void testClear() {
+        Frequency f = new Frequency();
+        f.addValue(1);
+        f.clear();
+        assertEquals(0, f.getCount(1));
+    }

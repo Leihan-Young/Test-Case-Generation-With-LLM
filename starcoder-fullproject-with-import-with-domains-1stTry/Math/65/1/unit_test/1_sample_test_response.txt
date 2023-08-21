@@ -1,0 +1,7 @@
+     /**
+     * Test of optimize method, of class AbstractLeastSquaresOptimizer.
+     */
+    public void testOptimize()
+        throws FunctionEvaluationException,
+               InvalidMatrixException,
+               OptimizationException;

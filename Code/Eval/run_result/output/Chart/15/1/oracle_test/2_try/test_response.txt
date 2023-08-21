@@ -1,0 +1,25 @@
+DrawWithNullDataset() {
+        JFreeChart chart = ChartFactory.createPieChart3D("Test", null, true, 
+                false, false);
+        boolean success = false;
+        try {
+            BufferedImage image = new BufferedImage(200 , 100, 
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = image.createGraphics();
+            chart.draw(g2, new Rectangle2D.Double(0, 0, 200, 100), null, null);
+            g2.dispose();
+            success = true;
+        }
+        catch (NullPointerException e) {
+            success = false;
+        }
+        assertFalse(success);
+        
+        PiePlot plot = (PiePlot) chart.getPlot();
+        assertNull(plot.getDataset());
+    } 
+```
+
+Explanation: 
+
+The original program has a bug where it does not handle null datasets correctly when drawing the pie chart. The test method tests this bug by creating a JFreeChart with a null dataset, drawing it to a BufferedImage, and asserts that an exception is thrown. Additionally, it checks that the dataset in the plot is null. This ensures that the program correctly handles null datasets.

@@ -1,0 +1,30 @@
+     private void assertPointEquals(PointValuePair expected, PointValuePair actual) {
+        if (expected == null) {
+            assertNull(actual);
+        } else {
+            assertNotNull(actual);
+            assertEquals(expected.getPoint().getDimension(), actual.getPoint().getDimension());
+            for (int i = 0; i < expected.getPoint().getDimension(); i++) {
+                assertEquals(expected.getPoint().getEntry(i), actual.getPoint().getEntry(i), 1.0e-14);
+            }
+            assertEquals(expected.getValue(), actual.getValue(), 1.0e-14);
+        }
+    }
+    private void assertPointEquals(double[] expected, PointValuePair actual) {
+        if (expected == null) {
+            assertNull(actual);
+        } else {
+            assertNotNull(actual);
+            assertEquals(expected.length, actual.getPoint().getDimension());
+            for (int i = 0; i < expected.length; i++) {
+                assertEquals(expected[i], actual.getPoint().getEntry(i), 1.0e-14);
+            }
+        }
+    }
+    private void assertPointEquals(double[] expected, double[] actual) {
+        if (expected == null) {
+            assertNull(actual);
+        } else {
+            assertNotNull(actual);
+            assertEquals(expected.length, actual.length);
+            for (int i = 0; i < expected.lengt

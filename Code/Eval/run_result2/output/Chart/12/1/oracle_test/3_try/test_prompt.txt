@@ -1,0 +1,329 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * --------------------
+ * MultiplePiePlot.java
+ * --------------------
+ * (C) Copyright 2004-2008, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Brian Cabana (patch 1943021);
+ *
+ * Changes
+ * -------
+ * 29-Jan-2004 : Version 1 (DG);
+ * 31-Mar-2004 : Added setPieIndex() call during drawing (DG);
+ * 20-Apr-2005 : Small change for update to LegendItem constructors (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 16-Jun-2005 : Added get/setDataset() and equals() methods (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 06-Apr-2006 : Fixed bug 1190647 - legend and section colors not consistent
+ *               when aggregation limit is specified (DG);
+ * 27-Sep-2006 : Updated draw() method for deprecated code (DG);
+ * 17-Jan-2007 : Updated prefetchSectionPaints() to check settings in
+ *               underlying PiePlot (DG);
+ * 17-May-2007 : Added argument check to setPieChart() (DG);
+ * 18-May-2007 : Set dataset for LegendItem (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 18-Apr-2008 : In the constructor, register the plot as a dataset listener -
+ *               see patch 1943021 from Brian Cabana (DG);
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.TableOrder;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryToPieDataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.PieDataset;
+/**
+ * A plot that displays multiple pie plots using data from a
+ * {@link CategoryDataset}.
+ */
+public class MultiplePiePlot extends Plot implements Cloneable, Serializable {
+    private static final long serialVersionUID = -355377800470807389L;
+    private JFreeChart pieChart;
+    private CategoryDataset dataset;
+    private TableOrder dataExtractOrder;
+    private double limit = 0.0;
+    private Comparable aggregatedItemsKey;
+    private transient Paint aggregatedItemsPaint;
+    private transient Map sectionPaints;
+    /**
+     * Creates a new plot with no data.
+     */
+    public MultiplePiePlot() {
+        this(null);
+    }
+    /**
+     * Creates a new plot.
+     *
+     * @param dataset  the dataset (<code>null</code> permitted).
+     */
+    public MultiplePiePlot(CategoryDataset dataset) {
+        super();
+        this.dataset = dataset;
+        PiePlot piePlot = new PiePlot(null);
+        this.pieChart = new JFreeChart(piePlot);
+        this.pieChart.removeLegend();
+        this.dataExtractOrder = TableOrder.BY_COLUMN;
+        this.pieChart.setBackgroundPaint(null);
+        TextTitle seriesTitle = new TextTitle("Series Title",
+                new Font("SansSerif", Font.BOLD, 12));
+        seriesTitle.setPosition(RectangleEdge.BOTTOM);
+        this.pieChart.setTitle(seriesTitle);
+        this.aggregatedItemsKey = "Other";
+        this.aggregatedItemsPaint = Color.lightGray;
+        this.sectionPaints = new HashMap();
+    }
+    /**
+     * Returns the dataset used by the plot.
+     *
+     * @return The dataset (possibly <code>null</code>).
+     */
+    public CategoryDataset getDataset() {
+        return this.dataset;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testConstructor() {
+    	MultiplePiePlot plot = new MultiplePiePlot();
+    	_tmp_var_0_ = plot.getDataset();
+    	$ASSERT$
+
+    	// the following checks that the plot registers itself as a listener
+    	// with the dataset passed to the constructor - see patch 1943021
+    	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    	plot = new MultiplePiePlot(dataset);
+    	_tmp_var_1_ = dataset.hasListener(plot);
+    	$ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+[assistant]:Constructor() {
+    // Test default constructor
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset());
+
+    // Test constructor with dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    plot = new MultiplePiePlot(dataset);
+    assertTrue(dataset.hasListener(plot));
+
+    // Test getters and setters
+    assertEquals(TableOrder.BY_COLUMN, plot.getDataExtractOrder());
+    plot.setDataExtractOrder(TableOrder.BY_ROW);
+    assertEquals(TableOrder.BY_ROW, plot.getDataExtractOrder());
+
+    assertEquals(0.0, plot.getLimit(), 0.0001);
+    plot.setLimit(10.0);
+    assertEquals(10.0, plot.getLimit(), 0.0001);
+
+    assertEquals("Other", plot.getAggregatedItemsKey());
+    plot.setAggregatedItemsKey("Test");
+    assertEquals("Test", plot.getAggregatedItemsKey());
+
+    assertEquals(Color.lightGray, plot.getAggregatedItemsPaint());
+    plot.setAggregatedItemsPaint(Color.black);
+    assertEquals(Color.black, plot.getAggregatedItemsPaint());
+
+    Map sectionPaints = new HashMap();
+    sectionPaints.put("A", Color.red);
+    sectionPaints.put("B", Color.blue);
+    plot.setSectionPaints(sectionPaints);
+    assertEquals(Color.red, plot.getSectionPaint("A"));
+    assertEquals(Color.blue, plot.getSectionPaint("B"));
+
+    // Test setDataset method
+    CategoryDataset newDataset = new DefaultCategoryDataset();
+    plot.setDataset(newDataset);
+    assertSame(newDataset, plot.getDataset());
+
+    // Test null dataset
+    plot.setDataset(null);
+    assertNull(plot.getDataset());
+
+    // Test clone method
+    MultiplePiePlot clonedPlot = null;
+    try {
+        clonedPlot = (MultiplePiePlot) plot.clone();
+    } catch (CloneNotSupportedException e) {
+        fail("Cloning should be supported");
+    }
+    assertNotNull(clonedPlot);
+    assertNotSame(plot, clonedPlot);
+    assertEquals(plot.getDataExtractOrder(), clonedPlot.getDataExtractOrder());
+    assertEquals(plot.getLimit(), clonedPlot.getLimit(), 0.0001);
+    assertEquals(plot.getAggregatedItemsKey(), clonedPlot.getAggregatedItemsKey());
+    assertEquals(plot.getAggregatedItemsPaint(), clonedPlot.getAggregatedItemsPaint());
+    assertEquals(plot.getSectionPaints(), clonedPlot.getSectionPaints());
+}
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     Map sectionPaints = new HashMap();
+[javac]     ^
+[javac]   symbol:   class Map
+[javac]   location: class MultiplePiePlotTests
+[javac]error: cannot find symbol
+[javac]     Map sectionPaints = new HashMap();
+[javac]                             ^
+[javac]   symbol:   class HashMap
+[javac]   location: class MultiplePiePlotTests
+[javac]error: cannot find symbol
+[javac]     Assert.assertEquals(Color.red, plot.getSectionPaint("A"));
+[javac]                                        ^
+[javac]   symbol:   method getSectionPaint(String)
+[javac]   location: variable plot of type MultiplePiePlot
+[javac]error: cannot find symbol
+[javac]     Assert.assertEquals(Color.blue, plot.getSectionPaint("B"));
+[javac]                                         ^
+[javac]   symbol:   method getSectionPaint(String)
+[javac]   location: variable plot of type MultiplePiePlot
+[javac]error: cannot find symbol
+[javac]     CategoryDataset newDataset = new DefaultCategoryDataset();
+[javac]     ^
+[javac]   symbol:   class CategoryDataset
+[javac]   location: class MultiplePiePlotTests
+[javac]error: cannot find symbol
+[javac]     Assert.assertEquals(plot.getSectionPaints(), clonedPlot.getSectionPaints());
+[javac]                             ^
+[javac]   symbol:   method getSectionPaints()
+[javac]   location: variable plot of type MultiplePiePlot
+[javac]error: cannot find symbol
+[javac]     Assert.assertEquals(plot.getSectionPaints(), clonedPlot.getSectionPaints());
+[javac]                                                            ^
+[javac]   symbol:   method getSectionPaints()
+[javac]   location: variable clonedPlot of type MultiplePiePlot
+
+```
+public void test
+[assistant]:Constructor() {
+    // Test default constructor
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset());
+
+    // Test constructor with dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    plot = new MultiplePiePlot(dataset);
+    assertTrue(dataset.hasListener(plot));
+
+    // Test getters and setters
+    assertEquals(TableOrder.BY_COLUMN, plot.getDataExtractOrder());
+    plot.setDataExtractOrder(TableOrder.BY_ROW);
+    assertEquals(TableOrder.BY_ROW, plot.getDataExtractOrder());
+
+    assertEquals(0.0, plot.getLimit(), 0.0001);
+    plot.setLimit(10.0);
+    assertEquals(10.0, plot.getLimit(), 0.0001);
+
+    assertEquals("Other", plot.getAggregatedItemsKey());
+    plot.setAggregatedItemsKey("Test");
+    assertEquals("Test", plot.getAggregatedItemsKey());
+
+    assertEquals(Color.lightGray, plot.getAggregatedItemsPaint());
+    plot.setAggregatedItemsPaint(Color.black);
+    assertEquals(Color.black, plot.getAggregatedItemsPaint());
+
+    Map<String, Paint> sectionPaints = new HashMap<>();
+    sectionPaints.put("A", Color.red);
+    sectionPaints.put("B", Color.blue);
+    plot.setSectionPaints(sectionPaints);
+    assertEquals(Color.red, plot.getSectionPaint("A"));
+    assertEquals(Color.blue, plot.getSectionPaint("B"));
+
+    // Test setDataset method
+    CategoryDataset newDataset = new DefaultCategoryDataset();
+    plot.setDataset(newDataset);
+    assertSame(newDataset, plot.getDataset());
+
+    // Test null dataset
+    plot.setDataset(null);
+    assertNull(plot.getDataset());
+
+    // Test clone method
+    MultiplePiePlot clonedPlot = null;
+    try {
+        clonedPlot = (MultiplePiePlot) plot.clone();
+    } catch (CloneNotSupportedException e) {
+        fail("Cloning should be supported");
+    }
+    assertNotNull(clonedPlot);
+    assertNotSame(plot, clonedPlot);
+    assertEquals(plot.getDataExtractOrder(), clonedPlot.getDataExtractOrder());
+    assertEquals(plot.getLimit(), clonedPlot.getLimit(), 0.0001);
+    assertEquals(plot.getAggregatedItemsKey(), clonedPlot.getAggregatedItemsKey());
+    assertEquals(plot.getAggregatedItemsPaint(), clonedPlot.getAggregatedItemsPaint());
+    assertEquals(sectionPaints, clonedPlot.getSectionPaints());
+}
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: generics are not supported in -source 1.4
+[javac]     Map<String, Paint> sectionPaints = new HashMap<>();
+[javac]        ^
+[javac]   (use -source 5 or higher to enable generics)
+[javac]error: diamond operator is not supported in -source 1.4
+[javac]     Map<String, Paint> sectionPaints = new HashMap<>();
+[javac]                                                    ^
+[javac]   (use -source 7 or higher to enable diamond operator)
+
+```
+public void test

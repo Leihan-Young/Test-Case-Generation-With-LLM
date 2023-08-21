@@ -1,0 +1,47 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * Represents a sequence of zero or more data items in the form (period, value).
+ */
+public class TimeSeries extends Series implements Cloneable, Serializable {
+    private static final long serialVersionUID = -5032960206869675528L;
+    private String domain;
+    private String range;
+    private int maximumItemCount;
+    private long maximumItemAge;
+    /**
+     * Deletes data from start until end index (end inclusive).
+     *
+     * @param start  the index of the first period to delete.
+     * @param end  the index of the last period to delete.
+     */
+    public void delete(int start, int end) {
+        if (end < start) {
+            throw new IllegalArgumentException("Requires start <= end.");
+        }
+        for (int i = 0; i <= (end - start); i++) {
+            this.data.remove(start);
+        }
+        fireSeriesChanged();
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

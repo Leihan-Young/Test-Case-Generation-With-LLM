@@ -1,0 +1,30 @@
+   private void doTest(final EmbeddedRungeKuttaIntegrator integ) {
+        integ.setInitialStepSize(0.001);
+        integ.setMinStep(0);
+        integ.setMaxStep(100);
+        integ.setSafety(0.9);
+        integ.setMinReduction(0.3);
+        integ.setMaxGrowth(10.0);
+        integ.setFirstStepSize(0.001);
+        integ.setInterpolator(new DormandPrince853Integrator(1e-8, 1e-10, 10000).getInterpolator());
+        integ.addStepHandler(new StepHandler() {
+
+            public void handleStep(StepInterpolator interpolator, boolean isLast) {
+            }
+
+        });
+        integ.integrate(new FirstOrderDifferentialEquations() {
+
+            public int getDimension() {
+                return 1;
+            }
+
+            public void computeDerivatives(double t, double[] y, double[] yDot) {
+                yDot[0] = -0.5 * y[0];
+            }
+
+        }, 0, new double[1]);
+    }
+    private void doTestFSAL(final EmbeddedRungeKuttaIntegrator integ) {
+        integ.setInitialStepSize(0.001);
+        integ.setMi

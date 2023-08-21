@@ -1,0 +1,105 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.renderer.category;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+/**
+ * A renderer that handles the drawing a bar plot where
+ * each bar has a mean value and a standard deviation line.
+ */
+public class StatisticalBarRenderer extends BarRenderer
+                                    implements CategoryItemRenderer, 
+                                               Cloneable, PublicCloneable, 
+                                               Serializable {
+    private static final long serialVersionUID = -4986038395414039117L;
+    private transient Paint errorIndicatorPaint;
+    private transient Stroke errorIndicatorStroke;
+    /**
+     * Default constructor.
+     */
+    public StatisticalBarRenderer() {
+        super();
+        this.errorIndicatorPaint = Color.gray;
+        this.errorIndicatorStroke = new BasicStroke(0.5f);
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testDrawWithNullMeanVertical() {
+        boolean success = false;
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            /* BufferedImage image = */ chart.createBufferedImage(300, 200, 
+                    null);
+            success = true;
+        }
+        catch ($EXCEPTION$ e) {
+            e.printStackTrace();
+            success = false;
+        }
+        _tmp_var_0_ = success;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+[assistant]:DrawWithNullMeanVertical() {
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            chart.createBufferedImage(300, 200, null);
+            fail("Expected exception not thrown.");
+        }
+        catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+        catch (Exception e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+    }
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test

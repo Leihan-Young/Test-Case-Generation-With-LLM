@@ -1,0 +1,28 @@
+ProcessValues() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final ArgumentBuilder abuilder = new ArgumentBuilder();
+
+        final Option o = obuilder.withShortName("o").create();
+        final Argument a = abuilder.withName("a").create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(
+            new GroupBuilder()
+                .withOption(o)
+                .withOption(a)
+                .create());
+
+        final WriteableCommandLine cl = new WriteableCommandLineImpl();
+
+        try {
+            parser.parse(new String[] { "-o", "output.txt", "input.txt" }, cl);
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected OptionException caught: " + exp.getMessage());
+        }
+
+        final List values = cl.getValues(a, Collections.EMPTY_LIST);
+        assertEquals("input.txt", values.get(0));
+    }
+```
+The test method attempts to parse an input argument that includes an option and an argument. The expected output is that the argument is correctly processed and added to the command line. However, due to a bug in the `processValues()` method of the `ArgumentImpl` class, the argument may not be added to the command line as expected. The bug occurs when the input argument is not split into separate values and is passed to the `addValue()` method as a single string. To fix this bug, the `processValues()` method should split the input argument into separate values before passing them to the `addValue()` method.

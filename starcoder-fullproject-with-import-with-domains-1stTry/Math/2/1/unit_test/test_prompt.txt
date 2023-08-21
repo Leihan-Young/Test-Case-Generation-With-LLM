@@ -1,0 +1,53 @@
+package org.apache.commons.math3.distribution;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.exception.NumberIsTooLargeException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.Well19937c;
+/**
+ * Implementation of the hypergeometric distribution.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/HypergeometricDistribution.html">Hypergeometric distribution (MathWorld)</a>
+ * @version $Id$
+ */
+public class HypergeometricDistribution extends AbstractIntegerDistribution {
+    private static final long serialVersionUID = -436928820673516179L;
+    private final int numberOfSuccesses;
+    private final int populationSize;
+    private final int sampleSize;
+    private double numericalVariance = Double.NaN;
+    private boolean numericalVarianceIsCalculated = false;
+    /**
+     * For this distribution, {@code X}, this method returns {@code P(X >= x)}.
+     *
+     * @param x Value at which the CDF is evaluated.
+     * @return the upper tail CDF for this distribution.
+     * @since 1.1
+     */
+    public double upperCumulativeProbability(int x);
+    /** {@inheritDoc} */
+    public double cumulativeProbability(int x);
+    /**
+     * For this distribution, {@code X}, this method returns
+     * {@code P(x0 <= X <= x1)}.
+     * This probability is computed by summing the point probabilities for the
+     * values {@code x0, x0 + 1, x0 + 2, ..., x1}, in the order directed by
+     * {@code dx}.
+     *
+     * @param x0 Inclusive lower bound.
+     * @param x1 Inclusive upper bound.
+     * @param dx Direction of summation (1 indicates summing from x0 to x1, and
+     * 0 indicates summing from x1 to x0).
+     * @return {@code P(x0 <= X <= x1)}.
+     */
+    private double innerCumulativeProbability(int x0, int x1, int dx);
+    /** {@inheritDoc} */
+    public double probability(int x);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

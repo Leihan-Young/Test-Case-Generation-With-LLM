@@ -1,0 +1,19 @@
+TimePeriodValues() {
+    TimePeriodValues values = new TimePeriodValues();
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(0), new Date(1000)), 10));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(0, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(0, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(0, values.getMaxEndIndex());
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(1000), new Date(2000)), 20));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(1, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(1, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(1, values.getMaxEndIndex());
+}
+```
+The test method tests the `TimePeriodValues` class by adding two `TimePeriodValue` objects to it and verifying that the index values for the maximum and minimum bounds are updated correctly. The bug in the program could be that the `getMaxMiddleIndex()` method returns an incorrect value.

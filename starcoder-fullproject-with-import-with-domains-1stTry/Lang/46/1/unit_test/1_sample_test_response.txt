@@ -1,0 +1,19 @@
+     private void assertEquals(final String expected, final String actual) {
+        assertEquals(expected, actual, false);
+    }
+    private void assertEquals(final String expected, final String actual, final boolean ignoreCase) {
+        if (ignoreCase) {
+            assertEquals(expected.toLowerCase(), actual.toLowerCase());
+        } else {
+            assertEquals(expected, actual);
+        }
+    }
+    public void testUnescapeCsv() {
+        assertEquals(null, StringEscapeUtils.unescapeCsv(null));
+        assertEquals("", StringEscapeUtils.unescapeCsv(""));
+        assertEquals("foo", StringEscapeUtils.unescapeCsv("foo"));
+        assertEquals("foo", StringEscapeUtils.unescapeCsv("\"foo\""));
+        assertEquals("foo,bar", StringEscapeUtils.unescapeCsv("\"foo,bar\""));
+        assertEquals("foo\"bar", StringEscapeUtils.unescapeCsv("\"foo\"\"bar\""));
+        assertEquals("\"foo\"", StringEscapeUtils.unescapeCsv("\"\"\"foo\"\"\""));
+    }

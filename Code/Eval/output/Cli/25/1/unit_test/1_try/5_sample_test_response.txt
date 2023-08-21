@@ -1,0 +1,6 @@
+FindWrapPos() {
+        HelpFormatter formatter = new HelpFormatter();
+        String longString = "This is a very long string that should be wrapped";
+        int wrapPos = formatter.findWrapPos(longString, 10, 0);
+        assertEquals(10, wrapPos);
+    }

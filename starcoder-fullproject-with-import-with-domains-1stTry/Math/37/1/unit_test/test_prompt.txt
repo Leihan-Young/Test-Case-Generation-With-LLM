@@ -1,0 +1,152 @@
+package org.apache.commons.math.complex;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.math.FieldElement;
+import org.apache.commons.math.exception.NullArgumentException;
+import org.apache.commons.math.exception.NotPositiveException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math.util.FastMath;
+/**
+ * Representation of a Complex number, i.e. a number which has both a
+ * real and imaginary part.
+ * <br/>
+ * Implementations of arithmetic operations handle {@code NaN} and
+ * infinite values according to the rules for {@link java.lang.Double}, i.e.
+ * {@link #equals} is an equivalence relation for all instances that have
+ * a {@code NaN} in either real or imaginary part, e.g. the following are
+ * considered equal:
+ * <ul>
+ *  <li>{@code 1 + NaNi}</li>
+ *  <li>{@code NaN + i}</li>
+ *  <li>{@code NaN + NaNi}</li>
+ * </ul>
+ * Note that this is in contradiction with the IEEE-754 standard for floating
+ * point numbers (according to which the test {@code x == x} must fail if
+ * {@code x} is {@code NaN}). The method
+ * {@link org.apache.commons.math.util.Precision#equals(double,double,int)
+ * equals for primitive double} in {@link org.apache.commons.math.util.Precision}
+ * conforms with IEEE-754 while this class conforms with the standard behavior
+ * for Java object types.
+ * <br/>
+ * Implements Serializable since 2.0
+ *
+ * @version $Id$
+ */
+public class Complex implements FieldElement<Complex>, Serializable  {
+    public static final Complex I = new Complex(0.0, 1.0);
+    public static final Complex NaN = new Complex(Double.NaN, Double.NaN);
+    public static final Complex INF = new Complex(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+    public static final Complex ONE = new Complex(1.0, 0.0);
+    public static final Complex ZERO = new Complex(0.0, 0.0);
+    private static final long serialVersionUID = -6195664516687396620L;
+    private final double imaginary;
+    private final double real;
+    private final transient boolean isNaN;
+    private final transient boolean isInfinite;
+    /**
+     * Compute the
+     * <a href="http://mathworld.wolfram.com/HyperbolicTangent.html" TARGET="_top">
+     * hyperbolic tangent</a> of this complex number.
+     * Implements the formula:
+     * <pre>
+     *  <code>
+     *   tan(a + bi) = sinh(2a)/(cosh(2a)+cos(2b)) + [sin(2b)/(cosh(2a)+cos(2b))]i
+     *  </code>
+     * </pre>
+     * where the (real) functions on the right-hand side are
+     * {@link FastMath#sin}, {@link FastMath#cos}, {@link FastMath#cosh} and
+     * {@link FastMath#sinh}.
+     * <br/>
+     * Returns {@link Complex#NaN} if either real or imaginary part of the
+     * input argument is {@code NaN}.
+     * <br/>
+     * Infinite values in real or imaginary parts of the input may result in
+     * infinite or NaN values returned in parts of the result.
+     * <pre>
+     *  Examples:
+     *  <code>
+     *   tanh(a &plusmn; INFINITY i) = NaN + NaN i
+     *   tanh(&plusmn;INFINITY + bi) = &plusmn;1 + 0 i
+     *   tanh(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
+     *   tanh(0 + (&pi;/2)i) = NaN + INFINITY i
+     *  </code>
+     * </pre>
+     *
+     * @return the hyperbolic tangent of {@code this}.
+     * @since 1.2
+     */
+    public Complex tanh();
+    /**
+     * Compute the
+     * <a href="http://mathworld.wolfram.com/Tangent.html" TARGET="_top">
+     * tangent</a> of this complex number.
+     * Implements the formula:
+     * <pre>
+     *  <code>
+     *   tan(a + bi) = sin(2a)/(cos(2a)+cosh(2b)) + [sinh(2b)/(cos(2a)+cosh(2b))]i
+     *  </code>
+     * </pre>
+     * where the (real) functions on the right-hand side are
+     * {@link FastMath#sin}, {@link FastMath#cos}, {@link FastMath#cosh} and
+     * {@link FastMath#sinh}.
+     * <br/>
+     * Returns {@link Complex#NaN} if either real or imaginary part of the
+     * input argument is {@code NaN}.
+     * <br/>
+     * Infinite (or critical) values in real or imaginary parts of the input may
+     * result in infinite or NaN values returned in parts of the result.
+     * <pre>
+     *  Examples:
+     *  <code>
+     *   tan(a &plusmn; INFINITY i) = 0 &plusmn; i
+     *   tan(&plusmn;INFINITY + bi) = NaN + NaN i
+     *   tan(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
+     *   tan(&plusmn;&pi;/2 + 0 i) = &plusmn;INFINITY + NaN i
+     *  </code>
+     * </pre>
+     *
+     * @return the tangent of {@code this}.
+     * @since 1.2
+     */
+    public Complex tan();
+    /**
+     * Compute the
+     * <a href="http://mathworld.wolfram.com/SquareRoot.html" TARGET="_top">
+     * square root</a> of <code>1 - this<sup>2</sup></code> for this complex
+     * number.
+     * Computes the result directly as
+     * {@code sqrt(ONE.subtract(z.multiply(z)))}.
+     * <br/>
+     * Returns {@link Complex#NaN} if either real or imaginary part of the
+     * input argument is {@code NaN}.
+     * <br/>
+     * Infinite values in real or imaginary parts of the input may result in
+     * infinite or NaN values returned in parts of the result.
+     *
+     * @return the square root of <code>1 - this<sup>2</sup></code>.
+     * @since 1.2
+     */
+    public Complex sqrt1z();
+    /**
+     * Create a complex number given the real and imaginary parts.
+     *
+     * @param realPart Real part.
+     * @param imaginaryPart Imaginary part.
+     * @return a Complex instance.
+     */
+    public static Complex valueOf(double realPart,
+                                  double imaginaryPart);
+    /**
+     * Create a complex number given only the real part.
+     *
+     * @param realPart Real part.
+     * @return a Complex instance.
+     */
+    public static Complex valueOf(double realPart);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

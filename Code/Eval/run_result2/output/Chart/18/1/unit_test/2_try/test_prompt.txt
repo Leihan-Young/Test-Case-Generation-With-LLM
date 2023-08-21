@@ -1,0 +1,388 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -------------------------
+ * DefaultKeyedValues2D.java
+ * -------------------------
+ * (C) Copyright 2002-2007, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Andreas Schroeder;
+ *
+ * Changes
+ * -------
+ * 28-Oct-2002 : Version 1 (DG);
+ * 21-Jan-2003 : Updated Javadocs (DG);
+ * 13-Mar-2003 : Implemented Serializable (DG);
+ * 18-Aug-2003 : Implemented Cloneable (DG);
+ * 31-Mar-2004 : Made the rows optionally sortable by a flag (AS);
+ * 01-Apr-2004 : Implemented remove method (AS);
+ * 05-Apr-2004 : Added clear() method (DG);
+ * 15-Sep-2004 : Fixed clone() method (DG);
+ * 12-Jan-2005 : Fixed bug in getValue() method (DG);
+ * 23-Mar-2005 : Implemented PublicCloneable (DG);
+ * 09-Jun-2005 : Modified getValue() method to throw exception for unknown
+ *               keys (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 18-Jan-2007 : Fixed bug in getValue() method (DG);
+ * 30-Mar-2007 : Fixed bug 1690654, problem with removeValue() (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 21-Nov-2007 : Fixed bug (1835955) in removeColumn(Comparable) method (DG);
+ *
+ */
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+/**
+ * A data structure that stores zero, one or many values, where each value 
+ * is associated with two keys (a 'row' key and a 'column' key).  The keys 
+ * should be (a) instances of {@link Comparable} and (b) immutable.  
+ */
+public class DefaultKeyedValues2D implements KeyedValues2D, 
+                                             PublicCloneable, Cloneable, 
+                                             Serializable {
+    private static final long serialVersionUID = -5514169970951994748L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    private boolean sortRowKeys;
+    /**
+     * Removes a column.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeColumn(Comparable)
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex) {
+        Comparable columnKey = getColumnKey(columnIndex);
+        removeColumn(columnKey);
+    }
+    /**
+     * Adds a value to the table.  Performs the same function as 
+     * #setValue(Number, Comparable, Comparable).
+     *
+     * @param value  the value (<code>null</code> permitted).
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #setValue(Number, Comparable, Comparable)
+     * @see #removeValue(Comparable, Comparable)
+     */
+    public void addValue(Number value, Comparable rowKey, 
+                         Comparable columnKey) {
+        // defer argument checking
+        setValue(value, rowKey, columnKey);
+    }
+    /**
+     * Returns the value for the given row and column keys.  This method will
+     * throw an {@link UnknownKeyException} if either key is not defined in the
+     * data structure.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @see #addValue(Number, Comparable, Comparable)
+     * @see #removeValue(Comparable, Comparable)
+     */
+    public Number getValue(Comparable rowKey, Comparable columnKey) {
+        if (rowKey == null) {
+            throw new IllegalArgumentException("Null 'rowKey' argument.");
+        }
+        if (columnKey == null) {
+            throw new IllegalArgumentException("Null 'columnKey' argument.");
+        }
+        
+        // check that the column key is defined in the 2D structure
+        if (!(this.columnKeys.contains(columnKey))) {
+            throw new UnknownKeyException("Unrecognised columnKey: " 
+                    + columnKey);
+        }
+        
+        // now fetch the row data - need to bear in mind that the row
+        // structure may not have an entry for the column key, but that we
+        // have already checked that the key is valid for the 2D structure
+        int row = getRowIndex(rowKey);
+        if (row >= 0) {
+            DefaultKeyedValues rowData 
+                = (DefaultKeyedValues) this.rows.get(row);
+            int col = rowData.getIndex(columnKey);
+            return (col >= 0 ? rowData.getValue(col) : null);
+        }
+        else {
+            throw new UnknownKeyException("Unrecognised rowKey: " + rowKey);
+        }
+    }
+    /**
+     * Removes a column from the table.
+     *
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @throws UnknownKeyException if the table does not contain a column with
+     *     the specified key.
+     * @throws IllegalArgumentException if <code>columnKey</code> is 
+     *     <code>null</code>.
+     * 
+     * @see #removeColumn(int)
+     * @see #removeRow(Comparable)
+     */
+    public void removeColumn(Comparable columnKey) {
+        Iterator iterator = this.rows.iterator();
+        while (iterator.hasNext()) {
+            DefaultKeyedValues rowData = (DefaultKeyedValues) iterator.next();
+                rowData.removeValue(columnKey);
+        }
+        this.columnKeys.remove(columnKey);
+    }
+    /**
+     * Returns the value for a given row and column.
+     *
+     * @param row  the row index.
+     * @param column  the column index.
+     *
+     * @return The value.
+     * 
+     * @see #getValue(Comparable, Comparable)
+     */
+    public Number getValue(int row, int column) {
+        Number result = null;
+        DefaultKeyedValues rowData = (DefaultKeyedValues) this.rows.get(row);
+        if (rowData != null) {
+            Comparable columnKey = (Comparable) this.columnKeys.get(column);
+            // the row may not have an entry for this key, in which case the 
+            // return value is null
+            int index = rowData.getIndex(columnKey);
+            if (index >= 0) {
+                result = rowData.getValue(index);
+            }
+        }
+        return result;
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------------
+ * DefaultKeyedValues.java
+ * -----------------------
+ * (C) Copyright 2002-2007, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Thomas Morgner;
+ *
+ * Changes:
+ * --------
+ * 31-Oct-2002 : Version 1 (DG);
+ * 11-Feb-2003 : Fixed bug in getValue(key) method for unrecognised key (DG);
+ * 05-Mar-2003 : Added methods to sort stored data 'by key' or 'by value' (DG);
+ * 13-Mar-2003 : Implemented Serializable (DG);
+ * 08-Apr-2003 : Modified removeValue(Comparable) method to fix bug 717049 (DG);
+ * 18-Aug-2003 : Implemented Cloneable (DG);
+ * 27-Aug-2003 : Moved SortOrder from org.jfree.data --> org.jfree.util (DG);
+ * 09-Feb-2004 : Modified getIndex() method - see bug report 893256 (DG);
+ * 15-Sep-2004 : Updated clone() method and added PublicCloneable 
+ *               interface (DG);
+ * 25-Nov-2004 : Small update to the clone() implementation (DG);
+ * 24-Feb-2005 : Added methods addValue(Comparable, double) and 
+ *               setValue(Comparable, double) for convenience (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 31-Jul-2006 : Added a clear() method (DG);
+ * 01-Aug-2006 : Added argument check to getIndex() method (DG);
+ * 30-Apr-2007 : Added insertValue() methods (DG);
+ * 31-Oct-2007 : Performance improvements by using separate lists for keys and 
+ *               values (TM);
+ * 21-Nov-2007 : Fixed bug in removeValue() method from previous patch (DG);
+ *               
+ */
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.SortOrder;
+/**
+ * An ordered list of (key, value) items.  This class provides a default 
+ * implementation of the {@link KeyedValues} interface.
+ */
+public class DefaultKeyedValues implements KeyedValues, 
+                                           Cloneable, PublicCloneable, 
+                                           Serializable {
+    private static final long serialVersionUID = 8468154364608194797L;
+    private ArrayList keys;
+    private ArrayList values;
+    private HashMap indexMap; 
+    /**
+     * Removes a value from the collection.
+     *
+     * @param index  the index of the item to remove (in the range 
+     *     <code>0</code> to <code>getItemCount() - 1</code>).
+     *     
+     * @throws IndexOutOfBoundsException if <code>index</code> is not within
+     *     the specified range.
+     */
+    public void removeValue(int index) {
+        this.keys.remove(index);
+        this.values.remove(index);
+        if (index < this.keys.size()) {
+        rebuildIndex();
+        }
+    }
+    /**
+     * Removes a value from the collection.
+     *
+     * @param key  the item key (<code>null</code> not permitted).
+     * 
+     * @throws IllegalArgumentException if <code>key</code> is 
+     *     <code>null</code>.
+     * @throws UnknownKeyException if <code>key</code> is not recognised.
+     */
+    public void removeValue(Comparable key) {
+        int index = getIndex(key);
+        if (index < 0) {
+			return;
+        }
+        removeValue(index);
+    }
+    /**
+     * Updates an existing value, or adds a new value to the collection.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     * @param value  the value.
+     * 
+     * @see #addValue(Comparable, Number)
+     */
+    public void addValue(Comparable key, double value) {
+        addValue(key, new Double(value)); 
+    }
+    /**
+     * Returns a value.
+     *
+     * @param item  the item of interest (zero-based index).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @throws IndexOutOfBoundsException if <code>item</code> is out of bounds.
+     */
+    public Number getValue(int item) {
+        return (Number) this.values.get(item);
+    }
+    /**
+     * Adds a new value to the collection, or updates an existing value.
+     * This method passes control directly to the 
+     * {@link #setValue(Comparable, Number)} method.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     * @param value  the value (<code>null</code> permitted).
+     */
+    public void addValue(Comparable key, Number value) {
+        setValue(key, value);
+    }
+    /**
+     * Returns the value for a given key.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @throws UnknownKeyException if the key is not recognised.
+     * 
+     * @see #getValue(int)
+     */
+    public Number getValue(Comparable key) {
+        int index = getIndex(key);
+        if (index < 0) {
+            throw new UnknownKeyException("Key not found: " + key);
+        }
+        return getValue(index);
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+[assistant]:DefaultKeyedValues_removeValue() {
+    DefaultKeyedValues data = new DefaultKeyedValues();
+    data.addValue("A", 1.0);
+    data.addValue("B", 2.0);
+    data.addValue("C", 3.0);
+    data.removeValue("B");
+    assertEquals(2, data.getItemCount()); // bug: expected 1
+    assertEquals("A", data.getKey(0));
+    assertEquals("C", data.getKey(1));
+}
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     DefaultKeyedValues data = new DefaultKeyedValues();
+[javac]     ^
+[javac]   symbol:   class DefaultKeyedValues
+[javac]   location: class DefaultCategoryDatasetTests
+[javac]error: cannot find symbol
+[javac]     DefaultKeyedValues data = new DefaultKeyedValues();
+[javac]                                   ^
+[javac]   symbol:   class DefaultKeyedValues
+[javac]   location: class DefaultCategoryDatasetTests
+[javac] Note: /jTrans/Eval/src/Chart/18b/tests/org/jfree/chart/axis/junit/SegmentedTimelineTests.java uses or overrides a deprecated API.
+[javac] Note: Recompile with -Xlint:deprecation for details.
+
+```
+public void test

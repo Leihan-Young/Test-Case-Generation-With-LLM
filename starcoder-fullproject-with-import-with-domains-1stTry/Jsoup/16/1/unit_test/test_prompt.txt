@@ -1,0 +1,15 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+/**
+ * A {@code <!DOCTPYE>} node.
+ */
+public class DocumentType extends Node {
+    @Override
+    void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out);
+    @Override
+    public String nodeName();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

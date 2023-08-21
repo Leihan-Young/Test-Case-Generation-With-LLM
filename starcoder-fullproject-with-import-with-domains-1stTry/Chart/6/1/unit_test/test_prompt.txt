@@ -1,0 +1,48 @@
+package org.jfree.chart.util;
+import java.awt.Shape;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+/**
+ * A table of {@link Shape} objects.
+ */
+public class ShapeList extends AbstractObjectList {
+    /**
+     * Provides serialization support.
+     *
+     * @param stream  the input stream.
+     *
+     * @throws IOException  if there is an I/O error.
+     * @throws ClassNotFoundException  if there is a classpath problem.
+     */
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException;
+    /**
+     * Provides serialization support.
+     *
+     * @param stream  the output stream.
+     *
+     * @throws IOException  if there is an I/O error.
+     */
+    private void writeObject(ObjectOutputStream stream) throws IOException;
+    /**
+     * Tests the list for equality with another object (typically also a list).
+     *
+     * @param obj  the other object (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public boolean equals(Object obj);
+    /**
+     * Sets the {@link Shape} for an item in the list.  The list is expanded 
+	 * if necessary.
+     *
+     * @param index  the index (zero-based).
+     * @param shape  the {@link Shape}.
+     */
+    public void setShape(int index, Shape shape);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

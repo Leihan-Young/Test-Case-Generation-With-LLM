@@ -1,0 +1,10 @@
+     public void testSample() {
+        final DiscreteDistribution<Integer> dist = new DiscreteDistribution<Integer>(new double[] {0.1, 0.2, 0.3, 0.4});
+        final int[] counts = new int[4];
+        for (int i = 0; i < 10000; i++) {
+            counts[dist.sample()]++;
+        }
+        for (int i = 0; i < 4; i++) {
+            assertTrue(counts[i] > 100);
+        }
+    }

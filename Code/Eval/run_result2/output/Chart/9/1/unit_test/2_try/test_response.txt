@@ -1,0 +1,15 @@
+TimeSeriesAdd() {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.setMaximumItemCount(3);
+    series.setMaximumItemAge(1000);
+    series.add(new Day(1, 1, 2000), 100);
+    series.add(new Day(2, 1, 2000), 200);
+    series.add(new Day(3, 1, 2000), 300);
+    series.add(new Day(4, 1, 2000), 400);
+    // The bug is that the last added item is not considered when removing aged items
+    // So, the item with the earliest date is still in the series, violating the maximum age constraint
+    assertEquals(2, series.getItemCount());
+    assertEquals(new Day(2, 1, 2000), series.getTimePeriod(0));
+    assertEquals(new Day(4, 1, 2000), series.getTimePeriod(1));
+}
+```

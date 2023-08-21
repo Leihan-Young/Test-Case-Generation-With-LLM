@@ -1,0 +1,17 @@
+     public void testCreateNumber() {
+        assertEquals(Integer.valueOf(1), NumberUtils.createNumber("1"));
+        assertEquals(Integer.valueOf(1), NumberUtils.createNumber("+1"));
+        assertEquals(Integer.valueOf(-1), NumberUtils.createNumber("-1"));
+        assertEquals(Long.valueOf(1), NumberUtils.createNumber("1l"));
+        assertEquals(Long.valueOf(1), NumberUtils.createNumber("+1l"));
+        assertEquals(Long.valueOf(-1), NumberUtils.createNumber("-1l"));
+        assertEquals(Short.valueOf((short) 1), NumberUtils.createNumber("1s"));
+        assertEquals(Short.valueOf((short) 1), NumberUtils.createNumber("+1s"));
+        assertEquals(Short.valueOf((short) -1), NumberUtils.createNumber("-1s"));
+        assertEquals(Byte.valueOf((byte) 1), NumberUtils.createNumber("1b"));
+        assertEquals(Byte.valueOf((byte) 1), NumberUtils.createNumber("+1b"));
+        assertEquals(Byte.valueOf((byte) -1), NumberUtils.createNumber("-1b"));
+        assertEquals(Double.valueOf(1), NumberUtils.createNumber("1d"));
+        assertEquals(Double.valueOf(1), NumberUtils.createNumber("+1d"));
+        assertEquals(Double.valueOf(-1), NumberUtils.createNumber("-1d"));
+        assertEquals(Float.valueOf

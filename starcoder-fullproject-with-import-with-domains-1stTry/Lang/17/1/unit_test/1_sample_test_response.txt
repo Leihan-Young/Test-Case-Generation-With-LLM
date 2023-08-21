@@ -1,0 +1,23 @@
+     private void doTestUnescapeJava(final String expected, final String input) {
+        assertEquals(expected, JavaUnicodeEscaper.unescape(input));
+    }
+    private void doTestUnescapeJava(final int expected, final String input) {
+        assertEquals(expected, JavaUnicodeEscaper.unescape(input).codePointAt(0));
+    }
+    private void doTestUnescapeJson(final String expected, final String input) {
+        assertEquals(expected, JsonUnicodeEscaper.unescape(input));
+    }
+    private void doTestUnescapeJson(final int expected, final String input) {
+        assertEquals(expected, JsonUnicodeEscaper.unescape(input).codePointAt(0));
+    }
+    private void doTestUnescapeXml(final String expected, final String input) {
+        assertEquals(expected, XmlUnicodeEscaper.unescape(input));
+    }
+    private void doTestUnescapeXml(final int expected, final String input) {
+        assertEquals(expected, XmlUnicodeEscaper.unescape(input).codePointAt(0));
+    }
+    private void doTestUnescapeCsv(final String expected, final String input) {
+        assertEquals(expected, CsvUnicodeEscaper.unescape(input));
+    }
+    private void doTestUnescapeCsv(final int expected, final String input) {
+        assertEquals(expected, CsvUnicodeEscaper.unescape(input).codePointAt

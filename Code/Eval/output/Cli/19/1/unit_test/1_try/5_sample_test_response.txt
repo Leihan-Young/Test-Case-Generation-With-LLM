@@ -1,0 +1,14 @@
+PosixParser() {
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("debug", false, "print debug information");
+        String[] args = new String[]{"-help", "-debug"};
+        CommandLine line = parser.parse(options, args);
+        assertTrue(line.hasOption("help")); // expected: true, actual: false
+        assertTrue(line.hasOption("debug")); // expected: true, actual: false
+    }
+``` 
+
+This test method expects the output of the `hasOption()` method to be true for both "help" and "debug" options. However, since the `PosixParser` class has not been implemented properly, the output of both assertions will be false, indicating that the options were not correctly parsed.

@@ -1,0 +1,20 @@
+DefaultBoxAndWhiskerCategoryDataset() {
+    DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+    List<Double> values = new ArrayList<>();
+    values.add(10.0);
+    values.add(15.0);
+    values.add(20.0);
+    values.add(25.0);
+    dataset.add(values, "Row", "Column");
+    Range range = dataset.getRangeBounds(true);
+    assertEquals(10.0, range.getLowerBound(), 0.0001);
+    assertEquals(25.0, range.getUpperBound(), 0.0001);
+}
+```
+The issue is with the use of the List class. It seems that the import statement for java.util.List is missing. The code should include the following import statement:
+
+```
+import java.util.List;
+```
+
+Adding this import should resolve the error.

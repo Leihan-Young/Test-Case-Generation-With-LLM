@@ -1,0 +1,23 @@
+test2947660() {
+        AbstractCategoryItemRenderer r = new LineAndShapeRenderer();
+        // Test getLegendItems() method
+        LegendItemCollection lic = r.getLegendItems();
+        assertNotNull(lic);
+        assertEquals(0, lic.getItemCount());
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        CategoryPlot plot = new CategoryPlot();
+        plot.setDataset(dataset);
+        plot.setRenderer(r);
+        // Test getLegendItems() method again
+        lic = r.getLegendItems();
+        assertNotNull(lic);
+        assertEquals(0, lic.getItemCount());
+
+        dataset.addValue(1.0, "S1", "C1");
+        // Test getLegendItems() method after adding data to dataset
+        lic = r.getLegendItems();
+        assertNotNull(lic);
+        assertEquals(1, lic.getItemCount());
+        assertEquals("S1", lic.get(0).getLabel());
+    }

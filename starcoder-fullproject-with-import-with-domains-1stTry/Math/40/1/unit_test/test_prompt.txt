@@ -1,0 +1,49 @@
+package org.apache.commons.math.analysis.solvers;
+import org.apache.commons.math.analysis.UnivariateFunction;
+import org.apache.commons.math.exception.MathInternalError;
+import org.apache.commons.math.exception.NoBracketingException;
+import org.apache.commons.math.exception.NumberIsTooSmallException;
+import org.apache.commons.math.util.FastMath;
+import org.apache.commons.math.util.Precision;
+/**
+ * This class implements a modification of the <a
+ * href="http://mathworld.wolfram.com/BrentsMethod.html"> Brent algorithm</a>.
+ * <p>
+ * The changes with respect to the original Brent algorithm are:
+ * <ul>
+ *   <li>the returned value is chosen in the current interval according
+ *   to user specified {@link AllowedSolution},</li>
+ *   <li>the maximal order for the invert polynomial root search is
+ *   user-specified instead of being invert quadratic only</li>
+ * </ul>
+ * </p>
+ * The given interval must bracket the root.
+ *
+ * @version $Id$
+ */
+public class BracketingNthOrderBrentSolver
+    extends AbstractUnivariateRealSolver
+    implements BracketedUnivariateRealSolver<UnivariateFunction> {
+    private static final double DEFAULT_ABSOLUTE_ACCURACY = 1e-6;
+    private static final int DEFAULT_MAXIMAL_ORDER = 5;
+    private static final int MAXIMAL_AGING = 2;
+    private static final double REDUCTION_FACTOR = 1.0 / 16.0;
+    private final int maximalOrder;
+    private AllowedSolution allowed;
+    /** {@inheritDoc} */
+    public double solve(int maxEval, UnivariateFunction f, double min,
+                        double max, AllowedSolution allowedSolution);
+    /** {@inheritDoc} */
+    public double solve(int maxEval, UnivariateFunction f, double min,
+                        double max, double startValue,
+                        AllowedSolution allowedSolution);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected double doSolve();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

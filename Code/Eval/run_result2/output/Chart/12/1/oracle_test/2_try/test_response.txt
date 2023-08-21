@@ -1,0 +1,58 @@
+Constructor() {
+    // Test default constructor
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset());
+
+    // Test constructor with dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    plot = new MultiplePiePlot(dataset);
+    assertTrue(dataset.hasListener(plot));
+
+    // Test getters and setters
+    assertEquals(TableOrder.BY_COLUMN, plot.getDataExtractOrder());
+    plot.setDataExtractOrder(TableOrder.BY_ROW);
+    assertEquals(TableOrder.BY_ROW, plot.getDataExtractOrder());
+
+    assertEquals(0.0, plot.getLimit(), 0.0001);
+    plot.setLimit(10.0);
+    assertEquals(10.0, plot.getLimit(), 0.0001);
+
+    assertEquals("Other", plot.getAggregatedItemsKey());
+    plot.setAggregatedItemsKey("Test");
+    assertEquals("Test", plot.getAggregatedItemsKey());
+
+    assertEquals(Color.lightGray, plot.getAggregatedItemsPaint());
+    plot.setAggregatedItemsPaint(Color.black);
+    assertEquals(Color.black, plot.getAggregatedItemsPaint());
+
+    Map<String, Paint> sectionPaints = new HashMap<>();
+    sectionPaints.put("A", Color.red);
+    sectionPaints.put("B", Color.blue);
+    plot.setSectionPaints(sectionPaints);
+    assertEquals(Color.red, plot.getSectionPaint("A"));
+    assertEquals(Color.blue, plot.getSectionPaint("B"));
+
+    // Test setDataset method
+    CategoryDataset newDataset = new DefaultCategoryDataset();
+    plot.setDataset(newDataset);
+    assertSame(newDataset, plot.getDataset());
+
+    // Test null dataset
+    plot.setDataset(null);
+    assertNull(plot.getDataset());
+
+    // Test clone method
+    MultiplePiePlot clonedPlot = null;
+    try {
+        clonedPlot = (MultiplePiePlot) plot.clone();
+    } catch (CloneNotSupportedException e) {
+        fail("Cloning should be supported");
+    }
+    assertNotNull(clonedPlot);
+    assertNotSame(plot, clonedPlot);
+    assertEquals(plot.getDataExtractOrder(), clonedPlot.getDataExtractOrder());
+    assertEquals(plot.getLimit(), clonedPlot.getLimit(), 0.0001);
+    assertEquals(plot.getAggregatedItemsKey(), clonedPlot.getAggregatedItemsKey());
+    assertEquals(plot.getAggregatedItemsPaint(), clonedPlot.getAggregatedItemsPaint());
+    assertEquals(sectionPaints, clonedPlot.getSectionPaints());
+}

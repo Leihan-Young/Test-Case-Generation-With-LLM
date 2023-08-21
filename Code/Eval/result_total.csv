@@ -1,0 +1,81 @@
+Retry 1,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,3,125,46,2,176,1,57,99,478,7,818,,1.70 ,71.02 ,21.52 ,,6.97 ,58.44 
+oracle_test,134,201,2,2,339,285,85,28,74,7,818,,39.53 ,59.29 ,41.44 ,,10.39 ,9.05 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+Retry 3,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,7,192,64,1,264,1,60,87,399,7,818,,2.65 ,72.73 ,32.27 ,,7.33 ,48.78 
+oracle_test,156,202,4,2,364,285,94,22,46,7,818,,42.86 ,55.49 ,44.50 ,,11.49 ,5.62 
+,,,,,,,,,,,,,,,,,,
+,7个的项目/TOGA的5项目,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+6 project retry 1,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,2,40,10,0,52,8,60,21,201,1,343,,3.85 ,76.92 ,15.16 ,,17.49 ,58.60 
+oracle_test,49,53,1,1,104,117,45,7,69,1,343,,47.12 ,50.96 ,30.32 ,,13.12 ,20.12 
+,,,,,,,,,,,,,,,,,,
+6 project retry 3,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,2,68,14,1,85,8,58,18,173,1,343,,2.35 ,80.00 ,24.78 ,,16.91 ,50.44 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+6 project retry 1 fix 1,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,2,42,19,0,63,8,61,20,190,1,343,,3.17 ,66.67 ,18.37 ,,17.78 ,55.39 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+6 project retry 1 fix 2,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,3,49,22,0,74,8,88,19,153,1,343,,4.05 ,66.22 ,21.57 ,,25.66 ,44.61 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+6 project retry 1 fix 3,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,3,57,23,0,83,3,38,21,197,1,343,,3.61 ,68.67 ,24.20 ,,11.08 ,57.43 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+6 project retry 3 fix 2,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,2,85,20,1,108,8,70,17,139,1,343,,1.85 ,78.70 ,31.49 ,,20.41 ,40.52 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 1,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,2,113,28,0,143,0,49,6,177,3,378,,1.40 ,79.02 ,37.83 ,,12.96 ,46.83 
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 3,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,5,144,21,0,170,0,77,1,127,3,378,,2.94 ,84.71 ,44.97 ,,20.37 ,33.60 
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 5,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,6,160,11,0,177,0,97,2,99,3,378,,3.39 ,90.40 ,46.83 ,,25.66 ,26.19 
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 10,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,3,158,6,0,167,0,136,0,72,3,378,,1.80 ,94.61 ,44.18 ,,35.98 ,19.05 
+,,,,,,,,,,,,,,,,,,
+7 project retry 3 sample 5,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,12,231,12,0,255,0,31,1,87,4,378,,4.71 ,90.59 ,67.46 ,,8.20 ,23.02 
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 5,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,6,160,11,0,177,0,97,2,99,3,378,,3.39 ,90.40 ,46.83 ,,25.66 ,26.19 
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 5 example 1,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,8,229,18,0,255,0,34,1,84,4,378,,3.14 ,89.80 ,67.46 ,,8.99 ,22.22 
+,,,,,,,,,,,,,,,,,,
+7 project retry 1 sample 5 example 2,,,,,,,,,,,,,,,,,,
+Test Type,True Positive Count,False Positive Count,True Negative Count,False Negative Count,Test Count,Prepare Failed Count,Invoke LLM Failed Count,Parse Failed Count,Build Failed Count,Unexpected Error Count,Total,,TPR,FPR,Test Rate,,invoke failed,build failed rate
+unit_test,7,221,23,0,251,2,37,7,78,3,378,,2.79 ,88.05 ,66.40 ,,9.79 ,20.63 

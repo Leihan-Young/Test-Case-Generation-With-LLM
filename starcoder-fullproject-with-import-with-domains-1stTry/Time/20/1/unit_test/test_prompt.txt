@@ -1,0 +1,92 @@
+package org.joda.time.format;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import org.joda.time.Chronology;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+import org.joda.time.ReadablePartial;
+import org.joda.time.MutableDateTime.Property;
+import org.joda.time.field.MillisDurationField;
+import org.joda.time.field.PreciseDateTimeField;
+/**
+ * Factory that creates complex instances of DateTimeFormatter via method calls.
+ * <p>
+ * Datetime formatting is performed by the {@link DateTimeFormatter} class.
+ * Three classes provide factory methods to create formatters, and this is one.
+ * The others are {@link DateTimeFormat} and {@link ISODateTimeFormat}.
+ * <p>
+ * DateTimeFormatterBuilder is used for constructing formatters which are then
+ * used to print or parse. The formatters are built by appending specific fields
+ * or other formatters to an instance of this builder.
+ * <p>
+ * For example, a formatter that prints month and year, like "January 1970",
+ * can be constructed as follows:
+ * <p>
+ * <pre>
+ * DateTimeFormatter monthAndYear = new DateTimeFormatterBuilder()
+ *     .appendMonthOfYearText()
+ *     .appendLiteral(' ')
+ *     .appendYear(4, 4)
+ *     .toFormatter();
+ * </pre>
+ * <p>
+ * DateTimeFormatterBuilder itself is mutable and not thread-safe, but the
+ * formatters that it builds are thread-safe and immutable.
+ *
+ * @author Brian S O'Neill
+ * @author Stephen Colebourne
+ * @author Fredrik Borgh
+ * @since 1.0
+ * @see DateTimeFormat
+ * @see ISODateTimeFormat
+ */
+public class DateTimeFormatterBuilder {
+    private ArrayList<Object> iElementPairs;
+    private Object iFormatter;
+    /**
+     * Instructs the printer to emit the identifier of the time zone.
+     * From version 2.0, this field can be parsed.
+     *
+     * @return this DateTimeFormatterBuilder, for chaining
+     */
+    public DateTimeFormatterBuilder appendTimeZoneId();
+    /**
+     * Constructs a DateTimeFormatter using all the appended elements.
+     * <p>
+     * This is the main method used by applications at the end of the build
+     * process to create a usable formatter.
+     * <p>
+     * Subsequent changes to this builder do not affect the returned formatter.
+     * <p>
+     * The returned formatter may not support both printing and parsing.
+     * The methods {@link DateTimeFormatter#isPrinter()} and
+     * {@link DateTimeFormatter#isParser()} will help you determine the state
+     * of the formatter.
+     *
+     * @throws UnsupportedOperationException if neither printing nor parsing is supported
+     */
+    public DateTimeFormatter toFormatter();
+    /**
+     * Calls upon {@link DateTimeFormat} to parse the pattern and append the
+     * results into this builder.
+     *
+     * @param pattern  pattern specification
+     * @throws IllegalArgumentException if the pattern is invalid
+     * @see DateTimeFormat
+     */
+    public DateTimeFormatterBuilder appendPattern(String pattern);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

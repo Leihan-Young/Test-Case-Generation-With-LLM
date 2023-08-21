@@ -1,0 +1,11 @@
+StripLeadingAndTrailingQuotes() {
+        String str1 = "\"test\"";
+        String str2 = "\"test";
+        String str3 = "test\"";
+
+        assertEquals(Util.stripLeadingAndTrailingQuotes(str1), "test");
+        assertEquals(Util.stripLeadingAndTrailingQuotes(str2), "\"test");
+        assertEquals(Util.stripLeadingAndTrailingQuotes(str3), "test\"");
+    }
+```
+The above test method checks whether the `stripLeadingAndTrailingQuotes()` method of the `Util` class correctly removes the leading and trailing quotes from a given string. The second and third strings have quotes only at one end, which should not be removed, and the test ensures that the method handles such cases correctly. This test can reveal a bug if the method does not correctly handle the cases where there are quotes only at one end of the string.

@@ -1,0 +1,16 @@
+GnuParser() throws Exception {
+        CommandLineParser parser = new GnuParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("file", true, "use given file for input");
+
+        String[] args = new String[]{"-help", "-file", "input.txt"};
+
+        CommandLine line = parser.parse(options, args);
+
+        assertTrue(line.hasOption("help"));
+        assertEquals(line.getOptionValue("file"), "input.txt");
+    }
+```
+This test method checks if the "file" option is correctly parsed and retrieved from the command line arguments. It also checks if the "help" option is correctly identified. If the "file" option is not properly parsed, the test will fail and reveal the bug in the GnuParser class.

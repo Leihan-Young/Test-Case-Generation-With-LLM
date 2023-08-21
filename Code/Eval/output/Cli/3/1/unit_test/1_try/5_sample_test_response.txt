@@ -1,0 +1,13 @@
+CreateNumber() {
+        // test with a valid number string
+        Number num1 = TypeHandler.createNumber("123");
+        assertTrue(num1 instanceof Long);
+
+        // test with a valid decimal number string
+        Number num2 = TypeHandler.createNumber("123.45");
+        assertTrue(num2 instanceof Double);
+
+        // test with an invalid number string
+        Number num3 = TypeHandler.createNumber("abc");
+        assertNull(num3);
+    }

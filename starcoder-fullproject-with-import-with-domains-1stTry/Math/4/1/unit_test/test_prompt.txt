@@ -1,0 +1,41 @@
+package org.apache.commons.math3.geometry.euclidean.twod;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.math3.geometry.euclidean.oned.Euclidean1D;
+import org.apache.commons.math3.geometry.euclidean.oned.Interval;
+import org.apache.commons.math3.geometry.euclidean.oned.IntervalsSet;
+import org.apache.commons.math3.geometry.euclidean.oned.OrientedPoint;
+import org.apache.commons.math3.geometry.euclidean.oned.Vector1D;
+import org.apache.commons.math3.geometry.partitioning.AbstractSubHyperplane;
+import org.apache.commons.math3.geometry.partitioning.BSPTree;
+import org.apache.commons.math3.geometry.partitioning.Hyperplane;
+import org.apache.commons.math3.geometry.partitioning.Region;
+import org.apache.commons.math3.geometry.partitioning.Region.Location;
+import org.apache.commons.math3.geometry.partitioning.Side;
+import org.apache.commons.math3.geometry.partitioning.SubHyperplane;
+import org.apache.commons.math3.util.FastMath;
+/** This class represents a sub-hyperplane for {@link Line}.
+ * @version $Id$
+ * @since 3.0
+ */
+public class SubLine extends AbstractSubHyperplane<Euclidean2D, Euclidean1D> {
+    /** Get the intersection of the instance and another sub-line.
+     * <p>
+     * This method is related to the {@link Line#intersection(Line)
+     * intersection} method in the {@link Line Line} class, but in addition
+     * to compute the point along infinite lines, it also checks the point
+     * lies on both sub-line ranges.
+     * </p>
+     * @param subLine other sub-line which may intersect instance
+     * @param includeEndPoints if true, endpoints are considered to belong to
+     * instance (i.e. they are closed sets) and may be returned, otherwise endpoints
+     * are considered to not belong to instance (i.e. they are open sets) and intersection
+     * occurring on endpoints lead to null being returned
+     * @return the intersection point if there is one, null if the sub-lines don't intersect
+     */
+    public Vector2D intersection(final SubLine subLine, final boolean includeEndPoints);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

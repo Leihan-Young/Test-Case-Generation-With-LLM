@@ -1,0 +1,95 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+/**
+ * A data structure that stores zero, one or many values, where each value 
+ * is associated with two keys (a 'row' key and a 'column' key).  The keys 
+ * should be (a) instances of {@link Comparable} and (b) immutable.  
+ */
+public class DefaultKeyedValues2D implements KeyedValues2D, 
+                                             PublicCloneable, Cloneable, 
+                                             Serializable {
+    private static final long serialVersionUID = -5514169970951994748L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    private boolean sortRowKeys;
+    /**
+     * Removes a column.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeColumn(Comparable)
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex) {
+        Comparable columnKey = getColumnKey(columnIndex);
+        removeColumn(columnKey);
+    }
+}
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.SortOrder;
+/**
+ * An ordered list of (key, value) items.  This class provides a default 
+ * implementation of the {@link KeyedValues} interface.
+ */
+public class DefaultKeyedValues implements KeyedValues, 
+                                           Cloneable, PublicCloneable, 
+                                           Serializable {
+    private static final long serialVersionUID = 8468154364608194797L;
+    private ArrayList keys;
+    private ArrayList values;
+    private HashMap indexMap; 
+    /**
+     * Removes a value from the collection.
+     *
+     * @param index  the index of the item to remove (in the range 
+     *     <code>0</code> to <code>getItemCount() - 1</code>).
+     *     
+     * @throws IndexOutOfBoundsException if <code>index</code> is not within
+     *     the specified range.
+     */
+    public void removeValue(int index) {
+        this.keys.remove(index);
+        this.values.remove(index);
+        if (index < this.keys.size()) {
+        rebuildIndex();
+        }
+    }
+    /**
+     * Removes a value from the collection.
+     *
+     * @param key  the item key (<code>null</code> not permitted).
+     * 
+     * @throws IllegalArgumentException if <code>key</code> is 
+     *     <code>null</code>.
+     * @throws UnknownKeyException if <code>key</code> is not recognised.
+     */
+    public void removeValue(Comparable key) {
+        int index = getIndex(key);
+        if (index < 0) {
+			return;
+        }
+        removeValue(index);
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

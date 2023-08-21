@@ -1,0 +1,32 @@
+() {
+    TimePeriodValues values = new TimePeriodValues("Test");
+    SimpleTimePeriod period1 = new SimpleTimePeriod(new Date(1000), new Date(2000));
+    SimpleTimePeriod period2 = new SimpleTimePeriod(new Date(3000), new Date(4000));
+    SimpleTimePeriod period3 = new SimpleTimePeriod(new Date(5000), new Date(6000));
+    
+    // add the time periods to the collection
+    values.add(new TimePeriodValue(period1, 1.0));
+    values.add(new TimePeriodValue(period2, 2.0));
+    values.add(new TimePeriodValue(period3, 3.0));
+    
+    // check if the indices of the minimum and maximum start, middle, and end values are correct
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(2, values.getMaxStartIndex());
+    assertEquals(1, values.getMinMiddleIndex());
+    assertEquals(1, values.getMaxMiddleIndex());
+    assertEquals(2, values.getMinEndIndex());
+    assertEquals(2, values.getMaxEndIndex());
+    
+    // add another time period to the collection
+    SimpleTimePeriod period4 = new SimpleTimePeriod(new Date(1500), new Date(5500));
+    values.add(new TimePeriodValue(period4, 4.0));
+    
+    // check if the indices of the minimum and maximum start, middle, and end values are correct
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(3, values.getMaxStartIndex());
+    assertEquals(1, values.getMinMiddleIndex());
+    assertEquals(3, values.getMaxMiddleIndex());
+    assertEquals(2, values.getMinEndIndex());
+    assertEquals(3, values.getMaxEndIndex());
+}
+```

@@ -1,0 +1,18 @@
+StripLeadingHyphens() {
+    String input = "--option";
+    String output = Util.stripLeadingHyphens(input);
+    assertEquals("option", output);
+
+    input = "-option";
+    output = Util.stripLeadingHyphens(input);
+    assertEquals("option", output);
+
+    input = "option";
+    output = Util.stripLeadingHyphens(input);
+    assertEquals("option", output);
+
+    // Test case to reveal the bug
+    input = "---option";
+    output = Util.stripLeadingHyphens(input);
+    assertEquals("-option", output); // This assertion should fail
+}

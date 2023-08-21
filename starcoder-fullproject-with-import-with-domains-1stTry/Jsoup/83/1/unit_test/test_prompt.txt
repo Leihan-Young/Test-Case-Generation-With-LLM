@@ -1,0 +1,34 @@
+package org.jsoup.parser;
+import org.jsoup.UncheckedIOException;
+import org.jsoup.helper.Validate;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Locale;
+/**
+ CharacterReader consumes tokens off a string. Used internally by jsoup. API subject to changes.
+ */
+public final class CharacterReader {
+    private static final int maxStringCacheLen = 12;
+    private static final int readAheadLimit = (int) (maxBufferLen * 0.75);
+    private final char[] charBuf;
+    private final Reader reader;
+    private int bufLength;
+    private int bufSplitPoint;
+    private int bufPos;
+    private int readerPos;
+    private int bufMark;
+    private final String[] stringCache = new String[512]; // holds reused strings in this doc, to lessen garbage
+    String consumeTagName();
+}
+package org.jsoup.parser;
+import org.jsoup.nodes.DocumentType;
+/**
+ * States and transition activations for the Tokeniser.
+ */
+}
+
+public class Test { 
+   <FILL-HERE>
+}

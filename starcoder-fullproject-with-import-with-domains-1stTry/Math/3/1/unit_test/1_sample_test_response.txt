@@ -1,0 +1,19 @@
+     private void checkLinearCombination(final double a1, final double b1,
+                                          final double a2, final double b2,
+                                          final double expected) {
+        checkLinearCombination(a1, b1, a2, b2, 0, 0, 0, 0, expected);
+    }
+    private void checkLinearCombination(final double a1, final double b1,
+                                          final double a2, final double b2,
+                                          final double a3, final double b3,
+                                          final double expected) {
+        checkLinearCombination(a1, b1, a2, b2, a3, b3, 0, 0, expected);
+    }
+    private void checkLinearCombination(final double a1, final double b1,
+                                          final double a2, final double b2,
+                                          final double a3, final double b3,
+                                          final double a4, final double b4,
+                                          final double expected) {
+        assertEquals(expected, MathArrays.linearCombination(a1, b1, a2, b2, a3, b3, a4, b4), 1.0e-15);
+        assertEquals(expected, MathArrays.linearCombination(a1, b1, a2, b2, a3, b3), 1.0e-15);
+        assertEquals(expected, MathArrays.linearCombination(a1, b1

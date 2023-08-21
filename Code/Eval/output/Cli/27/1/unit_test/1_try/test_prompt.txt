@@ -1,0 +1,152 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+/**
+ * A group of mutually exclusive options.
+ *
+ * @author John Keyes ( john at integralsource.com )
+ * @version $Revision$, $Date$
+ */
+public class OptionGroup implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    private Map optionMap = new HashMap();
+    private String selected;
+    private boolean required;
+    public Collection getNames();
+    public Collection getOptions();
+    public void setRequired(boolean required);
+    public boolean isRequired();
+    public String toString();
+    /**
+     * @return the selected option name
+     */
+    public String getSelected()
+    {
+        return selected;
+    }
+    /**
+     * Add the specified <code>Option</code> to this group.
+     *
+     * @param option the option to add to this group
+     * @return this option group with the option added
+     */
+    public OptionGroup addOption(Option option)
+    {
+        // key   - option name
+        // value - the option
+        optionMap.put(option.getKey(), option);
+
+        return this;
+    }
+    /**
+     * Set the selected option of this group to <code>name</code>.
+     *
+     * @param option the option that is selected
+     * @throws AlreadySelectedException if an option from this group has 
+     * already been selected.
+     */
+    public void setSelected(Option option) throws AlreadySelectedException
+    {
+        if (option == null)
+        {
+            // reset the option previously selected
+            selected = null;
+            return;
+        }
+        
+        // if no option has already been selected or the 
+        // same option is being reselected then set the
+        // selected member variable
+        if (selected == null || selected.equals(option.getOpt()))
+        {
+            selected = option.getOpt();
+        }
+        else
+        {
+            throw new AlreadySelectedException(this, option);
+        }
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Real world test with long and short options.
+     */
+    public void testNLT() throws Exception {
+        Option help = new Option("h", "help", false, "print this message");
+        Option version = new Option("v", "version", false, "print version information");
+        Option newRun = new Option("n", "new", false, "Create NLT cache entries only for new items");
+        Option trackerRun = new Option("t", "tracker", false, "Create NLT cache entries only for tracker items");
+
+        Option timeLimit = OptionBuilder.withLongOpt("limit").hasArg()
+                                        .withValueSeparator()
+                                        .withDescription("Set time limit for execution, in minutes")
+                                        .create("l");
+
+        Option age = OptionBuilder.withLongOpt("age").hasArg()
+                                  .withValueSeparator()
+                                  .withDescription("Age (in days) of cache item before being recomputed")
+                                  .create("a");
+
+        Option server = OptionBuilder.withLongOpt("server").hasArg()
+                                     .withValueSeparator()
+                                     .withDescription("The NLT server address")
+                                     .create("s");
+
+        Option numResults = OptionBuilder.withLongOpt("results").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Number of results per item")
+                                         .create("r");
+
+        Option configFile = OptionBuilder.withLongOpt("file").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Use the specified configuration file")
+                                         .create();
+
+        Options options = new Options();
+        options.addOption(help);
+        options.addOption(version);
+        options.addOption(newRun);
+        options.addOption(trackerRun);
+        options.addOption(timeLimit);
+        options.addOption(age);
+        options.addOption(server);
+        options.addOption(numResults);
+        options.addOption(configFile);
+
+        // create the command line parser
+        CommandLineParser parser = new PosixParser();
+
+        String[] args = new String[] {
+                "-v",
+                "-l",
+                "10",
+                "-age",
+                "5",
+                "-file",
+                "filename"
+            };
+
+        CommandLine line = parser.parse(options, args);
+        assertTrue(line.hasOption("v"));
+        assertEquals(line.getOptionValue("l"), "10");
+        assertEquals(line.getOptionValue("limit"), "10");
+        assertEquals(line.getOptionValue("a"), "5");
+        assertEquals(line.getOptionValue("age"), "5");
+        assertEquals(line.getOptionValue("file"), "filename");
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

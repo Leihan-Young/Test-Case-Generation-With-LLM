@@ -1,0 +1,7 @@
+ public void transformsSimpleDocument() {
+        String html = "<html><head><title>Hello</title></head><body><p>Text</p></body></html>";
+        org.jsoup.nodes.Document jsoupDoc = Jsoup.parse(html);
+        Document w3cDoc = W3CDom.fromJsoup(jsoupDoc);
+        assertEquals("html", w3cDoc.getDocumentElement().getNodeName());
+        assertEquals("Hello", w3cDoc.getDocumentElement().getElementsByTagName("title").item(0).getTextContent());
+    }

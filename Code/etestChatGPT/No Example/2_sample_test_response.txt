@@ -1,0 +1,55 @@
+WriteableCommandLineImpl() {
+    WriteableCommandLineImpl cmdLine = new WriteableCommandLineImpl();
+    Option option1 = new PropertyOption("p", "property", true, "property description");
+    Option option2 = new Option("f", "flag", true, "flag description");
+    
+    // Add options to the command line
+    cmdLine.addOption(option1);
+    cmdLine.addOption(option2);
+    
+    // Set default values for option1
+    List<String> defaultValues = new ArrayList<String>();
+    defaultValues.add("value1");
+    defaultValues.add("value2");
+    cmdLine.setDefaultValues(option1, defaultValues);
+    
+    // Add values for option1
+    List<String> values = new ArrayList<String>();
+    values.add("value3");
+    values.add("value4");
+    cmdLine.addValues(option1, values);
+    
+    // Get the values for option1 and check if they are correct
+    List<String> resultValues = cmdLine.getValues(option1, null);
+    assertEquals("value3", resultValues.get(0));
+    assertEquals("value4", resultValues.get(1));
+    assertEquals("value1", resultValues.get(2));
+    assertEquals("value2", resultValues.get(3));
+    
+    // Add a property for option1
+    cmdLine.addProperty(option1, "testProperty", "testValue");
+    
+    // Get the property for option1 and check if it is correct
+    String resultProperty = cmdLine.getProperty(option1, "testProperty", null);
+    assertEquals("testValue", resultProperty);
+    
+    // Add a property for the command line
+    cmdLine.addProperty("globalProperty", "globalValue");
+    
+    // Get the property for the command line and check if it is correct
+    String resultGlobalProperty = cmdLine.getProperty("globalProperty");
+    assertEquals("globalValue", resultGlobalProperty);
+    
+    // Get the list of options and check if it is correct
+    List<Option> options = cmdLine.getOptions();
+    assertEquals(2, options.size());
+    assertTrue(options.contains(option1));
+    assertTrue(options.contains(option2));
+    
+    // Get the set of option triggers and check if it is correct
+    Set<String> triggers = cmdLine.getOptionTriggers();
+    assertEquals(2, triggers.size());
+    assertTrue(triggers.contains("p"));
+    assertTrue(triggers.contains("f"));
+}
+```

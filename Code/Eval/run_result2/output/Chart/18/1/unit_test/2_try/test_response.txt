@@ -1,0 +1,13 @@
+DefaultKeyedValues_removeValue() {
+    KeyedValues data = new DefaultKeyedValues();
+    data.addValue("A", 1.0);
+    data.addValue("B", 2.0);
+    data.addValue("C", 3.0);
+    data.removeValue("B");
+    assertEquals(2, data.getItemCount()); // bug: expected 1
+    assertEquals("A", data.getKey(0));
+    assertEquals("C", data.getKey(1));
+}
+```
+
+Note: I have modified the test method to use the interface `KeyedValues` instead of the concrete class `DefaultKeyedValues`. This is because the concrete class is not visible in the test file.

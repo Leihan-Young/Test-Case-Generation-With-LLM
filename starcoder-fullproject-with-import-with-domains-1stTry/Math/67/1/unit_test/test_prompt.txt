@@ -1,0 +1,107 @@
+package org.apache.commons.math.optimization;
+import org.apache.commons.math.ConvergenceException;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+import org.apache.commons.math.random.RandomGenerator;
+import org.apache.commons.math.util.LocalizedFormats;
+/**
+ * Special implementation of the {@link UnivariateRealOptimizer} interface adding
+ * multi-start features to an existing optimizer.
+ * <p>
+ * This class wraps a classical optimizer to use it several times in
+ * turn with different starting points in order to avoid being trapped
+ * into a local extremum when looking for a global one.
+ * </p>
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class MultiStartUnivariateRealOptimizer implements UnivariateRealOptimizer {
+    private static final long serialVersionUID = 5983375963110961019L;
+    private final UnivariateRealOptimizer optimizer;
+    private int maxIterations;
+    private int maxEvaluations;
+    private int totalIterations;
+    private int totalEvaluations;
+    private int starts;
+    private RandomGenerator generator;
+    private double[] optima;
+    private double[] optimaValues;
+    /** {@inheritDoc} */
+    public double getResult();
+    /** {@inheritDoc} */
+    public void setAbsoluteAccuracy(double accuracy);
+    /** {@inheritDoc} */
+    public int getEvaluations();
+    /** {@inheritDoc} */
+    public void setRelativeAccuracy(double accuracy);
+    /** {@inheritDoc} */
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType,
+                           final double min, final double max)
+        throws ConvergenceException,
+            FunctionEvaluationException;
+    /** {@inheritDoc} */
+    public double getAbsoluteAccuracy();
+    /** Get all the function values at optima found during the last call to {@link
+     * #optimize(UnivariateRealFunction, GoalType, double, double) optimize}.
+     * <p>
+     * The returned array as one element for each start as specified
+     * in the constructor. It is ordered with the results from the
+     * runs that did converge first, sorted from best to worst
+     * objective value (i.e in ascending order if minimizing and in
+     * descending order if maximizing), followed by Double.NaN elements
+     * corresponding to the runs that did not converge. This means all
+     * elements will be NaN if the {@link #optimize(UnivariateRealFunction,
+     * GoalType, double, double) optimize} method did throw a {@link
+     * ConvergenceException ConvergenceException}). This also means that
+     * if the first element is not NaN, it is the best point found across
+     * all starts.</p>
+     * @return array containing the optima
+     * @exception IllegalStateException if {@link #optimize(UnivariateRealFunction,
+     * GoalType, double, double) optimize} has not been called
+     * @see #getOptima()
+     */
+    public double[] getOptimaValues() throws IllegalStateException;
+    /** {@inheritDoc} */
+    public double getFunctionValue();
+    /** Get all the optima found during the last call to {@link
+     * #optimize(UnivariateRealFunction, GoalType, double, double) optimize}.
+     * <p>The optimizer stores all the optima found during a set of
+     * restarts. The {@link #optimize(UnivariateRealFunction, GoalType,
+     * double, double) optimize} method returns the best point only. This
+     * method returns all the points found at the end of each starts,
+     * including the best one already returned by the {@link
+     * #optimize(UnivariateRealFunction, GoalType, double, double) optimize}
+     * method.
+     * </p>
+     * <p>
+     * The returned array as one element for each start as specified
+     * in the constructor. It is ordered with the results from the
+     * runs that did converge first, sorted from best to worst
+     * objective value (i.e in ascending order if minimizing and in
+     * descending order if maximizing), followed by Double.NaN elements
+     * corresponding to the runs that did not converge. This means all
+     * elements will be NaN if the {@link #optimize(UnivariateRealFunction,
+     * GoalType, double, double) optimize} method did throw a {@link
+     * ConvergenceException ConvergenceException}). This also means that
+     * if the first element is not NaN, it is the best point found across
+     * all starts.</p>
+     * @return array containing the optima
+     * @exception IllegalStateException if {@link #optimize(UnivariateRealFunction,
+     * GoalType, double, double) optimize} has not been called
+     * @see #getOptimaValues()
+     */
+    public double[] getOptima() throws IllegalStateException;
+    /** {@inheritDoc} */
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType,
+                           final double min, final double max, final double startValue)
+            throws ConvergenceException, FunctionEvaluationException;
+    /** {@inheritDoc} */
+    public int getIterationCount();
+    /** {@inheritDoc} */
+    public double getRelativeAccuracy();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

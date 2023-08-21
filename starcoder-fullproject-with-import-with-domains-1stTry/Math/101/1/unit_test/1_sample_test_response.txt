@@ -1,0 +1,4 @@
+     public void testFormat() {
+        ComplexFormat format = new ComplexFormat();
+        assertEquals("1 + 2i", format.format(new Complex(1, 2)));
+    }

@@ -1,0 +1,25 @@
+package org.apache.commons.math.optimization.direct;
+import java.util.Comparator;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.optimization.OptimizationException;
+import org.apache.commons.math.optimization.RealConvergenceChecker;
+import org.apache.commons.math.optimization.RealPointValuePair;
+/** 
+ * This class implements the multi-directional direct search method.
+ *
+ * @version $Revision$ $Date$
+ * @see NelderMead
+ * @since 1.2
+ */
+public class MultiDirectional extends DirectSearchOptimizer {
+    private final double khi;
+    private final double gamma;
+    /** {@inheritDoc} */
+    @Override
+    protected void iterateSimplex(final Comparator<RealPointValuePair> comparator)
+        throws FunctionEvaluationException, OptimizationException, IllegalArgumentException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,6 @@
+     public void testGetReducedFraction() {
+        assertEquals(new Fraction(1, 2), Fraction.getReducedFraction(2, 4));
+        assertEquals(new Fraction(1, -2), Fraction.getReducedFraction(-2, 4));
+        assertEquals(new Fraction(-1, 2), Fraction.getReducedFraction(2, -4));
+        assertEquals(new Fraction(-1, -2), Fraction.getReducedFraction(-2, -4));
+    }

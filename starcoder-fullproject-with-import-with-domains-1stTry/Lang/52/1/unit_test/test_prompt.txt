@@ -1,0 +1,132 @@
+package org.apache.commons.lang;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import org.apache.commons.lang.exception.NestableRuntimeException;
+/**
+ * <p>Escapes and unescapes <code>String</code>s for
+ * Java, Java Script, HTML, XML, and SQL.</p>
+ *
+ * @author Apache Jakarta Turbine
+ * @author Purple Technology
+ * @author <a href="mailto:alex@purpletech.com">Alexander Day Chaffee</a>
+ * @author Antony Riley
+ * @author Helge Tesgaard
+ * @author <a href="sean@boohai.com">Sean Brown</a>
+ * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
+ * @author Phil Steitz
+ * @author Pete Gieser
+ * @since 2.0
+ * @version $Id$
+ */
+public class StringEscapeUtils {
+    /**
+     * <p>Escapes the characters in a <code>String</code> using JavaScript String rules.</p>
+     * <p>Escapes any values it finds into their JavaScript String form.
+     * Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
+     *
+     * <p>So a tab becomes the characters <code>'\\'</code> and
+     * <code>'t'</code>.</p>
+     *
+     * <p>The only difference between Java strings and JavaScript strings
+     * is that in JavaScript, a single quote must be escaped.</p>
+     *
+     * <p>Example:
+     * <pre>
+     * input string: He didn't say, "Stop!"
+     * output string: He didn\'t say, \"Stop!\"
+     * </pre>
+     * </p>
+     *
+     * @param str  String to escape values in, may be null
+     * @return String with escaped values, <code>null</code> if null string input
+     */
+    public static String escapeJavaScript(String str);
+    /**
+     * <p>Worker method for the {@link #escapeJavaScript(String)} method.</p>
+     * 
+     * @param out write to receieve the escaped string
+     * @param str String to escape values in, may be null
+     * @param escapeSingleQuote escapes single quotes if <code>true</code>
+     * @throws IOException if an IOException occurs
+     */
+    private static void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote) throws IOException;
+    /**
+     * <p>Escapes the characters in a <code>String</code> using Java String rules to
+     * a <code>Writer</code>.</p>
+     * 
+     * <p>A <code>null</code> string input has no effect.</p>
+     * 
+     * @see #escapeJava(java.lang.String)
+     * @param out  Writer to write escaped string into
+     * @param str  String to escape values in, may be null
+     * @throws IllegalArgumentException if the Writer is <code>null</code>
+     * @throws IOException if error occurs on underlying Writer
+     */
+    public static void escapeJava(Writer out, String str) throws IOException;
+    /**
+     * <p>Unescapes any Java literals found in the <code>String</code>.
+     * For example, it will turn a sequence of <code>'\'</code> and
+     * <code>'n'</code> into a newline character, unless the <code>'\'</code>
+     * is preceded by another <code>'\'</code>.</p>
+     * 
+     * @param str  the <code>String</code> to unescape, may be null
+     * @return a new unescaped <code>String</code>, <code>null</code> if null string input
+     */
+    public static String unescapeJava(String str);
+    /**
+     * <p>Escapes the characters in a <code>String</code> using JavaScript String rules
+     * to a <code>Writer</code>.</p>
+     * 
+     * <p>A <code>null</code> string input has no effect.</p>
+     * 
+     * @see #escapeJavaScript(java.lang.String)
+     * @param out  Writer to write escaped string into
+     * @param str  String to escape values in, may be null
+     * @throws IllegalArgumentException if the Writer is <code>null</code>
+     * @throws IOException if error occurs on underlying Writer
+     **/
+    public static void escapeJavaScript(Writer out, String str) throws IOException;
+    /**
+     * <p>Unescapes any Java literals found in the <code>String</code> to a
+     * <code>Writer</code>.</p>
+     *
+     * <p>For example, it will turn a sequence of <code>'\'</code> and
+     * <code>'n'</code> into a newline character, unless the <code>'\'</code>
+     * is preceded by another <code>'\'</code>.</p>
+     * 
+     * <p>A <code>null</code> string input has no effect.</p>
+     * 
+     * @param out  the <code>Writer</code> used to output unescaped characters
+     * @param str  the <code>String</code> to unescape, may be null
+     * @throws IllegalArgumentException if the Writer is <code>null</code>
+     * @throws IOException if error occurs on underlying Writer
+     */
+    public static void unescapeJava(Writer out, String str) throws IOException;
+    /**
+     * <p>Escapes the characters in a <code>String</code> using Java String rules.</p>
+     *
+     * <p>Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
+     *
+     * <p>So a tab becomes the characters <code>'\\'</code> and
+     * <code>'t'</code>.</p>
+     *
+     * <p>The only difference between Java strings and JavaScript strings
+     * is that in JavaScript, a single quote must be escaped.</p>
+     *
+     * <p>Example:
+     * <pre>
+     * input string: He didn't say, "Stop!"
+     * output string: He didn't say, \"Stop!\"
+     * </pre>
+     * </p>
+     *
+     * @param str  String to escape values in, may be null
+     * @return String with escaped values, <code>null</code> if null string input
+     */
+    public static String escapeJava(String str);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

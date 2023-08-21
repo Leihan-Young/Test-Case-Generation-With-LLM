@@ -1,0 +1,22 @@
+GetMaxMiddleIndex() {
+    TimePeriodValues s = new TimePeriodValues("Test");
+    int tmp1 = -1;
+    int tmp2 = s.getMaxMiddleIndex();
+    assertEquals(tmp1, tmp2);
+    s.add(new SimpleTimePeriod(100L, 200L), 1.0);
+    int tmp3 = 0;
+    int tmp4 = s.getMaxMiddleIndex();
+    assertEquals(tmp3, tmp4);
+    s.add(new SimpleTimePeriod(300L, 400L), 2.0);
+    int tmp5 = 1;
+    int tmp6 = s.getMaxMiddleIndex();
+    assertEquals(tmp5, tmp6);
+    s.add(new SimpleTimePeriod(0L, 50L), 3.0);
+    int tmp7 = 1;
+    int tmp8 = s.getMaxMiddleIndex();
+    assertEquals(tmp7, tmp8);
+    s.add(new SimpleTimePeriod(150L, 200L), 4.0);
+    int tmp9 = 3;
+    int tmp10 = s.getMaxMiddleIndex();
+    assertEquals(tmp9, tmp10);
+}

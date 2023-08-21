@@ -1,0 +1,7 @@
+GrayPaintScale() {
+    GrayPaintScale scale = new GrayPaintScale();
+    Paint paint = scale.getPaint(0.5);
+    // This assertion will fail if the bug in the getPaint() method has not been fixed
+    assertEquals(new Color(127, 127, 127), paint);
+}
+```

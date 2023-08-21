@@ -1,0 +1,22 @@
+CLI18() {
+    // Create an instance of CommandLine
+    CommandLine cmd = new CommandLine();
+
+    // Add options to the command line
+    cmd.addOption(new Option("a", "aaa", false, "aaaaaaa"));
+    cmd.addOption(new Option(null, "bbb", false, "bbbbbbb dksh fkshd fkhs dkfhsdk fhskd hksdks dhfowehfsdhfkjshf skfhkshf sf jkshfk sfh skfh skf f"));
+    cmd.addOption(new Option("c", null, false, "ccccccc"));
+
+    // Test if the options were added successfully
+    assertTrue(cmd.hasOption("a"));
+    assertTrue(cmd.hasOption("bbb"));
+    assertTrue(cmd.hasOption("c"));
+
+    // Test if the option values can be retrieved successfully
+    assertNull(cmd.getOptionValue("a"));
+    assertNull(cmd.getOptionValue("bbb"));
+    assertNull(cmd.getOptionValue("c"));
+
+    // Test if the default value is returned when an option is not specified
+    assertEquals("default", cmd.getOptionValue("d", "default"));
+}

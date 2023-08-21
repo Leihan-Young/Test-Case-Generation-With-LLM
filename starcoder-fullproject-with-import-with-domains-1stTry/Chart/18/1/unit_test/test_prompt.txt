@@ -1,0 +1,167 @@
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.SortOrder;
+/**
+ * An ordered list of (key, value) items.  This class provides a default 
+ * implementation of the {@link KeyedValues} interface.
+ */
+public class DefaultKeyedValues implements KeyedValues, 
+                                           Cloneable, PublicCloneable, 
+                                           Serializable {
+    private static final long serialVersionUID = 8468154364608194797L;
+    private ArrayList keys;
+    private ArrayList values;
+    private HashMap indexMap; 
+    /**
+     * Returns the value for a given key.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @throws UnknownKeyException if the key is not recognised.
+     * 
+     * @see #getValue(int)
+     */
+    public Number getValue(Comparable key);
+    /**
+     * Adds a new value to the collection, or updates an existing value.
+     * This method passes control directly to the 
+     * {@link #setValue(Comparable, Number)} method.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     * @param value  the value (<code>null</code> permitted).
+     */
+    public void addValue(Comparable key, Number value);
+    /**
+     * Removes a value from the collection.
+     *
+     * @param index  the index of the item to remove (in the range 
+     *     <code>0</code> to <code>getItemCount() - 1</code>).
+     *     
+     * @throws IndexOutOfBoundsException if <code>index</code> is not within
+     *     the specified range.
+     */
+    public void removeValue(int index);
+    /**
+     * Updates an existing value, or adds a new value to the collection.
+     *
+     * @param key  the key (<code>null</code> not permitted).
+     * @param value  the value.
+     * 
+     * @see #addValue(Comparable, Number)
+     */
+    public void addValue(Comparable key, double value);
+    /**
+     * Removes a value from the collection.
+     *
+     * @param key  the item key (<code>null</code> not permitted).
+     * 
+     * @throws IllegalArgumentException if <code>key</code> is 
+     *     <code>null</code>.
+     * @throws UnknownKeyException if <code>key</code> is not recognised.
+     */
+    public void removeValue(Comparable key);
+    /**
+     * Returns a value.
+     *
+     * @param item  the item of interest (zero-based index).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @throws IndexOutOfBoundsException if <code>item</code> is out of bounds.
+     */
+    public Number getValue(int item);
+}
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+/**
+ * A data structure that stores zero, one or many values, where each value 
+ * is associated with two keys (a 'row' key and a 'column' key).  The keys 
+ * should be (a) instances of {@link Comparable} and (b) immutable.  
+ */
+public class DefaultKeyedValues2D implements KeyedValues2D, 
+                                             PublicCloneable, Cloneable, 
+                                             Serializable {
+    private static final long serialVersionUID = -5514169970951994748L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    private boolean sortRowKeys;
+    /**
+     * Removes a column from the table.
+     *
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @throws UnknownKeyException if the table does not contain a column with
+     *     the specified key.
+     * @throws IllegalArgumentException if <code>columnKey</code> is 
+     *     <code>null</code>.
+     * 
+     * @see #removeColumn(int)
+     * @see #removeRow(Comparable)
+     */
+    public void removeColumn(Comparable columnKey);
+    /**
+     * Removes a column.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeColumn(Comparable)
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex);
+    /**
+     * Returns the value for a given row and column.
+     *
+     * @param row  the row index.
+     * @param column  the column index.
+     *
+     * @return The value.
+     * 
+     * @see #getValue(Comparable, Comparable)
+     */
+    public Number getValue(int row, int column);
+    /**
+     * Adds a value to the table.  Performs the same function as 
+     * #setValue(Number, Comparable, Comparable).
+     *
+     * @param value  the value (<code>null</code> permitted).
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #setValue(Number, Comparable, Comparable)
+     * @see #removeValue(Comparable, Comparable)
+     */
+    public void addValue(Number value, Comparable rowKey, 
+                         Comparable columnKey);
+    /**
+     * Returns the value for the given row and column keys.  This method will
+     * throw an {@link UnknownKeyException} if either key is not defined in the
+     * data structure.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     *
+     * @return The value (possibly <code>null</code>).
+     * 
+     * @see #addValue(Number, Comparable, Comparable)
+     * @see #removeValue(Comparable, Comparable)
+     */
+    public Number getValue(Comparable rowKey, Comparable columnKey);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

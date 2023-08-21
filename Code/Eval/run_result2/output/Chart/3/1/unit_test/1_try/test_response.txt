@@ -1,0 +1,15 @@
+TimeSeriesAdd() {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.setMaximumItemCount(5);
+    series.add(new Day(1, 1, 2022), 10); // add first data point
+    series.add(new Day(2, 1, 2022), 20); // add second data point
+    series.add(new Day(3, 1, 2022), 30); // add third data point
+    series.add(new Day(4, 1, 2022), 40); // add fourth data point
+    series.add(new Day(5, 1, 2022), 50); // add fifth data point
+    series.add(new Day(6, 1, 2022), 60); // add sixth data point
+    assertEquals(5, series.getItemCount()); // maximumItemCount should limit series size to 5
+    assertEquals(new Day(2, 1, 2022), series.getDataItem(0).getPeriod()); // oldest item should have been removed
+    assertEquals(new Day(6, 1, 2022), series.getDataItem(4).getPeriod()); // newest item should be at the end
+}
+```
+The bug in this program is that it does not remove the oldest item from the series when the maximumItemCount is reached. It adds the new item to the series regardless of whether the maximumItemCount has been reached or not. This results in the series containing more items than the maximumItemCount, and the oldest items not being removed. The test code is checking for this bug by adding 6 data points to the series with a maximumItemCount of 5, and then checking that the oldest item has been removed and the newest item is at the end of the series.

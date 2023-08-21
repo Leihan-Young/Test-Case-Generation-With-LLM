@@ -1,0 +1,34 @@
+     private void assertNotBlock(String name) {
+        assertFalse(Tag.valueOf(name).isBlock());
+    }
+    private void assertNotFormatAsBlock(String name) {
+        assertFalse(Tag.valueOf(name).formatAsBlock());
+    }
+    private void assertNotCanContainBlock(String name) {
+        assertFalse(Tag.valueOf(name).canContainBlock());
+    }
+    private void assertNotCanContainInline(String name) {
+        assertFalse(Tag.valueOf(name).canContainInline());
+    }
+    private void assertNotPreserveWhitespace(String name) {
+        assertFalse(Tag.valueOf(name).preserveWhitespace());
+    }
+    private void assertEmpty(String name) {
+        assertTrue(Tag.valueOf(name).isEmpty());
+    }
+    private void assertNotSelfClosing(String name) {
+        assertFalse(Tag.valueOf(name).isSelfClosing());
+    }
+    private void assertBlock(String name) {
+        assertTrue(Tag.valueOf(name).isBlock());
+    }
+    private void assertFormatAsBlock(String name) {
+        assertTrue(Tag.valueOf(name).formatAsBlock());
+    }
+    private void assertCanContainBlock(String name) {
+        assertTrue(Tag.valueOf(name).canContainBlock());
+    }
+    private void assertCanContainInline(String name) {
+        assertTrue(Tag.valueOf(name).canContainInline());
+    }
+    private void assertPreserveWhitespace(String name

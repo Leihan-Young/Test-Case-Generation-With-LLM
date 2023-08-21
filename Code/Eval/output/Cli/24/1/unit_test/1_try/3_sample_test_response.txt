@@ -1,0 +1,16 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Options options = new Options();
+        Option optionA = new Option("a", "first", false, "first option");
+        Option optionB = new Option("b", "second", false, "second option");
+        options.addOption(optionA);
+        options.addOption(optionB);
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+        formatter.printHelp(pw, 80, "test", "header", options, 2, 2, "footer", true);
+        pw.flush();
+        String help = out.toString();
+        assertTrue(help.contains("-a,--first   first option"));
+        assertTrue(help.contains("-b,--second  second option"));
+    }
+```

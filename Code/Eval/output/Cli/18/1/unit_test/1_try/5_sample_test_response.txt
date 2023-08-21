@@ -1,0 +1,14 @@
+PosixParser() {
+    CommandLineParser parser = new PosixParser();
+    Options options = new Options();
+    options.addOption("i", true, "input file");
+    options.addOption("o", true, "output file");
+    options.addOption("v", false, "verbose");
+    String[] args = new String[]{"-i", "input.txt", "-v", "-o", "output.txt"};
+    CommandLine line = parser.parse(options, args);
+    assertEquals("input.txt", line.getOptionValue("i"));
+    assertEquals("output.txt", line.getOptionValue("o"));
+    assertTrue(line.hasOption("v"));
+}
+```
+The above test method checks if the PosixParser correctly parses the command-line arguments and returns the expected values. It expects the input file option ("-i") value to be "input.txt", the output file option ("-o") value to be "output.txt", and the verbose option ("-v") to be present. If the parser fails to return these expected values, then it indicates a bug in the program.

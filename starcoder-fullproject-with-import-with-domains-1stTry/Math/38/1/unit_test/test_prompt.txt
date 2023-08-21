@@ -1,0 +1,93 @@
+package org.apache.commons.math.optimization.direct;
+import java.util.Arrays;
+import org.apache.commons.math.analysis.MultivariateFunction;
+import org.apache.commons.math.exception.MathIllegalStateException;
+import org.apache.commons.math.exception.NumberIsTooSmallException;
+import org.apache.commons.math.exception.OutOfRangeException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.linear.Array2DRowRealMatrix;
+import org.apache.commons.math.linear.ArrayRealVector;
+import org.apache.commons.math.linear.RealVector;
+import org.apache.commons.math.optimization.GoalType;
+import org.apache.commons.math.optimization.RealPointValuePair;
+import org.apache.commons.math.optimization.MultivariateOptimizer;
+/**
+ * Powell's BOBYQA algorithm. This implementation is translated and
+ * adapted from the Fortran version available
+ * <a href="http://plato.asu.edu/ftp/other_software/bobyqa.zip">here</a>.
+ * See <a href="http://www.optimization-online.org/DB_HTML/2010/05/2616.html">
+ * this paper</a> for an introduction.
+ * <br/>
+ * BOBYQA is particularly well suited for high dimensional problems
+ * where derivatives are not available. In most cases it outperforms the
+ * {@link PowellOptimizer} significantly. Stochastic algorithms like
+ * {@link CMAESOptimizer} succeed more often than BOBYQA, but are more
+ * expensive. BOBYQA could also be considered as a replacement of any
+ * derivative-based optimizer when the derivatives are approximated by
+ * finite differences.
+ *
+ * @version $Id$
+ * @since 3.0
+ */
+public class BOBYQAOptimizer
+    extends BaseAbstractMultivariateSimpleBoundsOptimizer<MultivariateFunction>
+    implements MultivariateOptimizer {
+    public static final int MINIMUM_PROBLEM_DIMENSION = 2;
+    public static final double DEFAULT_INITIAL_RADIUS = 10.0;
+    public static final double DEFAULT_STOPPING_RADIUS = 1E-8;
+    private static final double ZERO = 0d;
+    private static final double ONE = 1d;
+    private static final double TWO = 2d;
+    private static final double TEN = 10d;
+    private static final double SIXTEEN = 16d;
+    private static final double TWO_HUNDRED_FIFTY = 250d;
+    private static final double MINUS_ONE = -ONE;
+    private static final double HALF = ONE / 2;
+    private static final double ONE_OVER_FOUR = ONE / 4;
+    private static final double ONE_OVER_EIGHT = ONE / 8;
+    private static final double ONE_OVER_TEN = ONE / 10;
+    private static final double ONE_OVER_A_THOUSAND = ONE / 1000;
+    private final int numberOfInterpolationPoints;
+    private double initialTrustRegionRadius;
+    private final double stoppingTrustRegionRadius;
+    private boolean isMinimize;
+    private ArrayRealVector currentBest;
+    private double[] boundDifference;
+    private int trustRegionCenterInterpolationPointIndex;
+    private Array2DRowRealMatrix bMatrix;
+    private Array2DRowRealMatrix zMatrix;
+    private Array2DRowRealMatrix interpolationPoints;
+    private ArrayRealVector originShift;
+    private ArrayRealVector fAtInterpolationPoints;
+    private ArrayRealVector trustRegionCenterOffset;
+    private ArrayRealVector gradientAtTrustRegionCenter;
+    private ArrayRealVector lowerDifference;
+    private ArrayRealVector upperDifference;
+    private ArrayRealVector modelSecondDerivativesParameters;
+    /**
+     *     SUBROUTINE PRELIM sets the elements of XBASE, XPT, FVAL, GOPT, HQ, PQ,
+     *     BMAT and ZMAT for the first iteration, and it maintains the values of
+     *     NF and KOPT. The vector X is also changed by PRELIM.
+     *
+     *     The arguments N, NPT, X, XL, XU, RHOBEG, IPRINT and MAXFUN are the
+     *       same as the corresponding arguments in SUBROUTINE BOBYQA.
+     *     The arguments XBASE, XPT, FVAL, HQ, PQ, BMAT, ZMAT, NDIM, SL and SU
+     *       are the same as the corresponding arguments in BOBYQB, the elements
+     *       of SL and SU being set in BOBYQA.
+     *     GOPT is usually the gradient of the quadratic model at XOPT+XBASE, but
+     *       it is set by PRELIM to the gradient of the quadratic model at XBASE.
+     *       If XOPT is nonzero, BOBYQB will change it to its usual value later.
+     *     NF is maintaned as the number of calls of CALFUN so far.
+     *     KOPT will be such that the least calculated value of F so far is at
+     *       the point XPT(KOPT,.)+XBASE in the space of the variables.
+     *
+     * @param lowerBound Lower bounds.
+     * @param upperBound Upper bounds.
+     */
+    private void prelim(double[] lowerBound,
+                        double[] upperBound);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

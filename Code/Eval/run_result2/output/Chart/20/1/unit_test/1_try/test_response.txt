@@ -1,0 +1,5 @@
+ValueMarker() {
+        ValueMarker marker = new ValueMarker(10);
+        assertEquals(10, marker.getValue(), 0.0); // bug - constructor not defined
+    }
+```

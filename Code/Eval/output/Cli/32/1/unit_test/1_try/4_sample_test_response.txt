@@ -1,0 +1,27 @@
+() {
+        HelpFormatter formatter = new HelpFormatter();
+        Options options = new Options();
+        options.addOption("h", "help", false, "print help");
+        options.addOption("v", "version", false, "print version information");
+        options.addOption("f", "file", true, "file path");
+
+        // test printHelp method
+        formatter.printHelp("my-app", options);
+        formatter.printHelp("my-app", options, true);
+        formatter.printHelp("my-app", "header", options, "footer");
+        formatter.printHelp("my-app", "header", options, "footer", true);
+        formatter.printHelp(80, "my-app", "header", options, "footer");
+        formatter.printHelp(80, "my-app", "header", options, "footer", true);
+
+        // test printUsage method
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        formatter.printUsage(pw, 80, "my-app", options);
+        String output = sw.toString();
+        assertTrue(output.contains("-h"));
+        assertTrue(output.contains("--help"));
+        assertTrue(output.contains("-v"));
+        assertTrue(output.contains("--version"));
+        assertTrue(output.contains("-f <arg>"));
+        assertTrue(output.contains("--file <arg>"));
+    }

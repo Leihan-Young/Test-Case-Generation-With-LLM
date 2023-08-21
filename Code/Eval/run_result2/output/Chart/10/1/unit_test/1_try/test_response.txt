@@ -1,0 +1,8 @@
+GenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    String expectedOutput = " title=\"This is a tooltip\" alt=\"\"";
+    String actualOutput = generator.generateToolTipFragment("This is a tooltip");
+    assertEquals(expectedOutput, actualOutput);
+}
+```
+The test method should pass without any errors if the program is bug-free. If there is a bug in the program, the test method may fail or produce unexpected output.

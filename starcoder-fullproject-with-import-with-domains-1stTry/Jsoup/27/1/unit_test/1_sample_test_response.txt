@@ -1,0 +1,5 @@
+ public void testCharsetFromContentType() {
+        assertEquals("UTF-8", DataUtil.getCharsetFromContentType("text/html; charset=UTF-8"));
+        assertEquals("UTF-8", DataUtil.getCharsetFromContentType("text/html;charset=UTF-8"));
+        assertEquals(null, DataUtil.getCharsetFromContentType("text/html"));
+    }

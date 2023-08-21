@@ -1,0 +1,6 @@
+     public void testClear() {
+        StrBuilder sb = new StrBuilder();
+        sb.append("Hello");
+        sb.clear();
+        assertEquals(0, sb.length());
+    }

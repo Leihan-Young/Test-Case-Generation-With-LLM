@@ -1,0 +1,26 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option optionA = new Option("a", "first", false, "first option");
+        Option optionB = new Option("b", "second", false, "second option");
+        Options options = new Options();
+        options.addOption(optionA);
+        options.addOption(optionB);
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+        formatter.printHelp(pw, 80, "test", "header", options, 1, 3, "footer", true);
+
+        String expectedOutput = "usage: test\n" +
+                " -a   first option\n" +
+                " -b   second option\n" +
+                "\n" +
+                "header\n" +
+                "\n" +
+                "Options:\n" +
+                " -a   first option\n" +
+                " -b   second option\n" +
+                "\n" +
+                "footer\n";
+
+        assertEquals(expectedOutput, out.toString());
+}
+```

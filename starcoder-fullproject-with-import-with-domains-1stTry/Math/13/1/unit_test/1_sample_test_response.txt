@@ -1,0 +1,30 @@
+ private void optimize(final LeastSquaresProblem problem,
+                         final LeastSquaresOptimizer optimizer,
+                         final double[] expected)
+        throws MathException {
+        PointVectorValuePair optimum = optimizer.optimize(problem);
+        final double[] optimumPoint = optimum.getPoint();
+        for (int i = 0; i < expected.length; i++) {
+            Assert.assertEquals(expected[i], optimumPoint[i], 1.0e-6);
+        }
+    }
+    private void optimize(final LeastSquaresProblem problem,
+                         final LeastSquaresOptimizer optimizer,
+                         final double[] expected,
+                         final double tolerance)
+        throws MathException {
+        PointVectorValuePair optimum = optimizer.optimize(problem);
+        final double[] optimumPoint = optimum.getPoint();
+        for (int i = 0; i < expected.length; i++) {
+            Assert.assertEquals(expected[i], optimumPoint[i], tolerance);
+        }
+    }
+    private void optimize(final LeastSquaresProblem problem,
+                         final LeastSquaresOptimizer optimizer,
+                         final double[] expected,
+                         final double tolerance,
+                         final int maxEval)
+        throws MathException {
+        PointVectorValuePair optimum = optimizer.optimize(maxEval, problem);
+        final double[] optimumPoint = optimum.getPoint();
+        for (int i = 0; i < expected.length; i++) 

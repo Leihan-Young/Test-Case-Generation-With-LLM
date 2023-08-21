@@ -1,0 +1,26 @@
+     public void testInverseCumulativeProbability() throws MathException {
+        setInverseCumulativeTestPoints();
+        setInverseCumulativeTestValues();
+        doTestInverseCumulativeProbability(0.01);
+        doTestInverseCumulativeProbability(0.05);
+        doTestInverseCumulativeProbability(0.1);
+        doTestInverseCumulativeProbability(0.15);
+        doTestInverseCumulativeProbability(0.2);
+        doTestInverseCumulativeProbability(0.25);
+        doTestInverseCumulativeProbability(0.3);
+        doTestInverseCumulativeProbability(0.35);
+        doTestInverseCumulativeProbability(0.4);
+        doTestInverseCumulativeProbability(0.45);
+        doTestInverseCumulativeProbability(0.5);
+        doTestInverseCumulativeProbability(0.55);
+        doTestInverseCumulativeProbability(0.6);
+        doTestInverseCumulativeProbability(0.65);
+        doTestInverseCumulativeProbability(0.7);
+        doTestInverseCumulativeProbability(0.75);
+        doTestInverseCumulativeProbability(0.8);
+        doTestInverseCumulativeProbability(0.85);
+        doTestInverseCumulativeProbability(0.9);
+        doTestInverseCumulativeProbability(0.95);
+        doTestInverseCumulativeProbability(0.99);
+    }
+    private void doTes

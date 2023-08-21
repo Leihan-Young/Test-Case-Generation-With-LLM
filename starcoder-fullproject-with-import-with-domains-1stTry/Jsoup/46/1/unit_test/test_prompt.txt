@@ -1,0 +1,20 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.parser.Parser;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.CharsetEncoder;
+import java.util.*;
+/**
+ * HTML entities, and escape routines.
+ * Source: <a href="http://www.w3.org/TR/html5/named-character-references.html#named-character-references">W3C HTML
+ * named character references</a>.
+ */
+public class Entities {
+    static void escape(StringBuilder accum, String string, Document.OutputSettings out,
+                       boolean inAttribute, boolean normaliseWhite, boolean stripLeadingWhite);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

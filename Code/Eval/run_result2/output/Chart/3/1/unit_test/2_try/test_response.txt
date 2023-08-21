@@ -1,0 +1,14 @@
+TimeSeriesAdd() {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.setMaximumItemCount(5);
+    series.add(new Day(1, 1, 2022), 10); // add first data point
+    series.add(new Day(2, 1, 2022), 20); // add second data point
+    series.add(new Day(3, 1, 2022), 30); // add third data point
+    series.add(new Day(4, 1, 2022), 40); // add fourth data point
+    series.add(new Day(5, 1, 2022), 50); // add fifth data point
+    series.add(new Day(6, 1, 2022), 60); // add sixth data point
+    assertEquals(5, series.getItemCount()); // maximumItemCount should limit series size to 5
+    assertEquals(new Day(2, 1, 2022), series.getDataItem(0).getPeriod()); // oldest item should have been removed
+    assertEquals(new Day(6, 1, 2022), series.getDataItem(4).getPeriod()); // newest item should be at the end
+    series.add(new Day(7, 1, 2022), 70); // add seventh data point
+    assertEquals(5, series.getItemCount()); // maximumItemCount should limit

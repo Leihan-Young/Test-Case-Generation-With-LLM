@@ -1,0 +1,22 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option opt1 = new Option("a", "first", true, "first option");
+        Option opt2 = new Option("b", "second", true, "second option");
+        Option opt3 = new Option("c", "third", false, "third option");
+        Option opt4 = new Option("d", "fourth", true, "fourth option");
+        OptionGroup group = new OptionGroup();
+        group.addOption(opt1);
+        group.addOption(opt2);
+        opts.addOptionGroup(group);
+        opts.addOption(opt3);
+        opts.addOption(opt4);
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+        formatter.printHelp(pw, 80, "testApp", "header", opts, 2, 2, "footer", true);
+        String result = out.toString();
+        assertTrue(result.contains("-a,--first"));
+        assertTrue(result.contains("-b,--second"));
+        assertTrue(result.contains("-c,--third"));
+        assertTrue(result.contains("-d,--fourth"));
+    }
+```

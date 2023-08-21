@@ -1,0 +1,35 @@
+     private void verify(final BisectionSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expected)
+        throws FunctionEvaluationException, MaxIterationsExceededException {
+        verify(solver, f, min, max, expected, TOL);
+    }
+    private void verify(final BisectionSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expected,
+                          final double tolerance)
+        throws FunctionEvaluationException, MaxIterationsExceededException {
+        final double result = solver.solve(f, min, max);
+        assertEquals(expected, result, tolerance);
+    }
+    private void verify(final BisectionSolver solver,
+                          final UnivariateRealFunction f,
+                          final double expected)
+        throws FunctionEvaluationException, MaxIterationsExceededException {
+        verify(solver, f, expected, TOL);
+    }
+    private void verify(final BisectionSolver solver,
+                          final UnivariateRealFunction f,
+                          final double expected,
+                          final double tolerance)
+        throws FunctionEvaluationException, MaxIterationsExceededException {
+        final double result = solver.solve(f, 0, 1);
+        assertEquals(expected, result, tolerance);
+    }
+    private void verify(final BisectionSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max)
+        throws FunctionEvaluationException, MaxIterationsExceededException {
+        verif

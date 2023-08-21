@@ -1,0 +1,6 @@
+ private static void assertNotSame(Object a, Object b) {
+        assertFalse(a == b);
+    }
+    private static void assertSame(Object a, Object b) {
+        assertTrue(a == b);
+    }

@@ -1,0 +1,12 @@
+OptionBuilder() throws Exception {
+    Option opt = OptionBuilder.withLongOpt("test").hasArg().create();
+    Options options = new Options();
+    options.addOption(opt);
+    CommandLineParser parser = new PosixParser();
+    String[] args = new String[] { "--test", "value" };
+    CommandLine line = parser.parse(options, args);
+    assertTrue(line.hasOption("test"));
+    assertEquals(line.getOptionValue("test"), "value");
+}
+```
+The bug in the program is that the `OptionBuilder` class does not properly set the `longOpt` property when creating an option with a long option using `withLongOpt()`. This can be seen in the above test method where the `line.hasOption("test")` assertion fails, indicating that the created `Option` object does not have the expected long option value of "test". To fix this bug, the `OptionBuilder` class should properly set the `longOpt` property when creating an option with a long option using `withLongOpt()`.

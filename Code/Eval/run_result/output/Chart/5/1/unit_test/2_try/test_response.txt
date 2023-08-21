@@ -1,0 +1,22 @@
+AddOrUpdate() {
+    XYSeries series = new XYSeries("Test Series");
+    series.addOrUpdate(1, 10); // adding first data point
+    series.addOrUpdate(2, 20); // adding second data point
+    series.addOrUpdate(1, 30); // adding duplicate x-value
+    assertEquals(2, series.getItemCount()); // expecting only 2 data points
+}
+```
+
+I apologize for the mistake in the previous markdown file. The test method provided does not reveal the bug in the program. Here is a corrected test method that should reveal the bug:
+
+```
+public void testAddOrUpdate() {
+    XYSeries series = new XYSeries("Test Series", false, false);
+    series.addOrUpdate(1, 10); // adding first data point
+    series.addOrUpdate(2, 20); // adding second data point
+    series.addOrUpdate(1, 30); // adding duplicate x-value
+    assertEquals(2, series.getItemCount()); // expecting only 2 data points
+}
+```
+
+The corrected test method creates a new `XYSeries` object with `allowDuplicateXValues` set to `false`, which should prevent the addition of a data point with a duplicate x-value. The test then adds three data points to the series, with the first and third data points having the same x-value. The test then checks the number of items in the series, which should be 2 since the third data point should not have been added. If the program is working correctly, the test should pass. However, if the program has the bug that allows duplicate x-values, the test will fail.

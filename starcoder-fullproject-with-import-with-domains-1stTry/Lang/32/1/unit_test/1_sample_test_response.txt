@@ -1,0 +1,10 @@
+     public void testObject() {
+        HashCodeBuilder hcb = new HashCodeBuilder();
+        hcb.append(new Object());
+        try {
+            hcb.toHashCode();
+            fail();
+        } catch (IllegalStateException ex) {
+            // expected
+        }
+    }

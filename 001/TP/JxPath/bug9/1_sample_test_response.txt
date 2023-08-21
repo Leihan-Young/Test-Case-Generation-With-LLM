@@ -1,0 +1,8 @@
+  public void newTestMethod_test6()  throws Throwable  {
+      Double double0 = Expression.ZERO;
+      Constant constant0 = new Constant(double0);
+      CoreOperationNotEqual coreOperationNotEqual0 = new CoreOperationNotEqual(constant0, constant0);
+      Integer integer0 = new Integer(0);
+      boolean boolean0 = coreOperationNotEqual0.equal(integer0, double0);
+      assertFalse(boolean0);
+  }

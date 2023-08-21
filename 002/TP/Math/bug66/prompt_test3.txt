@@ -1,0 +1,45 @@
+package org.apache.commons.math.optimization.univariate;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.exception.NotStrictlyPositiveException;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+import org.apache.commons.math.optimization.GoalType;
+/**
+ * Implements Richard Brent's algorithm (from his book "Algorithms for
+ * Minimization without Derivatives", p. 79) for finding minima of real
+ * univariate functions. This implementation is an adaptation partly
+ * based on the Python code from SciPy (module "optimize.py" v0.5).
+ *
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class BrentOptimizer extends AbstractUnivariateRealOptimizer {
+    private static final double GOLDEN_SECTION = 0.5 * (3 - Math.sqrt(5));
+    /**
+     * Perform the optimization.
+     *
+     * @return the optimum.
+     */
+    protected double doOptimize()
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        throw new UnsupportedOperationException();
+    }
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType, final double min, final double max) throws MaxIterationsExceededException, FunctionEvaluationException {
+        return optimize(f, goalType, min, max, min + GOLDEN_SECTION * (max - min));
+    }
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType, final double min, final double max, final double startValue) throws MaxIterationsExceededException, FunctionEvaluationException {
+        clearResult();
+        return localMin(getGoalType() == GoalType.MINIMIZE,
+                        f, goalType, min, startValue, max,
+                        getRelativeAccuracy(), getAbsoluteAccuracy());
+    }
+}
+
+  public void test3()  throws Throwable  {
+      BrentOptimizer brentOptimizer0 = new BrentOptimizer();
+      double[] doubleArray0 = new double[2];
+      PolynomialFunction polynomialFunction0 = new PolynomialFunction(doubleArray0);
+      GoalType goalType0 = GoalType.MAXIMIZE;
+      double double0 = brentOptimizer0.optimize((UnivariateRealFunction) polynomialFunction0, goalType0, 1.0E-14, 2515.087912119413);<FILL-HERE>
+}
+

@@ -1,0 +1,85 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.ChangeNotifyingArrayList;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Collector;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+import org.jsoup.select.QueryParser;
+import org.jsoup.select.Selector;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import static org.jsoup.internal.Normalizer.normalize;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private static final List<Node> EMPTY_NODES = Collections.emptyList();
+    private static final Pattern classSplit = Pattern.compile("\\s+");
+    private Tag tag;
+    private WeakReference<List<Element>> shadowChildrenRef; // points to child elements shadowed from node children
+    private Attributes attributes;
+    private String baseUri;
+    /**
+     * Set this element's inner HTML. Clears the existing HTML first.
+     * @param html HTML to parse and set into this element
+     * @return this element
+     * @see #append(String)
+     */
+    public Element html(String html);
+    /**
+     * Gets the combined text of this element and all its children. Whitespace is normalized and trimmed.
+     * <p>
+     * For example, given HTML {@code <p>Hello  <b>there</b> now! </p>}, {@code p.text()} returns {@code "Hello there now!"}
+     *
+     * @return unencoded text, or empty string if none.
+     * @see #ownText()
+     * @see #textNodes()
+     */
+    public String text();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Appendable> T html(T appendable);
+    /**
+     * Set the text of this element. Any existing contents (text or elements) will be cleared
+     * @param text unencoded text
+     * @return this element
+     */
+    public Element text(String text);
+    static boolean preserveWhitespace(Node node);
+    /**
+     * Retrieves the element's inner HTML. E.g. on a {@code <div>} with one empty {@code <p>}, would return
+     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
+     * 
+     * @return String of HTML.
+     * @see #outerHtml()
+     */
+    public String html();
+    private void html(StringBuilder accum);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

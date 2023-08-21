@@ -1,0 +1,24 @@
+ private void assertOuterHtml(String html, String expectedOuterHtml) {
+        assertOuterHtml(html, expectedOuterHtml, new Document.OutputSettings());
+    }
+    private void assertOuterHtml(String html, String expectedOuterHtml, Document.OutputSettings out) {
+        Document doc = Jsoup.parse(html);
+        StringBuilder accum = new StringBuilder();
+        doc.outputSettings(out);
+        doc.outerHtmlHead(accum, 0, out);
+        assertEquals(expectedOuterHtml, accum.toString());
+    }
+    private void assertNotOuterHtml(String html, String notExpectedOuterHtml) {
+        assertNotOuterHtml(html, notExpectedOuterHtml, new Document.OutputSettings());
+    }
+    private void assertNotOuterHtml(String html, String notExpectedOuterHtml, Document.OutputSettings out) {
+        Document doc = Jsoup.parse(html);
+        StringBuilder accum = new StringBuilder();
+        doc.outputSettings(out);
+        doc.outerHtmlHead(accum, 0, out);
+        assertFalse(accum.toString().equals(notExpectedOuterHtml));
+    }
+    public void outerHtmlHead() {
+        assertOuterHtml("<!DOCTYPE html>", "<!DOCTYPE html>");
+        assertOuterHtml("<!doctype html>", "<!doctype html>");
+        assertOuterHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.or

@@ -1,0 +1,24 @@
+public void testOptionGroup() {
+        Option option1 = new Option("a", "first", false, "first option");
+        Option option2 = new Option("b", "second", false, "second option");
+        Option option3 = new Option("c", "third", false, "third option");
+        OptionGroup group = new OptionGroup();
+        group.addOption(option1);
+        group.addOption(option2);
+        group.addOption(option3);
+        group.setSelected(option1);
+        assertTrue(group.getSelected().equals("a"));
+        // Bug: Selecting the same option again should not throw AlreadySelectedException
+        try {
+            group.setSelected(option1);
+        } catch (AlreadySelectedException e) {
+            fail("Should not throw AlreadySelectedException");
+        }
+        // Bug: Selecting a different option should throw AlreadySelectedException
+        try {
+            group.setSelected(option2);
+            fail("Should throw AlreadySelectedException");
+        } catch (AlreadySelectedException e) {
+            // expected
+        }
+    }

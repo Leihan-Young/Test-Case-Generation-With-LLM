@@ -1,0 +1,29 @@
+ private void doTestCompiler(final int parameters, final int order) {
+        DSCompiler compiler = DSCompiler.getCompiler(parameters, order);
+        int size = compiler.getSize();
+        double[] y = new double[size];
+        double[] x = new double[size];
+        double[] z = new double[size];
+        for (int i = 0; i < size; ++i) {
+            y[i] = FastMath.random();
+            x[i] = FastMath.random();
+            z[i] = FastMath.random();
+        }
+        double[] a = new double[size];
+        double[] b = new double[size];
+        double[] c = new double[size];
+        double[] d = new double[size];
+        double[] e = new double[size];
+        double[] f = new double[size];
+        double[] g = new double[size];
+        double[] h = new double[size];
+        double[] i = new double[size];
+        double[] j = new double[size];
+        double[] k = new double[size];
+        double[] l = new double[size];
+        double[] m = new double[size];
+        double[] n = new double[size];
+        double[] o = new double[size];
+        double[] p = new double[size];
+        double[] q = new double[size];
+        double[] r = new double[size]

@@ -1,0 +1,31 @@
+ private void verify(final BaseSecantSolver solver,
+                        final UnivariateRealFunction f,
+                        final double min, final double max,
+                        final double expected) {
+        verify(solver, f, min, max, expected, AllowedSolution.ANY_SIDE);
+    }
+    private void verify(final BaseSecantSolver solver,
+                        final UnivariateRealFunction f,
+                        final double min, final double max,
+                        final double expected,
+                        final AllowedSolution allowedSolution) {
+        final double result = solver.solve(1000, f, min, max, allowedSolution);
+        assertEquals(expected, result, solver.getFunctionValueAccuracy());
+    }
+    private void verify(final BaseSecantSolver solver,
+                        final UnivariateRealFunction f,
+                        final double min, final double max,
+                        final double startValue,
+                        final double expected) {
+        verify(solver, f, min, max, startValue, expected, AllowedSolution.ANY_SIDE);
+    }
+    private void verify(final BaseSecantSolver solver,
+                        final UnivariateRealFunction f,
+                        final double min, final double max,
+                        final double startValue,
+                        final double expected,
+                        final AllowedSolution allowedSolution) {
+        final double result = solver.solve(1000, f, min, max, startValue, allowedSolution);
+        assertEquals(expected, result, solver.getFunctionValueAccuracy());
+    }
+    private void verifyException(fina

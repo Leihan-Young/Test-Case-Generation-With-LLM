@@ -1,0 +1,21 @@
+() {
+    //create a DefaultKeyedValues object
+    DefaultKeyedValues values = new DefaultKeyedValues();
+    //add some values
+    values.addValue("A", 1);
+    values.addValue("B", 2);
+    values.addValue("C", 3);
+    //remove a value using index
+    values.removeValue(1);
+    //check if the value has been removed
+    assertEquals(2, values.getValue(1));
+    //remove a value using key
+    values.removeValue("A");
+    //check if the value has been removed
+    assertNull(values.getValue("A"));
+}
+```
+The error message indicates that the `DefaultKeyedValues` class could not be found. This may be because the necessary import statement is missing at the beginning of the test class, or because the class is not in the classpath. To fix this issue, make sure the necessary import statement is present and that the class is in the classpath. For example, if `DefaultKeyedValues` is in the `org.jfree.data` package, add the following import statement at the beginning of the test class:
+```
+import org.jfree.data.DefaultKeyedValues;
+```

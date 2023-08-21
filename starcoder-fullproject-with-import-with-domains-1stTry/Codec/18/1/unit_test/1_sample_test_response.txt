@@ -1,0 +1,7 @@
+     public void testEquals() {
+        assertTrue(StringUtils.equals(null, null));
+        assertFalse(StringUtils.equals(null, "abc"));
+        assertFalse(StringUtils.equals("abc", null));
+        assertTrue(StringUtils.equals("abc", "abc"));
+        assertFalse(StringUtils.equals("abc", "ABC"));
+    }

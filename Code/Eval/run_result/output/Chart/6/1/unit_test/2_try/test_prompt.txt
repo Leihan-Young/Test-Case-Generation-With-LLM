@@ -1,0 +1,88 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.util;
+import java.awt.Shape;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+/**
+ * A table of {@link Shape} objects.
+ */
+public class ShapeList extends AbstractObjectList {
+    /**
+     * Tests the list for equality with another object (typically also a list).
+     *
+     * @param obj  the other object (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ShapeList)) {
+            return false;
+        }
+        return super.equals(obj);
+
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+[assistant]:ShapeListEquals() {
+    ShapeList list1 = new ShapeList();
+    ShapeList list2 = new ShapeList();
+    Shape shape1 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    Shape shape2 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    Shape shape3 = new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0);
+
+    // test equality of empty lists
+    assertTrue(list1.equals(list2));
+
+    // test inequality of lists with different shapes
+    list1.set(0, shape1);
+    list2.set(0, shape3);
+    assertFalse(list1.equals(list2));
+
+    // test equality of lists with same shapes
+    list2.set(0, shape2);
+    assertTrue(list1.equals(list2));
+}
+```
+Note: This code assumes that all necessary imports have been done.
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     Shape shape1 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+[javac]     ^
+[javac]   symbol:   class Shape
+[javac]   location: class ShapeListTests
+[javac]error: package Rectangle2D does not exist
+[javac]     Shape shape1 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+[javac]                                   ^
+[javac]error: cannot find symbol
+[javac]     Shape shape2 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+[javac]     ^
+[javac]   symbol:   class Shape
+[javac]   location: class ShapeListTests
+[javac]error: package Rectangle2D does not exist
+[javac]     Shape shape2 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+[javac]                                   ^
+[javac]error: cannot find symbol
+[javac]     Shape shape3 = new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0);
+[javac]     ^
+[javac]   symbol:   class Shape
+[javac]   location: class ShapeListTests
+[javac]error: package Rectangle2D does not exist
+[javac]     Shape shape3 = new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0);
+[javac]                                   ^
+[javac] Note: Some input files use or override a deprecated API.
+[javac] Note: Recompile with -Xlint:deprecation for details.
+
+```
+public void test

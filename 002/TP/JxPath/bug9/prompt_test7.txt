@@ -1,0 +1,67 @@
+package org.apache.commons.jxpath.ri.compiler;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import org.apache.commons.jxpath.Pointer;
+import org.apache.commons.jxpath.ri.EvalContext;
+import org.apache.commons.jxpath.ri.InfoSetUtil;
+import org.apache.commons.jxpath.ri.axes.InitialContext;
+import org.apache.commons.jxpath.ri.axes.SelfContext;
+/**
+ * Common superclass for the implementations of Expression for the operations
+ * "=" and "!=".
+ *
+ * @author Dmitri Plotnikov
+ * @version $Revision$ $Date$
+ */
+public abstract class CoreOperationCompare extends CoreOperation {
+    protected boolean findMatch(Iterator lit, Iterator rit) {
+        HashSet left = new HashSet();
+        while (lit.hasNext()) {
+            left.add(lit.next());
+        }
+        while (rit.hasNext()) {
+            if (contains(left.iterator(), rit.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    protected int getPrecedence() {
+        return 2;
+    }
+}
+package org.apache.commons.jxpath.ri.compiler;
+import org.apache.commons.jxpath.ri.EvalContext;
+/**
+ * Implementation of Expression for the operation "!=".
+ *
+ * @author Dmitri Plotnikov
+ * @version $Revision$ $Date$
+ */
+public class CoreOperationNotEqual extends CoreOperationCompare {
+    public Object computeValue(EvalContext context) {
+        return equal(context, args[0], args[1]) ? Boolean.FALSE : Boolean.TRUE;
+    }
+}
+package org.apache.commons.jxpath.ri.compiler;
+import org.apache.commons.jxpath.ri.EvalContext;
+/**
+ * Implementation of Expression for the operation "=".
+ *
+ * @author Dmitri Plotnikov
+ * @version $Revision$ $Date$
+ */
+public class CoreOperationEqual extends CoreOperationCompare {
+    public Object computeValue(EvalContext context) {
+        return equal(context, args[0], args[1]) ? Boolean.TRUE : Boolean.FALSE;
+    }
+}
+
+  public void test7()  throws Throwable  {
+      Float float0 = new Float((-2850.23717));
+      Constant constant0 = new Constant(float0);
+      CoreOperationNotEqual coreOperationNotEqual0 = new CoreOperationNotEqual(constant0, constant0);
+      boolean boolean0 = coreOperationNotEqual0.equal("-2850.237060546875", "-2850.237060546875");<FILL-HERE>
+}
+

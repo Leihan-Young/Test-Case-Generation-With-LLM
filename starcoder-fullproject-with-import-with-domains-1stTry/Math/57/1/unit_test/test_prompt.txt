@@ -1,0 +1,43 @@
+package org.apache.commons.math.stat.clustering;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import org.apache.commons.math.exception.ConvergenceException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.stat.descriptive.moment.Variance;
+/**
+ * Clustering algorithm based on David Arthur and Sergei Vassilvitski k-means++ algorithm.
+ * @param <T> type of the points to cluster
+ * @see <a href="http://en.wikipedia.org/wiki/K-means%2B%2B">K-means++ (wikipedia)</a>
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class KMeansPlusPlusClusterer<T extends Clusterable<T>> {
+    /**
+     * Use K-means++ to choose the initial centers.
+     *
+     * @param <T> type of the points to cluster
+     * @param points the points to choose the initial centers from
+     * @param k the number of centers to choose
+     * @param random random generator to use
+     * @return the initial centers
+     */
+    private static <T extends Clusterable<T>> List<Cluster<T>>
+        chooseInitialCenters(final Collection<T> points, final int k, final Random random);
+    /**
+     * Runs the K-means++ clustering algorithm.
+     *
+     * @param points the points to cluster
+     * @param k the number of clusters to split the data into
+     * @param maxIterations the maximum number of iterations to run the algorithm
+     *     for.  If negative, no maximum will be used
+     * @return a list of clusters containing the points
+     */
+    public List<Cluster<T>> cluster(final Collection<T> points,
+                                    final int k, final int maxIterations);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

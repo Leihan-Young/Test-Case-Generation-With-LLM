@@ -1,0 +1,24 @@
+DefaultValue() throws Exception {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option testOption =
+        obuilder
+            .withShortName("a")
+            .withArgument(abuilder.withName("value").create())
+            .withDefault("default")
+            .create();
+
+    final Group options = gbuilder.withOption(testOption).create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(options);
+
+    final CommandLine cmdLine = parser.parse(new String[] {});
+
+    assertTrue(cmdLine.hasOption("-a"));
+    assertEquals("default", cmdLine.getValue("-a"));
+}
+```
+The test method tests whether the default value set for an option is returned by the `getValue()` method of the `CommandLine` object when no value is provided for that option in the command line arguments. If the default value is not returned, there is a bug in the `WriteableCommandLineImpl` class.

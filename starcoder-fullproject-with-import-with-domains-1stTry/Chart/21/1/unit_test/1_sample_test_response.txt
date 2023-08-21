@@ -1,0 +1,9 @@
+ public void testCloning() throws CloneNotSupportedException {
+        DefaultBoxAndWhiskerCategoryDataset d
+                = new DefaultBoxAndWhiskerCategoryDataset();
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R1", "C1");
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R1", "C2");
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R2", "C1");
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R2", "C2");
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R3", "C1");
+        d.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0), "R3", "

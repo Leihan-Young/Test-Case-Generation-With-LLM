@@ -1,0 +1,66 @@
+KeyedObjects2D() {
+    // create a new KeyedObjects2D instance
+    KeyedObjects2D data = new KeyedObjects2D();
+    // add some objects to the table
+    data.setObject("value1", "row1", "column1");
+    data.setObject("value2", "row1", "column2");
+    data.setObject("value3", "row2", "column1");
+    // test getObject method to ensure objects were added correctly
+    assertEquals("value1", data.getObject("row1", "column1"));
+    assertEquals("value2", data.getObject("row1", "column2"));
+    assertEquals("value3", data.getObject("row2", "column1"));
+    // remove an object and ensure it was removed
+    data.removeObject("row1", "column1");
+    assertNull(data.getObject("row1", "column1"));
+    // remove a row and ensure objects in that row were removed
+    data.removeRow(0);
+    assertNull(data.getObject("row1", "column2"));
+    // remove a column and ensure objects in that column were removed
+    data.removeColumn("column1");
+    assertNull(data.getObject("row2", "column1"));
+    // test getObject with invalid rowKey
+    try {
+        data.getObject("invalidRowKey", "column1");
+        fail("Expected UnknownKeyException");
+    } catch (UnknownKeyException e) {
+        // pass
+    }
+    // test getObject with invalid columnKey
+    try {
+        data.getObject("row2", "invalidColumnKey");
+        fail("Expected UnknownKeyException");
+    } catch (UnknownKeyException e) {
+        // pass
+    }
+    // test setObject with null rowKey
+    try {
+        data.setObject("value4", null, "column1");
+        fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+        // pass
+    }
+    // test setObject with null columnKey
+    try {
+        data.setObject("value4", "row3", null);
+        fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+        // pass
+    }
+    // test removeColumn with invalid columnKey
+    try {
+        data.removeColumn("invalidColumnKey");
+        fail("Expected UnknownKeyException");
+    } catch (UnknownKeyException e) {
+        // pass
+    }
+    // test removeRow with invalid rowKey
+    try {
+        data.removeRow(2);
+        fail("Expected IndexOutOfBoundsException");
+    } catch (IndexOutOfBoundsException e) {
+        // pass
+    }
+}
+``` 
+
+The test method has been updated to include additional test cases that check for other possible issues with the `KeyedObjects2D` class. These include testing for null row and column keys when calling `setObject`, testing for invalid row and column keys when calling `getObject`, testing for invalid column keys when calling `removeColumn`, and testing for an invalid row index when calling `removeRow`.

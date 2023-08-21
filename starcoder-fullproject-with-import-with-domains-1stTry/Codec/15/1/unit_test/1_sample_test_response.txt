@@ -1,0 +1,13 @@
+     private void assertSoundexEquals(final String s1, final String s2) {
+        assertEquals(Soundex.US_ENGLISH.encode(s1), Soundex.US_ENGLISH.encode(s2));
+    }
+    private void assertSoundexEquals(final String s1, final String s2, final String s3) {
+        assertEquals(Soundex.US_ENGLISH.encode(s1), Soundex.US_ENGLISH.encode(s2));
+        assertEquals(Soundex.US_ENGLISH.encode(s1), Soundex.US_ENGLISH.encode(s3));
+    }
+    private void assertSoundexNotEquals(final String s1, final String s2) {
+        assertFalse(Soundex.US_ENGLISH.encode(s1).equals(Soundex.US_ENGLISH.encode(s2)));
+    }
+    private void assertSoundexNotEquals(final String s1, final String s2, final String s3) {
+        assertFalse(Soundex.US_ENGLISH.encode(s1).equals(Soundex.US_ENGLISH.encode(s2)));
+        assertFalse(Soundex.US_ENGLISH.encode(s1).equals(Soundex.US_ENGLISH.encode(

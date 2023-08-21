@@ -1,0 +1,14 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+/**
+ * A {@code <!DOCTYPE>} node.
+ */
+public class DocumentType extends Node {
+    @Override
+    public String nodeName();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

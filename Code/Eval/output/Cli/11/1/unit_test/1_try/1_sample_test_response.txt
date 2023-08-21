@@ -1,0 +1,40 @@
+() {
+        HelpFormatter formatter = new HelpFormatter();
+        Options options = new Options();
+        options.addOption("h", "help", false, "display help");
+        options.addOption("f", "file", true, "input file");
+
+        // testing printHelp() method
+        formatter.printHelp("myapp", options);
+
+        // expected output:
+        // usage: myapp
+        //  -f,--file <arg>   input file
+        //  -h,--help         display help
+
+        // testing printUsage() method
+        formatter.printUsage(new PrintWriter(System.out), 80, "myapp", options);
+
+        // expected output:
+        // usage: myapp [-f <arg>] [-h]
+
+        // testing appendOption() method
+        StringBuffer buff = new StringBuffer();
+        Option option = new Option("f", "file", true, "input file");
+        formatter.appendOption(buff, option, true);
+
+        // expected output:
+        // -f <file>
+
+        // testing renderWrappedText() method
+        StringBuffer sb = new StringBuffer();
+        String text = "This is a long text that should be wrapped to fit within a certain width. Let's see if it works.";
+        formatter.renderWrappedText(sb, 20, 0, text);
+
+        // expected output:
+        // This is a long text
+        // that should be
+        // wrapped to fit within
+        // a certain width.
+        // Let's see if it works.
+    }

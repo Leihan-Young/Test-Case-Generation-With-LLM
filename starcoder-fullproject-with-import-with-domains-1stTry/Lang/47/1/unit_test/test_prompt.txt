@@ -1,0 +1,104 @@
+package org.apache.commons.lang.text;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.SystemUtils;
+/**
+ * Builds a string from constituent parts providing a more flexible and powerful API
+ * than StringBuffer.
+ * <p>
+ * The main differences from StringBuffer/StringBuilder are:
+ * <ul>
+ * <li>Not synchronized</li>
+ * <li>Not final</li>
+ * <li>Subclasses have direct access to character array</li>
+ * <li>Additional methods
+ *  <ul>
+ *   <li>appendWithSeparators - adds an array of values, with a separator</li>
+ *   <li>appendPadding - adds a length padding characters</li>
+ *   <li>appendFixedLength - adds a fixed width field to the builder</li>
+ *   <li>toCharArray/getChars - simpler ways to get a range of the character array</li>
+ *   <li>delete - delete char or string</li>
+ *   <li>replace - search and replace for a char or string</li>
+ *   <li>leftString/rightString/midString - substring without exceptions</li>
+ *   <li>contains - whether the builder contains a char or string</li>
+ *   <li>size/clear/isEmpty - collections style API methods</li>
+ *  </ul>
+ * </li>
+ * </ul>
+ * <li>Views
+ *  <ul>
+ *   <li>asTokenizer - uses the internal buffer as the source of a StrTokenizer</li>
+ *   <li>asReader - uses the internal buffer as the source of a Reader</li>
+ *   <li>asWriter - allows a Writer to write directly to the internal buffer</li>
+ *  </ul>
+ * </li>
+ * </ul>
+ * <p>
+ * The aim has been to provide an API that mimics very closely what StringBuffer
+ * provides, but with additional methods. It should be noted that some edge cases,
+ * with invalid indices or null input, have been altered - see individual methods.
+ * The biggest of these changes is that by default, null will not output the text
+ * 'null'. This can be controlled by a property, {@link #setNullText(String)}.
+ *
+ * @author Stephen Colebourne
+ * @since 2.2
+ * @version $Id$
+ */
+public class StrBuilder implements Cloneable {
+    private static final long serialVersionUID = 7628716375283629643L;
+    private String newLine;
+    private String nullText;
+    /**
+     * Appends an object to the builder padding on the right to a fixed length.
+     * The <code>toString</code> of the object is used.
+     * If the object is larger than the length, the right hand side is lost.
+     * If the object is null, null text value is used.
+     * 
+     * @param obj  the object to append, null uses null text
+     * @param width  the fixed field width, zero or negative has no effect
+     * @param padChar  the pad character to use
+     * @return this, to enable chaining
+     */
+    public StrBuilder appendFixedWidthPadRight(Object obj, int width, char padChar);
+    /**
+     * Appends an object to the builder padding on the left to a fixed width.
+     * The <code>toString</code> of the object is used.
+     * If the object is larger than the length, the left hand side is lost.
+     * If the object is null, the null text value is used.
+     * 
+     * @param obj  the object to append, null uses null text
+     * @param width  the fixed field width, zero or negative has no effect
+     * @param padChar  the pad character to use
+     * @return this, to enable chaining
+     */
+    public StrBuilder appendFixedWidthPadLeft(Object obj, int width, char padChar);
+    /**
+     * Appends an object to the builder padding on the left to a fixed width.
+     * The <code>String.valueOf</code> of the <code>int</code> value is used.
+     * If the formatted value is larger than the length, the left hand side is lost.
+     * 
+     * @param value  the value to append
+     * @param width  the fixed field width, zero or negative has no effect
+     * @param padChar  the pad character to use
+     * @return this, to enable chaining
+     */
+    public StrBuilder appendFixedWidthPadLeft(int value, int width, char padChar);
+    /**
+     * Gets a String version of the string builder, creating a new instance
+     * each time the method is called.
+     * <p>
+     * Note that unlike StringBuffer, the string version returned is
+     * independent of the string builder.
+     *
+     * @return the builder as a String
+     */
+    public String toString();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

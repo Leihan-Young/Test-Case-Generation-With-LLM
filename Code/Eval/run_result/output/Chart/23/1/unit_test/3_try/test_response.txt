@@ -1,0 +1,70 @@
+MinMaxCategoryRenderer() {
+    // create a dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1, "Series 1", "Category 1");
+    dataset.addValue(2, "Series 1", "Category 2");
+    dataset.addValue(3, "Series 2", "Category 1");
+    dataset.addValue(4, "Series 2", "Category 2");
+    
+    // create a chart
+    JFreeChart chart = ChartFactory.createBarChart("Test Chart", "Category", "Value", dataset);
+    CategoryPlot plot = chart.getCategoryPlot();
+    
+    // create a renderer with a bug
+    MinMaxCategoryRenderer renderer = new MinMaxCategoryRenderer();
+    renderer.setObjectIcon(new RectangleIcon(8, 8));
+    renderer.setMinIcon(new RectangleIcon(8, 8));
+    renderer.setMaxIcon(new RectangleIcon(8, 8));
+    plot.setRenderer(renderer);
+    
+    // show the chart
+    JFrame frame = new JFrame("Test");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(500, 500);
+    JPanel panel = new ChartPanel(chart);
+    frame.add(panel);
+    frame.setVisible(true);
+}
+```
+The error occurred because the necessary import statements are missing. Here are the corrected imports and the code with the appropriate changes:
+```
+import java.awt.Rectangle;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+public class MinMaxCategoryRendererTests {
+
+    public static void main(String[] args) {
+        // create a dataset
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.addValue(1, "Series 1", "Category 1");
+        dataset.addValue(2, "Series 1", "Category 2");
+        dataset.addValue(3, "Series 2", "Category 1");
+        dataset.addValue(4, "Series 2", "Category 2");
+
+        // create a chart
+        JFreeChart chart = ChartFactory.createBarChart("Test Chart", "Category", "Value", dataset);
+        CategoryPlot plot = chart.getCategoryPlot();
+
+        // create a renderer with a bug
+        MinMaxCategoryRenderer renderer = new MinMaxCategoryRenderer();
+        renderer.setObjectIcon(new Rectangle(8, 8));
+        renderer.setMinIcon(new Rectangle(8, 8));
+        renderer.setMaxIcon(new Rectangle(8, 8));
+        plot.setRenderer(renderer);
+
+        // show the chart
+        JFrame frame = new JFrame("Test");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+        JPanel panel = new ChartPanel(chart);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
+```

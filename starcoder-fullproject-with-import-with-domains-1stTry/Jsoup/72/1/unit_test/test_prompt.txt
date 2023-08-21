@@ -1,0 +1,48 @@
+package org.jsoup.parser;
+import org.jsoup.UncheckedIOException;
+import org.jsoup.helper.Validate;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Locale;
+/**
+ CharacterReader consumes tokens off a string. Used internally by jsoup. API subject to changes.
+ */
+public final class CharacterReader {
+    private static final int maxStringCacheLen = 12;
+    private static final int readAheadLimit = (int) (maxBufferLen * 0.75);
+    private final char[] charBuf;
+    private final Reader reader;
+    private int bufLength;
+    private int bufSplitPoint;
+    private int bufPos;
+    private int readerPos;
+    private int bufMark;
+    private final String[] stringCache = new String[512]; // holds reused strings in this doc, to lessen garbage
+    String consumeTo(String seq);
+    boolean matchConsume(String seq);
+    /**
+     * Tests if all the content has been read.
+     * @return true if nothing left to read.
+     */
+    public boolean isEmpty();
+    /**
+     * Caches short strings, as a flywheel pattern, to reduce GC load. Just for this doc, to prevent leaks.
+     * <p />
+     * Simplistic, and on hash collisions just falls back to creating a new string, vs a full HashMap with Entry list.
+     * That saves both having to create objects as hash keys, and running through the entry list, at the expense of
+     * some more duplicates.
+     */
+    private static String cacheString(final char[] charBuf, final String[] stringCache, final int start, final int count);
+    /**
+     * Reads characters up to the specific char.
+     * @param c the delimiter
+     * @return the chars read
+     */
+    public String consumeTo(char c);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

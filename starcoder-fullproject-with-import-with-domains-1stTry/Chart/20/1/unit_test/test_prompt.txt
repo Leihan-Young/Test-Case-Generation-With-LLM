@@ -1,0 +1,23 @@
+package org.jfree.chart.plot;
+import java.awt.Paint;
+import java.awt.Stroke;
+import org.jfree.chart.event.MarkerChangeEvent;
+/**
+ * A marker that represents a single value.  Markers can be added to plots to
+ * highlight specific values.
+ */
+public class ValueMarker extends Marker {
+    private double value;
+    /**
+     * Returns the value.
+     *
+     * @return The value.
+     * 
+     * @see #setValue(double)
+     */
+    public double getValue();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

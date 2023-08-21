@@ -1,0 +1,8 @@
+WriteableCommandLineImpl() {
+    WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+    Option option = new PropertyOption("--property", "Property option");
+    commandLine.addProperty(option, "key", "value");
+    assertEquals("value", commandLine.getProperty(option, "key", ""));
+}
+```
+The bug in the program is that the `getProperty()` method does not return the correct value when called with an option and property. The method should return the value of the property associated with the given option, but it does not use the `optionToProperties` map to retrieve the property value. Instead, it directly accesses the `values` map, which only holds the option values, not the property values. To fix the bug, the `getProperty()` method should use the `optionToProperties` map to retrieve the property value associated with the given option.

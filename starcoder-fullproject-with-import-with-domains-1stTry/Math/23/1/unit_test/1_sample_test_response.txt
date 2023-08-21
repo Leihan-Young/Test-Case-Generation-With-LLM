@@ -1,0 +1,14 @@
+     public void testNoBracketing() {
+        UnivariateFunction func = new UnivariateFunction() {
+            public double value(double x) {
+                return x * x;
+            }
+        };
+        UnivariateOptimizer optimizer = new BrentOptimizer(1e-12, 1e-12);
+        try {
+            optimizer.optimize(100, func, GoalType.MINIMIZE);
+            fail("an exception should have been thrown");
+        } catch (NumberIsTooSmallException e) {
+            // expected
+        }
+    }

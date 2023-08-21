@@ -1,0 +1,91 @@
+package org.apache.commons.math.linear;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.util.MathUtils;
+/**
+ * Calculates the eigen decomposition of a <strong>symmetric</strong> matrix.
+ * <p>The eigen decomposition of matrix A is a set of two matrices:
+ * V and D such that A = V D V<sup>T</sup>. A, V and D are all m &times; m
+ * matrices.</p>
+ * <p>As of 2.0, this class supports only <strong>symmetric</strong> matrices,
+ * and hence computes only real realEigenvalues. This implies the D matrix returned by
+ * {@link #getD()} is always diagonal and the imaginary values returned {@link
+ * #getImagEigenvalue(int)} and {@link #getImagEigenvalues()} are always null.</p>
+ * <p>When called with a {@link RealMatrix} argument, this implementation only uses
+ * the upper part of the matrix, the part below the diagonal is not accessed at all.</p>
+ * <p>Eigenvalues are computed as soon as the matrix is decomposed, but eigenvectors
+ * are computed only when required, i.e. only when one of the {@link #getEigenvector(int)},
+ * {@link #getV()}, {@link #getVT()}, {@link #getSolver()} methods is called.</p>
+ * <p>This implementation is based on Inderjit Singh Dhillon thesis
+ * <a href="http://www.cs.utexas.edu/users/inderjit/public_papers/thesis.pdf">A
+ * New O(n<sup>2</sup>) Algorithm for the Symmetric Tridiagonal Eigenvalue/Eigenvector
+ * Problem</a>, on Beresford N. Parlett and Osni A. Marques paper <a
+ * href="http://www.netlib.org/lapack/lawnspdf/lawn155.pdf">An Implementation of the
+ * dqds Algorithm (Positive Case)</a> and on the corresponding LAPACK routines (DLARRE,
+ * DLASQ2, DLAZQ3, DLAZQ4, DLASQ5 and DLASQ6).</p>
+ * <p>The authors of the original fortran version are:
+ *   <ul>
+ *     <li>Beresford Parlett, University of California, Berkeley, USA</li>
+ *     <li>Jim Demmel, University of California, Berkeley, USA</li>
+ *     <li>Inderjit Dhillon, University of Texas, Austin, USA</li>
+ *     <li>Osni Marques, LBNL/NERSC, USA</li>
+ *     <li>Christof Voemel, University of California, Berkeley, USA</li>
+ *   </ul>
+ * </p>
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class EigenDecompositionImpl implements EigenDecomposition {
+    private static final double TOLERANCE = 100 * MathUtils.EPSILON;
+    private static final double TOLERANCE_2 = TOLERANCE * TOLERANCE;
+    private double splitTolerance;
+    private double[] main;
+    private double[] secondary;
+    private double[] squaredSecondary;
+    private TriDiagonalTransformer transformer;
+    private double lowerSpectra;
+    private double upperSpectra;
+    private double minPivot;
+    private double sigma;
+    private double sigmaLow;
+    private double tau;
+    private double[] work;
+    private int pingPong;
+    private double qMax;
+    private double eMin;
+    private int    tType;
+    private double dMin;
+    private double dMin1;
+    private double dMin2;
+    private double dN;
+    private double dN1;
+    private double dN2;
+    private double g;
+    private double[] realEigenvalues;
+    private double[] imagEigenvalues;
+    private ArrayRealVector[] eigenvectors;
+    private RealMatrix cachedV;
+    private RealMatrix cachedD;
+    private RealMatrix cachedVt;
+    /** {@inheritDoc} */
+    public double[] getRealEigenvalues()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public RealVector getEigenvector(final int i)
+        throws InvalidMatrixException, ArrayIndexOutOfBoundsException;
+    /**
+     * Flip qd array if warranted.
+     * @param n number of rows in the block
+     * @param step within the array (1 for flipping all elements, 2 for flipping
+     * only every other element)
+     * @return true if qd array was flipped
+     */
+    private boolean flipIfWarranted(final int n, final int step);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

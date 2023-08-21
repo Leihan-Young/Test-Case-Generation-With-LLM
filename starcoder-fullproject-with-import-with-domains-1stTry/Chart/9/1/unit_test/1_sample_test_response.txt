@@ -1,0 +1,8 @@
+ public void testSerialization() throws Exception {
+        TimeSeries s1 = new TimeSeries("S1");
+        s1.add(new RegularTimePeriod(1000L), 1.0);
+        s1.add(new RegularTimePeriod(2000L), 2.0);
+        s1.add(new RegularTimePeriod(3000L), 3.0);
+        TimeSeries s2 = (TimeSeries) ObjectUtilities.clone(s1);
+        assertEquals(s1, s2);
+    }

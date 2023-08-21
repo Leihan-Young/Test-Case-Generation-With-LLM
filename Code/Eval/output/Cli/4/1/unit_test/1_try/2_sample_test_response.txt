@@ -1,0 +1,41 @@
+() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("file", true, "specify a file to process");
+
+        // provide no arguments
+        String[] args1 = new String[]{};
+        try {
+            CommandLine line1 = parser.parse(options, args1);
+            assertTrue(line1.hasOption("help"));
+            assertFalse(line1.hasOption("version"));
+            assertNull(line1.getOptionValue("file"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+
+        // provide file argument
+        String[] args2 = new String[]{"-file", "test.txt"};
+        try {
+            CommandLine line2 = parser.parse(options, args2);
+            assertFalse(line2.hasOption("help"));
+            assertFalse(line2.hasOption("version"));
+            assertEquals(line2.getOptionValue("file"), "test.txt");
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+
+        // provide invalid option
+        String[] args3 = new String[]{"-invalid"};
+        try {
+            parser.parse(options, args3);
+            fail("Expected exception: UnrecognizedOptionException");
+        } catch (UnrecognizedOptionException exp) {
+            // expected exception
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+    }

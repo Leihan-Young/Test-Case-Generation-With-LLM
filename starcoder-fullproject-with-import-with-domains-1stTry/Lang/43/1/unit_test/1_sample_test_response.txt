@@ -1,0 +1,5 @@
+     public void testChoiceFormat() {
+        ExtendedMessageFormat fmt = new ExtendedMessageFormat("{0,choice,0#false|1#true}");
+        assertEquals("true", fmt.format(new Long(1)));
+        assertEquals("false", fmt.format(new Long(0)));
+    }

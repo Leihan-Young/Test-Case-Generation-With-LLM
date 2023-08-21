@@ -1,0 +1,20 @@
+PatternBuilder() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final PatternBuilder pBuilder = new PatternBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+        final Option b = obuilder.withShortName("b").create();
+
+        pBuilder.withPattern("ab");
+        pBuilder.create();
+
+        try {
+            pBuilder.withPattern("abc");
+            pBuilder.create();
+            fail("Expected IllegalArgumentException not caught");
+        } catch (final IllegalArgumentException exp) {
+            assertEquals("Pattern must not contain more than 2 characters", exp.getMessage());
+        }
+    }
+```
+This test method tests if the PatternBuilder class can handle patterns with more than two characters. If the class is working correctly, the test should pass. However, if the class is buggy, the test should fail with an IllegalArgumentException with the message "Pattern must not contain more than 2 characters".

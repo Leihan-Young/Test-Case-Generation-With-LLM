@@ -1,0 +1,10 @@
+DefaultKeyedValues_removeValue() {
+    DefaultKeyedValues data = new DefaultKeyedValues();
+    data.addValue("A", 1.0);
+    data.addValue("B", 2.0);
+    data.addValue("C", 3.0);
+    data.removeValue("B");
+    assertEquals(2, data.getItemCount()); // bug: expected 1
+    assertEquals("A", data.getKey(0));
+    assertEquals("C", data.getKey(1));
+}

@@ -1,0 +1,6 @@
+     public void testCosh() {
+        assertEquals(Double.POSITIVE_INFINITY, FastMath.cosh(Double.POSITIVE_INFINITY), 0);
+        assertEquals(Double.POSITIVE_INFINITY, FastMath.cosh(Double.NEGATIVE_INFINITY), 0);
+        assertEquals(1.0, FastMath.cosh(0.0), 0);
+        assertEquals(Double.NaN, FastMath.cosh(Double.NaN), 0);
+    }

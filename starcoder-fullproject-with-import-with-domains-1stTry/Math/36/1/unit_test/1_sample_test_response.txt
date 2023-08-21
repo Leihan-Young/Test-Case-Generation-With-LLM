@@ -1,0 +1,8 @@
+     public void testDivideByZero() {
+        try {
+            BigFraction.ONE.divide(BigFraction.ZERO);
+            fail("Expecting ZeroException");
+        } catch (ZeroException ex) {
+            // expected
+        }
+    }

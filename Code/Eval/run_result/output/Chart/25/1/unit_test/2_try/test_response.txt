@@ -1,0 +1,20 @@
+StatisticalBarRenderer() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(10, "Series 1", "Category 1");
+    dataset.addValue(20, "Series 1", "Category 2");
+    dataset.addValue(15, "Series 2", "Category 1");
+    dataset.addValue(25, "Series 2", "Category 2");
+
+    StatisticalCategoryDataset statDataset = DatasetUtilities.createCategoryDataset("Series ", "", dataset);
+
+    StatisticalBarRenderer renderer = new StatisticalBarRenderer();
+    CategoryPlot plot = new CategoryPlot(statDataset, new CategoryAxis(""), new NumberAxis(""), renderer);
+    JFreeChart chart = new JFreeChart(plot);
+
+    BufferedImage image = chart.createBufferedImage(500, 500);
+    assertNotNull(image);
+
+    // check if the mean values are correctly displayed
+    assertEquals(Color.BLACK, renderer.getItemPaint(0, 0)); // Series 1, Category 1
+    assertEquals(Color.BLACK, renderer.getItemPaint(0, 1)); // Series 1, Category 2
+    assertEquals(Color.BLACK, renderer.getItemPaint(1, 0)); // Series

@@ -1,0 +1,145 @@
+package org.apache.commons.lang.time;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import org.apache.commons.lang.Validate;
+/**
+ * <p>FastDateFormat is a fast and thread-safe version of
+ * {@link java.text.SimpleDateFormat}.</p>
+ * 
+ * <p>This class can be used as a direct replacement to
+ * <code>SimpleDateFormat</code> in most formatting situations.
+ * This class is especially useful in multi-threaded server environments.
+ * <code>SimpleDateFormat</code> is not thread-safe in any JDK version,
+ * nor will it be as Sun have closed the bug/RFE.
+ * </p>
+ *
+ * <p>Only formatting is supported, but all patterns are compatible with
+ * SimpleDateFormat (except time zones - see below).</p>
+ *
+ * <p>Java 1.4 introduced a new pattern letter, <code>'Z'</code>, to represent
+ * time zones in RFC822 format (eg. <code>+0800</code> or <code>-1100</code>).
+ * This pattern letter can be used here (on all JDK versions).</p>
+ *
+ * <p>In addition, the pattern <code>'ZZ'</code> has been made to represent
+ * ISO8601 full format time zones (eg. <code>+08:00</code> or <code>-11:00</code>).
+ * This introduces a minor incompatibility with Java 1.4, but at a gain of
+ * useful functionality.</p>
+ *
+ * @author TeaTrove project
+ * @author Brian S O'Neill
+ * @author Sean Schofield
+ * @author Gary Gregory
+ * @author Stephen Colebourne
+ * @author Nikolay Metchev
+ * @since 2.0
+ * @version $Id$
+ */
+public class FastDateFormat extends Format {
+    private static final long serialVersionUID = 1L;
+    public static final int FULL = DateFormat.FULL;
+    public static final int LONG = DateFormat.LONG;
+    public static final int MEDIUM = DateFormat.MEDIUM;
+    public static final int SHORT = DateFormat.SHORT;
+    private static String cDefaultPattern;
+    private static Map cInstanceCache = new HashMap(7);
+    private static Map cDateInstanceCache = new HashMap(7);
+    private static Map cTimeInstanceCache = new HashMap(7);
+    private static Map cDateTimeInstanceCache = new HashMap(7);
+    private static Map cTimeZoneDisplayCache = new HashMap(7);
+    private final String mPattern;
+    private final TimeZone mTimeZone;
+    private final boolean mTimeZoneForced;
+    private final Locale mLocale;
+    private final boolean mLocaleForced;
+    private transient Rule[] mRules;
+    private transient int mMaxLengthEstimate;
+    /**
+     * <p>Gets a date formatter instance using the specified style in the
+     * default time zone and locale.</p>
+     * 
+     * @param style  date style: FULL, LONG, MEDIUM, or SHORT
+     * @return a localized standard date formatter
+     * @throws IllegalArgumentException if the Locale has no date
+     *  pattern defined
+     * @since 2.1
+     */
+    public static FastDateFormat getDateInstance(int style);
+    /**
+     * <p>Gets the locale used by this formatter.</p>
+     * 
+     * @return the locale
+     */
+    public Locale getLocale();
+    /**
+     * <p>Gets a date/time formatter instance using the specified style,
+     * time zone and locale.</p>
+     * 
+     * @param dateStyle  date style: FULL, LONG, MEDIUM, or SHORT
+     * @param timeStyle  time style: FULL, LONG, MEDIUM, or SHORT
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @param locale  optional locale, overrides system locale
+     * @return a localized standard date/time formatter
+     * @throws IllegalArgumentException if the Locale has no date/time
+     *  pattern defined
+     */
+    public static synchronized FastDateFormat getDateTimeInstance(int dateStyle, int timeStyle, TimeZone timeZone,
+            Locale locale);
+    /**
+     * <p>Gets a date formatter instance using the specified style, time
+     * zone and locale.</p>
+     * 
+     * @param style  date style: FULL, LONG, MEDIUM, or SHORT
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @param locale  optional locale, overrides system locale
+     * @return a localized standard date formatter
+     * @throws IllegalArgumentException if the Locale has no date
+     *  pattern defined
+     */
+    public static synchronized FastDateFormat getDateInstance(int style, TimeZone timeZone, Locale locale);
+    /**
+     * <p>Gets a date formatter instance using the specified style and
+     * locale in the default time zone.</p>
+     * 
+     * @param style  date style: FULL, LONG, MEDIUM, or SHORT
+     * @param locale  optional locale, overrides system locale
+     * @return a localized standard date formatter
+     * @throws IllegalArgumentException if the Locale has no date
+     *  pattern defined
+     * @since 2.1
+     */
+    public static FastDateFormat getDateInstance(int style, Locale locale);
+    /**
+     * <p>Gets a date formatter instance using the specified style and
+     * time zone in the default locale.</p>
+     * 
+     * @param style  date style: FULL, LONG, MEDIUM, or SHORT
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @return a localized standard date formatter
+     * @throws IllegalArgumentException if the Locale has no date
+     *  pattern defined
+     * @since 2.1
+     */
+    public static FastDateFormat getDateInstance(int style, TimeZone timeZone);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

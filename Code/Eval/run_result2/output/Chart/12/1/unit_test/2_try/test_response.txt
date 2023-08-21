@@ -1,0 +1,30 @@
+MultiplePiePlot() {
+    // create a category dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1.0, "Category 1", "Item 1");
+    dataset.addValue(2.0, "Category 1", "Item 2");
+    dataset.addValue(3.0, "Category 2", "Item 3");
+    dataset.addValue(4.0, "Category 2", "Item 4");
+
+    // create a multiple pie plot
+    MultiplePiePlot plot = new MultiplePiePlot();
+    plot.setDataset(dataset);
+    plot.setDataExtractOrder(TableOrder.BY_COLUMN);
+    plot.setLimit(2.0); // set a limit for aggregation
+
+    // create a JFreeChart object and set the plot
+    JFreeChart chart = ChartFactory.createMultiplePieChart("Multiple Pie Chart", dataset, TableOrder.BY_COLUMN, true, true, false);
+    
+    // set the legend position
+    chart.getLegend().setPosition(RectangleEdge.RIGHT);
+
+    // create a chart panel and add it to a frame
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Test");
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.getContentPane().add(chartPanel);
+    frame.pack();
+    frame.setVisible(true);
+}
+```
+The updated test code uses the `ChartFactory` class to create a `JFreeChart` object with the same properties as before. It also changes the `JFrame` import to `javax.swing.JFrame` and sets the default close operation to use `WindowConstants.EXIT_ON_CLOSE`. This should resolve the symbol errors and allow the test to run.

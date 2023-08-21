@@ -1,0 +1,10 @@
+     public void testSerialization() throws Exception {
+        DefaultKeyedValues2D d = new DefaultKeyedValues2D();
+        d.addValue(1.0, "Row 1", "Column 1");
+        d.addValue(2.0, "Row 1", "Column 2");
+        d.addValue(3.0, "Row 2", "Column 1");
+        d.addValue(4.0, "Row 2", "Column 2");
+        DefaultKeyedValues2D d2 = (DefaultKeyedValues2D) 
+                ObjectUtilities.clone(d);
+        assertTrue(d.equals(d2));
+    }

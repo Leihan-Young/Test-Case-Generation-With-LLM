@@ -1,0 +1,17 @@
+Parser() {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+
+        String[] args = new String[]{"-h"};
+        try {
+            CommandLine line = parser.parse(options, args);
+            assertTrue(line.hasOption("help"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+    }
+```
+The above test method tests if the parser correctly recognizes the "help" option when the "-h" argument is provided. However, there is a bug in the program where the option "help" is defined as "-help" instead of "-h". This test method will fail, indicating the presence of the bug.

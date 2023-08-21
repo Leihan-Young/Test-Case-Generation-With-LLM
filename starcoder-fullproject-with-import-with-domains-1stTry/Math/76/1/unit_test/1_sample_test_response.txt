@@ -1,0 +1,30 @@
+     private void checkOrthogonal(final RealMatrix matrix) {
+        checkOrthogonal(matrix, 1.0e-12);
+    }
+    private void checkOrthogonal(final RealMatrix matrix, final double tolerance) {
+        final int m = matrix.getRowDimension();
+        final int n = matrix.getColumnDimension();
+        final RealMatrix product = matrix.multiply(matrix.transpose());
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (i == j) {
+                    assertEquals(1.0, product.getEntry(i, j), tolerance);
+                } else {
+                    assertEquals(0.0, product.getEntry(i, j), tolerance);
+                }
+            }
+        }
+    }
+    private void checkSymmetry(final RealMatrix matrix) {
+        checkSymmetry(matrix, 1.0e-12);
+    }
+    private void checkSymmetry(final RealMatrix matrix, final double tolerance) {
+        final int m = matrix.getRowDimension();
+        final int n = matrix.getColumnDimension();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                assertEquals(matrix.getEntry(i, j), matrix.getEntry(j, i), tolerance);
+            }
+        }
+    }
+  

@@ -1,0 +1,38 @@
+PosixParser() {
+    // use the Posix parser
+    CommandLineParser parser = new PosixParser();
+    Options options = new Options();
+    options.addOption("help", false, "print this message");
+    options.addOption("projecthelp", false, "print project help information");
+    options.addOption("version", false, "print the version information and exit");
+    options.addOption("quiet", false, "be extra quiet");
+    options.addOption("verbose", false, "be extra verbose");
+    options.addOption("debug", false, "print debug information");
+    options.addOption("logfile", true, "use given file for log");
+    options.addOption("logger", true, "the class which is to perform the logging");
+    options.addOption("listener", true, "add an instance of a class as a project listener");
+    options.addOption("buildfile", true, "use given buildfile");
+    options.addOption(OptionBuilder.withDescription("use value for given property")
+            .hasArgs().withValueSeparator().create('D')
+    );
+    options.addOption("find", true, "search for buildfile towards the root of the filesystem and use it");
+
+    String[] args = new String[]{"-buildfile", "mybuild.xml", "-Dproperty=value", "-Dproperty1=value1", "-projecthelp"};
+
+    CommandLine line = parser.parse(options, args);
+
+    // check multiple values
+    String[] opts = line.getOptionValues("D");
+    assertEquals("property", opts[0]);
+    assertEquals("value", opts[1]);
+    assertEquals("property1", opts[2]);
+    assertEquals("value1", opts[3]);
+
+    // check single value
+    assertEquals(line.getOptionValue("buildfile"), "mybuild.xml");
+
+    // check option
+    assertTrue(line.hasOption("projecthelp"));
+}
+```
+The test method creates an instance of the `PosixParser` and adds the same options as in the `testAnt()` method. The test method then tries to parse the command line arguments and retrieve the values of the options. The `assertEquals()` and `assertTrue()` methods are used to verify if the values of the options are correct. This test method should reveal any bugs in the `PosixParser` implementation.

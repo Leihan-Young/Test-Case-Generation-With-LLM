@@ -1,0 +1,110 @@
+package org.apache.commons.lang3.builder;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.apache.commons.lang3.ArrayUtils;
+/**
+ * <p>
+ * Assists in implementing {@link Object#hashCode()} methods.
+ * </p>
+ * 
+ * <p>
+ * This class enables a good <code>hashCode</code> method to be built for any class. It follows the rules laid out in
+ * the book <a href="http://java.sun.com/docs/books/effective/index.html">Effective Java</a> by Joshua Bloch. Writing a
+ * good <code>hashCode</code> method is actually quite difficult. This class aims to simplify the process.
+ * </p>
+ * 
+ * <p>
+ * All relevant fields from the object should be included in the <code>hashCode</code> method. Derived fields may be
+ * excluded. In general, any field used in the <code>equals</code> method must be used in the <code>hashCode</code>
+ * method.
+ * </p>
+ * 
+ * <p>
+ * To use this class write code as follows:
+ * </p>
+ * 
+ * <pre>
+ * public class Person {
+ *   String name;
+ *   int age;
+ *   boolean smoker;
+ *   ...
+ *
+ *   public int hashCode() {
+ *     // you pick a hard-coded, randomly chosen, non-zero, odd number
+ *     // ideally different for each class
+ *     return new HashCodeBuilder(17, 37).
+ *       append(name).
+ *       append(age).
+ *       append(smoker).
+ *       toHashCode();
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * If required, the superclass <code>hashCode()</code> can be added using {@link #appendSuper}.
+ * </p>
+ * 
+ * <p>
+ * Alternatively, there is a method that uses reflection to determine the fields to test. Because these fields are
+ * usually private, the method, <code>reflectionHashCode</code>, uses <code>AccessibleObject.setAccessible</code>
+ * to change the visibility of the fields. This will fail under a security manager, unless the appropriate permissions
+ * are set up correctly. It is also slower than testing explicitly.
+ * </p>
+ * 
+ * <p>
+ * A typical invocation for this method would look like:
+ * </p>
+ * 
+ * <pre>
+ * public int hashCode() {
+ *   return HashCodeBuilder.reflectionHashCode(this);
+ * }
+ * </pre>
+ * 
+ * @author Apache Software Foundation
+ * @author Gary Gregory
+ * @author Pete Gieser
+ * @since 1.0
+ * @version $Id$
+ */
+public class HashCodeBuilder {
+    /**
+     * <p>
+     * Registers the given object. Used by the reflection methods to avoid infinite loops.
+     * </p>
+     * 
+     * @param value
+     *            The object to register.
+     */
+    static void register(Object value);
+    public static int reflectionHashCode(Object object, String[] excludeFields);
+    /**
+     * <p>
+     * The computed <code>hashCode</code> from toHashCode() is returned due to the likelyhood 
+     * of bugs in mis-calling toHashCode() and the unlikelyness of it mattering what the hashCode for 
+     * HashCodeBuilder itself is.
+     * 
+     * @return <code>hashCode</code> based on the fields appended
+     */
+    @Override
+    public int hashCode();
+    /**
+     * <p>
+     * Returns the registry of objects being traversed by the reflection methods in the current thread.
+     * </p>
+     * 
+     * @return Set the registry of objects being traversed
+     * @since 2.3
+     */
+    static Set<IDKey> getRegistry();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

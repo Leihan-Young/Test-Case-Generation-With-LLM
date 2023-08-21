@@ -1,0 +1,9 @@
+GrayPaintScale() {
+    GrayPaintScale scale = new GrayPaintScale();
+    Color color = (Color) scale.getPaint(0.5);
+    // This assertion will fail if the bug in the getPaint() method has not been fixed
+    assertEquals(new Color(127, 127, 127), color);
+}
+``` 
+
+The error occurred because `Paint` is an interface and cannot be instantiated. Therefore, I have cast the result of `getPaint` to `Color`, which is the concrete implementation returned by the `GrayPaintScale` class.

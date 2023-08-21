@@ -1,0 +1,11 @@
+XYPlotRemoveDomainMarker() {
+    XYPlot plot = new XYPlot();
+    Marker marker = new ValueMarker(10.0);
+    plot.addDomainMarker(0, marker, Layer.FOREGROUND, true);
+    boolean removed = plot.removeDomainMarker(0, marker, Layer.FOREGROUND, true);
+    assertTrue(removed);
+    assertNull(plot.getDomainMarkers(Layer.FOREGROUND).iterator().next());
+}
+``` 
+
+The error occurred because the `addDomainMarker` method of `CategoryPlot` needs a `CategoryMarker` as the second argument, while the test method was passing in a `ValueMarker`. In addition, the `get` method of `Collection` does not accept an index parameter, so it should be replaced with an iterator. The corrected test method is provided above.

@@ -1,0 +1,78 @@
+PatternBuilderWithPattern() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final PatternBuilder pbuilder = new PatternBuilder();
+    final Option a = obuilder.withShortName("a").create();
+    final Option b = obuilder.withShortName("b").create();
+    final Option c = obuilder.withShortName("c").create();
+
+    // Test pattern with mandatory options
+    pbuilder.withPattern("!a!b");
+    final Parser parser1 = new Parser();
+    parser1.setGroup(pbuilder.create());
+    try {
+        parser1.parse(new String[] {});
+        fail("Expected MissingOptionException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Missing option -a|-b", exp.getMessage());
+    }
+    try {
+        parser1.parse(new String[] { "-a" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingOptionException caught");
+    }
+    try {
+        parser1.parse(new String[] { "-b" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingOptionException caught");
+    }
+    try {
+        parser1.parse(new String[] { "-a", "-b" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingOptionException caught");
+    }
+
+    // Test pattern with optional options
+    pbuilder.withPattern("a:b?");
+    final Parser parser2 = new Parser();
+    parser2.setGroup(pbuilder.create());
+    try {
+        parser2.parse(new String[] { "-a" });
+        fail("Expected MissingArgumentException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Missing argument for -a", exp.getMessage());
+    }
+    try {
+        parser2.parse(new String[] { "-a", "value" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingArgumentException caught");
+    }
+    try {
+        parser2.parse(new String[] { "-a", "value", "-b" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingArgumentException caught");
+    }
+
+    // Test pattern with multiple options
+    pbuilder.withPattern("a:b+c/d*e#f<g>h%i@j/k");
+    final Parser parser3 = new Parser();
+    parser3.setGroup(pbuilder.create());
+    try {
+        parser3.parse(new String[] { "-a", "value" });
+        fail("Expected MissingArgumentException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Missing argument for -a", exp.getMessage());
+    }
+    try {
+        parser3.parse(new String[] { "-a", "value", "-b" });
+        fail("Expected MissingArgumentException not caught");
+    } catch (final OptionException exp) {
+        assertEquals("Missing argument for -b", exp.getMessage());
+    }
+    try {
+        parser3.parse(new String[] { "-a", "value", "-b", "value1", "-c", "value2" });
+    } catch (final OptionException exp) {
+        fail("Unexpected MissingArgumentException caught");
+    }
+}
+```
+The above test method tests the `PatternBuilder` class with different types of patterns and checks if the expected exceptions are thrown or not. It tests for mandatory and optional options, multiple options with different types, and checks if the expected exceptions are thrown or not. This test method can reveal any bugs in the `PatternBuilder` class.

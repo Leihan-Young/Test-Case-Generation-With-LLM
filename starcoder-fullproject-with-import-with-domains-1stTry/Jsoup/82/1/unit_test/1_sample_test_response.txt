@@ -1,0 +1,16 @@
+ private void assertCharset(String html, String expectedCharset) {
+        Charset charset = DataUtil.getCharsetFromMetaTag(html);
+        assertEquals(expectedCharset, charset.name());
+    }
+    private void assertCharset(String html, Charset expectedCharset) {
+        Charset charset = DataUtil.getCharsetFromMetaTag(html);
+        assertEquals(expectedCharset, charset);
+    }
+    private void assertCharset(String html, String defaultCharset, Charset expectedCharset) {
+        Charset charset = DataUtil.getCharsetFromMetaTag(html, defaultCharset);
+        assertEquals(expectedCharset, charset);
+    }
+    private void assertCharset(String html, Charset defaultCharset, Charset expectedCharset) {
+        Charset charset = DataUtil.getCharsetFromMetaTag(html, defaultCharset);
+        assertEquals(expectedCharset, charset);
+    }

@@ -1,0 +1,66 @@
+package org.apache.commons.math.linear;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.util.MathUtils;
+/**
+ * Calculates the compact or truncated Singular Value Decomposition of a matrix.
+ * <p>The Singular Value Decomposition of matrix A is a set of three matrices:
+ * U, &Sigma; and V such that A = U &times; &Sigma; &times; V<sup>T</sup>.
+ * Let A be a m &times; n matrix, then U is a m &times; p orthogonal matrix,
+ * &Sigma; is a p &times; p diagonal matrix with positive diagonal elements,
+ * V is a n &times; p orthogonal matrix (hence V<sup>T</sup> is a p &times; n
+ * orthogonal matrix). The size p depends on the chosen algorithm:
+ * <ul>
+ *   <li>for full SVD, p would be n, but this is not supported by this implementation,</li>
+ *   <li>for compact SVD, p is the rank r of the matrix
+ *       (i. e. the number of positive singular values),</li>
+ *   <li>for truncated SVD p is min(r, t) where t is user-specified.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Note that since this class computes only the compact or truncated SVD and not
+ * the full SVD, the singular values computed are always positive.
+ * </p>
+ *
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class SingularValueDecompositionImpl implements SingularValueDecomposition {
+    private int m;
+    private int n;
+    private BiDiagonalTransformer transformer;
+    private double[] mainBidiagonal;
+    private double[] secondaryBidiagonal;
+    private double[] mainTridiagonal;
+    private double[] secondaryTridiagonal;
+    private EigenDecomposition eigenDecomposition;
+    private double[] singularValues;
+    private RealMatrix cachedU;
+    private RealMatrix cachedUt;
+    private RealMatrix cachedS;
+    private RealMatrix cachedV;
+    private RealMatrix cachedVt;
+    /** {@inheritDoc} */
+    public RealMatrix getS()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public double getNorm()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public RealMatrix getVT()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public RealMatrix getV()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public RealMatrix getU()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public double[] getSingularValues()
+        throws InvalidMatrixException;
+    /** {@inheritDoc} */
+    public DecompositionSolver getSolver();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

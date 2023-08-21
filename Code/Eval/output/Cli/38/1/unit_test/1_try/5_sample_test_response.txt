@@ -1,0 +1,11 @@
+() throws ParseException {
+    Option optionA = new Option("a", "first");
+    Options opts = new Options();
+    opts.addOption(optionA);
+    DefaultParser defaultParser = new DefaultParser();
+    String[] arguments = {"-a"};
+    CommandLine line = defaultParser.parse(opts, arguments);
+    assertTrue(line.hasOption("a"));
+}
+```
+The above test checks if the option "a" is correctly identified by the parser when the argument "-a" is passed. This test should pass, but if there is a bug in the DefaultParser class, it may fail.

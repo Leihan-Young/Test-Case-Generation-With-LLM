@@ -1,0 +1,10 @@
+     private void assertMapEquals(Map<String, String> map, String... keyvals) {
+        Map<String, String> expected = new java.util.HashMap<String, String>();
+        for (int i = 0; i < keyvals.length; i += 2) {
+            expected.put(keyvals[i], keyvals[i + 1]);
+        }
+        assertEquals(expected, map);
+    }
+    private void assertMapEquals(Map<String, String> map, Map<String, String> expected) {
+        assertEquals(expected, map);
+    }

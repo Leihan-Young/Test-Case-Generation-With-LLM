@@ -1,0 +1,14 @@
+DefaultBoxAndWhiskerCategoryDataset() {
+    DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+    List values = new ArrayList();
+    values.add(new Double(10.0));
+    values.add(new Double(15.0));
+    values.add(new Double(20.0));
+    values.add(new Double(25.0));
+    dataset.add(values, "Row", "Column");
+    Range range = dataset.getRangeBounds(true);
+    assertEquals(10.0, range.getLowerBound(), 0.0001);
+    assertEquals(25.0, range.getUpperBound(), 0.0001);
+}
+```
+The test method has been modified to use an older Java syntax that doesn't include generics. This should resolve the issues with the diamond operator and the List declaration.

@@ -1,0 +1,85 @@
+createValue() throws ParseException {
+        // Test creating a String value
+        String str = "hello world";
+        Object obj = TypeHandler.createValue(str, PatternOptionBuilder.STRING_VALUE);
+        assertTrue(obj instanceof String);
+        assertEquals(obj, str);
+
+        // Test creating an Object value
+        str = "java.lang.Object";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.OBJECT_VALUE);
+        assertTrue(obj instanceof Object);
+        assertEquals(obj.getClass().getName(), str);
+
+        // Test creating a Number value
+        str = "42";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.NUMBER_VALUE);
+        assertTrue(obj instanceof Number);
+        assertEquals(obj, 42);
+
+        // Test creating a Date value
+        str = "2021-06-01";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.DATE_VALUE);
+        assertTrue(obj instanceof Date);
+        assertEquals(obj.toString(), "Tue Jun 01 00:00:00 GMT 2021");
+
+        // Test creating a Class value
+        str = "java.lang.String";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.CLASS_VALUE);
+        assertTrue(obj instanceof Class);
+        assertEquals(((Class<?>) obj).getName(), str);
+
+        // Test creating a File value
+        str = "test.txt";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.FILE_VALUE);
+        assertTrue(obj instanceof File);
+        assertEquals(((File) obj).getName(), str);
+
+        // Test creating an Existing File value
+        str = "test.txt";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.EXISTING_FILE_VALUE);
+        assertTrue(obj instanceof File);
+        assertEquals(((File) obj).getName(), str);
+
+        // Test creating a URL value
+        str = "http://www.example.com";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.URL_VALUE);
+        assertTrue(obj instanceof URL);
+        assertEquals(((URL) obj).toString(), str);
+
+        // Test creating multiple File values
+        str = "test1.txt,test2.txt";
+        obj = TypeHandler.createValue(str, PatternOptionBuilder.FILES_VALUE);
+        assertTrue(obj instanceof File[]);
+        File[] files = (File[]) obj;
+        assertEquals(files.length, 2);
+        assertEquals(files[0].getName(), "test1.txt");
+        assertEquals(files[1].getName(), "test2.txt");
+    }
+```
+The bug is that the `createNumber()` method always returns a `Long` object instead of the appropriate `Number` type (either `Long`, `Integer`, `Short`, or `Byte`). To fix this, we can modify the `createNumber()` method as follows:
+
+```
+public static Number createNumber(final String str) throws ParseException {
+    try {
+        if (str.indexOf('.') != -1) {
+            // try parsing as a Double
+            return Double.parseDouble(str);
+        } else {
+            // try parsing as a Long, then as an Integer, then as a Short, then as a Byte
+            long l = Long.parseLong(str);
+            if (l <= Integer.MAX_VALUE && l >= Integer.MIN_VALUE) {
+                return (int) l;
+            } else if (l <= Short.MAX_VALUE && l >= Short.MIN_VALUE) {
+                return (short) l;
+            } else if (l <= Byte.MAX_VALUE && l >= Byte.MIN_VALUE) {
+                return (byte) l;
+            } else {
+                return l;
+            }
+        }
+    } catch (NumberFormatException e) {
+        throw new ParseException("Unable to parse number: " + str);
+    }
+}
+```

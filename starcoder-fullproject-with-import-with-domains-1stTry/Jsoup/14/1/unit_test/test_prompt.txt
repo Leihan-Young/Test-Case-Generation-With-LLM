@@ -1,0 +1,29 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Entities;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * Readers the input stream into tokens.
+ */
+class Tokeniser {
+    private CharacterReader reader; // html input
+    private boolean trackErrors = true;
+    private List<ParseError> errors = new ArrayList<ParseError>(); // errors found while tokenising
+    private TokeniserState state = TokeniserState.Data; // current tokenisation state
+    private Token emitPending; // the token we are about to emit on next read
+    private boolean isEmitPending = false;
+    private StringBuilder charBuffer = new StringBuilder(); // buffers characters to output as one token
+    private Token.StartTag lastStartTag; // the last start tag emitted, to test appropriate end tag
+    private boolean selfClosingFlagAcknowledged = true;
+    boolean isAppropriateEndTagToken();
+}
+package org.jsoup.parser;
+/**
+ * States and transition activations for the Tokeniser.
+ */
+}
+
+public class Test { 
+   <FILL-HERE>
+}

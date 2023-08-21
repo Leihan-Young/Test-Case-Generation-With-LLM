@@ -1,0 +1,23 @@
+     private void checkSolution(final double[] expected, final RealPointValuePair solution) {
+        final double[] sol = solution.getPoint();
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], sol[i], 1.0e-12);
+        }
+    }
+    private void checkPhase1Solution(final double[] expected, final SimplexTableau tableau) {
+        checkSolution(expected, tableau.getPhase1Solution());
+    }
+    private void checkPhase2Solution(final double[] expected, final SimplexTableau tableau) {
+        checkSolution(expected, tableau.getPhase2Solution());
+    }
+    private void checkPhase1ObjectiveValue(final double expected, final SimplexTableau tableau) {
+        assertEquals(expected, tableau.getPhase1ObjectiveValue(), 1.0e-12);
+    }
+    private void checkPhase2ObjectiveValue(final double expected, final SimplexTableau tableau) {
+        assertEquals(expected, tableau.getPhase2ObjectiveValue(), 1.0e-12);
+    }
+    private void checkDualSolution(final double[] expected, final SimplexTableau tableau) {
+        checkSolution(expected, tableau.getDualSolution());
+    }
+    private void checkDualObjectiveValue(final double expected, final SimplexTableau tableau) {
+        assertEqual

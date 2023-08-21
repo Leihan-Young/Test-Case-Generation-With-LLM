@@ -1,0 +1,44 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ A HTML Document.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Document extends Element {
+    private OutputSettings outputSettings = new OutputSettings();
+    private QuirksMode quirksMode = QuirksMode.noQuirks;
+    /**
+     Get the string contents of the document's {@code title} element.
+     @return Trimmed title, or empty string if none set.
+     */
+    public String title();
+    /**
+     Set the document's {@code title} element. Updates the existing element, or adds {@code title} to {@code head} if
+     not present
+     @param title string to set as title
+     */
+    public void title(String title);
+    /**
+     Create a valid, empty shell of a document, suitable for adding more elements to.
+     @param baseUri baseUri of document
+     @return document with html, head, and body elements.
+     */
+    static public Document createShell(String baseUri);
+    /**
+     Set the text of the {@code body} of this document. Any existing nodes within the body will be cleared.
+     @param text unencoded text
+     @return this document
+     */
+    @Override
+    public Element text(String text);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

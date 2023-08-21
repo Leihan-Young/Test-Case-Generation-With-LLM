@@ -1,0 +1,189 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.plot;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.EventListener;
+import javax.swing.event.EventListenerList;
+import org.jfree.chart.event.MarkerChangeEvent;
+import org.jfree.chart.event.MarkerChangeListener;
+import org.jfree.chart.text.TextAnchor;
+import org.jfree.chart.util.LengthAdjustmentType;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.RectangleAnchor;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+/**
+ * The base class for markers that can be added to plots to highlight a value 
+ * or range of values.
+ * <br><br>
+ * An event notification mechanism was added to this class in JFreeChart 
+ * version 1.0.3.
+ */
+public abstract class Marker implements Cloneable, Serializable {
+    private static final long serialVersionUID = -734389651405327166L;
+    private transient Paint paint;
+    private transient Stroke stroke;
+    private transient Paint outlinePaint;
+    private transient Stroke outlineStroke;
+    private float alpha;
+    private String label = null;
+    private Font labelFont;
+    private transient Paint labelPaint;
+    private RectangleAnchor labelAnchor;
+    private TextAnchor labelTextAnchor;
+    private RectangleInsets labelOffset;
+    private LengthAdjustmentType labelOffsetType;
+    private transient EventListenerList listenerList;
+    /**
+     * Returns the stroke.
+     *
+     * @return The stroke (never <code>null</code>).
+     * 
+     * @see #setStroke(Stroke)
+     */
+    public Stroke getStroke() {
+        return this.stroke;
+    }
+    /**
+     * Returns the paint.
+     *
+     * @return The paint (never <code>null</code>).
+     * 
+     * @see #setPaint(Paint)
+     */
+    public Paint getPaint() {
+        return this.paint;
+    }
+    /**
+     * Returns the outline stroke.
+     *
+     * @return The outline stroke (possibly <code>null</code>).
+     * 
+     * @see #setOutlineStroke(Stroke)
+     */
+    public Stroke getOutlineStroke() {
+        return this.outlineStroke;
+    }
+    /**
+     * Returns the alpha transparency.
+     *
+     * @return The alpha transparency.
+     * 
+     * @see #setAlpha(float)
+     */
+    public float getAlpha() {
+        return this.alpha;
+    }
+    /**
+     * Returns the outline paint.
+     *
+     * @return The outline paint (possibly <code>null</code>).
+     * 
+     * @see #setOutlinePaint(Paint)
+     */
+    public Paint getOutlinePaint() {
+        return this.outlinePaint;
+    }
+}
+package org.jfree.chart.plot;
+import java.awt.Paint;
+import java.awt.Stroke;
+import org.jfree.chart.event.MarkerChangeEvent;
+/**
+ * A marker that represents a single value.  Markers can be added to plots to
+ * highlight specific values.
+ */
+public class ValueMarker extends Marker {
+    private double value;
+    /**
+     * Returns the value.
+     *
+     * @return The value.
+     * 
+     * @see #setValue(double)
+     */
+    public double getValue() {
+        return this.value;
+    }
+    /**
+     * Creates a new marker.
+     * 
+     * @param value  the value.
+     */
+    public ValueMarker(double value) {
+        super();
+        this.value = value;
+    }
+    /**
+     * Creates a new marker.
+     * 
+     * @param value  the value.
+     * @param paint  the paint (<code>null</code> not permitted).
+     * @param stroke  the stroke (<code>null</code> not permitted).
+     */
+    public ValueMarker(double value, Paint paint, Stroke stroke) {
+        this(value, paint, stroke, paint, stroke, 1.0f);
+    }
+    /**
+     * Creates a new value marker.
+     * 
+     * @param value  the value.
+     * @param paint  the paint (<code>null</code> not permitted).
+     * @param stroke  the stroke (<code>null</code> not permitted).
+     * @param outlinePaint  the outline paint (<code>null</code> permitted).
+     * @param outlineStroke  the outline stroke (<code>null</code> permitted).
+     * @param alpha  the alpha transparency (in the range 0.0f to 1.0f).
+     */
+    public ValueMarker(double value, Paint paint, Stroke stroke, 
+                       Paint outlinePaint, Stroke outlineStroke, float alpha) {
+        super(paint, stroke, paint, stroke, alpha);
+        this.value = value;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void test1808376() {
+        Stroke stroke = new BasicStroke(1.0f);
+        Stroke outlineStroke = new BasicStroke(2.0f);
+        ValueMarker m = new ValueMarker(1.0, Color.red, stroke, Color.blue, 
+                outlineStroke, 0.5f);
+        _tmp_var_0_ = 1.0;
+        _tmp_var_1_ =  m.getValue();
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = Color.red;
+        _tmp_var_4_ =  m.getPaint();
+        $ASSERT$
+        _tmp_var_5_ = stroke;
+        _tmp_var_6_ =  m.getStroke();
+        $ASSERT$
+        _tmp_var_7_ = Color.blue;
+        _tmp_var_8_ =  m.getOutlinePaint();
+        $ASSERT$
+        _tmp_var_9_ = outlineStroke;
+        _tmp_var_10_ =  m.getOutlineStroke();
+        $ASSERT$
+        _tmp_var_11_ = 0.5f;
+        _tmp_var_12_ =  m.getAlpha();
+        _tmp_var_13_ =  EPSILON;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

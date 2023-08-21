@@ -1,0 +1,12 @@
+Bug() throws Exception {
+        Option option = OptionBuilder.withArgName("file")
+                .hasArg()
+                .withDescription("load properties from FILE")
+                .create("f");
+        String[] args = {"-f"};
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(new Options().addOption(option), args);
+        assertEquals(null, cmd.getOptionValue("f"));
+    }
+```
+This test method tests the case where the option "-f" is provided without any argument value. According to the program logic, the option should have an argument value as it is created with the method `hasArg()`. However, the test method expects the returned value to be null which is incorrect. The correct behavior should be to throw a `MissingArgumentException` as there is no argument value provided for the option.

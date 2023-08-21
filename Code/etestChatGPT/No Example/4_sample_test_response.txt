@@ -1,0 +1,13 @@
+WriteableCommandLineImpl() {
+    WriteableCommandLineImpl cmdLine = new WriteableCommandLineImpl();
+    Option option = new PropertyOption("property", "p", "set a property");
+    option.addAlias("prop");
+    cmdLine.addOption(option);
+    cmdLine.addValue(option, "key=value");
+    assertEquals("value", cmdLine.getProperty("key")); // bug: returns null instead of "value"
+    assertEquals("value", cmdLine.getProperty(option, "key", "defaultValue")); // bug: returns "defaultValue" instead of "value"
+    cmdLine.addProperty(option, "newKey", "newValue");
+    assertEquals("newValue", cmdLine.getProperty("newKey")); // bug: returns null instead of "newValue"
+    assertEquals("defaultValue", cmdLine.getProperty(option, "nonExistentKey", "defaultValue")); // bug: returns null instead of "defaultValue"
+}
+```

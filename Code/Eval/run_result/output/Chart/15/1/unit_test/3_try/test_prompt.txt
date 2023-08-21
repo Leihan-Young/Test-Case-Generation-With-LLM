@@ -1,0 +1,322 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.PaintMap;
+import org.jfree.chart.StrokeMap;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.entity.PieSectionEntity;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.PieToolTipGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.text.G2TextMeasurer;
+import org.jfree.chart.text.TextAnchor;
+import org.jfree.chart.text.TextBlock;
+import org.jfree.chart.text.TextBox;
+import org.jfree.chart.text.TextUtilities;
+import org.jfree.chart.urls.PieURLGenerator;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleAnchor;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.Rotation;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ShapeUtilities;
+import org.jfree.chart.util.UnitType;
+import org.jfree.data.DefaultKeyedValues;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.PieDataset;
+/**
+ * A plot that displays data in the form of a pie chart, using data from any 
+ * class that implements the {@link PieDataset} interface.
+ * <P>
+ * Special notes:
+ * <ol>
+ * <li>the default starting point is 12 o'clock and the pie sections proceed
+ * in a clockwise direction, but these settings can be changed;</li>
+ * <li>negative values in the dataset are ignored;</li>
+ * <li>there are utility methods for creating a {@link PieDataset} from a
+ * {@link org.jfree.data.category.CategoryDataset};</li>
+ * </ol>
+ *
+ * @see Plot
+ * @see PieDataset
+ */
+public class PiePlot extends Plot implements Cloneable, Serializable {
+    private static final long serialVersionUID = -795612466005590431L;
+    public static final double DEFAULT_INTERIOR_GAP = 0.08;
+    public static final double MAX_INTERIOR_GAP = 0.40;
+    public static final double DEFAULT_START_ANGLE = 90.0;
+    public static final Paint DEFAULT_LABEL_PAINT = Color.black;
+    public static final Paint DEFAULT_LABEL_OUTLINE_PAINT = Color.black;
+    public static final double DEFAULT_MINIMUM_ARC_ANGLE_TO_DRAW = 0.00001;
+    private PieDataset dataset;
+    private int pieIndex;
+    private double interiorGap;
+    private boolean circular;
+    private double startAngle;
+    private Rotation direction;
+    private PaintMap sectionPaintMap;
+    private transient Paint baseSectionPaint;
+    private boolean sectionOutlinesVisible;
+    private PaintMap sectionOutlinePaintMap;
+    private transient Paint baseSectionOutlinePaint;
+    private StrokeMap sectionOutlineStrokeMap;
+    private transient Stroke baseSectionOutlineStroke;
+    private transient Paint shadowPaint = Color.gray;
+    private double shadowXOffset = 4.0f;
+    private double shadowYOffset = 4.0f;
+    private Map explodePercentages;
+    private PieSectionLabelGenerator labelGenerator;
+    private Font labelFont;
+    private transient Paint labelPaint;
+    private transient Paint labelBackgroundPaint;
+    private transient Paint labelOutlinePaint;
+    private transient Stroke labelOutlineStroke;
+    private transient Paint labelShadowPaint;
+    private boolean simpleLabels = true;
+    private RectangleInsets labelPadding;
+    private RectangleInsets simpleLabelOffset;
+    private double maximumLabelWidth = 0.14;
+    private double labelGap = 0.025;
+    private boolean labelLinksVisible;
+    private double labelLinkMargin = 0.025;
+    private transient Paint labelLinkPaint = Color.black;
+    private transient Stroke labelLinkStroke = new BasicStroke(0.5f);
+    private AbstractPieLabelDistributor labelDistributor;
+    private PieToolTipGenerator toolTipGenerator;
+    private PieURLGenerator urlGenerator;
+    private PieSectionLabelGenerator legendLabelGenerator;
+    private PieSectionLabelGenerator legendLabelToolTipGenerator;
+    private PieURLGenerator legendLabelURLGenerator;
+    private boolean ignoreNullValues;
+    private boolean ignoreZeroValues;
+    private transient Shape legendItemShape;
+    private double minimumArcAngleToDraw;
+    /**
+     * Initialises the drawing procedure.  This method will be called before 
+     * the first item is rendered, giving the plot an opportunity to initialise
+     * any state information it wants to maintain.
+     *
+     * @param g2  the graphics device.
+     * @param plotArea  the plot area (<code>null</code> not permitted).
+     * @param plot  the plot.
+     * @param index  the secondary index (<code>null</code> for primary 
+     *               renderer).
+     * @param info  collects chart rendering information for return to caller.
+     * 
+     * @return A state object (maintains state information relevant to one 
+     *         chart drawing).
+     */
+    public PiePlotState initialise(Graphics2D g2, Rectangle2D plotArea,
+            PiePlot plot, Integer index, PlotRenderingInfo info) {
+     
+        PiePlotState state = new PiePlotState(info);
+        state.setPassesRequired(2);
+            state.setTotal(DatasetUtilities.calculatePieDatasetTotal(
+                    plot.getDataset()));
+        state.setLatestAngle(plot.getStartAngle());
+        return state;
+        
+    }
+    /**
+     * Sets the amount that a pie section should be exploded and sends a 
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param key  the section key (<code>null</code> not permitted).
+     * @param percent  the explode percentage (0.30 = 30 percent).
+     * 
+     * @since 1.0.3
+     * 
+     * @see #getExplodePercent(Comparable)
+     */
+    public void setExplodePercent(Comparable key, double percent) {
+        if (key == null) { 
+            throw new IllegalArgumentException("Null 'key' argument.");
+        }
+        if (this.explodePercentages == null) {
+            this.explodePercentages = new TreeMap();
+        }
+        this.explodePercentages.put(key, new Double(percent));
+        notifyListeners(new PlotChangeEvent(this));
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+[assistant]:PiePlot() {
+    PiePlot plot = new PiePlot();
+    DefaultKeyedValues data = new DefaultKeyedValues();
+    data.addValue("A", 50);
+    data.addValue("B", 25);
+    data.addValue("C", 10);
+    data.addValue("D", -15); // bug: negative values are ignored, but this is not being ignored
+    data.addValue("E", 30);
+    PieDataset dataset = DatasetUtilities.createPieDataset(data);
+    plot.setDataset(dataset);
+    JFreeChart chart = new JFreeChart(plot);
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Pie Chart");
+    frame.setContentPane(chartPanel);
+    frame.setSize(500, 500);
+    frame.setVisible(true);
+}
+```
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     PiePlot plot = new PiePlot();
+[javac]     ^
+[javac]   symbol:   class PiePlot
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     PiePlot plot = new PiePlot();
+[javac]                        ^
+[javac]   symbol:   class PiePlot
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     DefaultKeyedValues data = new DefaultKeyedValues();
+[javac]     ^
+[javac]   symbol:   class DefaultKeyedValues
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     DefaultKeyedValues data = new DefaultKeyedValues();
+[javac]                                   ^
+[javac]   symbol:   class DefaultKeyedValues
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     PieDataset dataset = DatasetUtilities.createPieDataset(data);
+[javac]     ^
+[javac]   symbol:   class PieDataset
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     PieDataset dataset = DatasetUtilities.createPieDataset(data);
+[javac]                          ^
+[javac]   symbol:   variable DatasetUtilities
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     ChartPanel chartPanel = new ChartPanel(chart);
+[javac]     ^
+[javac]   symbol:   class ChartPanel
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     ChartPanel chartPanel = new ChartPanel(chart);
+[javac]                                 ^
+[javac]   symbol:   class ChartPanel
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     JFrame frame = new JFrame("Pie Chart");
+[javac]     ^
+[javac]   symbol:   class JFrame
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     JFrame frame = new JFrame("Pie Chart");
+[javac]                        ^
+[javac]   symbol:   class JFrame
+[javac]   location: class PiePlot3DTests
+[javac] Note: /jTrans/Eval/src/Chart/15b/tests/org/jfree/chart/axis/junit/SegmentedTimelineTests.java uses or overrides a deprecated API.
+[javac] Note: Recompile with -Xlint:deprecation for details.
+
+```
+public void test
+[assistant]:PiePlot() {
+    PiePlot plot = new PiePlot();
+    DefaultPieDataset data = new DefaultPieDataset();
+    data.setValue("A", 50);
+    data.setValue("B", 25);
+    data.setValue("C", 10);
+    data.setValue("D", -15); // bug: negative values are ignored, but this is not being ignored
+    data.setValue("E", 30);
+    PieDataset dataset = data;
+    plot.setDataset(dataset);
+    JFreeChart chart = new JFreeChart(plot);
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Pie Chart");
+    frame.setContentPane(chartPanel);
+    frame.setSize(500, 500);
+    frame.setVisible(true);
+}
+``` 
+
+The bug in the original program is that it ignores negative values in the dataset, but the test code explicitly sets a negative value for one of the sections. This will cause the chart to display an incorrect value for that section. The fix is to use a DefaultPieDataset instead of a DefaultKeyedValues object, and use data.setValue instead of data.addValue to set the values.
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     PiePlot plot = new PiePlot();
+[javac]     ^
+[javac]   symbol:   class PiePlot
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     PiePlot plot = new PiePlot();
+[javac]                        ^
+[javac]   symbol:   class PiePlot
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     DefaultPieDataset data = new DefaultPieDataset();
+[javac]     ^
+[javac]   symbol:   class DefaultPieDataset
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     DefaultPieDataset data = new DefaultPieDataset();
+[javac]                                  ^
+[javac]   symbol:   class DefaultPieDataset
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     PieDataset dataset = data;
+[javac]     ^
+[javac]   symbol:   class PieDataset
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     ChartPanel chartPanel = new ChartPanel(chart);
+[javac]     ^
+[javac]   symbol:   class ChartPanel
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     ChartPanel chartPanel = new ChartPanel(chart);
+[javac]                                 ^
+[javac]   symbol:   class ChartPanel
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     JFrame frame = new JFrame("Pie Chart");
+[javac]     ^
+[javac]   symbol:   class JFrame
+[javac]   location: class PiePlot3DTests
+[javac]error: cannot find symbol
+[javac]     JFrame frame = new JFrame("Pie Chart");
+[javac]                        ^
+[javac]   symbol:   class JFrame
+[javac]   location: class PiePlot3DTests
+
+```
+public void test

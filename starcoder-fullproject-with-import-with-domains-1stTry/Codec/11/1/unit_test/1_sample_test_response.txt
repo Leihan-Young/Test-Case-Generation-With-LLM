@@ -1,0 +1,12 @@
+     private QuotedPrintableCodec qp = new QuotedPrintableCodec();
+    public void testQuotedPrintable() throws Exception {
+        assertEquals("", qp.decode(new byte[] {}));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 111 }));
+        assertEquals("foo", qp.decode(new byte[] { 102, 111, 1

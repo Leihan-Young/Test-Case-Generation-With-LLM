@@ -1,0 +1,196 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ **/
+public class HelpFormatter {
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    public void setWidth(int width);
+    public int getWidth();
+    public void setLeftPadding(int padding);
+    public int getLeftPadding();
+    public void setDescPadding(int padding);
+    public int getDescPadding();
+    public void setSyntaxPrefix(String prefix);
+    public String getSyntaxPrefix();
+    public void setNewLine(String newline);
+    public void setOptPrefix(String prefix);
+    public String getOptPrefix();
+    public void setLongOptPrefix(String prefix);
+    public String getLongOptPrefix();
+    public void setArgName(String name);
+    public String getArgName();
+    public void printHelp(String cmdLineSyntax, Options options);
+    public void printHelp(String cmdLineSyntax, Options options, 
+                          boolean autoUsage);
+    public void printHelp(String cmdLineSyntax, String header, Options options, 
+                          String footer);
+    public void printHelp(String cmdLineSyntax, String header, Options options, 
+                          String footer, boolean autoUsage);
+    public void printHelp(int width, String cmdLineSyntax, String header, 
+                          Options options, String footer);
+    public void printHelp(int width, String cmdLineSyntax, String header, 
+                          Options options, String footer, boolean autoUsage);
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
+                          String header, Options options, int leftPad, 
+                          int descPad, String footer);
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
+                          String header, Options options, int leftPad, 
+                          int descPad, String footer, boolean autoUsage);
+    public void printUsage(PrintWriter pw, int width, String app, 
+                           Options options);
+    private static void appendOptionGroup(final StringBuffer buff, 
+                                          final OptionGroup group);
+    private static void appendOption(final StringBuffer buff, 
+                                     final Option option, 
+                                     final boolean required);
+    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax);
+    public void printOptions(PrintWriter pw, int width, Options options, 
+                             int leftPad, int descPad);
+    public void printWrapped(PrintWriter pw, int width, String text);
+    public void printWrapped(PrintWriter pw, int width, int nextLineTabStop, 
+                             String text);
+    protected StringBuffer renderOptions(StringBuffer sb, int width, 
+                                         Options options, int leftPad, 
+                                         int descPad);
+    protected int findWrapPos(String text, int width, int startPos);
+    protected String createPadding(int len);
+    protected String rtrim(String s);
+    /**
+     * Returns the 'newLine'.
+     *
+     * @return the 'newLine'
+     */
+    public String getNewLine()
+    {
+        return this.defaultNewLine;
+    }
+    /**
+     * <p>Render the specified text and return the rendered Options
+     * in a StringBuffer.</p>
+     *
+     * @param sb The StringBuffer to place the rendered text into.
+     * @param width The number of characters to display per line
+     * @param nextLineTabStop The position on the next line for the first tab.
+     * @param text The text to be rendered.
+     *
+     * @return the StringBuffer with the rendered Options contents.
+     */
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
+                                             int nextLineTabStop, String text)
+    {
+        int pos = findWrapPos(text, width, 0);
+
+        if (pos == -1)
+        {
+            sb.append(rtrim(text));
+
+            return sb;
+        }
+        sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+
+        // all following lines must be padded with nextLineTabStop space 
+        // characters
+        final String padding = createPadding(nextLineTabStop);
+
+        while (true)
+        {
+            text = padding + text.substring(pos).trim();
+            pos = findWrapPos(text, width, nextLineTabStop);
+
+            if (pos == -1)
+            {
+                sb.append(text);
+
+                return sb;
+            }
+
+            sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+        }
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Ant test
+     */
+    public void testAnt() {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser( );
+        Options options = new Options();
+        options.addOption( "help", false, "print this message" );
+        options.addOption( "projecthelp", false, "print project help information" );
+        options.addOption( "version", false, "print the version information and exit" );
+        options.addOption( "quiet", false, "be extra quiet" );
+        options.addOption( "verbose", false, "be extra verbose" );
+        options.addOption( "debug", false, "print debug information" );
+        options.addOption( "logfile", true, "use given file for log" );
+        options.addOption( "logger", true, "the class which is to perform the logging" );
+        options.addOption( "listener", true, "add an instance of a class as a project listener" );
+        options.addOption( "buildfile", true, "use given buildfile" );
+        options.addOption( OptionBuilder.withDescription( "use value for given property" )
+                                        .hasArgs()
+                                        .withValueSeparator()
+                                        .create( 'D' ) );
+                           //, null, true, , false, true );
+        options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
+
+        String[] args = new String[]{ "-buildfile", "mybuild.xml",
+            "-Dproperty=value", "-Dproperty1=value1",
+            "-projecthelp" };
+
+        try {
+            CommandLine line = parser.parse( options, args );
+
+            // check multiple values
+            String[] opts = line.getOptionValues( "D" );
+            assertEquals( "property", opts[0] );
+            assertEquals( "value", opts[1] );
+            assertEquals( "property1", opts[2] );
+            assertEquals( "value1", opts[3] );
+
+            // check single value
+            assertEquals( line.getOptionValue( "buildfile"), "mybuild.xml" );
+
+            // check option
+            assertTrue( line.hasOption( "projecthelp") );
+        }
+        catch( ParseException exp ) {
+            fail( "Unexpected exception:" + exp.getMessage() );
+        }
+
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

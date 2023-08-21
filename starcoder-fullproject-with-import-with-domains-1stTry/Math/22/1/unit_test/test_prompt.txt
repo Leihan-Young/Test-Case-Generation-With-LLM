@@ -1,0 +1,86 @@
+package org.apache.commons.math3.distribution;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.special.Beta;
+import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.Well19937c;
+/**
+ * Implementation of the F-distribution.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
+ * @version $Id$
+ */
+public class FDistribution extends AbstractRealDistribution {
+    public static final double DEFAULT_INVERSE_ABSOLUTE_ACCURACY = 1e-9;
+    private static final long serialVersionUID = -8516354193418641566L;
+    private final double numeratorDegreesOfFreedom;
+    private final double denominatorDegreesOfFreedom;
+    private final double solverAbsoluteAccuracy;
+    private double numericalVariance = Double.NaN;
+    private boolean numericalVarianceIsCalculated = false;
+    /**
+     * {@inheritDoc}
+     *
+     * The upper bound of the support is always positive infinity
+     * no matter the parameters.
+     *
+     * @return upper bound of the support (always Double.POSITIVE_INFINITY)
+     */
+    public double getSupportUpperBound();
+    /** {@inheritDoc} */
+    public boolean isSupportLowerBoundInclusive();
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.1
+     */
+    public double density(double x);
+    /**
+     * {@inheritDoc}
+     *
+     * The lower bound of the support is always 0 no matter the parameters.
+     *
+     * @return lower bound of the support (always 0)
+     */
+    public double getSupportLowerBound();
+}
+package org.apache.commons.math3.distribution;
+import org.apache.commons.math3.exception.NumberIsTooLargeException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.Well19937c;
+/**
+ * Implementation of the uniform real distribution.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)"
+ * >Uniform distribution (continuous), at Wikipedia</a>
+ *
+ * @version $Id$
+ * @since 3.0
+ */
+public class UniformRealDistribution extends AbstractRealDistribution {
+    public static final double DEFAULT_INVERSE_ABSOLUTE_ACCURACY = 1e-9;
+    private static final long serialVersionUID = 20120109L;
+    private final double lower;
+    private final double upper;
+    private final double solverAbsoluteAccuracy;
+    /** {@inheritDoc} */
+    public boolean isSupportLowerBoundInclusive();
+    /** {@inheritDoc} */
+    public double density(double x);
+    /**
+     * {@inheritDoc}
+     *
+     * The lower bound of the support is equal to the lower bound parameter
+     * of the distribution.
+     *
+     * @return lower bound of the support
+     */
+    public double getSupportLowerBound();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

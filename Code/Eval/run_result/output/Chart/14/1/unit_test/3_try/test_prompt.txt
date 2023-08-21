@@ -1,0 +1,421 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index the dataset/renderer index.
+     * @param marker the marker.
+     * @param layer the layer (foreground or background).
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners.
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     * 
+     * @see #addRangeMarker(int, Marker, Layer, boolean)
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.XYDataset;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+        RendererChangeListener, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxisMap;
+    private Map datasetToRangeAxisMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Removes a marker for a specific dataset/renderer and sends a
+     * {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeRangeMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        if (marker == null) {
+            throw new IllegalArgumentException("Null 'marker' argument.");
+        }
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+    /**
+     * Removes a marker for a specific dataset/renderer and, if requested, 
+     * sends a {@link PlotChangeEvent} to all registered listeners.
+     *
+     * @param index  the dataset/renderer index.
+     * @param marker  the marker.
+     * @param layer  the layer (foreground or background).
+     * @param notify  notify listeners?
+     *
+     * @return A boolean indicating whether or not the marker was actually 
+     *         removed.
+     *
+     * @since 1.0.10
+     */
+    public boolean removeDomainMarker(int index, Marker marker, Layer layer,
+    		boolean notify) {
+        ArrayList markers;
+        if (layer == Layer.FOREGROUND) {
+            markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        else {
+            markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                    index));
+        }
+        boolean removed = markers.remove(marker);
+        if (removed && notify) {
+            fireChangeEvent();
+        }
+        return removed;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+[assistant]:XYPlotRemoveDomainMarker() {
+    XYPlot plot = new XYPlot();
+    Marker marker = new ValueMarker(10.0);
+    plot.addDomainMarker(0, marker, Layer.FOREGROUND);
+    boolean removed = plot.removeDomainMarker(0, marker, Layer.FOREGROUND, true);
+    assertTrue(removed);
+    assertNull(plot.getDomainMarkers(Layer.FOREGROUND).get(0));
+}
+```
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: cannot find symbol
+[javac]     XYPlot plot = new XYPlot();
+[javac]     ^
+[javac]   symbol:   class XYPlot
+[javac]   location: class CategoryPlotTests
+[javac]error: cannot find symbol
+[javac]     XYPlot plot = new XYPlot();
+[javac]                       ^
+[javac]   symbol:   class XYPlot
+[javac]   location: class CategoryPlotTests
+[javac] Note: /jTrans/Eval/src/Chart/14b/tests/org/jfree/chart/axis/junit/SegmentedTimelineTests.java uses or overrides a deprecated API.
+[javac] Note: Recompile with -Xlint:deprecation for details.
+
+```
+public void test
+[assistant]:XYPlotRemoveDomainMarker() {
+    CategoryPlot plot = new CategoryPlot();
+    Marker marker = new ValueMarker(10.0);
+    plot.addDomainMarker(0, marker, Layer.FOREGROUND);
+    boolean removed = plot.removeDomainMarker(0, marker, Layer.FOREGROUND, true);
+    assertTrue(removed);
+    assertNull(plot.getDomainMarkers(Layer.FOREGROUND).get(0));
+}
+``` 
+
+The error occurred because the test method was trying to create an instance of `XYPlot`, which is not imported in the code file. Instead, an instance of `CategoryPlot` should be created.
+[user]:The test method you provided is not able to be built. Please complete the markdown file again with the error information. The error occurred while building the test method is:
+[javac]error: no suitable method found for addDomainMarker(int,Marker,Layer)
+[javac]     plot.addDomainMarker(0, marker, Layer.FOREGROUND);
+[javac]         ^
+[javac]     method CategoryPlot.addDomainMarker(int,CategoryMarker,Layer,boolean) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac]     method CategoryPlot.addDomainMarker(int,CategoryMarker,Layer) is not applicable
+[javac]       (actual argument Marker cannot be converted to CategoryMarker by method invocation conversion)
+[javac]     method CategoryPlot.addDomainMarker(CategoryMarker,Layer) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac]     method CategoryPlot.addDomainMarker(CategoryMarker) is not applicable
+[javac]       (actual and formal argument lists differ in length)
+[javac]error: cannot find symbol
+[javac]     Assert.assertNull(plot.getDomainMarkers(Layer.FOREGROUND).get(0));
+[javac]                                                              ^
+[javac]   symbol:   method get(int)
+[javac]   location: interface Collection
+
+```
+public void test

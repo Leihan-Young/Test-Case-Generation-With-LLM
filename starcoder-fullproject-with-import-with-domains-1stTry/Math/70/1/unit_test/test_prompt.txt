@@ -1,0 +1,32 @@
+package org.apache.commons.math.analysis.solvers;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+/**
+ * Implements the <a href="http://mathworld.wolfram.com/Bisection.html">
+ * bisection algorithm</a> for finding zeros of univariate real functions.
+ * <p>
+ * The function should be continuous but not necessarily smooth.</p>
+ *
+ * @version $Revision$ $Date$
+ */
+public class BisectionSolver extends UnivariateRealSolverImpl {
+    /** {@inheritDoc} */
+    public double solve(final UnivariateRealFunction f, double min, double max, double initial)
+        throws MaxIterationsExceededException, FunctionEvaluationException;
+    /** {@inheritDoc} */
+    @Deprecated
+    public double solve(double min, double max, double initial)
+        throws MaxIterationsExceededException, FunctionEvaluationException;
+    /** {@inheritDoc} */
+    public double solve(final UnivariateRealFunction f, double min, double max)
+        throws MaxIterationsExceededException, FunctionEvaluationException;
+    /** {@inheritDoc} */
+    @Deprecated
+    public double solve(double min, double max)
+        throws MaxIterationsExceededException, FunctionEvaluationException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

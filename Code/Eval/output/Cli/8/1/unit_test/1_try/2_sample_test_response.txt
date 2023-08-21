@@ -1,0 +1,18 @@
+() {
+    HelpFormatter formatter = new HelpFormatter();
+    Options options = new Options();
+    Option option = new Option("f", "file", true, "input file path");
+    option.setRequired(true);
+    options.addOption(option);
+
+    // Test printHelp with only cmdLineSyntax and options
+    formatter.printHelp("myApp", options); // This will throw NullPointerException
+
+    // Test printHelp with cmdLineSyntax, options, and autoUsage
+    formatter.printHelp("myApp", options, true); // This will also throw NullPointerException
+}
+
+/**
+ * Expected Output:
+ * NullPointerException
+ */

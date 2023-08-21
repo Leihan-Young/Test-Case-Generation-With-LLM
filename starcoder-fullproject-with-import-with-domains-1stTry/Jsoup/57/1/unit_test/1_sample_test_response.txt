@@ -1,0 +1,10 @@
+ public void removeIgnoreCase() {
+        Attributes atts = new Attributes();
+        atts.put(new Attribute("One", "1"));
+        atts.put(new Attribute("two", "2"));
+        atts.put(new Attribute("THREE", "3"));
+        atts.removeIgnoreCase("one");
+        atts.removeIgnoreCase("TWO");
+        atts.removeIgnoreCase("thrEE");
+        assertEquals(0, atts.size());
+    }

@@ -1,0 +1,6 @@
+StripLeadingAndTrailingQuotes() {
+        String str = "\"quoted string\"";
+        String result = Util.stripLeadingAndTrailingQuotes(str);
+        assertEquals("quoted string", result);
+    }
+```

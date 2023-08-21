@@ -1,0 +1,73 @@
+package org.apache.commons.lang3.builder;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.SystemUtils;
+/**
+ * <p>Controls <code>String</code> formatting for {@link ToStringBuilder}.
+ * The main public interface is always via <code>ToStringBuilder</code>.</p>
+ *
+ * <p>These classes are intended to be used as <code>Singletons</code>.
+ * There is no need to instantiate a new style each time. A program
+ * will generally use one of the predefined constants on this class.
+ * Alternatively, the {@link StandardToStringStyle} class can be used
+ * to set the individual settings. Thus most styles can be achieved
+ * without subclassing.</p>
+ *
+ * <p>If required, a subclass can override as many or as few of the
+ * methods as it requires. Each object type (from <code>boolean</code>
+ * to <code>long</code> to <code>Object</code> to <code>int[]</code>) has
+ * its own methods to output it. Most have two versions, detail and summary.
+ *
+ * <p>For example, the detail version of the array based methods will
+ * output the whole array, whereas the summary method will just output
+ * the array length.</p>
+ *
+ * <p>If you want to format the output of certain objects, such as dates, you
+ * must create a subclass and override a method.
+ * <pre>
+ * public class MyStyle extends ToStringStyle {
+ *   protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
+ *     if (value instanceof Date) {
+ *       value = new SimpleDateFormat("yyyy-MM-dd").format(value);
+ *     }
+ *     buffer.append(value);
+ *   }
+ * }
+ * </pre>
+ * </p>
+ *
+ * @author Apache Software Foundation
+ * @author Gary Gregory
+ * @author Pete Gieser
+ * @author Masato Tezuka
+ * @since 1.0
+ * @version $Id$
+ */
+public abstract class ToStringStyle implements Serializable {
+    public static final ToStringStyle DEFAULT_STYLE = new DefaultToStringStyle();
+    public static final ToStringStyle MULTI_LINE_STYLE = new MultiLineToStringStyle();
+    public static final ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
+    public static final ToStringStyle SHORT_PREFIX_STYLE = new ShortPrefixToStringStyle();
+    public static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
+    private static final ThreadLocal<WeakHashMap<Object, Object>> REGISTRY = new ThreadLocal<WeakHashMap<Object,Object>>();
+    /**
+     * <p>
+     * Returns the registry of objects being traversed by the <code>reflectionToString</code>
+     * methods in the current thread.
+     * </p>
+     *
+     * @return Set the registry of objects being traversed
+     */
+    static Map<Object, Object> getRegistry();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

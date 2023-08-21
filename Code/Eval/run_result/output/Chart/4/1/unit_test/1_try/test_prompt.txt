@@ -1,0 +1,249 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeMap;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.RenderingSource;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.annotations.XYAnnotationBoundsInfo;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.TickType;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.RendererUtilities;
+import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.ResourceBundleWrapper;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.Range;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.xy.AbstractXYDataset;
+import org.jfree.data.xy.SelectableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDatasetSelectionState;
+/**
+ * A general class for plotting data in the form of (x, y) pairs.  This plot can
+ * use data from any class that implements the {@link XYDataset} interface.
+ * <P>
+ * <code>XYPlot</code> makes use of an {@link XYItemRenderer} to draw each point
+ * on the plot.  By using different renderers, various chart types can be
+ * produced.
+ * <p>
+ * The {@link org.jfree.chart.ChartFactory} class contains static methods for
+ * creating pre-configured charts.
+ */
+public class XYPlot extends Plot implements ValueAxisPlot, Pannable,
+        Selectable, Zoomable, RendererChangeListener, Cloneable,
+        PublicCloneable, Serializable {
+    private static final long serialVersionUID = 7044148245716569264L;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList renderers;
+    private Map datasetToDomainAxesMap;
+    private Map datasetToRangeAxesMap;
+    private transient Point2D quadrantOrigin = new Point2D.Double(0.0, 0.0);
+    private boolean domainGridlinesVisible;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private boolean domainMinorGridlinesVisible;
+    private transient Stroke domainMinorGridlineStroke;
+    private transient Paint domainMinorGridlinePaint;
+    private boolean rangeMinorGridlinesVisible;
+    private transient Stroke rangeMinorGridlineStroke;
+    private transient Paint rangeMinorGridlinePaint;
+    private boolean domainZeroBaselineVisible;
+    private transient Stroke domainZeroBaselineStroke;
+    private transient Paint domainZeroBaselinePaint;
+    private boolean rangeZeroBaselineVisible;
+    private transient Stroke rangeZeroBaselineStroke;
+    private transient Paint rangeZeroBaselinePaint;
+    private boolean domainCrosshairVisible;
+    private double domainCrosshairValue;
+    private transient Stroke domainCrosshairStroke;
+    private transient Paint domainCrosshairPaint;
+    private boolean domainCrosshairLockedOnData = true;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private transient Paint domainTickBandPaint;
+    private transient Paint rangeTickBandPaint;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private int weight;
+    private LegendItemCollection fixedLegendItems;
+    private boolean domainPannable;
+    private boolean rangePannable;
+    /**
+     * Returns the range for the specified axis.
+     *
+     * @param axis  the axis.
+     *
+     * @return The range.
+     */
+    public Range getDataRange(ValueAxis axis) {
+
+        Range result = null;
+        List mappedDatasets = new ArrayList();
+        List includedAnnotations = new ArrayList();
+        boolean isDomainAxis = true;
+
+        // is it a domain axis?
+        int domainIndex = getDomainAxisIndex(axis);
+        if (domainIndex >= 0) {
+            isDomainAxis = true;
+            mappedDatasets.addAll(getDatasetsMappedToDomainAxis(
+                    new Integer(domainIndex)));
+            if (domainIndex == 0) {
+                // grab the plot's annotations
+                Iterator iterator = this.annotations.iterator();
+                while (iterator.hasNext()) {
+                    XYAnnotation annotation = (XYAnnotation) iterator.next();
+                    if (annotation instanceof XYAnnotationBoundsInfo) {
+                        includedAnnotations.add(annotation);
+                    }
+                }
+            }
+        }
+
+        // or is it a range axis?
+        int rangeIndex = getRangeAxisIndex(axis);
+        if (rangeIndex >= 0) {
+            isDomainAxis = false;
+            mappedDatasets.addAll(getDatasetsMappedToRangeAxis(
+                    new Integer(rangeIndex)));
+            if (rangeIndex == 0) {
+                Iterator iterator = this.annotations.iterator();
+                while (iterator.hasNext()) {
+                    XYAnnotation annotation = (XYAnnotation) iterator.next();
+                    if (annotation instanceof XYAnnotationBoundsInfo) {
+                        includedAnnotations.add(annotation);
+                    }
+                }
+            }
+        }
+
+        // iterate through the datasets that map to the axis and get the union
+        // of the ranges.
+        Iterator iterator = mappedDatasets.iterator();
+        while (iterator.hasNext()) {
+            XYDataset d = (XYDataset) iterator.next();
+            if (d != null) {
+                XYItemRenderer r = getRendererForDataset(d);
+                if (isDomainAxis) {
+                    if (r != null) {
+                        result = Range.combine(result, r.findDomainBounds(d));
+                    }
+                    else {
+                        result = Range.combine(result,
+                                DatasetUtilities.findDomainBounds(d));
+                    }
+                }
+                else {
+                    if (r != null) {
+                        result = Range.combine(result, r.findRangeBounds(d));
+                    }
+                    else {
+                        result = Range.combine(result,
+                                DatasetUtilities.findRangeBounds(d));
+                    }
+                }
+                
+                    Collection c = r.getAnnotations();
+                    Iterator i = c.iterator();
+                    while (i.hasNext()) {
+                        XYAnnotation a = (XYAnnotation) i.next();
+                        if (a instanceof XYAnnotationBoundsInfo) {
+                            includedAnnotations.add(a);
+                        }
+                    }
+            }
+        }
+
+        Iterator it = includedAnnotations.iterator();
+        while (it.hasNext()) {
+            XYAnnotationBoundsInfo xyabi = (XYAnnotationBoundsInfo) it.next();
+            if (xyabi.getIncludeInDataBounds()) {
+                if (isDomainAxis) {
+                    result = Range.combine(result, xyabi.getXRange());
+                }
+                else {
+                    result = Range.combine(result, xyabi.getYRange());
+                }
+            }
+        }
+
+        return result;
+
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

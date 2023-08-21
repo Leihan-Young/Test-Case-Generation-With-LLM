@@ -1,0 +1,11 @@
+     public void testChiSquare() {
+        final long[][] counts = new long[][] {{10, 20}, {30, 40}};
+        final ChiSquareTestImpl test = new ChiSquareTestImpl();
+        try {
+            test.chiSquare(counts);
+            test.chiSquareTest(counts);
+            test.chiSquareTest(counts, 0.05);
+        } catch (MathException ex) {
+            fail(ex.getMessage());
+        }
+    }

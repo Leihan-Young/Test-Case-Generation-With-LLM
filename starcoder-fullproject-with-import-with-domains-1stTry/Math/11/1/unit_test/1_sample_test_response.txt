@@ -1,0 +1,9 @@
+     public void testCumulativeProbability() {
+        final MultivariateNormalDistribution dist = new MultivariateNormalDistribution(
+                new double[] { 1, 2 }, new Array2DRowRealMatrix(new double[][] { { 1, 0.5 }, { 0.5, 1 } }));
+        Assert.assertEquals(0.24197072451914337, dist.cumulativeProbability(new double[] { 0, 0 }), 1e-15);
+        Assert.assertEquals(0.3989422804014327, dist.cumulativeProbability(new double[] { 1, 0 }), 1e-15);
+        Assert.assertEquals(0.3989422804014327, dist.cumulativeProbability(new double[] { 0, 1 }), 1e-15);
+        Assert.assertEquals(0.6010577195985673, dist.cumulativeProbability(new double[] { 2, 0 }), 1e-15);
+        Assert.assertEquals(0.6010577195985673, dist.cumulativeProbability(new double[] { 0, 2 }), 1e-15);
+        Assert.assertEqual

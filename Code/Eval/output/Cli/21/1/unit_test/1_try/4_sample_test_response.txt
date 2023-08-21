@@ -1,0 +1,25 @@
+LooksLikeOption() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] { "notAnOption", "-a" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals(
+                "Unexpected notAnOption while processing -a", exp.getMessage());
+        }
+    }
+```
+This test method checks whether the `looksLikeOption()` method correctly identifies whether a passed in argument is an option or not. It passes a non-option argument followed by an option argument to the `Parser.parse()` method and expects an `UnexpectedOptionException` to be thrown with the correct error message. If the error message is incorrect or if the exception is not thrown, it indicates a bug in the `looksLikeOption()` method.

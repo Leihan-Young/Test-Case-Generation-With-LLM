@@ -1,0 +1,5 @@
+     public void testToLocale() {
+        assertEquals(new Locale("en"), LocaleUtils.toLocale("en"));
+        assertEquals(new Locale("en", "GB"), LocaleUtils.toLocale("en_GB"));
+        assertEquals(new Locale("en", "GB", "xxx"), LocaleUtils.toLocale("en_GB_xxx"));
+    }

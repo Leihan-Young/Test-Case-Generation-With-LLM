@@ -1,0 +1,43 @@
+package org.apache.commons.math3.distribution;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.MathIllegalArgumentException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.Well19937c;
+import org.apache.commons.math3.util.MathArrays;
+import org.apache.commons.math3.util.Pair;
+/**
+ * Generic implementation of the discrete distribution.
+ *
+ * @param <T> type of the random variable.
+ * @see <a href="http://en.wikipedia.org/wiki/Probability_distribution#Discrete_probability_distribution">Discrete probability distribution (Wikipedia)</a>
+ * @see <a href="http://mathworld.wolfram.com/DiscreteDistribution.html">Discrete Distribution (MathWorld)</a>
+ * @version $Id: DiscreteDistribution.java 169 2013-03-08 09:02:38Z wydrych $
+ */
+public class DiscreteDistribution<T> {
+    private final List<T> singletons;
+    private final double[] probabilities;
+    /**
+     * Generate a random sample from the distribution.
+     *
+     * @param sampleSize the number of random values to generate.
+     * @return an array representing the random sample.
+     * @throws NotStrictlyPositiveException if {@code sampleSize} is not
+     * positive.
+     */
+    public T[] sample(int sampleSize) throws NotStrictlyPositiveException;
+    /**
+     * Generate a random value sampled from this distribution.
+     *
+     * @return a random value.
+     */
+    public T sample();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

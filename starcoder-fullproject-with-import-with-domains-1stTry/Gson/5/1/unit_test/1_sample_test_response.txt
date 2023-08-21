@@ -1,0 +1,8 @@
+     public void testISO8601() throws Exception {
+        assertEquals(new Date(0), ISO8601Utils.parse("1970-01-01T00:00:00Z", new ParsePosition(0)));
+        assertEquals(new Date(0), ISO8601Utils.parse("19700101T000000Z", new ParsePosition(0)));
+        assertEquals(new Date(0), ISO8601Utils.parse("1970-01-01T00:00:00.000Z", new ParsePosition(0)));
+        assertEquals(new Date(0), ISO8601Utils.parse("19700101T000000.000Z", new ParsePosition(0)));
+        assertEquals(new Date(1000), ISO8601Utils.parse("1970-01-01T00:00:01Z", new ParsePosition(0)));
+        assertEquals(new Date(1000), ISO8601Utils.parse("19700101T000001Z", new ParsePosition(0)));
+        assertEquals(new Date(1000), ISO8601Utils.parse("

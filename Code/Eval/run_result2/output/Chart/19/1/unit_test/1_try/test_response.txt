@@ -1,0 +1,17 @@
+CategoryPlot() {
+    CategoryPlot plot = new CategoryPlot();
+    ValueAxis domainAxis = new ValueAxis("X");
+    ValueAxis rangeAxis = new ValueAxis("Y");
+    plot.setDomainAxis(domainAxis);
+    plot.setRangeAxis(rangeAxis);
+    CategoryItemRenderer renderer = new LineAndShapeRenderer();
+    plot.setRenderer(renderer);
+    CategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1.0, "Series 1", "Category 1");
+    dataset.addValue(2.0, "Series 1", "Category 2");
+    dataset.addValue(3.0, "Series 1", "Category 3");
+    plot.setDataset(dataset);
+    JFreeChart chart = new JFreeChart(plot);
+    assertEquals(1, chart.getPlot().getDataset().getRowCount()); // should pass
+}
+```

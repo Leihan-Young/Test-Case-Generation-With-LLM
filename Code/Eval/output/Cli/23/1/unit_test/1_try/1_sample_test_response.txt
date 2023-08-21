@@ -1,0 +1,25 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option optionA = new Option("a", "first", false, "first option");
+        Option optionB = new Option("b", "second", false, "second option");
+        Option optionC = new Option("c", "third", false, "third option");
+
+        Options options = new Options();
+        options.addOption(optionA);
+        options.addOption(optionB);
+        options.addOption(optionC);
+
+        StringWriter out = new StringWriter();
+
+        formatter.printHelp(new PrintWriter(out), 80, "test", "header", options, 2, 2, "footer");
+
+        String expected = "header" + System.getProperty("line.separator") +
+                "usage: test" + System.getProperty("line.separator") +
+                "  -a,--first      first option" + System.getProperty("line.separator") +
+                "  -b,--second     second option" + System.getProperty("line.separator") +
+                "  -c,--third      third option" + System.getProperty("line.separator") +
+                "footer" + System.getProperty("line.separator");
+
+        assertEquals(expected, out.toString());
+    }
+```

@@ -1,0 +1,86 @@
+package org.apache.commons.math.stat.inference;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.ChiSquaredDistribution;
+import org.apache.commons.math.distribution.ChiSquaredDistributionImpl;
+import org.apache.commons.math.distribution.DistributionFactory;
+/**
+ * Implements Chi-Square test statistics defined in the
+ * {@link UnknownDistributionChiSquareTest} interface.
+ *
+ * @version $Revision$ $Date$
+ */
+public class ChiSquareTestImpl implements UnknownDistributionChiSquareTest {
+    private ChiSquaredDistribution distribution;
+    /**
+     * @param counts array representation of 2-way table
+     * @return chi-square test statistic
+     * @throws IllegalArgumentException if preconditions are not met
+     */
+    public double chiSquare(long[][] counts) throws IllegalArgumentException;
+    /**
+     * {@inheritDoc}
+     * <p><strong>Note: </strong>This implementation rescales the 
+     * <code>expected</code> array if necessary to ensure that the sum of the
+     * expected and observed counts are equal.</p>
+     * 
+     * @param observed array of observed frequency counts
+     * @param expected array of exptected frequency counts
+     * @param alpha significance level of the test
+     * @return true iff null hypothesis can be rejected with confidence
+     * 1 - alpha
+     * @throws IllegalArgumentException if preconditions are not met
+     * @throws MathException if an error occurs performing the test
+     */
+    public boolean chiSquareTest(double[] expected, long[] observed, 
+            double alpha) throws IllegalArgumentException, MathException;
+    /**
+     * @param counts array representation of 2-way table
+     * @return p-value
+     * @throws IllegalArgumentException if preconditions are not met
+     * @throws MathException if an error occurs computing the p-value
+     */
+    public double chiSquareTest(long[][] counts)
+    throws IllegalArgumentException, MathException;
+    /**
+     * @param counts array representation of 2-way table
+     * @param alpha significance level of the test
+     * @return true iff null hypothesis can be rejected with confidence
+     * 1 - alpha
+     * @throws IllegalArgumentException if preconditions are not met
+     * @throws MathException if an error occurs performing the test
+     */
+    public boolean chiSquareTest(long[][] counts, double alpha)
+    throws IllegalArgumentException, MathException;
+    /**
+     * {@inheritDoc}
+     * <p><strong>Note: </strong>This implementation rescales the 
+     * <code>expected</code> array if necessary to ensure that the sum of the
+     * expected and observed counts are equal.</p>
+     * 
+     * @param observed array of observed frequency counts
+     * @param expected array of exptected frequency counts
+     * @return p-value
+     * @throws IllegalArgumentException if preconditions are not met
+     * @throws MathException if an error occurs computing the p-value
+     */
+    public double chiSquareTest(double[] expected, long[] observed)
+        throws IllegalArgumentException, MathException;
+     /**
+     * {@inheritDoc}
+     * <p><strong>Note: </strong>This implementation rescales the 
+     * <code>expected</code> array if necessary to ensure that the sum of the
+     * expected and observed counts are equal.</p>
+     * 
+     * @param observed array of observed frequency counts
+     * @param expected array of expected frequency counts
+     * @return chi-square test statistic
+     * @throws IllegalArgumentException if preconditions are not met
+     * or length is less than 2
+     */
+    public double chiSquare(double[] expected, long[] observed)
+        throws IllegalArgumentException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

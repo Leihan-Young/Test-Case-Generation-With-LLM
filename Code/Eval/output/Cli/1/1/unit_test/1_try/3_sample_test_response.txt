@@ -1,0 +1,19 @@
+CLI_bug() {
+    Options options = new Options();
+    options.addOption(new Option("a","aaa",false,"aaaaaaa"));
+    options.addOption(new Option(null,"bbb",false,"bbbbbbb dksh fkshd fkhs dkfhsdk fhskd hksdks dhfowehfsdhfkjshf skfhkshf sf jkshfk sfh skfh skf f"));
+    options.addOption(new Option("c",null,false,"ccccccc"));
+
+    CommandLineParser parser = new DefaultParser();
+    String[] args = {"-a", "-bbb", "-c"};
+
+    try {
+        CommandLine cmd = parser.parse(options, args);
+        // This should return false since the "-a" option doesn't have a value
+        assertFalse(cmd.hasOption("a"));
+    } catch (ParseException e) {
+        fail("Parsing failed: " + e.getMessage());
+    }
+}
+```
+In this test method, we are testing whether the `hasOption` method returns the correct value when an option is specified without a value. In this case, the `-a` option is specified without a value. The expected result is `false` since the `-a` option is a boolean option and doesn't require a value. However, due to a bug in the program, the `hasOption` method returns `true` for the `-a` option. This bug can be fixed by modifying the `getOptionValues` method to check if the option is a boolean option and return an empty array if it is.

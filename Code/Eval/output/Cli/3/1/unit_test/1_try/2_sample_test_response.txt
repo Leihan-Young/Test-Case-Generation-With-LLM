@@ -1,0 +1,13 @@
+CreateNumber() {
+        // test with a valid number string
+        Number num1 = TypeHandler.createNumber("12345");
+        assertEquals(num1.intValue(), 12345);
+
+        // test with a decimal number string
+        Number num2 = TypeHandler.createNumber("12345.67");
+        assertEquals(num2.doubleValue(), 12345.67, 0.001);
+
+        // test with an invalid number string
+        Number num3 = TypeHandler.createNumber("not a number");
+        assertNull(num3);
+    }

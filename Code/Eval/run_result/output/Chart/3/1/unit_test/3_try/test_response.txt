@@ -1,0 +1,19 @@
+CreateCopyMethod() throws CloneNotSupportedException {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.add(new Day(1, 1, 2000), 100);
+    series.add(new Day(2, 1, 2000), 200);
+    series.add(new Day(3, 1, 2000), 300);
+
+    TimeSeries copy = null;
+    try {
+        copy = series.createCopy(1, 0);
+    } catch (CloneNotSupportedException e) {
+        e.printStackTrace();
+    }
+
+    // the bug is that the copied TimeSeries is not empty as it should be
+    assertEquals(copy.getItemCount(), 0);
+}
+
+``` 
+The bug in the `createCopy()` method is that the copied `TimeSeries` is not empty as it should be when the `start` parameter is greater than the `end` parameter. The test method above shows this by creating a `TimeSeries` with three items and then attempting to create a copy with the `start` parameter set to 1 and the `end` parameter set to 0. This should result in an empty `TimeSeries` being returned, but instead, the copied `TimeSeries` contains all three items from the original `TimeSeries`. The test method fails because it expects the copied `TimeSeries` to have zero items, but it actually has three.

@@ -1,0 +1,31 @@
+OptionGroupSelected() {
+    try {
+        Option help = new Option("h", "help", false, "print this message");
+        Option version = new Option("v", "version", false, "print version information");
+        Option newRun = new Option("n", "new", false, "Create NLT cache entries only for new items");
+        Option trackerRun = new Option("t", "tracker", false, "Create NLT cache entries only for tracker items");
+
+        OptionGroup group = new OptionGroup();
+        group.addOption(newRun);
+        group.addOption(trackerRun);
+
+        Options options = new Options();
+        options.addOption(help);
+        options.addOption(version);
+        options.addOptionGroup(group);
+
+        CommandLineParser parser = new PosixParser();
+
+        String[] args = new String[] {"-n", "-t"};
+
+        CommandLine line = parser.parse(options, args);
+        fail("Expected AlreadySelectedException was not thrown");
+    } catch (AlreadySelectedException e) {
+        assertTrue(e.getMessage().contains("an option from this group has already been selected"));
+    } catch (Exception e) {
+        fail("Unexpected exception was thrown");
+    }
+}
+```
+Explanation:
+The above test method creates an OptionGroup with two options `newRun` and `trackerRun` and adds it to the Options object. It then tries to parse the command line arguments `-n` and `-t` which correspond to the two options in the group. The test expects an AlreadySelectedException to be thrown since both options cannot be selected simultaneously. However, the current implementation of the `setSelected` method in the OptionGroup class does not throw an exception in this scenario. The test fails indicating that the bug exists in the program.

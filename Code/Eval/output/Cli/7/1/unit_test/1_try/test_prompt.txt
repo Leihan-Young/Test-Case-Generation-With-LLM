@@ -1,0 +1,158 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli2.builder;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.validation.ClassValidator;
+import org.apache.commons.cli2.validation.DateValidator;
+import org.apache.commons.cli2.validation.FileValidator;
+import org.apache.commons.cli2.validation.NumberValidator;
+import org.apache.commons.cli2.validation.UrlValidator;
+import org.apache.commons.cli2.validation.Validator;
+/**
+ * Builds Options using a String pattern
+ */
+public class PatternBuilder {
+    private final GroupBuilder gbuilder;
+    private final DefaultOptionBuilder obuilder;
+    private final ArgumentBuilder abuilder;
+    public PatternBuilder reset();
+    private void createOption(
+        final char type,
+        final boolean required,
+        final char opt);
+    private static Validator validator(final char c);
+    /**
+     * Creates a new Option instance.
+     * @return a new Option instance
+     */
+    public Option create() {
+        final Option option;
+
+        if (options.size() == 1) {
+            option = (Option)options.iterator().next();
+        }
+        else {
+            gbuilder.reset();
+            for (final Iterator i = options.iterator(); i.hasNext();) {
+                gbuilder.withOption((Option)i.next());
+            }
+            option = gbuilder.create();
+        }
+
+        reset();
+
+        return option;
+    }
+    /**
+     * Builds an Option using a pattern string.
+     * @param pattern the pattern to build from
+     */
+    public void withPattern(final String pattern) {
+        int sz = pattern.length();
+
+        char opt = ' ';
+        char ch = ' ';
+        char type = ' ';
+        boolean required = false;
+
+        for (int i = 0; i < sz; i++) {
+            ch = pattern.charAt(i);
+
+            switch (ch) {
+                case '!' :
+                    required = true;
+                    break;
+                case '@' :
+                case ':' :
+                case '%' :
+                case '+' :
+                case '#' :
+                case '<' :
+                case '>' :
+                case '*' :
+                case '/' :
+                    type = ch;
+                    break;
+                default :
+                    if (opt != ' ') {
+                        createOption(type, required, opt);
+                        required = false;
+                        type = ' ';
+                    }
+
+                    opt = ch;
+            }
+        }
+
+        if (opt != ' ') {
+            createOption(type, required, opt);
+        }
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    public void testMandatoryGroup() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] {
+            });
+            fail("Expected MissingOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Missing option -a|-b", exp.getMessage());
+        }
+
+        try {
+            parser.parse(new String[] { "-a" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-b" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals(
+                "Unexpected -b while processing -a|-b",
+                exp.getMessage());
+        }
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

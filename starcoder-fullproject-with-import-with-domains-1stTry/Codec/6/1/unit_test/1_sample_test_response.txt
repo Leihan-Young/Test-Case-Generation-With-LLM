@@ -1,0 +1,14 @@
+ private static final String FOO = "foo";
+    private static final byte[] FOO_BYTES = {102, 111, 111};
+    private static final String CRLF = "\r\n";
+    private static final byte[] CRLF_BYTES = {13, 10};
+    private static final String LF = "\n";
+    private static final byte[] LF_BYTES = {10};
+    private static final String LS = "\u2028";
+    private static final byte[] LS_BYTES = {0xe2, 0x80, 0xa8};
+    private static final String PS = "\u2029";
+    private static final byte[] PS_BYTES = {0xe2, 0x80, 0xa9};
+    private static final String EMPTY = "";
+    private static final byte[] EMPTY_BYTES = {};
+    private static final String LONG = "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    private static final byte[] LONG_BYTES = {49, 50

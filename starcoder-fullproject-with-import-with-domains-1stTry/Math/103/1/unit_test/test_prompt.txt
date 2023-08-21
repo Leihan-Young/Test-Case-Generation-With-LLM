@@ -1,0 +1,51 @@
+package org.apache.commons.math.distribution;
+import java.io.Serializable;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.special.Erf;
+/**
+ * Default implementation of
+ * {@link org.apache.commons.math.distribution.NormalDistribution}.
+ *
+ * @version $Revision$ $Date$
+ */
+public class NormalDistributionImpl extends AbstractContinuousDistribution 
+        implements NormalDistribution, Serializable {
+    private static final long serialVersionUID = 8589540077390120676L;
+    private double mean = 0;
+    private double standardDeviation = 1;
+    /**
+     * For this disbution, X, this method returns P(X &lt; <code>x</code>).
+     * @param x the value at which the CDF is evaluated.
+     * @return CDF evaluted at <code>x</code>. 
+     * @throws MathException if the algorithm fails to converge; unless
+     * x is more than 20 standard deviations from the mean, in which case the
+     * convergence exception is caught and 0 or 1 is returned.
+     */
+    public double cumulativeProbability(double x) throws MathException;
+    /**
+     * Access the mean.
+     * @return mean for this distribution
+     */ 
+    public double getMean();
+    /**
+     * Modify the standard deviation.
+     * @param sd standard deviation for this distribution
+     * @throws IllegalArgumentException if <code>sd</code> is not positive.
+     */
+    public void setStandardDeviation(double sd);
+    /**
+     * Modify the mean.
+     * @param mean for this distribution
+     */
+    public void setMean(double mean);
+    /**
+     * Access the standard deviation.
+     * @return standard deviation for this distribution
+     */
+    public double getStandardDeviation();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,11 @@
+     public void testCumulativeProbability() throws MathException {
+        checkCumulativeProbability(0.0, 0.0, 0.5);
+        checkCumulativeProbability(0.0, 1.0, 0.5);
+        checkCumulativeProbability(1.0, 0.0, 0.0);
+        checkCumulativeProbability(1.0, 1.0, 1.0);
+        checkCumulativeProbability(-1.0, 0.0, 0.24197072451914337);
+        checkCumulativeProbability(-1.0, 1.0, 0.7580292754808566);
+        checkCumulativeProbability(0.5, 0.0, 0.3989422804014327);
+        checkCumulativeProbability(0.5, 1.0, 0.6010577195985673);
+        checkCumulativeProbability(-0.5, 0.0, 0.15865525393145707);
+        checkCumulativeProbability(-0.5, 1.0, 0.841344746068

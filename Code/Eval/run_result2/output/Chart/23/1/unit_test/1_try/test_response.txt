@@ -1,0 +1,19 @@
+MinMaxCategoryRenderer() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1, "Series 1", "Category 1");
+    dataset.addValue(2, "Series 1", "Category 2");
+    dataset.addValue(3, "Series 1", "Category 3");
+    dataset.addValue(4, "Series 1", "Category 4");
+    MinMaxCategoryRenderer renderer = new MinMaxCategoryRenderer();
+    JFreeChart chart = ChartFactory.createBarChart("Test Chart", "Category", "Value", dataset);
+    CategoryPlot plot = chart.getCategoryPlot();
+    plot.setRenderer(renderer);
+    ChartPanel panel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Test Frame");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().add(panel);
+    frame.pack();
+    frame.setVisible(true);
+}
+```
+The test method creates a bar chart with the MinMaxCategoryRenderer as the renderer for the plot. It adds four values to the dataset for one series and four categories. It then creates a chart panel and adds it to a JFrame to display the chart.

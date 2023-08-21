@@ -1,0 +1,29 @@
+     private void verifyJacobian(final MultivariateJacobianFunction jacobian,
+                                  final RealVector point,
+                                  final RealMatrix jacobianExpected) {
+        final RealMatrix jacobianComputed = jacobian.value(point);
+        final int m = jacobianExpected.getRowDimension();
+        final int n = jacobianExpected.getColumnDimension();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                Assert.assertEquals(jacobianExpected.getEntry(i, j),
+                                    jacobianComputed.getEntry(i, j),
+                                    1.0e-12);
+            }
+        }
+    }
+    private void verifyHessian(final MultivariateJacobianFunction jacobian,
+                               final RealVector point,
+                               final RealMatrix hessianExpected) {
+        final RealMatrix hessianComputed = jacobian.value(point);
+        final int m = hessianExpected.getRowDimension();
+        final int n = hessianExpected.getColumnDimension();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                Assert.assertEquals(hessianExpected.getEntry(i, j),
+                                    hessianComputed.getEntry(i, j),
+                                    1.0e-12);
+            }
+        }
+    }
+    public void tes

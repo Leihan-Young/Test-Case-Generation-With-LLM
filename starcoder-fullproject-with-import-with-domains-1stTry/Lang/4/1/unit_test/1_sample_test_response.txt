@@ -1,0 +1,22 @@
+     private void doLookup(final String input, final String expected) {
+        assertEquals(expected, lookupTranslator.translate(input));
+        assertEquals(expected, lookupTranslator.translate(input.toCharArray(), 0, input.length()));
+    }
+    private void doLookup(final String input, final String expected, final int start, final int end) {
+        assertEquals(expected, lookupTranslator.translate(input, start, end));
+        assertEquals(expected, lookupTranslator.translate(input.toCharArray(), start, end));
+    }
+    private void doNotLookup(final String input) {
+        assertEquals(input, lookupTranslator.translate(input));
+        assertEquals(input, lookupTranslator.translate(input.toCharArray(), 0, input.length()));
+    }
+    private void doNotLookup(final String input, final int start, final int end) {
+        assertEquals(input, lookupTranslator.translate(input, start, end));
+        assertEquals(input, lookupTranslator.translate(input.toCharArray(), start, end));
+    }
+    private void doReplace(final String input, final String expected) {
+        assertEquals(expected, lookupTranslator.translate(input));
+        assertEquals(expected, lookupTranslator.translate(input.toCharArray(), 0, input.length()));
+    }
+    private void doReplace(final String input, final String expected, final int start, final int end) {
+        assertEquals(expected, lookupTranslator.translate(input, start, en

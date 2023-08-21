@@ -1,0 +1,23 @@
+package org.apache.commons.math.optimization.linear;
+import org.apache.commons.math.optimization.OptimizationException;
+import org.apache.commons.math.optimization.RealPointValuePair;
+import org.apache.commons.math.util.MathUtils;
+/**
+ * Solves a linear problem using the Two-Phase Simplex Method.
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class SimplexSolver extends AbstractLinearOptimizer {
+    private static final double DEFAULT_EPSILON = 1.0e-6;
+    /**
+     * Returns the row with the minimum ratio as given by the minimum ratio test (MRT).
+     * @param tableau simple tableau for the problem
+     * @param col the column to test the ratio of.  See {@link #getPivotColumn(SimplexTableau)}
+     * @return row with the minimum ratio
+     */
+    private Integer getPivotRow(final int col, final SimplexTableau tableau);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,14 @@
+     public void testTooManyStarts() {
+        MultiStartUnivariateRealOptimizer optim =
+            new MultiStartUnivariateRealOptimizer(new BrentOptimizer(1e-10, 1e-10));
+        try {
+            optim.optimize(new UnivariateRealFunction() {
+                public double value(double x) {
+                    return Math.sin(x);
+                }
+            }, GoalType.MINIMIZE, 0, Math.PI);
+            fail("an exception should have been thrown");
+        } catch (MathRuntimeException mre) {
+            assertEquals(LocalizedFormats.TOO_MANY_EVALUATIONS, mre.getSpecifier());
+        }
+    }

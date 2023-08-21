@@ -1,0 +1,24 @@
+Bug() throws Exception {
+    Option option1 = OptionBuilder.withLongOpt("test").hasArg()
+                                  .withValueSeparator()
+                                  .withDescription("Test option")
+                                  .create("t");
+
+    Options options = new Options();
+    options.addOption(option1);
+
+    CommandLineParser parser = new PosixParser();
+
+    String[] args = new String[] {
+            "-t",
+            "value"
+        };
+
+    CommandLine line = parser.parse(options, args);
+    assertTrue(line.hasOption("t"));
+    assertEquals(line.getOptionValue("t"), "value");
+
+    // Bug: The following assertion should fail, but it passes due to a bug in the Option class.
+    assertEquals(line.getOptionValue("test"), "value");
+}
+```

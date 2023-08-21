@@ -1,0 +1,3 @@
+     public void testEmptyString() throws Exception {
+        assertEquals(0, caverphone.caverphone("").length());
+    }

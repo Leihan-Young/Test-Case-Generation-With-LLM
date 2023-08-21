@@ -1,0 +1,43 @@
+ProcessProperties() throws Exception {
+        Option option1 = new Option("f", "file", true, "input file");
+        Option option2 = new Option("o", "output", false, "output file");
+
+        Options options = new Options();
+        options.addOption(option1);
+        options.addOption(option2);
+
+        String[] args = new String[] {"-f", "input.txt", "-o"};
+
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        Properties properties = new Properties();
+        properties.setProperty("file", "output.txt");
+
+        Parser p = new Parser() {
+            @Override
+            protected void checkRequiredOptions() throws MissingOptionException {
+                // do nothing
+            }
+
+            @Override
+            protected void processOption(String arg, ListIterator iter) throws ParseException {
+                // do nothing
+            }
+
+            @Override
+            public void processArgs(Option opt, ListIterator iter) throws ParseException {
+                // do nothing
+            }
+        };
+
+        p.setOptions(options);
+        p.parse(options, args, properties, false);
+
+        assertTrue(cmd.hasOption("f"));
+        assertTrue(cmd.hasOption("o"));
+        assertEquals(cmd.getOptionValue("f"), "input.txt");
+        assertEquals(cmd.getOptionValue("file"), "output.txt");
+    }
+```
+The above test method is testing the `processProperties()` method of the `Parser` class. The bug is that the `cmd` object is not initialized before accessing it in the `processProperties()` method. To fix this bug, `cmd` should be initialized before accessing it in the method.

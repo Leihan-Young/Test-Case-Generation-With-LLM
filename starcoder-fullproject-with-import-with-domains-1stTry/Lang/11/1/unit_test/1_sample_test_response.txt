@@ -1,0 +1,3 @@
+     public void testRandom() {
+        RandomStringUtils.random(-1);
+    }

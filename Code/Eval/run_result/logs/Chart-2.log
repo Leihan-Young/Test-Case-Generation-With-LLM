@@ -1,0 +1,1714 @@
+Getting Chart-2 focal context...
+focal_context=package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the data items of the xy dataset to find
+     * the range bounds.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the y-interval or just the
+     *          y-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     *
+     * @since 1.0.10
+     */
+    public static Range iterateRangeBounds(XYDataset dataset,
+            boolean includeInterval) {
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+
+        // handle three cases by dataset type
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            // handle special case of IntervalXYDataset
+            IntervalXYDataset ixyd = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ixyd.getStartYValue(series, item);
+                    double uvalue = ixyd.getEndYValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else if (includeInterval && dataset instanceof OHLCDataset) {
+            // handle special case of OHLCDataset
+            OHLCDataset ohlc = (OHLCDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ohlc.getLowValue(series, item);
+                    double uvalue = ohlc.getHighValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            // standard case - plain XYDataset
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double value = dataset.getYValue(series, item);
+                    if (!Double.isNaN(value)) {
+                        minimum = Math.min(minimum, value);
+                        maximum = Math.max(maximum, value);
+                    }
+                }
+            }
+        }
+        if (minimum == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+Getting Chart-2 test prefix...
+oracle_focal_context=package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.  If the dataset is an instance of
+     * {@link IntervalXYDataset}, the starting and ending x-values
+     * will be used for the bounds calculation.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset) {
+        return iterateDomainBounds(dataset, true);
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java, test_prefix=    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private CategoryDataset createCategoryDataset1() {
+        DefaultCategoryDataset result = new DefaultCategoryDataset();
+        result.addValue(1.0, "R0", "C0");
+        result.addValue(1.0, "R1", "C0");
+        result.addValue(1.0, "R2", "C0");
+        result.addValue(4.0, "R0", "C1");
+        result.addValue(5.0, "R1", "C1");
+        result.addValue(6.0, "R2", "C1");
+        return result;
+    }
+    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private CategoryDataset createCategoryDataset2() {
+        DefaultCategoryDataset result = new DefaultCategoryDataset();
+        result.addValue(1.0, "R0", "C0");
+        result.addValue(-2.0, "R1", "C0");
+        result.addValue(2.0, "R0", "C1");
+        result.addValue(-1.0, "R1", "C1");
+        return result;
+    }
+    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private XYDataset createXYDataset1() {
+        XYSeries series1 = new XYSeries("S1");
+        series1.add(1.0, 100.0);
+        series1.add(2.0, 101.0);
+        series1.add(3.0, 102.0);
+        XYSeries series2 = new XYSeries("S2");
+        series2.add(1.0, 103.0);
+        series2.add(2.0, null);
+        series2.add(3.0, 105.0);
+        XYSeriesCollection result = new XYSeriesCollection();
+        result.addSeries(series1);
+        result.addSeries(series2);
+        result.setIntervalWidth(0.0);
+        return result;
+    }
+    /**
+     * Creates a sample dataset for testing purposes.
+     *
+     * @return A sample dataset.
+     */
+    private TableXYDataset createTableXYDataset1() {
+        DefaultTableXYDataset dataset = new DefaultTableXYDataset();
+
+        XYSeries s1 = new XYSeries("Series 1", true, false);
+        s1.add(1.0, 1.0);
+        s1.add(2.0, 2.0);
+        dataset.addSeries(s1);
+
+        XYSeries s2 = new XYSeries("Series 2", true, false);
+        s2.add(1.0, -2.0);
+        s2.add(2.0, -1.0);
+        dataset.addSeries(s2);
+
+        return dataset;
+    }
+    public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_0_ = 1.0;
+        _tmp_var_1_ =  r.getLowerBound();
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = 1.0;
+        _tmp_var_4_ =  r.getUpperBound();
+        _tmp_var_5_ =  EPSILON;
+        $ASSERT$
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_6_ = 1.0;
+        _tmp_var_7_ =  r.getLowerBound();
+        _tmp_var_8_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_9_ = 1.5;
+        _tmp_var_10_ =  r.getUpperBound();
+        _tmp_var_11_ =  EPSILON;
+        $ASSERT$
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_12_ = 0.5;
+        _tmp_var_13_ =  r.getLowerBound();
+        _tmp_var_14_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_15_ = 1.5;
+        _tmp_var_16_ =  r.getUpperBound();
+        _tmp_var_17_ =  EPSILON;
+        $ASSERT$
+    }
+
+Constructing unit test prompt for Chart-2
+unit_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the data items of the xy dataset to find
+     * the range bounds.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the y-interval or just the
+     *          y-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     *
+     * @since 1.0.10
+     */
+    public static Range iterateRangeBounds(XYDataset dataset,
+            boolean includeInterval) {
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+
+        // handle three cases by dataset type
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            // handle special case of IntervalXYDataset
+            IntervalXYDataset ixyd = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ixyd.getStartYValue(series, item);
+                    double uvalue = ixyd.getEndYValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else if (includeInterval && dataset instanceof OHLCDataset) {
+            // handle special case of OHLCDataset
+            OHLCDataset ohlc = (OHLCDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ohlc.getLowValue(series, item);
+                    double uvalue = ohlc.getHighValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            // standard case - plain XYDataset
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double value = dataset.getYValue(series, item);
+                    if (!Double.isNaN(value)) {
+                        minimum = Math.min(minimum, value);
+                        maximum = Math.max(maximum, value);
+                    }
+                }
+            }
+        }
+        if (minimum == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-2 unit test
+unit_test_response=IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(1.0, range.getLowerBound(), 0.0001);
+    assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+```
+This test method tests the `iterateDomainBounds()` method of the `DatasetUtilities` class. It creates a dataset with one series and one data point (x=1.0, y=2.0), and calls the method with `includeInterval = true`. It asserts that the range returned by the method is not null, and that it has the correct lower and upper bounds (both should be 1.0). 
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+To reveal this bug, we can modify the test method to create a dataset that is not an `IntervalXYDataset`, and set the x-value of the data point to a value greater than 1.0. We expect the upper bound of the range to be this value, but the program will incorrectly set it to 1.0. 
+
+Here is the modified test method:
+```
+public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0
+}
+```
+Constructing test code for Chart-2 unit test
+Finished constructing test code for Chart-2 unit test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-2 unit test
+Constructing oracle test prompt for Chart-2
+oracle_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.  If the dataset is an instance of
+     * {@link IntervalXYDataset}, the starting and ending x-values
+     * will be used for the bounds calculation.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset) {
+        return iterateDomainBounds(dataset, true);
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private CategoryDataset createCategoryDataset1() {
+        DefaultCategoryDataset result = new DefaultCategoryDataset();
+        result.addValue(1.0, "R0", "C0");
+        result.addValue(1.0, "R1", "C0");
+        result.addValue(1.0, "R2", "C0");
+        result.addValue(4.0, "R0", "C1");
+        result.addValue(5.0, "R1", "C1");
+        result.addValue(6.0, "R2", "C1");
+        return result;
+    }
+    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private CategoryDataset createCategoryDataset2() {
+        DefaultCategoryDataset result = new DefaultCategoryDataset();
+        result.addValue(1.0, "R0", "C0");
+        result.addValue(-2.0, "R1", "C0");
+        result.addValue(2.0, "R0", "C1");
+        result.addValue(-1.0, "R1", "C1");
+        return result;
+    }
+    /**
+     * Creates a dataset for testing.
+     *
+     * @return A dataset.
+     */
+    private XYDataset createXYDataset1() {
+        XYSeries series1 = new XYSeries("S1");
+        series1.add(1.0, 100.0);
+        series1.add(2.0, 101.0);
+        series1.add(3.0, 102.0);
+        XYSeries series2 = new XYSeries("S2");
+        series2.add(1.0, 103.0);
+        series2.add(2.0, null);
+        series2.add(3.0, 105.0);
+        XYSeriesCollection result = new XYSeriesCollection();
+        result.addSeries(series1);
+        result.addSeries(series2);
+        result.setIntervalWidth(0.0);
+        return result;
+    }
+    /**
+     * Creates a sample dataset for testing purposes.
+     *
+     * @return A sample dataset.
+     */
+    private TableXYDataset createTableXYDataset1() {
+        DefaultTableXYDataset dataset = new DefaultTableXYDataset();
+
+        XYSeries s1 = new XYSeries("Series 1", true, false);
+        s1.add(1.0, 1.0);
+        s1.add(2.0, 2.0);
+        dataset.addSeries(s1);
+
+        XYSeries s2 = new XYSeries("Series 2", true, false);
+        s2.add(1.0, -2.0);
+        s2.add(2.0, -1.0);
+        dataset.addSeries(s2);
+
+        return dataset;
+    }
+    public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_0_ = 1.0;
+        _tmp_var_1_ =  r.getLowerBound();
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = 1.0;
+        _tmp_var_4_ =  r.getUpperBound();
+        _tmp_var_5_ =  EPSILON;
+        $ASSERT$
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_6_ = 1.0;
+        _tmp_var_7_ =  r.getLowerBound();
+        _tmp_var_8_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_9_ = 1.5;
+        _tmp_var_10_ =  r.getUpperBound();
+        _tmp_var_11_ =  EPSILON;
+        $ASSERT$
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        _tmp_var_12_ = 0.5;
+        _tmp_var_13_ =  r.getLowerBound();
+        _tmp_var_14_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_15_ = 1.5;
+        _tmp_var_16_ =  r.getUpperBound();
+        _tmp_var_17_ =  EPSILON;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-2 oracle test
+oracle_test_response=Bug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        double epsilon = 0.0000000001;
+        assertEquals(1.0, r.getLowerBound(), epsilon);
+        assertEquals(1.0, r.getUpperBound(), epsilon);
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        assertEquals(1.0, r.getLowerBound(), epsilon);
+        assertEquals(1.5, r.getUpperBound(), epsilon);
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        assertEquals(0.5, r.getLowerBound(), epsilon);
+        assertEquals(1.5, r.getUpperBound(), epsilon);
+    }
+Constructing test code for Chart-2 oracle test
+Finished constructing test code for Chart-2 oracle test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-2 oracle test
+Checking out Chart 2b...
+checkout_cmd=defects4j checkout -p Chart -v 2b -w /jTrans/Eval/src/Chart/2b >/dev/null 2>&1
+Finished checking out Chart 2b.
+Checking out Chart 2f...
+checkout_cmd=defects4j checkout -p Chart -v 2f -w /jTrans/Eval/src/Chart/2f >/dev/null 2>&1
+Finished checking out Chart 2f.
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(1.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+, check_out_path=/jTrans/Eval/src/Chart/2b, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2b/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(1.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2b -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(1.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+, check_out_path=/jTrans/Eval/src/Chart/2f, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2f/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(1.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2f -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+res_in_bug=Test failed, res_in_fix=Test failed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the data items of the xy dataset to find
+     * the range bounds.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the y-interval or just the
+     *          y-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     *
+     * @since 1.0.10
+     */
+    public static Range iterateRangeBounds(XYDataset dataset,
+            boolean includeInterval) {
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+
+        // handle three cases by dataset type
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            // handle special case of IntervalXYDataset
+            IntervalXYDataset ixyd = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ixyd.getStartYValue(series, item);
+                    double uvalue = ixyd.getEndYValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else if (includeInterval && dataset instanceof OHLCDataset) {
+            // handle special case of OHLCDataset
+            OHLCDataset ohlc = (OHLCDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ohlc.getLowValue(series, item);
+                    double uvalue = ohlc.getHighValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            // standard case - plain XYDataset
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double value = dataset.getYValue(series, item);
+                    if (!Double.isNaN(value)) {
+                        minimum = Math.min(minimum, value);
+                        maximum = Math.max(maximum, value);
+                    }
+                }
+            }
+        }
+        if (minimum == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+
+[assistant]:IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(1.0, range.getLowerBound(), 0.0001);
+    assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+```
+This test method tests the `iterateDomainBounds()` method of the `DatasetUtilities` class. It creates a dataset with one series and one data point (x=1.0, y=2.0), and calls the method with `includeInterval = true`. It asserts that the range returned by the method is not null, and that it has the correct lower and upper bounds (both should be 1.0). 
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+To reveal this bug, we can modify the test method to create a dataset that is not an `IntervalXYDataset`, and set the x-value of the data point to a value greater than 1.0. We expect the upper bound of the range to be this value, but the program will incorrectly set it to 1.0. 
+
+Here is the modified test method:
+```
+public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0
+}
+```
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-2 NO.2 try
+runTestWithRetry NO.2 try
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+, check_out_path=/jTrans/Eval/src/Chart/2b, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2b/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2b -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+, check_out_path=/jTrans/Eval/src/Chart/2f, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2f/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2f -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+res_in_bug=Test failed, res_in_fix=Test failed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.general;
+import org.jfree.data.pie.PieDataset;
+import org.jfree.data.pie.DefaultPieDataset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.util.ArrayUtilities;
+import org.jfree.data.DomainInfo;
+import org.jfree.data.KeyToGroupMap;
+import org.jfree.data.KeyedValues;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.CategoryRangeInfo;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
+import org.jfree.data.statistics.MultiValueCategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.TableXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYDomainInfo;
+import org.jfree.data.xy.XYRangeInfo;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+/**
+ * A collection of useful static methods relating to datasets.
+ */
+public final class DatasetUtilities {
+    /**
+     * Iterates over the data items of the xy dataset to find
+     * the range bounds.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the y-interval or just the
+     *          y-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     *
+     * @since 1.0.10
+     */
+    public static Range iterateRangeBounds(XYDataset dataset,
+            boolean includeInterval) {
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+
+        // handle three cases by dataset type
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            // handle special case of IntervalXYDataset
+            IntervalXYDataset ixyd = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ixyd.getStartYValue(series, item);
+                    double uvalue = ixyd.getEndYValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else if (includeInterval && dataset instanceof OHLCDataset) {
+            // handle special case of OHLCDataset
+            OHLCDataset ohlc = (OHLCDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double lvalue = ohlc.getLowValue(series, item);
+                    double uvalue = ohlc.getHighValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            // standard case - plain XYDataset
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    double value = dataset.getYValue(series, item);
+                    if (!Double.isNaN(value)) {
+                        minimum = Math.min(minimum, value);
+                        maximum = Math.max(maximum, value);
+                    }
+                }
+            }
+        }
+        if (minimum == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+    /**
+     * Iterates over the items in an {@link XYDataset} to find
+     * the range of x-values.
+     *
+     * @param dataset  the dataset (<code>null</code> not permitted).
+     * @param includeInterval  a flag that determines, for an
+     *          {@link IntervalXYDataset}, whether the x-interval or just the
+     *          x-value is used to determine the overall range.
+     *
+     * @return The range (possibly <code>null</code>).
+     */
+    public static Range iterateDomainBounds(XYDataset dataset,
+                                            boolean includeInterval) {
+        if (dataset == null) {
+            throw new IllegalArgumentException("Null 'dataset' argument.");
+        }
+        double minimum = Double.POSITIVE_INFINITY;
+        double maximum = Double.NEGATIVE_INFINITY;
+        int seriesCount = dataset.getSeriesCount();
+        double lvalue;
+        double uvalue;
+        if (includeInterval && dataset instanceof IntervalXYDataset) {
+            IntervalXYDataset intervalXYData = (IntervalXYDataset) dataset;
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = intervalXYData.getStartXValue(series, item);
+                    uvalue = intervalXYData.getEndXValue(series, item);
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                    }
+                    if (!Double.isNaN(uvalue)) {
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        else {
+            for (int series = 0; series < seriesCount; series++) {
+                int itemCount = dataset.getItemCount(series);
+                for (int item = 0; item < itemCount; item++) {
+                    lvalue = dataset.getXValue(series, item);
+                    uvalue = lvalue;
+                    if (!Double.isNaN(lvalue)) {
+                        minimum = Math.min(minimum, lvalue);
+                        maximum = Math.max(maximum, uvalue);
+                    }
+                }
+            }
+        }
+        if (minimum > maximum) {
+            return null;
+        }
+        else {
+            return new Range(minimum, maximum);
+        }
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+
+[assistant]:IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(1.0, range.getLowerBound(), 0.0001);
+    assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+```
+This test method tests the `iterateDomainBounds()` method of the `DatasetUtilities` class. It creates a dataset with one series and one data point (x=1.0, y=2.0), and calls the method with `includeInterval = true`. It asserts that the range returned by the method is not null, and that it has the correct lower and upper bounds (both should be 1.0). 
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+To reveal this bug, we can modify the test method to create a dataset that is not an `IntervalXYDataset`, and set the x-value of the data point to a value greater than 1.0. We expect the upper bound of the range to be this value, but the program will incorrectly set it to 1.0. 
+
+Here is the modified test method:
+```
+public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0
+}
+```
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+[assistant]:IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+```
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+The modified test method creates a dataset with one series and one data point (x=2.0, y=2.0) and sets the x-value to 2.0. It then calls the `iterateDomainBounds()` method with `includeInterval = true`. The expected result is that the upper bound of the range is 2.0, but if the bug exists, the program will return 1.0 as the upper bound of the range. Therefore, the assertion `assertEquals(2.0, range.getUpperBound(), 0.0001)` will fail if the bug exists. 
+
+By running this test method, we can reveal the bug in the program and fix it to return the correct upper bound of the domain range.
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-2 NO.3 try
+runTestWithRetry NO.3 try
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+, check_out_path=/jTrans/Eval/src/Chart/2b, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2b/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2b -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+, check_out_path=/jTrans/Eval/src/Chart/2f, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2f/tests
+trigger_method_lines=public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    Assert.assertNotNull(range);
+
+    // assert that the range is correct
+    Assert.assertEquals(2.0, range.getLowerBound(), 0.0001);
+    Assert.assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2f -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+res_in_bug=Test failed, res_in_fix=Test failed
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        double epsilon = 0.0000000001;
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.0, r.getUpperBound(), epsilon);
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(0.5, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/2b, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2b/tests
+trigger_method_lines=public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        double epsilon = 0.0000000001;
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.0, r.getUpperBound(), epsilon);
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(0.5, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2b -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        double epsilon = 0.0000000001;
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.0, r.getUpperBound(), epsilon);
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(0.5, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/2f, test_class_path=org/jfree/data/general/junit/DatasetUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/2f/tests
+trigger_method_lines=public void testBug2849731_2() {
+        XYIntervalSeriesCollection d = new XYIntervalSeriesCollection();
+        XYIntervalSeries s = new XYIntervalSeries("S1");
+        s.add(1.0, Double.NaN, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        d.addSeries(s);
+        Range r = DatasetUtilities.iterateDomainBounds(d);
+        double epsilon = 0.0000000001;
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.0, r.getUpperBound(), epsilon);
+
+        s.add(1.0, 1.5, Double.NaN, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(1.0, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+
+        s.add(1.0, Double.NaN, 0.5, Double.NaN, 1.5, Double.NaN);
+        r = DatasetUtilities.iterateDomainBounds(d);
+        Assert.assertEquals(0.5, r.getLowerBound(), epsilon);
+        Assert.assertEquals(1.5, r.getUpperBound(), epsilon);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/2f -t org.jfree.data.general.junit.DatasetUtilitiesTests::newTestMethod1
+org/jfree/data/general/junit/DatasetUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+res_in_bug=Test failed, res_in_fix=Test passed
+unit_res_in_bug=Test failed,unit_res_in_fix=Test failed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed

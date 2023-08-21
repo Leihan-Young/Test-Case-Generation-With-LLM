@@ -1,0 +1,33 @@
+     private void verify(final BracketingNthOrderBrentSolver solver,
+                          final UnivariateFunction function,
+                          final double min, final double max,
+                          final double expected) {
+        verify(solver, function, min, max, expected,
+               AllowedSolution.ANY_SIDE);
+    }
+    private void verify(final BracketingNthOrderBrentSolver solver,
+                          final UnivariateFunction function,
+                          final double min, final double max,
+                          final double expected,
+                          final AllowedSolution allowedSolution) {
+        final double root = solver.solve(1000, function, min, max,
+                                        allowedSolution);
+        assertEquals(expected, root, solver.getAbsoluteAccuracy());
+    }
+    private void assertNoRoot(final BracketingNthOrderBrentSolver solver,
+                              final UnivariateFunction function,
+                              final double min, final double max) {
+        try {
+            solver.solve(1000, function, min, max);
+            fail("an exception should have been thrown");
+        } catch (MathException ex) {
+            // expected
+        }
+    }
+    private void assertNoRoot(final BracketingNthOrderBrentSolver solver,
+                              final UnivariateFunction function,
+                              final double min, final double max,
+                              final AllowedSolution allowedSolution) {
+        try {
+            solver.solve(1000, function, min, max, allowedSolution);
+            fail("an exception should hav

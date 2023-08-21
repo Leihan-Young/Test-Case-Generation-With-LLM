@@ -1,0 +1,131 @@
+DEBUG:root:test_code_path=/Code/Eval/work/Cli-15/fix/src/test
+DEBUG:root:trigger_method_lines=public void testDefaultValue() throws Exception {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option testOption =
+        obuilder
+            .withShortName("a")
+            .withArgument(abuilder.withName("value").create())
+            .withDefault("default")
+            .create();
+
+    final Group options = gbuilder.withOption(testOption).create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(options);
+
+    final CommandLine cmdLine = parser.parse(new String[] {});
+
+    Assert.assertTrue(cmdLine.hasOption("-a"));
+    Assert.assertEquals("default", cmdLine.getValue("-a"));
+}
+
+DEBUG:root:needed_deps:
+DEBUG:root:CommandLine
+DEBUG:root:Parser
+DEBUG:root:ArgumentBuilder
+DEBUG:root:Option
+DEBUG:root:String
+DEBUG:root:DefaultOptionBuilder
+DEBUG:root:GroupBuilder
+DEBUG:root:Group
+DEBUG:root:dep_packages:
+DEBUG:root:org.junit.Assert
+org.apache.commons.cli2.CommandLine
+org.apache.commons.cli2.commandline.Parser
+org.apache.commons.cli2.builder.ArgumentBuilder
+org.apache.commons.cli2.Option
+java.lang.String
+org.apache.commons.cli2.builder.DefaultOptionBuilder
+org.apache.commons.cli2.builder.GroupBuilder
+org.apache.commons.cli2.Group
+DEBUG:root:dep_packages_filtered:
+DEBUG:root:org.junit.Assert
+org.apache.commons.cli2.Option
+java.lang.String
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/work/Cli-15/fix -t org.apache.commons.cli2.bug.BugCLI158Test::newTestMethod1
+DEBUG:root:org/apache/commons/cli2/bug/BugCLI158Test::newTestMethod1:
+DEBUG:root:test_results.stderr
+DEBUG:root:Running ant (compile.tests)................................................ FAIL
+DEBUG:root:Executed command:  cd /Code/Eval/work/Cli-15/fix && /workspace/defects4j/major/bin/ant -f /workspace/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=/workspace/defects4j -Dd4j.dir.projects=/workspace/defects4j/framework/projects -Dbasedir=/Code/Eval/work/Cli-15/fix -Dbuild.compiler=javac1.7  compile.tests 2>&1
+DEBUG:root:Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=1G; support was removed in 8.0
+DEBUG:root:Buildfile: /workspace/defects4j/framework/projects/defects4j.build.xml
+DEBUG:root:
+DEBUG:root:init:
+DEBUG:root:
+DEBUG:root:junit-present:
+DEBUG:root:
+DEBUG:root:setProxy:
+DEBUG:root:
+DEBUG:root:noProxy:
+DEBUG:root:     [echo] Proxy not used.
+DEBUG:root:
+DEBUG:root:get-custom-dep-commons-lang.jar:
+DEBUG:root:
+DEBUG:root:get-dep-commons-lang.jar:
+DEBUG:root:      [get] Getting: file:/workspace/defects4j/framework/projects/Cli/lib/commons-lang/commons-lang/2.1/commons-lang-2.1.jar
+DEBUG:root:      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/commons-lang/jars/commons-lang-2.1.jar
+DEBUG:root:
+DEBUG:root:get-custom-dep-junit.jar:
+DEBUG:root:      [get] Getting: file:/workspace/defects4j/framework/projects/lib/junit-4.11.jar
+DEBUG:root:      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/junit/jars/junit-3.8.1.jar
+DEBUG:root:
+DEBUG:root:get-dep-junit.jar:
+DEBUG:root:
+DEBUG:root:get-custom-dep-jdepend.jar:
+DEBUG:root:
+DEBUG:root:get-dep-jdepend.jar:
+DEBUG:root:      [get] Getting: file:/workspace/defects4j/framework/projects/Cli/lib/jdepend/jdepend/2.5/jdepend-2.5.jar
+DEBUG:root:      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/jdepend/jars/jdepend-2.5.jar
+DEBUG:root:
+DEBUG:root:get-deps:
+DEBUG:root:
+DEBUG:root:compile:
+DEBUG:root:    [javac] /Code/Eval/work/Cli-15/fix/build.xml:74: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+DEBUG:root:
+DEBUG:root:compile.tests:
+DEBUG:root:    [javac] /Code/Eval/work/Cli-15/fix/build.xml:151: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+DEBUG:root:    [javac] Compiling 1 source file to /Code/Eval/work/Cli-15/fix/target/test-classes
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/String.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/Arrays.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/List.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Object.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Exception.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/String.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation': class file for jdk.Profile+Annotation not found
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/Arrays.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/List.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Object.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Exception.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/AutoCloseable.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/AutoCloseable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Throwable.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Throwable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/io/Serializable.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/io/Serializable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Comparable.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Comparable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/CharSequence.class): major version 52 is newer than 51, the highest major version supported by this compiler.
+DEBUG:root:    [javac]   It is recommended that the compiler be upgraded.
+DEBUG:root:    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/CharSequence.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'
+DEBUG:root:    [javac] /Code/Eval/work/Cli-15/fix/src/test/org/apache/commons/cli2/bug/BugCLI158Test.java:126: error: cannot find symbol
+DEBUG:root:    [javac]             .withDefault("default")
+DEBUG:root:    [javac]             ^
+DEBUG:root:    [javac]   symbol:   method withDefault(String)
+DEBUG:root:    [javac]   location: class DefaultOptionBuilder
+DEBUG:root:    [javac] 1 error
+DEBUG:root:    [javac] 20 warnings
+DEBUG:root:
+DEBUG:root:BUILD FAILED
+DEBUG:root:additional:Running ant (compile.tests)................................................ FAILExecuted command:  cd /Code/Eval/work/Cli-15/fix && /workspace/defects4j/major/bin/ant -f /workspace/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=/workspace/defects4j -Dd4j.dir.projects=/workspace/defects4j/framework/projects -Dbasedir=/Code/Eval/work/Cli-15/fix -Dbuild.compiler=javac1.7  compile.tests 2>&1Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=1G; support was removed in 8.0Buildfile: /workspace/defects4j/framework/projects/defects4j.build.xmlinit:junit-present:setProxy:noProxy:     [echo] Proxy not used.get-custom-dep-commons-lang.jar:get-dep-commons-lang.jar:      [get] Getting: file:/workspace/defects4j/framework/projects/Cli/lib/commons-lang/commons-lang/2.1/commons-lang-2.1.jar      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/commons-lang/jars/commons-lang-2.1.jarget-custom-dep-junit.jar:      [get] Getting: file:/workspace/defects4j/framework/projects/lib/junit-4.11.jar      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/junit/jars/junit-3.8.1.jarget-dep-junit.jar:get-custom-dep-jdepend.jar:get-dep-jdepend.jar:      [get] Getting: file:/workspace/defects4j/framework/projects/Cli/lib/jdepend/jdepend/2.5/jdepend-2.5.jar      [get] To: /Code/Eval/work/Cli-15/fix/target/lib/jdepend/jars/jdepend-2.5.jarget-deps:compile:    [javac] /Code/Eval/work/Cli-15/fix/build.xml:74: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable buildscompile.tests:    [javac] /Code/Eval/work/Cli-15/fix/build.xml:151: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds    [javac] Compiling 1 source file to /Code/Eval/work/Cli-15/fix/target/test-classes    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/String.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/Arrays.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/List.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Object.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Exception.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/String.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation': class file for jdk.Profile+Annotation not found    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/Arrays.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/util/List.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Object.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Exception.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/AutoCloseable.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/AutoCloseable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Throwable.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Throwable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/io/Serializable.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/io/Serializable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Comparable.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/Comparable.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] warning: /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/CharSequence.class): major version 52 is newer than 51, the highest major version supported by this compiler.    [javac]   It is recommended that the compiler be upgraded.    [javac] /usr/bin/jdk/jdk1.8.0_361/lib/ct.sym(META-INF/sym/rt.jar/java/lang/CharSequence.class): warning: Cannot find annotation method 'value()' in type 'Profile+Annotation'    [javac] /Code/Eval/work/Cli-15/fix/src/test/org/apache/commons/cli2/bug/BugCLI158Test.java:126: error: cannot find symbol    [javac]             .withDefault("default")    [javac]             ^    [javac]   symbol:   method withDefault(String)    [javac]   location: class DefaultOptionBuilder    [javac] 1 error    [javac] 20 warningsBUILD FAILED
+DEBUG:root:res:Build failed

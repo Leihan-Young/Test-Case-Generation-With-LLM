@@ -1,0 +1,34 @@
+WriteableCommandLineImpl() {
+    // Create an instance of WriteableCommandLineImpl
+    WriteableCommandLineImpl cmd = new WriteableCommandLineImpl();
+
+    // Create an option
+    Option option = new PropertyOption("property", "p", "Set a property");
+
+    // Add the option to the command line
+    cmd.addOption(option);
+
+    // Set a default value for the option
+    List<String> defaultValues = new ArrayList<String>();
+    defaultValues.add("default");
+    cmd.setDefaultValues(option, defaultValues);
+
+    // Add a value to the option
+    cmd.addValue(option, "value");
+
+    // Check if the option has the correct value
+    List<String> values = cmd.getValues(option, null);
+    assertEquals("value", values.get(0));
+
+    // Add a property to the option
+    cmd.addProperty(option, "key", "value");
+
+    // Check if the option has the correct property
+    String property = cmd.getProperty(option, "key", null);
+    assertEquals("value", property);
+
+    // Try to get an undefined property
+    String undefinedProperty = cmd.getProperty(option, "undefined", null);
+    assertNull(undefinedProperty);
+}
+```

@@ -1,0 +1,13 @@
+OptionWithArgument() throws Exception
+{
+    String[] args = new String[]{
+            "-f", "file.txt"
+    };
+
+    CommandLine cl = parser.parse(options, args);
+    assertTrue("Confirm -f is set", cl.hasOption("f"));
+    assertTrue("Confirm -f argument is 'file.txt'", cl.getOptionValue("f").equals("file.txt"));
+    assertTrue("Confirm all arguments recognized", cl.getArgs().length == 0);
+}
+```
+The bug in the program is that it does not properly handle options with arguments. In the test method, we are passing an option "-f" with an argument "file.txt", but the program is not correctly parsing the argument and is not storing it as the value of the option. The test method will fail, revealing the bug in the program. To fix the bug, the program needs to be modified to properly handle options with arguments.

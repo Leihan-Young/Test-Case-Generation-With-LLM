@@ -1,0 +1,19 @@
+Week() {
+    Week week = new Week(new Date());
+    assertEquals("Constructor 1: Week should be 52", 52, week.getWeek());
+    assertEquals("Constructor 1: Year should be 2021", 2021, week.getYear().getYear());
+}
+```
+The bug in the program is that the constructor used in the test method is not defined in the Week class. The Week class only has a constructor that takes in a year and week number, or a date and timezone. To fix the bug, the test method should use the appropriate constructor, like this:
+```
+public void testWeek() {
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.YEAR, 2021);
+    cal.set(Calendar.MONTH, Calendar.DECEMBER);
+    cal.set(Calendar.DAY_OF_MONTH, 31);
+    Week week = new Week(cal.getTime());
+    assertEquals("Week should be 53", 53, week.getWeek());
+    assertEquals("Year should be 2021", 2021, week.getYear().getYear());
+}
+```
+This test method sets the date to December 31, 2021, which falls in the 53rd week of the year. The test checks if the week and year returned by the Week object are correct.

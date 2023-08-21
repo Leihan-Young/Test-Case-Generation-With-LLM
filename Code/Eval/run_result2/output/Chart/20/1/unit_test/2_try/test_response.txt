@@ -1,0 +1,49 @@
+ValueMarker() {
+        ValueMarker marker = new ValueMarker(10);
+        assertEquals(10, marker.getValue(), 0.0); // bug - constructor not defined
+    }
+```
+
+The bug in the java program is that there is no constructor defined for the `ValueMarker` class that takes a `double` value as a parameter. Therefore, the test method will fail to compile with an error message stating that the constructor cannot be found. 
+
+To fix this bug, we need to define a constructor that takes a `double` value as a parameter, and sets the `value` field of the `ValueMarker` object to that value. The corrected java program is shown below:
+
+```
+public class ValueMarker extends Marker {
+    private double value;
+
+    /**
+     * Creates a new marker with the specified value.
+     *
+     * @param value  the value.
+     * @param paint  the paint.
+     * @param stroke  the stroke.
+     */
+    public ValueMarker(double value, Paint paint, Stroke stroke) {
+        super(paint, stroke);
+        this.value = value;
+    }
+
+    /**
+     * Creates a new marker with the specified value.
+     *
+     * @param value  the value.
+     */
+    public ValueMarker(double value) {
+        this(value, null, null);
+    }
+
+    /**
+     * Returns the value.
+     *
+     * @return The value.
+     * 
+     * @see #setValue(double)
+     */
+    public double getValue() {
+        return this.value;
+    }
+}
+```
+
+Now the test method should pass without errors, and we can be confident that the `ValueMarker` class is functioning correctly.

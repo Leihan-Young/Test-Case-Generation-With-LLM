@@ -1,0 +1,21 @@
+     public void testSmallSamples() {
+        final MannWhitneyUTest mannWhitneyUTest = new MannWhitneyUTest();
+        try {
+            mannWhitneyUTest.mannWhitneyUTest(new double[0], new double[0]);
+            fail("an exception should have been thrown");
+        } catch (final NoDataException nde) {
+            // expected
+        }
+        try {
+            mannWhitneyUTest.mannWhitneyUTest(new double[0], new double[1]);
+            fail("an exception should have been thrown");
+        } catch (final NoDataException nde) {
+            // expected
+        }
+        try {
+            mannWhitneyUTest.mannWhitneyUTest(new double[1], new double[0]);
+            fail("an exception should have been thrown");
+        } catch (final NoDataException nde) {
+            // expected
+        }
+    }

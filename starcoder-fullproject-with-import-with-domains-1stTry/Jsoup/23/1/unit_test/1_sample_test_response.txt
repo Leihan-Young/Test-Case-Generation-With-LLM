@@ -1,0 +1,29 @@
+     private void assertStartTag(Token token, String tagName) {
+        assertTrue(token instanceof Token.StartTag);
+        assertEquals(tagName, ((Token.StartTag) token).name);
+    }
+    private void assertEndTag(Token token, String tagName) {
+        assertTrue(token instanceof Token.EndTag);
+        assertEquals(tagName, ((Token.EndTag) token).name);
+    }
+    private void assertEmptyTag(Token token, String tagName) {
+        assertTrue(token instanceof Token.EmptyTag);
+        assertEquals(tagName, ((Token.EmptyTag) token).name);
+    }
+    private void assertCharacter(Token token, String string) {
+        assertTrue(token instanceof Token.Character);
+        assertEquals(string, ((Token.Character) token).getData());
+    }
+    private void assertComment(Token token, String string) {
+        assertTrue(token instanceof Token.Comment);
+        assertEquals(string, ((Token.Comment) token).getData());
+    }
+    private void assertDoctype(Token token, String name, String publicId, String systemId) {
+        assertTrue(token instanceof Token.Doctype);
+        Token.Doctype doctype = (Token.Doctype) token;
+        assertEquals(name, doctype.getName());
+        assertEquals(publicId, doctype.getPublicIdentifier());
+        assertEquals(systemId, doctype.getSystemIdentifier());
+    }
+    private void assertEOF(Token token) {
+        assertTrue(token instanceof Toke

@@ -1,0 +1,28 @@
+package org.apache.commons.math3.optimization.linear;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.optimization.PointValuePair;
+import org.apache.commons.math3.util.Precision;
+/**
+ * Solves a linear problem using the Two-Phase Simplex Method.
+ * @version $Id$
+ * @since 2.0
+ */
+public class SimplexSolver extends AbstractLinearOptimizer {
+    private static final double DEFAULT_EPSILON = 1.0e-6;
+    private static final int DEFAULT_ULPS = 10;
+    private final double epsilon;
+    private final int maxUlps;
+    /**
+     * Returns the row with the minimum ratio as given by the minimum ratio test (MRT).
+     * @param tableau simple tableau for the problem
+     * @param col the column to test the ratio of.  See {@link #getPivotColumn(SimplexTableau)}
+     * @return row with the minimum ratio
+     */
+    private Integer getPivotRow(SimplexTableau tableau, final int col);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

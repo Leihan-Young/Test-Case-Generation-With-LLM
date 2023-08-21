@@ -1,0 +1,6 @@
+ private static final String FOO = "foo";
+    private static final byte[] FOO_BYTES = { 102, 111, 111 };
+    private static final String FOO_ENCODED = "Zm9v";
+    private static final byte[] FOO_CHUNKED_BYTES = { 102, 111, 111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 102,
+            111, 111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 102, 111,
+            111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 102, 111, 111, 32, 10

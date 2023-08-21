@@ -1,0 +1,9 @@
+     public void testCreateNumberLong() {
+        assertEquals(new Long(0), NumberUtils.createNumber("0"));
+        assertEquals(new Long(1), NumberUtils.createNumber("1"));
+        assertEquals(new Long(-1), NumberUtils.createNumber("-1"));
+        assertEquals(new Long(1234567890123456789L), NumberUtils.createNumber("1234567890123456789"));
+        assertEquals(new Long(1234567890123456789L), NumberUtils.createNumber("1234567890123456789L"));
+        assertEquals(new Long(1234567890123456789L), NumberUtils.createNumber("1234567890123456789l"));
+        assertEquals(new Long(-1234567890123456789L), NumberUtils.createNumber("-1234567890123456789"));
+        assertEquals(new Long(-1234567890123456789L), NumberUtil

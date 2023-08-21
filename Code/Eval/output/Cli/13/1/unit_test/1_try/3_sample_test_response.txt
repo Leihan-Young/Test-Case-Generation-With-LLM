@@ -1,0 +1,20 @@
+BugInProcessValuesMethod() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final ArgumentBuilder abuilder = new ArgumentBuilder();
+        final Parser parser = new Parser();
+
+        final Argument arg1 = abuilder.withName("arg1").create();
+        final Argument arg2 = abuilder.withName("arg2").create();
+        final Option option = obuilder.withShortName("o").withArgument(arg1).create();
+
+        parser.setGroup(option);
+
+        try {
+            parser.parse(new String[] { "-o", "value1", "value2" });
+            fail("Expected OptionException not caught");
+        } catch (final OptionException e) {
+            assertEquals("Unexpected value2 while processing -o", e.getMessage());
+        }
+    }
+```
+The above test method tests the behavior of the `processValues` method of the `ArgumentImpl` class. It tries to parse an argument with an option that has an argument with a maximum of 1 and minimum of 1. It passes two values for the argument, which should throw an `OptionException` with the message "Unexpected value2 while processing -o". If the program is bug-free, the test should pass. Otherwise, it will fail.

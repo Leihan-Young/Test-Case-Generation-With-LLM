@@ -1,0 +1,26 @@
+ private void checkPoints(final PolygonsSet set, final Vector2D... points) {
+        for (int i = 0; i < points.length; ++i) {
+            Assert.assertTrue(set.contains(points[i]));
+        }
+    }
+    private void checkNotPoints(final PolygonsSet set, final Vector2D... points) {
+        for (int i = 0; i < points.length; ++i) {
+            Assert.assertFalse(set.contains(points[i]));
+        }
+    }
+    private void checkPoints(final BSPTree<Euclidean2D> tree, final Vector2D... points) {
+        for (int i = 0; i < points.length; ++i) {
+            Assert.assertTrue(tree.getRoot().contains(points[i]));
+        }
+    }
+    private void checkNotPoints(final BSPTree<Euclidean2D> tree, final Vector2D... points) {
+        for (int i = 0; i < points.length; ++i) {
+            Assert.assertFalse(tree.getRoot().contains(points[i]));
+        }
+    }
+    private void insertPoints(final BSPTree<Euclidean2D> tree, final Vector2D... points) {
+        for (int i = 0; i < points.length; ++i) {
+            tree.insert(new Vertex(points[i]));
+        }
+    }
+  

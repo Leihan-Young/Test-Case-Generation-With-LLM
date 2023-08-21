@@ -1,0 +1,169 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+/**
+ * OptionBuilder allows the user to create Options using descriptive methods.
+ *
+ * <p>Details on the Builder pattern can be found at
+ * <a href="http://c2.com/cgi-bin/wiki?BuilderPattern">
+ * http://c2.com/cgi-bin/wiki?BuilderPattern</a>.</p>
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ * @since 1.0
+ */
+public final class OptionBuilder
+{
+    private static String longopt;
+    private static String description;
+    private static String argName;
+    private static boolean required;
+    private static int numberOfArgs = Option.UNINITIALIZED;
+    private static Object type;
+    private static boolean optionalArg;
+    private static char valuesep;
+    private static OptionBuilder instance = new OptionBuilder();
+    private static void reset();
+    public static OptionBuilder withLongOpt(String newLongopt);
+    public static OptionBuilder hasArg();
+    public static OptionBuilder hasArg(boolean hasArg);
+    public static OptionBuilder withArgName(String name);
+    public static OptionBuilder isRequired();
+    public static OptionBuilder withValueSeparator(char sep);
+    public static OptionBuilder withValueSeparator();
+    public static OptionBuilder isRequired(boolean newRequired);
+    public static OptionBuilder hasArgs();
+    public static OptionBuilder hasArgs(int num);
+    public static OptionBuilder hasOptionalArg();
+    public static OptionBuilder hasOptionalArgs();
+    public static OptionBuilder hasOptionalArgs(int numArgs);
+    public static OptionBuilder withType(Object newType);
+    /**
+     * The next Option created will have the specified description
+     *
+     * @param newDescription a description of the Option's purpose
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder withDescription(String newDescription)
+    {
+        OptionBuilder.description = newDescription;
+
+        return instance;
+    }
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the <code>java.lang.String</code> representation
+     * of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(String opt) throws IllegalArgumentException
+    {
+            // create the option
+        Option option = new Option(opt, description);
+
+            // set the option properties
+            option.setLongOpt(longopt);
+            option.setRequired(required);
+            option.setOptionalArg(optionalArg);
+            option.setArgs(numberOfArgs);
+            option.setType(type);
+            option.setValueSeparator(valuesep);
+            option.setArgName(argName);
+            // reset the OptionBuilder properties
+            OptionBuilder.reset();
+
+        // return the Option instance
+        return option;
+    }
+    /**
+     * Create an Option using the current settings
+     *
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>longOpt</code> has not been set.
+     */
+    public static Option create() throws IllegalArgumentException
+    {
+        if (longopt == null)
+        {
+            OptionBuilder.reset();
+            throw new IllegalArgumentException("must specify longopt");
+        }
+
+        return create(null);
+    }
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the character representation of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(char opt) throws IllegalArgumentException
+    {
+        return create(String.valueOf(opt));
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * author Slawek Zachcial
+     */
+    public void testMan()
+    {
+        String cmdLine =
+                "man [-c|-f|-k|-w|-tZT device] [-adlhu7V] [-Mpath] [-Ppager] [-Slist] " +
+                        "[-msystem] [-pstring] [-Llocale] [-eextension] [section] page ...";
+        Options options = new Options().
+                addOption("a", "all", false, "find all matching manual pages.").
+                addOption("d", "debug", false, "emit debugging messages.").
+                addOption("e", "extension", false, "limit search to extension type 'extension'.").
+                addOption("f", "whatis", false, "equivalent to whatis.").
+                addOption("k", "apropos", false, "equivalent to apropos.").
+                addOption("w", "location", false, "print physical location of man page(s).").
+                addOption("l", "local-file", false, "interpret 'page' argument(s) as local filename(s)").
+                addOption("u", "update", false, "force a cache consistency check.").
+                //FIXME - should generate -r,--prompt string
+                addOption("r", "prompt", true, "provide 'less' pager with prompt.").
+                addOption("c", "catman", false, "used by catman to reformat out of date cat pages.").
+                addOption("7", "ascii", false, "display ASCII translation or certain latin1 chars.").
+                addOption("t", "troff", false, "use troff format pages.").
+                //FIXME - should generate -T,--troff-device device
+                addOption("T", "troff-device", true, "use groff with selected device.").
+                addOption("Z", "ditroff", false, "use groff with selected device.").
+                addOption("D", "default", false, "reset all options to their default values.").
+                //FIXME - should generate -M,--manpath path
+                addOption("M", "manpath", true, "set search path for manual pages to 'path'.").
+                //FIXME - should generate -P,--pager pager
+                addOption("P", "pager", true, "use program 'pager' to display output.").
+                //FIXME - should generate -S,--sections list
+                addOption("S", "sections", true, "use colon separated section list.").
+                //FIXME - should generate -m,--systems system
+                addOption("m", "systems", true, "search for man pages from other unix system(s).").
+                //FIXME - should generate -L,--locale locale
+                addOption("L", "locale", true, "define the locale for this particular man search.").
+                //FIXME - should generate -p,--preprocessor string
+                addOption("p", "preprocessor", true, "string indicates which preprocessor to run.\n" +
+                         " e - [n]eqn  p - pic     t - tbl\n" +
+                         " g - grap    r - refer   v - vgrind").
+                addOption("V", "version", false, "show version.").
+                addOption("h", "help", false, "show this usage message.");
+
+        HelpFormatter hf = new HelpFormatter();
+        //hf.printHelp(cmdLine, opts);
+        hf.printHelp(60, cmdLine, null, options, null);
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

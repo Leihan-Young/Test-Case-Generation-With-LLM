@@ -1,0 +1,51 @@
+package org.apache.commons.math.analysis.solvers;
+import org.apache.commons.math.util.FastMath;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+import org.apache.commons.math.exception.ConvergenceException;
+import org.apache.commons.math.exception.MathInternalError;
+/**
+ * Base class for all bracketing <em>Secant</em>-based methods for root-finding
+ * (approximating a zero of a univariate real function).
+ *
+ * <p>Implementation of the {@link RegulaFalsiSolver <em>Regula Falsi</em>} and
+ * {@link IllinoisSolver <em>Illinois</em>} methods is based on the
+ * following article: M. Dowell and P. Jarratt,
+ * <em>A modified regula falsi method for computing the root of an
+ * equation</em>, BIT Numerical Mathematics, volume 11, number 2,
+ * pages 168-174, Springer, 1971.</p>
+ *
+ * <p>Implementation of the {@link PegasusSolver <em>Pegasus</em>} method is
+ * based on the following article: M. Dowell and P. Jarratt,
+ * <em>The "Pegasus" method for computing the root of an equation</em>,
+ * BIT Numerical Mathematics, volume 12, number 4, pages 503-508, Springer,
+ * 1972.</p>
+ *
+ * <p>The {@link SecantSolver <em>Secant</em>} method is <em>not</em> a
+ * bracketing method, so it is not implemented here. It has a separate
+ * implementation.</p>
+ *
+ * @since 3.0
+ * @version $Id$
+ */
+public abstract class BaseSecantSolver
+    extends AbstractUnivariateRealSolver
+    implements BracketedUnivariateRealSolver<UnivariateRealFunction> {
+    private AllowedSolution allowed;
+    private final Method method;
+    /** {@inheritDoc} */
+    public double solve(final int maxEval, final UnivariateRealFunction f,
+                        final double min, final double max,
+                        final AllowedSolution allowedSolution);
+    /** {@inheritDoc} */
+    public double solve(final int maxEval, final UnivariateRealFunction f,
+                        final double min, final double max, final double startValue,
+                        final AllowedSolution allowedSolution);
+    /** {@inheritDoc} */
+    @Override
+    public double solve(final int maxEval, final UnivariateRealFunction f,
+                        final double min, final double max, final double startValue);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

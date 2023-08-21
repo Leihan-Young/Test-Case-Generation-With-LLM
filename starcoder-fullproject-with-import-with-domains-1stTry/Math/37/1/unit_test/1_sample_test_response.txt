@@ -1,0 +1,10 @@
+     public void testTanh() {
+        checkTanh(0, 0);
+        checkTanh(1, 0.7615941559557649);
+        checkTanh(-1, -0.7615941559557649);
+        checkTanh(0.5, 0.46211715726000974);
+        checkTanh(-0.5, -0.46211715726000974);
+        checkTanh(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        checkTanh(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        checkTanh(Double.NaN, Double.NaN);
+    }

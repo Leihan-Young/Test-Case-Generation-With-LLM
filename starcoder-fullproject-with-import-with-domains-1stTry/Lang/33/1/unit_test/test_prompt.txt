@@ -1,0 +1,55 @@
+package org.apache.commons.lang3;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+/**
+ * <p>Operates on classes without using reflection.</p>
+ *
+ * <p>This class handles invalid <code>null</code> inputs as best it can.
+ * Each method documents its behaviour in more detail.</p>
+ *
+ * <p>The notion of a <code>canonical name</code> includes the human
+ * readable name for the type, for example <code>int[]</code>. The
+ * non-canonical method variants work with the JVM names, such as
+ * <code>[I</code>. </p>
+ *
+ * @author Apache Software Foundation
+ * @author Gary Gregory
+ * @author Norm Deane
+ * @author Alban Peignier
+ * @author Tomasz Blachowicz
+ * @since 2.0
+ * @version $Id$
+ */
+public class ClassUtils {
+    public static final char PACKAGE_SEPARATOR_CHAR = '.';
+    public static final String PACKAGE_SEPARATOR = String.valueOf(PACKAGE_SEPARATOR_CHAR);
+    public static final char INNER_CLASS_SEPARATOR_CHAR = '$';
+    public static final String INNER_CLASS_SEPARATOR = String.valueOf(INNER_CLASS_SEPARATOR_CHAR);
+    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<Class<?>, Class<?>>();
+    public static Class<?> getClass(
+            ClassLoader classLoader, String className, boolean initialize) throws ClassNotFoundException;
+    public static Class<?> getClass(ClassLoader classLoader, String className) throws ClassNotFoundException;
+    public static Class<?> getClass(String className) throws ClassNotFoundException;
+    public static Class<?> getClass(String className, boolean initialize) throws ClassNotFoundException;
+    /**
+     * <p>Converts an array of <code>Object</code> in to an array of <code>Class</code> objects.
+     * If any of these objects is null, a null element will be inserted into the array.</p>
+     *
+     * <p>This method returns <code>null</code> for a <code>null</code> input array.</p>
+     *
+     * @param array an <code>Object</code> array
+     * @return a <code>Class</code> array, <code>null</code> if null array input
+     * @since 2.4
+     */
+    public static Class<?>[] toClass(Object[] array);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

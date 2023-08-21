@@ -1,0 +1,5 @@
+ public void testCloning() throws CloneNotSupportedException {
+        StatisticalBarRenderer r1 = new StatisticalBarRenderer();
+        StatisticalBarRenderer r2 = (StatisticalBarRenderer) r1.clone();
+        assertEquals(r1, r2);
+    }

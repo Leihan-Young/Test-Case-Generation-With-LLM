@@ -1,0 +1,1509 @@
+Getting Chart-13 focal context...
+focal_context=package org.jfree.chart.block;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.Size2D;
+import org.jfree.data.Range;
+/**
+ * An arrangement manager that lays out blocks in a similar way to
+ * Swing's BorderLayout class.
+ */
+public class BorderArrangement implements Arrangement, Serializable {
+    private static final long serialVersionUID = 506071142274883745L;
+    private Block centerBlock;
+    private Block topBlock;
+    private Block bottomBlock;
+    private Block leftBlock;
+    private Block rightBlock;
+    /**
+     * Arranges the items within a container.
+     *
+     * @param container  the container.
+     * @param constraint  the constraint.
+     * @param g2  the graphics device.
+     *
+     * @return The container size after the arrangement.
+     */
+    protected Size2D arrangeFF(BlockContainer container, Graphics2D g2,
+                               RectangleConstraint constraint) {
+        double[] w = new double[5];
+        double[] h = new double[5];
+        w[0] = constraint.getWidth();
+        if (this.topBlock != null) {
+            RectangleConstraint c1 = new RectangleConstraint(w[0], null,
+                    LengthConstraintType.FIXED, 0.0,
+                    new Range(0.0, constraint.getHeight()),
+                    LengthConstraintType.RANGE);
+            Size2D size = this.topBlock.arrange(g2, c1);
+            h[0] = size.height;
+        }
+        w[1] = w[0];
+        if (this.bottomBlock != null) {
+            RectangleConstraint c2 = new RectangleConstraint(w[0], null,
+                    LengthConstraintType.FIXED, 0.0, new Range(0.0,
+                    constraint.getHeight() - h[0]), LengthConstraintType.RANGE);
+            Size2D size = this.bottomBlock.arrange(g2, c2);
+            h[1] = size.height;
+        }
+        h[2] = constraint.getHeight() - h[1] - h[0];
+        if (this.leftBlock != null) {
+            RectangleConstraint c3 = new RectangleConstraint(0.0,
+                    new Range(0.0, constraint.getWidth()),
+                    LengthConstraintType.RANGE, h[2], null,
+                    LengthConstraintType.FIXED);
+            Size2D size = this.leftBlock.arrange(g2, c3);
+            w[2] = size.width;
+        }
+        h[3] = h[2];
+        if (this.rightBlock != null) {
+            RectangleConstraint c4 = new RectangleConstraint(0.0,
+                    new Range(0.0, constraint.getWidth() - w[2]),
+                    LengthConstraintType.RANGE, h[2], null,
+                    LengthConstraintType.FIXED);
+            Size2D size = this.rightBlock.arrange(g2, c4);
+            w[3] = size.width;
+        }
+        h[4] = h[2];
+        w[4] = constraint.getWidth() - w[3] - w[2];
+        RectangleConstraint c5 = new RectangleConstraint(w[4], h[4]);
+        if (this.centerBlock != null) {
+            this.centerBlock.arrange(g2, c5);
+        }
+
+        if (this.topBlock != null) {
+            this.topBlock.setBounds(new Rectangle2D.Double(0.0, 0.0, w[0],
+                    h[0]));
+        }
+        if (this.bottomBlock != null) {
+            this.bottomBlock.setBounds(new Rectangle2D.Double(0.0, h[0] + h[2],
+                    w[1], h[1]));
+        }
+        if (this.leftBlock != null) {
+            this.leftBlock.setBounds(new Rectangle2D.Double(0.0, h[0], w[2],
+                    h[2]));
+        }
+        if (this.rightBlock != null) {
+            this.rightBlock.setBounds(new Rectangle2D.Double(w[2] + w[4], h[0],
+                    w[3], h[3]));
+        }
+        if (this.centerBlock != null) {
+            this.centerBlock.setBounds(new Rectangle2D.Double(w[2], h[0], w[4],
+                    h[4]));
+        }
+        return new Size2D(constraint.getWidth(), constraint.getHeight());
+    }
+}
+
+Getting Chart-13 test prefix...
+oracle_focal_context=package org.jfree.chart.block;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.Size2D;
+import org.jfree.data.Range;
+/**
+ * An arrangement manager that lays out blocks in a similar way to
+ * Swing's BorderLayout class.
+ */
+public class BorderArrangement implements Arrangement, Serializable {
+    private static final long serialVersionUID = 506071142274883745L;
+    private Block centerBlock;
+    private Block topBlock;
+    private Block bottomBlock;
+    private Block leftBlock;
+    private Block rightBlock;
+    /**
+     * Creates a new instance.
+     */
+    public BorderArrangement() {
+    }
+    /**
+     * Arranges the items in the specified container, subject to the given
+     * constraint.
+     *
+     * @param container  the container.
+     * @param g2  the graphics device.
+     * @param constraint  the constraint.
+     *
+     * @return The block size.
+     */
+    public Size2D arrange(BlockContainer container,
+                          Graphics2D g2,
+                          RectangleConstraint constraint) {
+        RectangleConstraint contentConstraint
+                = container.toContentConstraint(constraint);
+        Size2D contentSize = null;
+        LengthConstraintType w = contentConstraint.getWidthConstraintType();
+        LengthConstraintType h = contentConstraint.getHeightConstraintType();
+        if (w == LengthConstraintType.NONE) {
+            if (h == LengthConstraintType.NONE) {
+                contentSize = arrangeNN(container, g2);
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                throw new RuntimeException("Not implemented.");
+            }
+        }
+        else if (w == LengthConstraintType.FIXED) {
+            if (h == LengthConstraintType.NONE) {
+                contentSize = arrangeFN(container, g2, constraint.getWidth());
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                contentSize = arrangeFF(container, g2, constraint);
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                contentSize = arrangeFR(container, g2, constraint);
+            }
+        }
+        else if (w == LengthConstraintType.RANGE) {
+            if (h == LengthConstraintType.NONE) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                contentSize = arrangeRR(container, constraint.getWidthRange(),
+                        constraint.getHeightRange(), g2);
+            }
+        }
+        return new Size2D(container.calculateTotalWidth(contentSize.getWidth()),
+                container.calculateTotalHeight(contentSize.getHeight()));
+    }
+    /**
+     * Adds a block to the arrangement manager at the specified edge.
+     *
+     * @param block  the block (<code>null</code> permitted).
+     * @param key  the edge (an instance of {@link RectangleEdge}) or
+     *             <code>null</code> for the center block.
+     */
+    public void add(Block block, Object key) {
+
+        if (key == null) {
+            this.centerBlock = block;
+        }
+        else {
+            RectangleEdge edge = (RectangleEdge) key;
+            if (edge == RectangleEdge.TOP) {
+                this.topBlock = block;
+            }
+            else if (edge == RectangleEdge.BOTTOM) {
+                this.bottomBlock = block;
+            }
+            else if (edge == RectangleEdge.LEFT) {
+                this.leftBlock = block;
+            }
+            else if (edge == RectangleEdge.RIGHT) {
+                this.rightBlock = block;
+            }
+        }
+    }
+    /**
+     * Clears the layout.
+     */
+    public void clear() {
+        this.centerBlock = null;
+        this.topBlock = null;
+        this.bottomBlock = null;
+        this.leftBlock = null;
+        this.rightBlock = null;
+    }
+}
+
+test_class_path=org/jfree/chart/block/junit/BorderArrangementTests.java, test_prefix=    public void testSizingWithWidthConstraint() {
+        RectangleConstraint constraint = new RectangleConstraint(
+            10.0, new Range(10.0, 10.0), LengthConstraintType.FIXED,
+            0.0, new Range(0.0, 0.0), LengthConstraintType.NONE
+        );
+                
+        BlockContainer container = new BlockContainer(new BorderArrangement());
+        BufferedImage image = new BufferedImage(
+            200, 100, BufferedImage.TYPE_INT_RGB
+        );
+        Graphics2D g2 = image.createGraphics();
+        
+        // TBLRC
+        // 00001 - center item only
+        container.add(new EmptyBlock(5.0, 6.0));
+        Size2D size = container.arrange(g2, constraint);
+        _tmp_var_0_ = 10.0;
+        _tmp_var_1_ =  size.width;
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = 6.0;
+        _tmp_var_4_ =  size.height;
+        _tmp_var_5_ =  EPSILON;
+        $ASSERT$
+        
+        container.clear();
+        container.add(new EmptyBlock(15.0, 16.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_6_ = 10.0;
+        _tmp_var_7_ =  size.width;
+        _tmp_var_8_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_9_ = 16.0;
+        _tmp_var_10_ =  size.height;
+        _tmp_var_11_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 00010 - right item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_12_ = 10.0;
+        _tmp_var_13_ =  size.width;
+        _tmp_var_14_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_15_ = 45.6;
+        _tmp_var_16_ =  size.height;
+        _tmp_var_17_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00011 - right and center items
+        container.clear();
+        container.add(new EmptyBlock(7.0, 20.0));
+        container.add(new EmptyBlock(8.0, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_18_ = 10.0;
+        _tmp_var_19_ =  size.width;
+        _tmp_var_20_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_21_ = 45.6;
+        _tmp_var_22_ =  size.height;
+        _tmp_var_23_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00100 - left item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_24_ = 10.0;
+        _tmp_var_25_ =  size.width;
+        _tmp_var_26_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_27_ = 45.6;
+        _tmp_var_28_ =  size.height;
+        _tmp_var_29_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00101 - left and center items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_30_ = 10.0;
+        _tmp_var_31_ =  size.width;
+        _tmp_var_32_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_33_ = 45.6;
+        _tmp_var_34_ =  size.height;
+        _tmp_var_35_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00110 - left and right items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_36_ = 10.0;
+        _tmp_var_37_ =  size.width;
+        _tmp_var_38_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_39_ = 45.6;
+        _tmp_var_40_ =  size.height;
+        _tmp_var_41_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00111 - left, right and center items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(5.4, 3.2), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_42_ = 10.0;
+        _tmp_var_43_ =  size.width;
+        _tmp_var_44_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_45_ = 45.6;
+        _tmp_var_46_ =  size.height;
+        _tmp_var_47_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01000 - bottom item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_48_ = 10.0;
+        _tmp_var_49_ =  size.width;
+        _tmp_var_50_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_51_ = 45.6;
+        _tmp_var_52_ =  size.height;
+        _tmp_var_53_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01001 - bottom and center only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_54_ = 10.0;
+        _tmp_var_55_ =  size.width;
+        _tmp_var_56_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_57_ = 65.6;
+        _tmp_var_58_ =  size.height;
+        _tmp_var_59_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01010 - bottom and right only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_60_ = 10.0;
+        _tmp_var_61_ =  size.width;
+        _tmp_var_62_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_63_ = 65.6;
+        _tmp_var_64_ =  size.height;
+        _tmp_var_65_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01011 - bottom, right and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_66_ = 10.0;
+        _tmp_var_67_ =  size.width;
+        _tmp_var_68_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_69_ = 65.6;
+        _tmp_var_70_ =  size.height;
+        _tmp_var_71_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01100
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_72_ = 10.0;
+        _tmp_var_73_ =  size.width;
+        _tmp_var_74_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_75_ = 65.6;
+        _tmp_var_76_ =  size.height;
+        _tmp_var_77_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01101 - bottom, left and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_78_ = 10.0;
+        _tmp_var_79_ =  size.width;
+        _tmp_var_80_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_81_ = 65.6;
+        _tmp_var_82_ =  size.height;
+        _tmp_var_83_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01110 - bottom. left and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_84_ = 10.0;
+        _tmp_var_85_ =  size.width;
+        _tmp_var_86_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_87_ = 65.6;
+        _tmp_var_88_ =  size.height;
+        _tmp_var_89_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01111
+        container.clear();
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_90_ = 10.0;
+        _tmp_var_91_ =  size.width;
+        _tmp_var_92_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_93_ = 14.0;
+        _tmp_var_94_ =  size.height;
+        _tmp_var_95_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10000 - top item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_96_ = 10.0;
+        _tmp_var_97_ =  size.width;
+        _tmp_var_98_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_99_ = 45.6;
+        _tmp_var_100_ =  size.height;
+        _tmp_var_101_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10001 - top and center only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_102_ = 10.0;
+        _tmp_var_103_ =  size.width;
+        _tmp_var_104_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_105_ = 65.6;
+        _tmp_var_106_ =  size.height;
+        _tmp_var_107_ =  EPSILON;
+        $ASSERT$
+                
+        // TBLRC
+        // 10010 - right and top only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_108_ = 10.0;
+        _tmp_var_109_ =  size.width;
+        _tmp_var_110_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_111_ = 65.6;
+        _tmp_var_112_ =  size.height;
+        _tmp_var_113_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10011 - top, right and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_114_ = 10.0;
+        _tmp_var_115_ =  size.width;
+        _tmp_var_116_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_117_ = 65.6;
+        _tmp_var_118_ =  size.height;
+        _tmp_var_119_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 10100 - top and left only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_120_ = 10.0;
+        _tmp_var_121_ =  size.width;
+        _tmp_var_122_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_123_ = 65.6;
+        _tmp_var_124_ =  size.height;
+        _tmp_var_125_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10101 - top, left and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_126_ = 10.0;
+        _tmp_var_127_ =  size.width;
+        _tmp_var_128_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_129_ = 65.6;
+        _tmp_var_130_ =  size.height;
+        _tmp_var_131_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10110 - top, left and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_132_ = 10.0;
+        _tmp_var_133_ =  size.width;
+        _tmp_var_134_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_135_ = 65.6;
+        _tmp_var_136_ =  size.height;
+        _tmp_var_137_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10111
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_138_ = 10.0;
+        _tmp_var_139_ =  size.width;
+        _tmp_var_140_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_141_ = 12.0;
+        _tmp_var_142_ =  size.height;
+        _tmp_var_143_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 11000 - top and bottom only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_144_ = 10.0;
+        _tmp_var_145_ =  size.width;
+        _tmp_var_146_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_147_ = 65.6;
+        _tmp_var_148_ =  size.height;
+        _tmp_var_149_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11001
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_150_ = 10.0;
+        _tmp_var_151_ =  size.width;
+        _tmp_var_152_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_153_ = 77.9;
+        _tmp_var_154_ =  size.height;
+        _tmp_var_155_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11010 - top, bottom and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_156_ = 10.0;
+        _tmp_var_157_ =  size.width;
+        _tmp_var_158_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_159_ = 77.9;
+        _tmp_var_160_ =  size.height;
+        _tmp_var_161_ =  EPSILON;
+        $ASSERT$
+                
+        // TBLRC
+        // 11011
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_162_ = 10.0;
+        _tmp_var_163_ =  size.width;
+        _tmp_var_164_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_165_ = 16.0;
+        _tmp_var_166_ =  size.height;
+        _tmp_var_167_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11100
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_168_ = 10.0;
+        _tmp_var_169_ =  size.width;
+        _tmp_var_170_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_171_ = 77.9;
+        _tmp_var_172_ =  size.height;
+        _tmp_var_173_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 11101
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_174_ = 10.0;
+        _tmp_var_175_ =  size.width;
+        _tmp_var_176_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_177_ = 16.0;
+        _tmp_var_178_ =  size.height;
+        _tmp_var_179_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11110
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_180_ = 10.0;
+        _tmp_var_181_ =  size.width;
+        _tmp_var_182_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_183_ = 14.0;
+        _tmp_var_184_ =  size.height;
+        _tmp_var_185_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11111 - all
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_186_ = 10.0;
+        _tmp_var_187_ =  size.width;
+        _tmp_var_188_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_189_ = 16.0;
+        _tmp_var_190_ =  size.height;
+        _tmp_var_191_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 00000 - no items
+        container.clear();
+        size = container.arrange(g2, constraint);
+        _tmp_var_192_ = 10.0;
+        _tmp_var_193_ =  size.width;
+        _tmp_var_194_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_195_ = 0.0;
+        _tmp_var_196_ =  size.height;
+        _tmp_var_197_ =  EPSILON;
+        $ASSERT$
+        
+    }
+
+Constructing unit test prompt for Chart-13
+unit_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.block;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.Size2D;
+import org.jfree.data.Range;
+/**
+ * An arrangement manager that lays out blocks in a similar way to
+ * Swing's BorderLayout class.
+ */
+public class BorderArrangement implements Arrangement, Serializable {
+    private static final long serialVersionUID = 506071142274883745L;
+    private Block centerBlock;
+    private Block topBlock;
+    private Block bottomBlock;
+    private Block leftBlock;
+    private Block rightBlock;
+    /**
+     * Arranges the items within a container.
+     *
+     * @param container  the container.
+     * @param constraint  the constraint.
+     * @param g2  the graphics device.
+     *
+     * @return The container size after the arrangement.
+     */
+    protected Size2D arrangeFF(BlockContainer container, Graphics2D g2,
+                               RectangleConstraint constraint) {
+        double[] w = new double[5];
+        double[] h = new double[5];
+        w[0] = constraint.getWidth();
+        if (this.topBlock != null) {
+            RectangleConstraint c1 = new RectangleConstraint(w[0], null,
+                    LengthConstraintType.FIXED, 0.0,
+                    new Range(0.0, constraint.getHeight()),
+                    LengthConstraintType.RANGE);
+            Size2D size = this.topBlock.arrange(g2, c1);
+            h[0] = size.height;
+        }
+        w[1] = w[0];
+        if (this.bottomBlock != null) {
+            RectangleConstraint c2 = new RectangleConstraint(w[0], null,
+                    LengthConstraintType.FIXED, 0.0, new Range(0.0,
+                    constraint.getHeight() - h[0]), LengthConstraintType.RANGE);
+            Size2D size = this.bottomBlock.arrange(g2, c2);
+            h[1] = size.height;
+        }
+        h[2] = constraint.getHeight() - h[1] - h[0];
+        if (this.leftBlock != null) {
+            RectangleConstraint c3 = new RectangleConstraint(0.0,
+                    new Range(0.0, constraint.getWidth()),
+                    LengthConstraintType.RANGE, h[2], null,
+                    LengthConstraintType.FIXED);
+            Size2D size = this.leftBlock.arrange(g2, c3);
+            w[2] = size.width;
+        }
+        h[3] = h[2];
+        if (this.rightBlock != null) {
+            RectangleConstraint c4 = new RectangleConstraint(0.0,
+                    new Range(0.0, constraint.getWidth() - w[2]),
+                    LengthConstraintType.RANGE, h[2], null,
+                    LengthConstraintType.FIXED);
+            Size2D size = this.rightBlock.arrange(g2, c4);
+            w[3] = size.width;
+        }
+        h[4] = h[2];
+        w[4] = constraint.getWidth() - w[3] - w[2];
+        RectangleConstraint c5 = new RectangleConstraint(w[4], h[4]);
+        if (this.centerBlock != null) {
+            this.centerBlock.arrange(g2, c5);
+        }
+
+        if (this.topBlock != null) {
+            this.topBlock.setBounds(new Rectangle2D.Double(0.0, 0.0, w[0],
+                    h[0]));
+        }
+        if (this.bottomBlock != null) {
+            this.bottomBlock.setBounds(new Rectangle2D.Double(0.0, h[0] + h[2],
+                    w[1], h[1]));
+        }
+        if (this.leftBlock != null) {
+            this.leftBlock.setBounds(new Rectangle2D.Double(0.0, h[0], w[2],
+                    h[2]));
+        }
+        if (this.rightBlock != null) {
+            this.rightBlock.setBounds(new Rectangle2D.Double(w[2] + w[4], h[0],
+                    w[3], h[3]));
+        }
+        if (this.centerBlock != null) {
+            this.centerBlock.setBounds(new Rectangle2D.Double(w[2], h[0], w[4],
+                    h[4]));
+        }
+        return new Size2D(constraint.getWidth(), constraint.getHeight());
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-13 unit test
+Invoke failed:Request timed out: HTTPSConnectionPool(host='api.openai.com', port=443): Read timed out. (read timeout=600)
+Fail to invoke LLM(gpt-3.5-turbo for unit test)
+Finished invoking LLM(gpt-3.5-turbo) for Chart-13 unit test
+Constructing oracle test prompt for Chart-13
+oracle_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.block;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.Size2D;
+import org.jfree.data.Range;
+/**
+ * An arrangement manager that lays out blocks in a similar way to
+ * Swing's BorderLayout class.
+ */
+public class BorderArrangement implements Arrangement, Serializable {
+    private static final long serialVersionUID = 506071142274883745L;
+    private Block centerBlock;
+    private Block topBlock;
+    private Block bottomBlock;
+    private Block leftBlock;
+    private Block rightBlock;
+    /**
+     * Creates a new instance.
+     */
+    public BorderArrangement() {
+    }
+    /**
+     * Arranges the items in the specified container, subject to the given
+     * constraint.
+     *
+     * @param container  the container.
+     * @param g2  the graphics device.
+     * @param constraint  the constraint.
+     *
+     * @return The block size.
+     */
+    public Size2D arrange(BlockContainer container,
+                          Graphics2D g2,
+                          RectangleConstraint constraint) {
+        RectangleConstraint contentConstraint
+                = container.toContentConstraint(constraint);
+        Size2D contentSize = null;
+        LengthConstraintType w = contentConstraint.getWidthConstraintType();
+        LengthConstraintType h = contentConstraint.getHeightConstraintType();
+        if (w == LengthConstraintType.NONE) {
+            if (h == LengthConstraintType.NONE) {
+                contentSize = arrangeNN(container, g2);
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                throw new RuntimeException("Not implemented.");
+            }
+        }
+        else if (w == LengthConstraintType.FIXED) {
+            if (h == LengthConstraintType.NONE) {
+                contentSize = arrangeFN(container, g2, constraint.getWidth());
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                contentSize = arrangeFF(container, g2, constraint);
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                contentSize = arrangeFR(container, g2, constraint);
+            }
+        }
+        else if (w == LengthConstraintType.RANGE) {
+            if (h == LengthConstraintType.NONE) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.FIXED) {
+                throw new RuntimeException("Not implemented.");
+            }
+            else if (h == LengthConstraintType.RANGE) {
+                contentSize = arrangeRR(container, constraint.getWidthRange(),
+                        constraint.getHeightRange(), g2);
+            }
+        }
+        return new Size2D(container.calculateTotalWidth(contentSize.getWidth()),
+                container.calculateTotalHeight(contentSize.getHeight()));
+    }
+    /**
+     * Adds a block to the arrangement manager at the specified edge.
+     *
+     * @param block  the block (<code>null</code> permitted).
+     * @param key  the edge (an instance of {@link RectangleEdge}) or
+     *             <code>null</code> for the center block.
+     */
+    public void add(Block block, Object key) {
+
+        if (key == null) {
+            this.centerBlock = block;
+        }
+        else {
+            RectangleEdge edge = (RectangleEdge) key;
+            if (edge == RectangleEdge.TOP) {
+                this.topBlock = block;
+            }
+            else if (edge == RectangleEdge.BOTTOM) {
+                this.bottomBlock = block;
+            }
+            else if (edge == RectangleEdge.LEFT) {
+                this.leftBlock = block;
+            }
+            else if (edge == RectangleEdge.RIGHT) {
+                this.rightBlock = block;
+            }
+        }
+    }
+    /**
+     * Clears the layout.
+     */
+    public void clear() {
+        this.centerBlock = null;
+        this.topBlock = null;
+        this.bottomBlock = null;
+        this.leftBlock = null;
+        this.rightBlock = null;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testSizingWithWidthConstraint() {
+        RectangleConstraint constraint = new RectangleConstraint(
+            10.0, new Range(10.0, 10.0), LengthConstraintType.FIXED,
+            0.0, new Range(0.0, 0.0), LengthConstraintType.NONE
+        );
+                
+        BlockContainer container = new BlockContainer(new BorderArrangement());
+        BufferedImage image = new BufferedImage(
+            200, 100, BufferedImage.TYPE_INT_RGB
+        );
+        Graphics2D g2 = image.createGraphics();
+        
+        // TBLRC
+        // 00001 - center item only
+        container.add(new EmptyBlock(5.0, 6.0));
+        Size2D size = container.arrange(g2, constraint);
+        _tmp_var_0_ = 10.0;
+        _tmp_var_1_ =  size.width;
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = 6.0;
+        _tmp_var_4_ =  size.height;
+        _tmp_var_5_ =  EPSILON;
+        $ASSERT$
+        
+        container.clear();
+        container.add(new EmptyBlock(15.0, 16.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_6_ = 10.0;
+        _tmp_var_7_ =  size.width;
+        _tmp_var_8_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_9_ = 16.0;
+        _tmp_var_10_ =  size.height;
+        _tmp_var_11_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 00010 - right item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_12_ = 10.0;
+        _tmp_var_13_ =  size.width;
+        _tmp_var_14_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_15_ = 45.6;
+        _tmp_var_16_ =  size.height;
+        _tmp_var_17_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00011 - right and center items
+        container.clear();
+        container.add(new EmptyBlock(7.0, 20.0));
+        container.add(new EmptyBlock(8.0, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_18_ = 10.0;
+        _tmp_var_19_ =  size.width;
+        _tmp_var_20_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_21_ = 45.6;
+        _tmp_var_22_ =  size.height;
+        _tmp_var_23_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00100 - left item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_24_ = 10.0;
+        _tmp_var_25_ =  size.width;
+        _tmp_var_26_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_27_ = 45.6;
+        _tmp_var_28_ =  size.height;
+        _tmp_var_29_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00101 - left and center items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_30_ = 10.0;
+        _tmp_var_31_ =  size.width;
+        _tmp_var_32_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_33_ = 45.6;
+        _tmp_var_34_ =  size.height;
+        _tmp_var_35_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00110 - left and right items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_36_ = 10.0;
+        _tmp_var_37_ =  size.width;
+        _tmp_var_38_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_39_ = 45.6;
+        _tmp_var_40_ =  size.height;
+        _tmp_var_41_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 00111 - left, right and center items
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(5.4, 3.2), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_42_ = 10.0;
+        _tmp_var_43_ =  size.width;
+        _tmp_var_44_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_45_ = 45.6;
+        _tmp_var_46_ =  size.height;
+        _tmp_var_47_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01000 - bottom item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_48_ = 10.0;
+        _tmp_var_49_ =  size.width;
+        _tmp_var_50_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_51_ = 45.6;
+        _tmp_var_52_ =  size.height;
+        _tmp_var_53_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01001 - bottom and center only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_54_ = 10.0;
+        _tmp_var_55_ =  size.width;
+        _tmp_var_56_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_57_ = 65.6;
+        _tmp_var_58_ =  size.height;
+        _tmp_var_59_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01010 - bottom and right only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_60_ = 10.0;
+        _tmp_var_61_ =  size.width;
+        _tmp_var_62_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_63_ = 65.6;
+        _tmp_var_64_ =  size.height;
+        _tmp_var_65_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01011 - bottom, right and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_66_ = 10.0;
+        _tmp_var_67_ =  size.width;
+        _tmp_var_68_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_69_ = 65.6;
+        _tmp_var_70_ =  size.height;
+        _tmp_var_71_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01100
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_72_ = 10.0;
+        _tmp_var_73_ =  size.width;
+        _tmp_var_74_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_75_ = 65.6;
+        _tmp_var_76_ =  size.height;
+        _tmp_var_77_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01101 - bottom, left and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_78_ = 10.0;
+        _tmp_var_79_ =  size.width;
+        _tmp_var_80_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_81_ = 65.6;
+        _tmp_var_82_ =  size.height;
+        _tmp_var_83_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01110 - bottom. left and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_84_ = 10.0;
+        _tmp_var_85_ =  size.width;
+        _tmp_var_86_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_87_ = 65.6;
+        _tmp_var_88_ =  size.height;
+        _tmp_var_89_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 01111
+        container.clear();
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_90_ = 10.0;
+        _tmp_var_91_ =  size.width;
+        _tmp_var_92_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_93_ = 14.0;
+        _tmp_var_94_ =  size.height;
+        _tmp_var_95_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10000 - top item only
+        container.clear();
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_96_ = 10.0;
+        _tmp_var_97_ =  size.width;
+        _tmp_var_98_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_99_ = 45.6;
+        _tmp_var_100_ =  size.height;
+        _tmp_var_101_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10001 - top and center only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0));
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_102_ = 10.0;
+        _tmp_var_103_ =  size.width;
+        _tmp_var_104_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_105_ = 65.6;
+        _tmp_var_106_ =  size.height;
+        _tmp_var_107_ =  EPSILON;
+        $ASSERT$
+                
+        // TBLRC
+        // 10010 - right and top only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_108_ = 10.0;
+        _tmp_var_109_ =  size.width;
+        _tmp_var_110_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_111_ = 65.6;
+        _tmp_var_112_ =  size.height;
+        _tmp_var_113_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10011 - top, right and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_114_ = 10.0;
+        _tmp_var_115_ =  size.width;
+        _tmp_var_116_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_117_ = 65.6;
+        _tmp_var_118_ =  size.height;
+        _tmp_var_119_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 10100 - top and left only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.TOP);
+        size = container.arrange(g2, constraint);
+        _tmp_var_120_ = 10.0;
+        _tmp_var_121_ =  size.width;
+        _tmp_var_122_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_123_ = 65.6;
+        _tmp_var_124_ =  size.height;
+        _tmp_var_125_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10101 - top, left and center
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_126_ = 10.0;
+        _tmp_var_127_ =  size.width;
+        _tmp_var_128_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_129_ = 65.6;
+        _tmp_var_130_ =  size.height;
+        _tmp_var_131_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10110 - top, left and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.LEFT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_132_ = 10.0;
+        _tmp_var_133_ =  size.width;
+        _tmp_var_134_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_135_ = 65.6;
+        _tmp_var_136_ =  size.height;
+        _tmp_var_137_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 10111
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_138_ = 10.0;
+        _tmp_var_139_ =  size.width;
+        _tmp_var_140_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_141_ = 12.0;
+        _tmp_var_142_ =  size.height;
+        _tmp_var_143_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 11000 - top and bottom only
+        container.clear();
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_144_ = 10.0;
+        _tmp_var_145_ =  size.width;
+        _tmp_var_146_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_147_ = 65.6;
+        _tmp_var_148_ =  size.height;
+        _tmp_var_149_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11001
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3));
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_150_ = 10.0;
+        _tmp_var_151_ =  size.width;
+        _tmp_var_152_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_153_ = 77.9;
+        _tmp_var_154_ =  size.height;
+        _tmp_var_155_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11010 - top, bottom and right
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_156_ = 10.0;
+        _tmp_var_157_ =  size.width;
+        _tmp_var_158_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_159_ = 77.9;
+        _tmp_var_160_ =  size.height;
+        _tmp_var_161_ =  EPSILON;
+        $ASSERT$
+                
+        // TBLRC
+        // 11011
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_162_ = 10.0;
+        _tmp_var_163_ =  size.width;
+        _tmp_var_164_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_165_ = 16.0;
+        _tmp_var_166_ =  size.height;
+        _tmp_var_167_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11100
+        container.clear();
+        container.add(new EmptyBlock(21.0, 12.3), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(10.0, 20.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(12.3, 45.6), RectangleEdge.BOTTOM);
+        size = container.arrange(g2, constraint);
+        _tmp_var_168_ = 10.0;
+        _tmp_var_169_ =  size.width;
+        _tmp_var_170_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_171_ = 77.9;
+        _tmp_var_172_ =  size.height;
+        _tmp_var_173_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 11101
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_174_ = 10.0;
+        _tmp_var_175_ =  size.width;
+        _tmp_var_176_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_177_ = 16.0;
+        _tmp_var_178_ =  size.height;
+        _tmp_var_179_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11110
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        size = container.arrange(g2, constraint);
+        _tmp_var_180_ = 10.0;
+        _tmp_var_181_ =  size.width;
+        _tmp_var_182_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_183_ = 14.0;
+        _tmp_var_184_ =  size.height;
+        _tmp_var_185_ =  EPSILON;
+        $ASSERT$
+        
+        // TBLRC
+        // 11111 - all
+        container.clear();
+        container.add(new EmptyBlock(1.0, 2.0), RectangleEdge.TOP);
+        container.add(new EmptyBlock(3.0, 4.0), RectangleEdge.BOTTOM);
+        container.add(new EmptyBlock(5.0, 6.0), RectangleEdge.LEFT);
+        container.add(new EmptyBlock(7.0, 8.0), RectangleEdge.RIGHT);
+        container.add(new EmptyBlock(9.0, 10.0));
+        size = container.arrange(g2, constraint);
+        _tmp_var_186_ = 10.0;
+        _tmp_var_187_ =  size.width;
+        _tmp_var_188_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_189_ = 16.0;
+        _tmp_var_190_ =  size.height;
+        _tmp_var_191_ =  EPSILON;
+        $ASSERT$
+
+        // TBLRC
+        // 00000 - no items
+        container.clear();
+        size = container.arrange(g2, constraint);
+        _tmp_var_192_ = 10.0;
+        _tmp_var_193_ =  size.width;
+        _tmp_var_194_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_195_ = 0.0;
+        _tmp_var_196_ =  size.height;
+        _tmp_var_197_ =  EPSILON;
+        $ASSERT$
+        
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-13 oracle test
+Invoke failed:This model's maximum context length is 4097 tokens. However, your messages resulted in 6385 tokens. Please reduce the length of the messages.
+Fail to invoke LLM(gpt-3.5-turbo for oracle test)
+Finished invoking LLM(gpt-3.5-turbo) for Chart-13 oracle test
+unit_res_in_bug=Invoke LLM failed,unit_res_in_fix=Invoke LLM failed,oracle_res_in_bug=Invoke LLM failed,oracle_res_in_fix=Invoke LLM failed

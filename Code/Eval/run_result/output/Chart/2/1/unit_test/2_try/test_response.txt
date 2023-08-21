@@ -1,0 +1,24 @@
+IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0 if bug exists
+}
+
+```
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+The modified test method creates a dataset with one series and one data point (x=2.0, y=2.0) and sets the x-value to 2.0. It then calls the `iterateDomainBounds()` method with `includeInterval = true`. The expected result is that the upper bound of the range is 2.0, but if the bug exists, the program will return 1.0 as the upper bound of the range. Therefore, the assertion `assertEquals(2.0, range.getUpperBound(), 0.0001)` will fail if the bug exists. 
+
+By running this test method, we can reveal the bug in the program and fix it to return the correct upper bound of the domain range.

@@ -1,0 +1,22 @@
+ public void testUnescape() {
+        assertUnescape("", "");
+        assertUnescape("one", "one");
+        assertUnescape("one two", "one two");
+        assertUnescape("one\\ two", "one two");
+        assertUnescape("one\\\" two", "one\" two");
+        assertUnescape("one\\' two", "one' two");
+        assertUnescape("one\\( two", "one( two");
+        assertUnescape("one\\) two", "one) two");
+        assertUnescape("one\\[ two", "one[ two");
+        assertUnescape("one\\] two", "one] two");
+        assertUnescape("one\\? two", "one? two");
+        assertUnescape("one\\, two", "one, two");
+        assertUnescape("one\\\\ two", "one\\ two");
+        assertUnescape("one\\a two", "one\a two");
+        assertUnescape("one\\b two", "one\b two");
+        assertUnescape("one\\f two", "one\f two");
+        assertUnescape("one\\n two", "one\n two");
+        assertUnescape("one\\r two", "one\r two");
+        assertUnescape("one\\t two", "one\t two");
+        assertUnescape("one\\v two", "one\v two");
+        assertUnescape("one\

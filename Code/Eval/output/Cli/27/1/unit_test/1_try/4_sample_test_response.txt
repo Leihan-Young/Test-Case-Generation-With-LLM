@@ -1,0 +1,15 @@
+OptionGroup() {
+        OptionGroup group = new OptionGroup();
+        Option option1 = new Option("a", "apple", false, "Option for apple");
+        Option option2 = new Option("b", "banana", false, "Option for banana");
+        group.addOption(option1);
+        group.addOption(option2);
+        group.setSelected(option1);
+        assertTrue(group.getSelected().equals("a"));
+        group.setSelected(option2);
+        assertTrue(group.getSelected().equals("b"));
+        group.setSelected(null);
+        assertTrue(group.getSelected() == null);
+    }
+```
+The test method tests the `OptionGroup` class by creating an instance of the class and adding two options. It then sets the selected option using `setSelected()` method and checks the selected option using `getSelected()`. Finally, it sets the selected option to null and checks if the selected option is null. This test method can reveal the bug if `setSelected()` method throws an exception or if `getSelected()` method returns an incorrect value.

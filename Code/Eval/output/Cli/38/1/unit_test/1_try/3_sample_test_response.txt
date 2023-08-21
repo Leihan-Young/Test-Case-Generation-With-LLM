@@ -1,0 +1,12 @@
+Bug() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        String[] args = {"-first", "value"};
+        DefaultParser defaultParser = new DefaultParser();
+        CommandLine line = defaultParser.parse(opts, args);
+        assertTrue(line.hasOption("first"));
+        assertEquals(line.getOptionValue("first"), "value");
+    }
+```
+The bug in the code is that the `handleShortAndLongOption` method is missing and not implemented which is called by `handleToken` method for short and long options. This causes the program to not recognize the options passed through the command line arguments. The test code above tests for this bug by passing an option `-first` with value `value` but the program fails to recognize it and the test fails.

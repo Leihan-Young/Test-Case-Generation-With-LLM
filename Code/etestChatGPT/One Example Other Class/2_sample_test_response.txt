@@ -1,0 +1,26 @@
+DefaultValue() throws Exception {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option testOption =
+        obuilder
+            .withShortName("a")
+            .withArgument(
+                abuilder
+                    .withName("test")
+                    .withDefault("default")
+                    .create())
+            .create();
+
+    final Group options = gbuilder.withOption(testOption).create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(options);
+
+    final CommandLine cmdLine = parser.parse(new String[] { "-a" });
+
+    assertTrue(cmdLine.hasOption("-a"));
+    assertEquals("default", cmdLine.getValue("-a"));
+}
+```

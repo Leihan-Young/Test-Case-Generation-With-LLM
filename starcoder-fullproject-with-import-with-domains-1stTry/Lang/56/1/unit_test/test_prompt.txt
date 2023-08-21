@@ -1,0 +1,129 @@
+package org.apache.commons.lang.time;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import org.apache.commons.lang.Validate;
+/**
+ * <p>FastDateFormat is a fast and thread-safe version of
+ * {@link java.text.SimpleDateFormat}.</p>
+ * 
+ * <p>This class can be used as a direct replacement to
+ * <code>SimpleDateFormat</code> in most formatting situations.
+ * This class is especially useful in multi-threaded server environments.
+ * <code>SimpleDateFormat</code> is not thread-safe in any JDK version,
+ * nor will it be as Sun have closed the bug/RFE.
+ * </p>
+ *
+ * <p>Only formatting is supported, but all patterns are compatible with
+ * SimpleDateFormat (except time zones - see below).</p>
+ *
+ * <p>Java 1.4 introduced a new pattern letter, <code>'Z'</code>, to represent
+ * time zones in RFC822 format (eg. <code>+0800</code> or <code>-1100</code>).
+ * This pattern letter can be used here (on all JDK versions).</p>
+ *
+ * <p>In addition, the pattern <code>'ZZ'</code> has been made to represent
+ * ISO8601 full format time zones (eg. <code>+08:00</code> or <code>-11:00</code>).
+ * This introduces a minor incompatibility with Java 1.4, but at a gain of
+ * useful functionality.</p>
+ *
+ * @author TeaTrove project
+ * @author Brian S O'Neill
+ * @author Sean Schofield
+ * @author Gary Gregory
+ * @author Stephen Colebourne
+ * @author Nikolay Metchev
+ * @since 2.0
+ * @version $Id$
+ */
+public class FastDateFormat extends Format {
+    private static final long serialVersionUID = 1L;
+    public static final int FULL = DateFormat.FULL;
+    public static final int LONG = DateFormat.LONG;
+    public static final int MEDIUM = DateFormat.MEDIUM;
+    public static final int SHORT = DateFormat.SHORT;
+    private static String cDefaultPattern;
+    private static Map cInstanceCache = new HashMap(7);
+    private static Map cDateInstanceCache = new HashMap(7);
+    private static Map cTimeInstanceCache = new HashMap(7);
+    private static Map cDateTimeInstanceCache = new HashMap(7);
+    private static Map cTimeZoneDisplayCache = new HashMap(7);
+    private final String mPattern;
+    private final TimeZone mTimeZone;
+    private final boolean mTimeZoneForced;
+    private final Locale mLocale;
+    private final boolean mLocaleForced;
+    private Rule[] mRules;
+    private int mMaxLengthEstimate;
+    /**
+     * <p>Gets a formatter instance using the specified pattern and
+     * locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param locale  optional locale, overrides system locale
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern, Locale locale);
+    /**
+     * <p>Gets a formatter instance using the default pattern in the
+     * default locale.</p>
+     * 
+     * @return a date/time formatter
+     */
+    public static FastDateFormat getInstance();
+    /**
+     * <p>Gets a formatter instance using the specified pattern in the
+     * default locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern);
+    /**
+     * <p>Gets a formatter instance using the specified pattern, time zone
+     * and locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @param locale  optional locale, overrides system locale
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     *  or <code>null</code>
+     */
+    public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale);
+    /**
+     * <p>Gets a formatter instance using the specified pattern and
+     * time zone.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern, TimeZone timeZone);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

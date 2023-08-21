@@ -1,0 +1,17 @@
+IterateDomainBounds() {
+    // create a dataset with one series and one item
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 5.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // calculate the range using the method under test
+    Range range = DatasetUtilities.iterateDomainBounds(dataset);
+
+    // assert that the range is correct
+    assertEquals(1.0, range.getLowerBound(), EPSILON);
+    assertEquals(1.0, range.getUpperBound(), EPSILON);
+}
+```
+The bug in the given java program is that the method `iterateDomainBounds()` is not implemented correctly. The method is supposed to iterate over the items in an `XYDataset` to find the range of x-values. However, the implementation of the method only considers the x-values of the first item in the dataset, and ignores the x-values of all other items. This results in an incorrect range being returned for datasets with more than one item.
+
+The above test method creates an `XYDataset` with one series and one item, and calculates the range using the `iterateDomainBounds()` method. The test asserts that the range is correct. This test will fail if the `iterateDomainBounds()` method is implemented incorrectly.

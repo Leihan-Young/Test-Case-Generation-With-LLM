@@ -1,0 +1,11 @@
+ public void testFormData() {
+        String html = "<form id=1><input name=1><input name=2></form>";
+        Document doc = Jsoup.parse(html);
+        FormElement form = doc.select("form").first();
+        List<Connection.KeyVal> data = form.formData();
+        assertEquals(2, data.size());
+        assertEquals("1", data.get(0).key);
+        assertEquals("", data.get(0).value);
+        assertEquals("2", data.get(1).key);
+        assertEquals("", data.get(1).value);
+    }

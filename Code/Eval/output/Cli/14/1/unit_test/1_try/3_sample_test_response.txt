@@ -1,0 +1,29 @@
+MandatoryGroupBug() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] { "-c" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Unexpected -c", exp.getMessage());
+        }
+    }
+```
+In the above test method, we are passing an unexpected option `-c` to the parser. Since it is not a part of the mandatory group (`-a` or `-b`), we expect the parser to throw an `UnexpectedOptionException`. However, the current implementation of the `GroupImpl` class does not handle this case correctly and throws a different exception (`OptionException` with message "Missing option -a|-b"). Hence, this test method can reveal the bug in the program.

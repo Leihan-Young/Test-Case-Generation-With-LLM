@@ -1,0 +1,6 @@
+     public void testReplace() {
+        StrBuilder sb = new StrBuilder();
+        sb.append("aaaaa");
+        sb.replace(1, 3, "bbb");
+        assertEquals("abba", sb.toString());
+    }

@@ -1,0 +1,12 @@
+KeyedObjects2D() {
+    KeyedObjects2D data = new KeyedObjects2D();
+    data.addObject("row1", "col1", Integer.valueOf(1));
+    data.addObject("row2", "col2", Integer.valueOf(2));
+    data.addObject("row3", "col3", Integer.valueOf(3));
+    data.removeObject("row2", "col2");
+    assertNull(data.getObject("row2", "col2"));
+    assertEquals(2, data.getRowCount());
+    assertEquals(3, data.getColumnCount());
+}
+```
+The error occurred because the `addObject` method expects the first argument to be an `Object`, but the test code passed a `String`. The corrected version of the test method uses `Integer.valueOf(1)` instead of `1` to create an `Integer` object as the value for the first `addObject` method call. The same correction is applied to the other two `addObject` method calls.

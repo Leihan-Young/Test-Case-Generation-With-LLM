@@ -1,0 +1,10 @@
+     public void testEqualsAndHashCode() {
+        Fraction f12a = new Fraction(1, 2);
+        Fraction f12b = new Fraction(1, 2);
+        Fraction f13  = new Fraction(1, 3);
+        assertEquals(f12a, f12a);
+        assertEquals(f12a, f12b);
+        assertEquals(f12a.hashCode(), f12b.hashCode());
+        assertFalse(f12a.equals(f13));
+        assertFalse(f12a.equals(new Object()));
+    }

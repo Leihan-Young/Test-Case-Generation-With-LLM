@@ -1,0 +1,21 @@
+SelectedOption() throws AlreadySelectedException {
+    Option optionA = new Option("a", "first");
+    Option optionB = new Option("b", "second");
+    OptionGroup group = new OptionGroup();
+    group.addOption(optionA);
+    group.addOption(optionB);
+    Options opts = new Options();
+    opts.addOptionGroup(group);
+    PosixParser posixParser = new PosixParser();
+    CommandLine line = posixParser.parse(opts, new String[]{"-a"});
+    assertTrue(line.hasOption("a"));
+    assertNull(line.getOptionValue("a"));
+    assertEquals("first", group.getSelected());
+    group.setSelected(optionB);
+    line = posixParser.parse(opts, new String[]{"-b"});
+    assertTrue(line.hasOption("b"));
+    assertNull(line.getOptionValue("b"));
+    assertEquals("second", group.getSelected());
+}
+
+```

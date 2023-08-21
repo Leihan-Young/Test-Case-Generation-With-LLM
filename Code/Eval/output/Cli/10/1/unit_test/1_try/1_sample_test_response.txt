@@ -1,0 +1,19 @@
+() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+
+        String[] args = new String[]{"-h"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+
+            assertTrue(line.hasOption("help"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+    }
+```
+This test method attempts to test if the program correctly identifies the "help" option when the user inputs "-h". However, the correct option is actually "-help". Therefore, this test method will fail and reveal the bug in the program.

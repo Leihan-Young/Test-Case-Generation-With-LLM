@@ -1,0 +1,22 @@
+AddOption() {
+    WriteableCommandLineImpl cmd = new WriteableCommandLineImpl();
+    Option option = new PropertyOption("p", "property", true, "description");
+
+    // add the option to the command line
+    cmd.addOption(option);
+
+    // check if the option was added successfully
+    assertTrue(cmd.hasOption(option));
+    assertEquals(option, cmd.getOption("p"));
+    assertTrue(cmd.getOptionTriggers().contains("p"));
+
+    // add the same option again
+    cmd.addOption(option);
+
+    // check if the option was added successfully
+    assertTrue(cmd.hasOption(option));
+    assertEquals(option, cmd.getOption("p"));
+    assertTrue(cmd.getOptionTriggers().contains("p"));
+}
+```
+This test method adds an option to the command line twice and checks if it was added successfully. The bug in the program is that the `optionToProperties` map is not properly updated when an option is added multiple times. This can cause unexpected behavior when retrieving the properties of an option.

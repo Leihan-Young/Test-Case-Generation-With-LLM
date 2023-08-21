@@ -1,0 +1,7 @@
+DefaultIntervalCategoryDataset() {
+    DefaultIntervalCategoryDataset dataset = new DefaultIntervalCategoryDataset();
+    Comparable[] categories = { "Category 1", "Category 2", "Category 3" };
+    dataset.setCategoryKeys(categories);
+    assertEquals(3, dataset.getCategoryCount()); // bug: should return 3, but returns 0
+}
+```

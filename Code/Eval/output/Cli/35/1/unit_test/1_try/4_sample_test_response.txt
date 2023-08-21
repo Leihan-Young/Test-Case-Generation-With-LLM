@@ -1,0 +1,11 @@
+() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        PosixParser posixParser = new PosixParser();
+        String[] args = {"-f"};
+        CommandLine line = posixParser.parse(opts, args);
+        assertFalse(line.hasOption("a"));
+    }
+```
+The above test method is trying to parse an option "-f" which is not added to the list of options. The expected behavior is that the hasOption() method should return false, but since "-f" is not added as an option, it throws an exception. This reveals the bug in the code.

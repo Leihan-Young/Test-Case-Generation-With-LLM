@@ -1,0 +1,28 @@
+     private LevenbergMarquardtOptimizer getOptimizer() {
+        final LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer();
+        optimizer.setStartConfiguration(point);
+        optimizer.setConvergenceChecker(checker);
+        optimizer.setCostRelativeTolerance(1.0e-10);
+        optimizer.setOrthoTolerance(1.0e-10);
+        optimizer.setParametersRelativeTolerance(1.0e-10);
+        optimizer.setMaxEvaluations(1000);
+        optimizer.setMaxIterations(1000);
+        return optimizer;
+    }
+    private void doTest(final RealVector startPoint,
+                        final RealMatrix startJacobian,
+                        final RealVector target) {
+        doTest(startPoint, startJacobian, target, null);
+    }
+    private void doTest(final RealVector startPoint,
+                        final RealMatrix startJacobian,
+                        final RealVector target,
+                        final RealMatrix targetJacobian) {
+        doTest(startPoint, startJacobian, target, targetJacobian, 1.0e-10, 1.0e-10);
+    }
+    private void doTest(final RealVector startPoint,
+                        final RealMatrix startJacobian,
+                        final RealVector target,
+                        final RealMatrix targetJacobian,
+                        final double costRelativeTol,
+                        final double parRelativeTol) 

@@ -1,0 +1,25 @@
+   private void doTest(final EmbeddedRungeKuttaIntegrator integ)
+        throws DerivativeException, IntegratorException {
+        integ.integrate(new FirstOrderDifferentialEquations() {
+
+            public int getDimension() {
+                return 3;
+            }
+
+            public void computeDerivatives(final double t, final double[] y,
+                                           final double[] yDot) {
+                yDot[0] = -0.04 * y[0] + 1e4 * y[1] * y[2];
+                yDot[1] =  0.04 * y[0] - 1e4 * y[1] * y[2] - 3e7 * y[1] * y[1];
+                yDot[2] =  y[1];
+            }
+        }, 0, new double[] { 1.0, 0.0, 0.0 }, 10.0, new double[3]);
+        integ.integrate(new FirstOrderDifferentialEquations() {
+
+            public int getDimension() {
+                return 3;
+            }
+
+            public void computeDerivatives(final double t, final double[] y,
+                                           final double[] yDot) {
+                yDot[0] = -0.04 * y[0] + 1e4 * y[1] * y[2];
+                yDot[

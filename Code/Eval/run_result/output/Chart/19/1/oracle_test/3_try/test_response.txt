@@ -1,0 +1,44 @@
+GetRangeAxisIndex() {
+    CategoryAxis domainAxis1 = new CategoryAxis("X1");
+    NumberAxis rangeAxis1 = new NumberAxis("Y1");
+    NumberAxis rangeAxis2 = new NumberAxis("Y2");
+    CategoryPlot plot = new CategoryPlot(null, domainAxis1, rangeAxis1, null);
+    
+    // test getRangeAxisIndex with one range axis
+    int expectedIndex1 = 0;
+    int actualIndex1 = plot.getRangeAxisIndex(rangeAxis1);
+    assertEquals(expectedIndex1, actualIndex1);
+    
+    // test getRangeAxisIndex with non-existing range axis
+    int expectedIndex2 = -1;
+    int actualIndex2 = plot.getRangeAxisIndex(rangeAxis2);
+    assertEquals(expectedIndex2, actualIndex2);
+    
+    // test getRangeAxisIndex after adding a new range axis
+    plot.setRangeAxis(1, rangeAxis2);
+    int expectedIndex3 = 1;
+    int actualIndex3 = plot.getRangeAxisIndex(rangeAxis2);
+    assertEquals(expectedIndex3, actualIndex3);
+    
+    // test getRangeAxisIndex with null range axis
+    boolean pass = false;
+    try {
+        plot.getRangeAxisIndex(null);
+    } catch (NullPointerException e) {
+        pass = true;
+    }
+    assertTrue(pass);
+    
+    // test getRangeAxisIndex with range axis from parent plot
+    CategoryPlot parentPlot = new CategoryPlot();
+    parentPlot.setRangeAxis(rangeAxis1);
+    plot.setParent(parentPlot);
+    int expectedIndex4 = 0;
+    int actualIndex4 = plot.getRangeAxisIndex(rangeAxis1);
+    assertEquals(expectedIndex4, actualIndex4);
+    
+    // test getRangeAxisIndex with non-existing range axis in parent plot
+    int expectedIndex5 = -1;
+    int actualIndex5 = plot.getRangeAxisIndex(rangeAxis2);
+    assertEquals(expectedIndex5, actualIndex5);
+}

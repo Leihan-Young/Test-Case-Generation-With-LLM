@@ -1,0 +1,26 @@
+ShapeList() {
+    ShapeList list = new ShapeList();
+    Rectangle2D rectangle = new Rectangle2D.Double(0, 0, 10, 10);
+    list.setShape(0, rectangle);
+    assertTrue(rectangle.equals(list.getShape(0)));
+}
+``` 
+
+Corrected test method:
+```
+public void testShapeList() {
+    ShapeList list = new ShapeList();
+    Rectangle2D rectangle = new Rectangle2D.Double(0, 0, 10, 10);
+    list.setShape(0, rectangle);
+    assertTrue(rectangle.equals(list.getShape(0)));
+}
+``` 
+
+Explanation:
+The error occurred because the `Rectangle2D` class was not imported. To fix the error, add the following import statement at the beginning of the test class:
+
+```
+import java.awt.geom.Rectangle2D;
+``` 
+
+Additionally, the last line of the test method should use `assertTrue` instead of `assertEquals` to compare two `Shape` objects, since `Shape` does not implement the `equals` method.

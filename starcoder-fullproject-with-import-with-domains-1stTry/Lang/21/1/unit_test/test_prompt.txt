@@ -1,0 +1,140 @@
+package org.apache.commons.lang3.time;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TimeZone;
+/**
+ * <p>A suite of utilities surrounding the use of the
+ * {@link java.util.Calendar} and {@link java.util.Date} object.</p>
+ * 
+ * <p>DateUtils contains a lot of common methods considering manipulations
+ * of Dates or Calendars. Some methods require some extra explanation.
+ * The truncate, ceiling and round methods could be considered the Math.floor(),
+ * Math.ceil() or Math.round versions for dates
+ * This way date-fields will be ignored in bottom-up order.
+ * As a complement to these methods we've introduced some fragment-methods.
+ * With these methods the Date-fields will be ignored in top-down order.
+ * Since a date without a year is not a valid date, you have to decide in what
+ * kind of date-field you want your result, for instance milliseconds or days.
+ * </p>
+ *   
+ *   
+ *
+ * @author Apache Software Foundation
+ * @author <a href="mailto:sergek@lokitech.com">Serge Knystautas</a>
+ * @author Janek Bogucki
+ * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
+ * @author Phil Steitz
+ * @author Robert Scholte
+ * @author Paul Benedict
+ * @since 2.0
+ * @version $Id$
+ */
+public class DateUtils {
+    public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("GMT");
+    public static final long MILLIS_PER_SECOND = 1000;
+    public static final long MILLIS_PER_MINUTE = 60 * MILLIS_PER_SECOND;
+    public static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
+    public static final long MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
+    public final static int SEMI_MONTH = 1001;
+    /**
+     * Sets the specified field to a date returning a new object.  
+     * This does not use a lenient calendar.
+     * The original date object is unchanged.
+     *
+     * @param date  the date, not null
+     * @param calendarField  the calendar field to set the amount to
+     * @param amount the amount to set
+     * @return a new Date object set with the specified value
+     * @throws IllegalArgumentException if the date is null
+     * @since 2.4
+     */
+    private static Date set(Date date, int calendarField, int amount);
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date (a different object)
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Calendar truncate(Calendar date, int field);
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date is <code>null</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date truncate(Date date, int field);
+    /**
+     * <p>Checks if two calendar objects represent the same local time.</p>
+     *
+     * <p>This method compares the values of the fields of the two objects.
+     * In addition, both calendars must be the same of the same type.</p>
+     * 
+     * @param cal1  the first calendar, not altered, not null
+     * @param cal2  the second calendar, not altered, not null
+     * @return true if they represent the same millisecond instant
+     * @throws IllegalArgumentException if either date is <code>null</code>
+     * @since 2.1
+     */
+    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2);
+    /**
+     * Adds to a date returning a new object.
+     * The original date object is unchanged.
+     *
+     * @param date  the date, not null
+     * @param calendarField  the calendar field to add to
+     * @param amount  the amount to add, may be negative
+     * @return the new date object with the amount added
+     * @throws IllegalArgumentException if the date is null
+     */
+    private static Date add(Date date, int calendarField, int amount);
+    /**
+     * <p>Truncate this date, leaving the field specified as the most
+     * significant field.</p>
+     *
+     * <p>For example, if you had the datetime of 28 Mar 2002
+     * 13:45:01.231, if you passed with HOUR, it would return 28 Mar
+     * 2002 13:00:00.000.  If this was passed with MONTH, it would
+     * return 1 Mar 2002 0:00:00.000.</p>
+     * 
+     * @param date  the date to work with, either <code>Date</code>
+     *  or <code>Calendar</code>
+     * @param field  the field from <code>Calendar</code>
+     *  or <code>SEMI_MONTH</code>
+     * @return the rounded date
+     * @throws IllegalArgumentException if the date
+     *  is <code>null</code>
+     * @throws ClassCastException if the object type is not a
+     *  <code>Date</code> or <code>Calendar</code>
+     * @throws ArithmeticException if the year is over 280 million
+     */
+    public static Date truncate(Object date, int field);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

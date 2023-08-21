@@ -1,0 +1,5 @@
+  public void newTestMethod_test152()  throws Throwable  {
+      double[] doubleArray0 = new double[3];
+      double double0 = MathUtils.distance(doubleArray0, doubleArray0);
+      assertEquals(0.0, double0, 0.01);
+  }

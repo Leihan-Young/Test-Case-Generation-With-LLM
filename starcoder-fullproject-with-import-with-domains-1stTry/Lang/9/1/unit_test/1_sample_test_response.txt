@@ -1,0 +1,21 @@
+     private void doTest(final String pattern, final String source, final Date expected) throws Exception {
+        doTest(pattern, source, expected, TimeZone.getDefault());
+    }
+    private void doTest(final String pattern, final String source, final Date expected, final TimeZone tz) throws Exception {
+        doTest(pattern, source, expected, tz, Locale.getDefault());
+    }
+    private void doTest(final String pattern, final String source, final Date expected, final Locale locale) throws Exception {
+        doTest(pattern, source, expected, TimeZone.getDefault(), locale);
+    }
+    private void doTest(final String pattern, final String source, final Date expected, final TimeZone tz, final Locale locale) throws Exception {
+        FastDateFormat fdf = FastDateFormat.getInstance(pattern, tz, locale);
+        Date actual = fdf.parse(source);
+        assertEquals(expected, actual);
+    }
+    private void doTest(final String pattern, final String source, final String expected) throws Exception {
+        doTest(pattern, source, expected, TimeZone.getDefault());
+    }
+    private void doTest(final String pattern, final String source, final String expected, final TimeZone tz) throws Exception {
+        doTest(pattern, source, expected, tz, Locale.getDefault());
+    }
+    private void doTest(final String pattern, final String source, final String expected, final Locale locale) throws Exception 

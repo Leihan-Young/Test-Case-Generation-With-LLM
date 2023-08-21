@@ -1,0 +1,295 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------
+ * Marker.java
+ * -----------
+ * (C) Copyright 2002-2007, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Nicolas Brodu;
+ *
+ * $Id: Marker.java,v 1.10.2.5 2006/09/05 14:34:23 mungady Exp $
+ *
+ * Changes (since 2-Jul-2002)
+ * --------------------------
+ * 02-Jul-2002 : Added extra constructor, standard header and Javadoc 
+ *               comments (DG);
+ * 20-Aug-2002 : Added the outline stroke attribute (DG);
+ * 02-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 16-Oct-2002 : Added new constructor (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 21-May-2003 : Added labels (DG);
+ * 11-Sep-2003 : Implemented Cloneable (NB);
+ * 05-Nov-2003 : Added checks to ensure some attributes are never null (DG);
+ * 11-Feb-2003 : Moved to org.jfree.chart.plot package, plus significant API 
+ *               changes to support IntervalMarker in plots (DG);
+ * 14-Jun-2004 : Updated equals() method (DG);
+ * 21-Jan-2005 : Added settings to control direction of horizontal and 
+ *               vertical label offsets (DG);
+ * 01-Jun-2005 : Modified to use only one label offset type - this will be 
+ *               applied to the domain or range axis as appropriate (DG);
+ * 06-Jun-2005 : Fix equals() method to handle GradientPaint (DG);
+ * 19-Aug-2005 : Changed constructor from public --> protected (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 05-Sep-2006 : Added MarkerChangeListener support (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 26-Sep-2007 : Fix for serialization bug 1802195 (DG);
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.EventListener;
+import javax.swing.event.EventListenerList;
+import org.jfree.chart.event.MarkerChangeEvent;
+import org.jfree.chart.event.MarkerChangeListener;
+import org.jfree.chart.text.TextAnchor;
+import org.jfree.chart.util.LengthAdjustmentType;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.RectangleAnchor;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+/**
+ * The base class for markers that can be added to plots to highlight a value 
+ * or range of values.
+ * <br><br>
+ * An event notification mechanism was added to this class in JFreeChart 
+ * version 1.0.3.
+ */
+public abstract class Marker implements Cloneable, Serializable {
+    private static final long serialVersionUID = -734389651405327166L;
+    private transient Paint paint;
+    private transient Stroke stroke;
+    private transient Paint outlinePaint;
+    private transient Stroke outlineStroke;
+    private float alpha;
+    private String label = null;
+    private Font labelFont;
+    private transient Paint labelPaint;
+    private RectangleAnchor labelAnchor;
+    private TextAnchor labelTextAnchor;
+    private RectangleInsets labelOffset;
+    private LengthAdjustmentType labelOffsetType;
+    private transient EventListenerList listenerList;
+    /**
+     * Returns the alpha transparency.
+     *
+     * @return The alpha transparency.
+     * 
+     * @see #setAlpha(float)
+     */
+    public float getAlpha() {
+        return this.alpha;
+    }
+    /**
+     * Returns the outline stroke.
+     *
+     * @return The outline stroke (possibly <code>null</code>).
+     * 
+     * @see #setOutlineStroke(Stroke)
+     */
+    public Stroke getOutlineStroke() {
+        return this.outlineStroke;
+    }
+    /**
+     * Returns the stroke.
+     *
+     * @return The stroke (never <code>null</code>).
+     * 
+     * @see #setStroke(Stroke)
+     */
+    public Stroke getStroke() {
+        return this.stroke;
+    }
+    /**
+     * Returns the outline paint.
+     *
+     * @return The outline paint (possibly <code>null</code>).
+     * 
+     * @see #setOutlinePaint(Paint)
+     */
+    public Paint getOutlinePaint() {
+        return this.outlinePaint;
+    }
+    /**
+     * Returns the paint.
+     *
+     * @return The paint (never <code>null</code>).
+     * 
+     * @see #setPaint(Paint)
+     */
+    public Paint getPaint() {
+        return this.paint;
+    }
+}
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * ----------------
+ * ValueMarker.java
+ * ----------------
+ * (C) Copyright 2004-2007, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 09-Feb-2004 : Version 1 (DG);
+ * 16-Feb-2005 : Added new constructor (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 05-Sep-2006 : Added setValue() method (DG);
+ * 08-Oct-2007 : Fixed bug 1808376, constructor calling super with incorrect
+ *               values (DG);
+ * 
+ */
+package org.jfree.chart.plot;
+import java.awt.Paint;
+import java.awt.Stroke;
+import org.jfree.chart.event.MarkerChangeEvent;
+/**
+ * A marker that represents a single value.  Markers can be added to plots to
+ * highlight specific values.
+ */
+public class ValueMarker extends Marker {
+    private double value;
+    /**
+     * Returns the value.
+     *
+     * @return The value.
+     * 
+     * @see #setValue(double)
+     */
+    public double getValue() {
+        return this.value;
+    }
+    /**
+     * Creates a new marker.
+     * 
+     * @param value  the value.
+     */
+    public ValueMarker(double value) {
+        super();
+        this.value = value;
+    }
+    /**
+     * Creates a new marker.
+     * 
+     * @param value  the value.
+     * @param paint  the paint (<code>null</code> not permitted).
+     * @param stroke  the stroke (<code>null</code> not permitted).
+     */
+    public ValueMarker(double value, Paint paint, Stroke stroke) {
+        this(value, paint, stroke, paint, stroke, 1.0f);
+    }
+    /**
+     * Creates a new value marker.
+     * 
+     * @param value  the value.
+     * @param paint  the paint (<code>null</code> not permitted).
+     * @param stroke  the stroke (<code>null</code> not permitted).
+     * @param outlinePaint  the outline paint (<code>null</code> permitted).
+     * @param outlineStroke  the outline stroke (<code>null</code> permitted).
+     * @param alpha  the alpha transparency (in the range 0.0f to 1.0f).
+     */
+    public ValueMarker(double value, Paint paint, Stroke stroke, 
+                       Paint outlinePaint, Stroke outlineStroke, float alpha) {
+        super(paint, stroke, paint, stroke, alpha);
+        this.value = value;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void test1808376() {
+        Stroke stroke = new BasicStroke(1.0f);
+        Stroke outlineStroke = new BasicStroke(2.0f);
+        ValueMarker m = new ValueMarker(1.0, Color.red, stroke, Color.blue, 
+                outlineStroke, 0.5f);
+        _tmp_var_0_ = 1.0;
+        _tmp_var_1_ =  m.getValue();
+        _tmp_var_2_ =  EPSILON;
+        $ASSERT$
+        _tmp_var_3_ = Color.red;
+        _tmp_var_4_ =  m.getPaint();
+        $ASSERT$
+        _tmp_var_5_ = stroke;
+        _tmp_var_6_ =  m.getStroke();
+        $ASSERT$
+        _tmp_var_7_ = Color.blue;
+        _tmp_var_8_ =  m.getOutlinePaint();
+        $ASSERT$
+        _tmp_var_9_ = outlineStroke;
+        _tmp_var_10_ =  m.getOutlineStroke();
+        $ASSERT$
+        _tmp_var_11_ = 0.5f;
+        _tmp_var_12_ =  m.getAlpha();
+        _tmp_var_13_ =  EPSILON;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

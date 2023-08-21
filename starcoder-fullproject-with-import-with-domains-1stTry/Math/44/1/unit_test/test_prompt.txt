@@ -1,0 +1,79 @@
+package org.apache.commons.math.ode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.apache.commons.math.analysis.solvers.BracketingNthOrderBrentSolver;
+import org.apache.commons.math.analysis.solvers.UnivariateRealSolver;
+import org.apache.commons.math.exception.DimensionMismatchException;
+import org.apache.commons.math.exception.MathIllegalArgumentException;
+import org.apache.commons.math.exception.MathIllegalStateException;
+import org.apache.commons.math.exception.MaxCountExceededException;
+import org.apache.commons.math.exception.NumberIsTooSmallException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.ode.events.EventHandler;
+import org.apache.commons.math.ode.events.EventState;
+import org.apache.commons.math.ode.sampling.AbstractStepInterpolator;
+import org.apache.commons.math.ode.sampling.StepHandler;
+import org.apache.commons.math.util.FastMath;
+import org.apache.commons.math.util.Incrementor;
+import org.apache.commons.math.util.Precision;
+/**
+ * Base class managing common boilerplate for all integrators.
+ * @version $Id$
+ * @since 2.0
+ */
+public abstract class AbstractIntegrator implements FirstOrderIntegrator {
+    private Collection<EventState> eventsStates;
+    private boolean statesInitialized;
+    private final String name;
+    private Incrementor evaluations;
+    private transient ExpandableStatefulODE expandable;
+    /** {@inheritDoc} */
+    public void addEventHandler(final EventHandler handler,
+                                final double maxCheckInterval,
+                                final double convergence,
+                                final int maxIterationCount);
+    /** {@inheritDoc} */
+    public void addEventHandler(final EventHandler handler,
+                                final double maxCheckInterval,
+                                final double convergence,
+                                final int maxIterationCount,
+                                final UnivariateRealSolver solver);
+    /** {@inheritDoc} */
+    public double integrate(final FirstOrderDifferentialEquations equations,
+                            final double t0, final double[] y0, final double t, final double[] y)
+        throws MathIllegalStateException, MathIllegalArgumentException;
+    /** Accept a step, triggering events and step handlers.
+     * @param interpolator step interpolator
+     * @param y state vector at step end time, must be reset if an event
+     * asks for resetting or if an events stops integration during the step
+     * @param yDot placeholder array where to put the time derivative of the state vector
+     * @param tEnd final integration time
+     * @return time at end of step
+     * @exception MathIllegalStateException if the value of one event state cannot be evaluated
+     * @since 2.2
+     */
+    protected double acceptStep(final AbstractStepInterpolator interpolator,
+                                final double[] y, final double[] yDot, final double tEnd)
+        throws MathIllegalStateException;
+    public abstract void integrate(ExpandableStatefulODE equations, double t)
+        throws MathIllegalStateException, MathIllegalArgumentException;
+
+    /** Compute the derivatives and check the number of evaluations.
+     * @param t current value of the independent <I>time</I> variable
+     * @param y array containing the current value of the state vector
+     * @param yDot placeholder array where to put the time derivative of the state vector
+     * @exception MaxCountExceededException if the number of functions evaluations is exceeded
+     */
+    public void computeDerivatives(final double t, final double[] y, final double[] yDot)
+        throws MaxCountExceededException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

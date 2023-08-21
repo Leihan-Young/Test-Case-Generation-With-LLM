@@ -1,0 +1,29 @@
+   private void assertTokenizesTo(String input, String expected) {
+        assertTokenizesTo(input, expected, new ParseErrorList());
+    }
+    private void assertTokenizesTo(String input, String expected, ParseError... errors) {
+        assertTokenizesTo(input, expected, ParseErrorList.copyOf(errors));
+    }
+    private void assertTokenizesTo(String input, String expected, ParseErrorList errors) {
+        Tokeniser t = new Tokeniser(new CharacterReader(input, 0, input.length()));
+        StringBuilder sb = new StringBuilder();
+        Token token = t.read();
+        while (token!= null) {
+            sb.append(token.toString());
+            token = t.read();
+        }
+        assertEquals(expected, sb.toString());
+        assertEquals(0, errors.size());
+    }
+    private void assertFailsToTokenize(String input, ParseError... errors) {
+        assertFailsToTokenize(input, ParseErrorList.copyOf(errors));
+    }
+    private void assertFailsToTokenize(String input, ParseErrorList errors) {
+        Tokeniser t = new Tokeniser(new CharacterReader(input, 0, input.length()));
+        StringBuilder sb = new StringBuilder();
+        Token token = t.read();
+        while (token!= null) {
+            sb.append(token.toString());
+            token = t.read();
+        }
+        assertEquals("", sb.toString())

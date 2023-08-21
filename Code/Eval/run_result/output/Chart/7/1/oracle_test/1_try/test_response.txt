@@ -1,0 +1,26 @@
+GetMaxMiddleIndex() {
+    TimePeriodValues s = new TimePeriodValues("Test");
+    int expectedIndex = -1;
+    int actualIndex = s.getMaxMiddleIndex();
+    assertEquals(expectedIndex, actualIndex);
+    
+    s.add(new SimpleTimePeriod(100L, 200L), 1.0);
+    expectedIndex = 0;
+    actualIndex = s.getMaxMiddleIndex();
+    assertEquals(expectedIndex, actualIndex);
+    
+    s.add(new SimpleTimePeriod(300L, 400L), 2.0);
+    expectedIndex = 1;
+    actualIndex = s.getMaxMiddleIndex();
+    assertEquals(expectedIndex, actualIndex);
+    
+    s.add(new SimpleTimePeriod(0L, 50L), 3.0);
+    expectedIndex = 1;
+    actualIndex = s.getMaxMiddleIndex();
+    assertEquals(expectedIndex, actualIndex);
+    
+    s.add(new SimpleTimePeriod(150L, 200L), 4.0);
+    expectedIndex = 1;
+    actualIndex = s.getMaxMiddleIndex();
+    assertEquals(expectedIndex, actualIndex);
+}

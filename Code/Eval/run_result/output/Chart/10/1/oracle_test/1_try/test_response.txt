@@ -1,0 +1,10 @@
+GenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        assertEquals(expected2, actual2);
+    }

@@ -1,0 +1,23 @@
+Parser() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("input", true, "input file path");
+        options.addOption("output", true, "output file path");
+        options.addOption("verbose", false, "be extra verbose");
+
+        String[] args = new String[]{"-help", "-input", "input.txt", "-output"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+            assertTrue(line.hasOption("help"));
+            assertEquals(line.getOptionValue("input"), "input.txt");
+            assertTrue(line.hasOption("output"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception: " + exp.getMessage());
+        }
+    }
+```
+The above test method checks if the program can handle the scenario where an option is missing an argument. It expects the program to throw a `MissingArgumentException` when `-output` option is missing its argument. However, the current implementation does not throw this exception and the test will fail.

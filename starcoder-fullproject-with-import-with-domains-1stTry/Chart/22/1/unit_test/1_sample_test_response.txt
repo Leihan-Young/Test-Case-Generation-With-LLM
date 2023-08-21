@@ -1,0 +1,28 @@
+ public void testEquals() {
+        KeyedObjects2D d1 = new KeyedObjects2D();
+        KeyedObjects2D d2 = new KeyedObjects2D();
+        assertTrue(d1.equals(d2));
+        assertTrue(d2.equals(d1));
+        assertTrue(d1.equals(d1));
+        assertTrue(d2.equals(d2));
+
+        d1.setObject(new Integer(1), "R1", "C1");
+        assertFalse(d1.equals(d2));
+        assertFalse(d2.equals(d1));
+        assertTrue(d1.equals(d1));
+        assertTrue(d2.equals(d2));
+
+        d2.setObject(new Integer(1), "R1", "C1");
+        assertTrue(d1.equals(d2));
+        assertTrue(d2.equals(d1));
+        assertTrue(d1.equals(d1));
+        assertTrue(d2.equals(d2));
+
+        d2.setObject(new Integer(2), "R1", "C1");
+        assertFalse(d1.equals(d2));
+        assertFalse(d2.equals(d1));
+        assertTrue(d1.equals(d1));
+        assertTrue(d2.equals(d2));
+
+        d1.setObject(new Integer(2), "R1", "C1");
+        assertTrue(d1

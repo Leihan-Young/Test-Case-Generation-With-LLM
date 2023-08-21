@@ -1,0 +1,266 @@
+() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+
+        String[] args = new String[]{"--help"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+
+            // check if help option is present
+            assertTrue(line.hasOption("help"));
+
+            // check if version option is not present
+            assertFalse(line.hasOption("version"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+    }
+```
+The bug in the java program is that the `setOptions` method is defined as `protected` and should be `public` instead, so it can be accessed from other classes. In addition, the `requiredOptions` list is not initialized, causing a `NullPointerException` when trying to check for missing options. To fix this, the `requiredOptions` list should be initialized in the constructor or in the `setOptions` method. Here's the updated code:
+
+```
+package org.apache.commons.cli;
+
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Properties;
+
+/**
+ * <p><code>Parser</code> creates {@link CommandLine}s.</p>
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @see Parser
+ * @version $Revision$
+ */
+public abstract class Parser implements CommandLineParser {
+    private Options options;
+    private List requiredOptions;
+
+    public Parser() {
+        requiredOptions = new ArrayList();
+    }
+
+    public void setOptions(final Options options) {
+        this.options = options;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public List getRequiredOptions() {
+        return requiredOptions;
+    }
+
+    protected void processProperties(Properties properties);
+
+    public void processArgs(Option opt, ListIterator iter) throws ParseException;
+
+    protected void processOption(String arg, ListIterator iter) throws ParseException;
+
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options         the specified Options
+     * @param arguments       the command line arguments
+     * @param properties      command line option name-value pairs
+     * @param stopAtNonOption stop parsing the arguments when the first
+     *                        non option is encountered.
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     *                        while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments,
+                             Properties properties, boolean stopAtNonOption)
+            throws ParseException {
+        // clear out the data in options in case it's been used before (CLI-71)
+        for (Iterator it = options.helpOptions().iterator(); it.hasNext(); ) {
+            Option opt = (Option) it.next();
+            opt.clearValues();
+        }
+
+        // initialise members
+        setOptions(options);
+
+        cmd = new CommandLine();
+
+        boolean eatTheRest = false;
+
+        if (arguments == null) {
+            arguments = new String[0];
+        }
+
+        List tokenList = Arrays.asList(flatten(getOptions(),
+                arguments,
+                stopAtNonOption));
+
+        ListIterator iterator = tokenList.listIterator();
+
+        // process each flattened token
+        while (iterator.hasNext()) {
+            String t = (String) iterator.next();
+
+            // the value is the double-dash
+            if ("--".equals(t)) {
+                eatTheRest = true;
+            }
+
+            // the value is a single dash
+            else if ("-".equals(t)) {
+                if (stopAtNonOption) {
+                    eatTheRest = true;
+                } else {
+                    cmd.addArg(t);
+                }
+            }
+
+            // the value is an option
+            else if (t.startsWith("-")) {
+                if (stopAtNonOption && !getOptions().hasOption(t)) {
+                    eatTheRest = true;
+                    cmd.addArg(t);
+                } else {
+                    processOption(t, iterator);
+                }
+            }
+
+            // the value is an argument
+            else {
+                cmd.addArg(t);
+
+                if (stopAtNonOption) {
+                    eatTheRest = true;
+                }
+            }
+
+            // eat the remaining tokens
+            if (eatTheRest) {
+                while (iterator.hasNext()) {
+                    String str = (String) iterator.next();
+
+                    // ensure only one double-dash is added
+                    if (!"--".equals(str)) {
+                        cmd.addArg(str);
+                    }
+                }
+            }
+        }
+
+        processProperties(properties);
+        checkRequiredOptions();
+
+        return cmd;
+    }
+
+    /**
+     * <p>Throws a {@link MissingOptionException} if all of the
+     * required options are no present.</p>
+     *
+     * @throws MissingOptionException if any of the required Options
+     *                                are not present.
+     */
+    protected void checkRequiredOptions() throws MissingOptionException {
+        // if there are required options that have not been
+        // processsed
+        if (getRequiredOptions().size() > 0) {
+            Iterator iter = getRequiredOptions().iterator();
+            StringBuffer buff = new StringBuffer("Missing required option");
+            buff.append(getRequiredOptions().size() == 1 ? "" : "s");
+            buff.append(": ");
+
+
+            // loop through the required options
+            while (iter.hasNext()) {
+                buff.append(iter.next());
+            }
+
+            throw new MissingOptionException(buff.toString());
+        }
+    }
+
+    /**
+     * Parse the arguments according to the specified options and
+     * properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     *                        while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments,
+                             Properties properties)
+            throws ParseException {
+        return parse(options, arguments, properties, false);
+    }
+
+    /**
+     * <p>Parses the specified <code>arguments</code>
+     * based on the specifed {@link Options}.</p>
+     *
+     * @param options   the <code>Options</code>
+     * @param arguments the <code>arguments</code>
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     *                        arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments)
+            throws ParseException {
+        return parse(options, arguments, null, false);
+    }
+
+    /**
+     * <p>Parses the specified <code>arguments</code>
+     * based on the specifed {@link Options}.</p>
+     *
+     * @param options          the <code>Options</code>
+     * @param arguments        the <code>arguments</code>
+     * @param stopAtNonOption  specifies whether to stop
+     *                         interpreting the arguments when a non option has
+     *                         been encountered and to add them to the CommandLines
+     *                         args list.
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     *                         arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments,
+                             boolean stopAtNonOption)
+            throws ParseException {
+        return parse(options, arguments, null, stopAtNonOption);
+    }
+}
+```
+
+The updated test method still checks if the help option is present, but also checks if the version option is not present (to make sure the correct options are being parsed). Here's the updated test method:
+
+```
+public void test() {
+    // use the default parser
+    CommandLineParser parser = new DefaultParser();
+    Options options = new Options();
+    options.addOption("help", false, "print this message");
+    options.addOption("version", false, "print the version information and exit");
+
+    String[] args = new String[]{"--help"};
+
+    try {
+        CommandLine line = parser.parse(options, args);
+
+        // check if help option is present
+        assertTrue(line.hasOption("help"));
+
+        // check if version option is not present
+        assertFalse(line.hasOption("version"));
+    } catch (ParseException exp) {
+        fail("Unexpected exception:" + exp.getMessage());
+    }
+}
+```

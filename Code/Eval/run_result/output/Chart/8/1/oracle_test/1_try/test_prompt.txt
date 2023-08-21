@@ -1,0 +1,196 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+/**
+ * A calendar week.  All years are considered to have 53 weeks, numbered from 1
+ * to 53, although in many cases the 53rd week is empty.  Most of the time, the
+ * 1st week of the year *begins* in the previous calendar year, but it always
+ * finishes in the current year (this behaviour matches the workings of the
+ * <code>GregorianCalendar</code> class).
+ * <P>
+ * This class is immutable, which is a requirement for all
+ * {@link RegularTimePeriod} subclasses.
+ */
+public class Week extends RegularTimePeriod implements Serializable {
+    private static final long serialVersionUID = 1856387786939865061L;
+    public static final int FIRST_WEEK_IN_YEAR = 1;
+    public static final int LAST_WEEK_IN_YEAR = 53;
+    private short year;
+    private byte week;
+    private long firstMillisecond;
+    private long lastMillisecond;
+    /**
+     * Returns the week.
+     *
+     * @return The week.
+     */
+    public int getWeek() {
+        return this.week;
+    }
+    /**
+     * Creates a new time period for the week in which the current system
+     * date/time falls.
+     */
+    public Week() {
+        this(new Date());
+    }
+    /**
+     * Creates a time period representing the week in the specified year.
+     *
+     * @param week  the week (1 to 53).
+     * @param year  the year (1900 to 9999).
+     */
+    public Week(int week, int year) {
+        if ((week < FIRST_WEEK_IN_YEAR) && (week > LAST_WEEK_IN_YEAR)) {
+            throw new IllegalArgumentException(
+                    "The 'week' argument must be in the range 1 - 53.");
+        }
+        this.week = (byte) week;
+        this.year = (short) year;
+        peg(Calendar.getInstance());
+    }
+    /**
+     * Creates a time period representing the week in the specified year.
+     *
+     * @param week  the week (1 to 53).
+     * @param year  the year (1900 to 9999).
+     */
+    public Week(int week, Year year) {
+        if ((week < FIRST_WEEK_IN_YEAR) && (week > LAST_WEEK_IN_YEAR)) {
+            throw new IllegalArgumentException(
+                    "The 'week' argument must be in the range 1 - 53.");
+        }
+        this.week = (byte) week;
+        this.year = (short) year.getYear();
+        peg(Calendar.getInstance());
+   }
+    /**
+     * Creates a time period for the week in which the specified date/time
+     * falls.
+     *
+     * @param time  the time (<code>null</code> not permitted).
+     */
+    public Week(Date time) {
+        // defer argument checking...
+        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());
+    }
+    /**
+     * Creates a time period for the week in which the specified date/time
+     * falls, calculated relative to the specified time zone.
+     *
+     * @param time  the date/time (<code>null</code> not permitted).
+     * @param zone  the time zone (<code>null</code> not permitted).
+     *
+     * @deprecated As of 1.0.7, use {@link #Week(Date, TimeZone, Locale)}.
+     */
+    public Week(Date time, TimeZone zone) {
+        // defer argument checking...
+        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());
+    }
+    /**
+     * Creates a time period for the week in which the specified date/time
+     * falls, calculated relative to the specified time zone.
+     *
+     * @param time  the date/time (<code>null</code> not permitted).
+     * @param zone  the time zone (<code>null</code> not permitted).
+     * @param locale  the locale (<code>null</code> not permitted).
+     *
+     * @since 1.0.7
+     */
+    public Week(Date time, TimeZone zone, Locale locale) {
+        if (time == null) {
+            throw new IllegalArgumentException("Null 'time' argument.");
+        }
+        if (zone == null) {
+            throw new IllegalArgumentException("Null 'zone' argument.");
+        }
+        if (locale == null) {
+            throw new IllegalArgumentException("Null 'locale' argument.");
+        }
+        Calendar calendar = Calendar.getInstance(zone, locale);
+        calendar.setTime(time);
+
+        // sometimes the last few days of the year are considered to fall in
+        // the *first* week of the following year.  Refer to the Javadocs for
+        // GregorianCalendar.
+        int tempWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        if (tempWeek == 1
+                && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+            this.week = 1;
+            this.year = (short) (calendar.get(Calendar.YEAR) + 1);
+        }
+        else {
+            this.week = (byte) Math.min(tempWeek, LAST_WEEK_IN_YEAR);
+            int yyyy = calendar.get(Calendar.YEAR);
+            // alternatively, sometimes the first few days of the year are
+            // considered to fall in the *last* week of the previous year...
+            if (calendar.get(Calendar.MONTH) == Calendar.JANUARY
+                    && this.week >= 52) {
+                yyyy--;
+            }
+            this.year = (short) yyyy;
+        }
+        peg(calendar);
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testConstructor() {
+        Locale savedLocale = Locale.getDefault();
+        TimeZone savedZone = TimeZone.getDefault();
+        Locale.setDefault(new Locale("da", "DK"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Copenhagen"));
+        GregorianCalendar cal = (GregorianCalendar) Calendar.getInstance(
+                TimeZone.getDefault(), Locale.getDefault());
+
+        // first day of week is monday
+        _tmp_var_0_ = Calendar.MONDAY;
+        _tmp_var_1_ =  cal.getFirstDayOfWeek();
+        $ASSERT$
+        cal.set(2007, Calendar.AUGUST, 26, 1, 0, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date t = cal.getTime();
+        Week w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"));
+        _tmp_var_2_ = 34;
+        _tmp_var_3_ =  w.getWeek();
+        $ASSERT$
+
+        Locale.setDefault(Locale.US);
+        TimeZone.setDefault(TimeZone.getTimeZone("US/Detroit"));
+        cal = (GregorianCalendar) Calendar.getInstance(TimeZone.getDefault());
+        // first day of week is Sunday
+        _tmp_var_4_ = Calendar.SUNDAY;
+        _tmp_var_5_ =  cal.getFirstDayOfWeek();
+        $ASSERT$
+        cal.set(2007, Calendar.AUGUST, 26, 1, 0, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        t = cal.getTime();
+        w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"));
+        _tmp_var_6_ = 35;
+        _tmp_var_7_ =  w.getWeek();
+        $ASSERT$
+        w = new Week(t, TimeZone.getTimeZone("Europe/Copenhagen"),
+                new Locale("da", "DK"));
+        _tmp_var_8_ = 34;
+        _tmp_var_9_ =  w.getWeek();
+        $ASSERT$
+
+        Locale.setDefault(savedLocale);
+        TimeZone.setDefault(savedZone);
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

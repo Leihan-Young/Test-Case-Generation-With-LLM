@@ -1,0 +1,19 @@
+TimePeriodValues() {
+    TimePeriodValues values = new TimePeriodValues("Test Data", "Value");
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(0), new Date(1000)), 10));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(0, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(0, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(0, values.getMaxEndIndex());
+    values.add(new TimePeriodValue(new SimpleTimePeriod(new Date(1000), new Date(2000)), 20));
+    assertEquals(0, values.getMinStartIndex());
+    assertEquals(1, values.getMaxStartIndex());
+    assertEquals(0, values.getMinMiddleIndex());
+    assertEquals(1, values.getMaxMiddleIndex());
+    assertEquals(0, values.getMinEndIndex());
+    assertEquals(1, values.getMaxEndIndex());
+}
+```
+The error occurred because the `TimePeriodValues` class constructor requires two parameters, a `Comparable` object and two strings, for the series name and the domain axis label respectively. Therefore, the test code has been updated to include these parameters when creating a new instance of `TimePeriodValues`.

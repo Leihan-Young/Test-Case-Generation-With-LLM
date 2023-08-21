@@ -1,0 +1,16 @@
+OptionGroup() throws AlreadySelectedException {
+        Option optionA = new Option("a", "first");
+        Option optionB = new Option("b", "second");
+        OptionGroup group = new OptionGroup();
+        group.addOption(optionA)
+             .addOption(optionB);
+        group.setSelected(optionA); // select optionA
+        assertTrue(group.getSelected().equals(optionA.getKey()));
+        try {
+            group.setSelected(optionB); // try to select optionB
+            fail("Should have thrown AlreadySelectedException");
+        } catch (AlreadySelectedException e) {
+            // expected
+        }
+    }
+```

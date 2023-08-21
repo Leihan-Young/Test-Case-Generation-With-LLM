@@ -1,0 +1,14 @@
+() {
+   XYSeries series = new XYSeries("Test Series");
+   series.addOrUpdate(1, 5);
+   series.addOrUpdate(2, 3);
+   series.addOrUpdate(3, 7);
+   series.addOrUpdate(1, 10);
+   assertEquals(3, series.getItemCount());
+   assertEquals(10, series.getY(0).intValue());
+   assertEquals(3, series.getY(1).intValue());
+   assertEquals(7, series.getY(2).intValue());
+}
+```
+
+This is the correct test method.

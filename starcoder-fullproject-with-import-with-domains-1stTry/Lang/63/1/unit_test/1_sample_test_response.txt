@@ -1,0 +1,14 @@
+     public void testFormatPeriod() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        cal.set(1970, 0, 1, 0, 0, 0);
+        long start = cal.getTimeInMillis();
+        cal.set(1970, 0, 1, 0, 0, 1);
+        long end = cal.getTimeInMillis();
+        assertEquals("1s", DurationFormatUtils.formatPeriod(start, end, "s"));
+        assertEquals("1s", DurationFormatUtils.formatPeriod(start, end, "s", true));
+        assertEquals("00:00:01", DurationFormatUtils.formatPeriod(start, end, "mm:ss"));
+        assertEquals("00:00:01", DurationFormatUtils.formatPeriod(start, end, "mm:ss", true));
+        assertEquals("00:00:01.000", DurationFormatUtils.formatPeriod(start, end, "mm:ss.SSS"));
+        assertEquals("00:00:01.000", DurationFormatUtils.formatPeriod(start, end, "mm:ss.SSS", true));
+        assertEquals("00:00", DurationFormatUtils.formatPeriod(start, end, "m

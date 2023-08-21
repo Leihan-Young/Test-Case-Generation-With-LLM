@@ -1,0 +1,19 @@
+PosixParser() throws Exception {
+        // use the Posix parser
+        CommandLineParser parser = new PosixParser( );
+        Options options = new Options();
+        options.addOption( "a", true, "option a" );
+        options.addOption( "b", false, "option b" );
+
+        String[] args = new String[]{ "-a", "value", "-b"};
+
+        CommandLine line = parser.parse( options, args );
+
+        // check option a value
+        assertEquals( line.getOptionValue( "a"), "value" );
+
+        // check option b
+        assertTrue( line.hasOption( "b") );
+    }
+```
+The above test method tests the PosixParser class by passing two arguments "-a value -b". The test checks if the value of option a is correctly set to "value" and if option b is present. If there is a bug in the PosixParser class, this test method should fail and reveal the bug.

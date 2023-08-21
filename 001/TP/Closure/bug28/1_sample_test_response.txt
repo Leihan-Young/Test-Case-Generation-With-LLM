@@ -1,0 +1,5 @@
+  public void newTestMethod_test1()  throws Throwable  {
+      Node node0 = Node.newString("com.google.javascript.jscomp.InlineCostEstimator$CompiledSizeEstimator", 0, 0);
+      int int0 = InlineCostEstimator.getCost(node0, 12);
+      assertEquals(0, int0);
+  }

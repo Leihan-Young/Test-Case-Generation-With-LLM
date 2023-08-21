@@ -1,0 +1,1 @@
+     private void assertDocumentType(Document doc, String name, String publicId, String systemId);

@@ -1,0 +1,5 @@
+  public void newTestMethod_test19()  throws Throwable  {
+      Option option0 = new Option((String) null, "Vp{ut!h$49z>wkIZQRm");
+      boolean boolean0 = option0.hasArgName();
+      assertFalse(boolean0);
+  }

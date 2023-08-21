@@ -1,0 +1,13 @@
+     public void testCeil() throws Exception {
+        Calendar cal = Calendar.getInstance();
+        cal.set(2002, 1, 31, 23, 59, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        Date date = cal.getTime();
+        assertEquals(date, DateUtils.ceiling(date, Calendar.MILLISECOND));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.SECOND));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.MINUTE));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.HOUR_OF_DAY));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.DAY_OF_MONTH));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.MONTH));
+        assertEquals(date, DateUtils.ceiling(date, Calendar.YEAR));
+    }

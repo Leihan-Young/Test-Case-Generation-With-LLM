@@ -1,0 +1,35 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+/**
+ CharacterReader cosumes tokens off a string. To replace the old TokenQueue.
+ */
+class CharacterReader {
+    private final String input;
+    private final int length;
+    private int pos = 0;
+    private int mark = 0;
+    String consumeLetterSequence();
+}
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Entities;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * Readers the input stream into tokens.
+ */
+class Tokeniser {
+    private CharacterReader reader; // html input
+    private ParseErrorList errors; // errors found while tokenising
+    private TokeniserState state = TokeniserState.Data; // current tokenisation state
+    private Token emitPending; // the token we are about to emit on next read
+    private boolean isEmitPending = false;
+    private StringBuilder charBuffer = new StringBuilder(); // buffers characters to output as one token
+    private Token.StartTag lastStartTag; // the last start tag emitted, to test appropriate end tag
+    private boolean selfClosingFlagAcknowledged = true;
+    Character consumeCharacterReference(Character additionalAllowedCharacter, boolean inAttribute);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

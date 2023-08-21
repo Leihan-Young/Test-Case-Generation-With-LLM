@@ -1,0 +1,91 @@
+package org.apache.commons.cli2.option;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.DisplaySetting;
+import org.apache.commons.cli2.HelpLine;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.OptionException;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.resource.ResourceConstants;
+import org.apache.commons.cli2.resource.ResourceHelper;
+import org.apache.commons.cli2.validation.InvalidArgumentException;
+import org.apache.commons.cli2.validation.Validator;
+/**
+ * An implementation of an Argument.
+ */
+public class ArgumentImpl
+    extends OptionImpl implements Argument {
+    private static final char NUL = '\0';
+    public static final char DEFAULT_INITIAL_SEPARATOR = NUL;
+    public static final char DEFAULT_SUBSEQUENT_SEPARATOR = NUL;
+    public static final String DEFAULT_CONSUME_REMAINING = "--";
+    private final String name;
+    private final String description;
+    private final int minimum;
+    private final int maximum;
+    private final char initialSeparator;
+    private final char subsequentSeparator;
+    private final boolean subsequentSplit;
+    private final Validator validator;
+    private final String consumeRemaining;
+    private final List defaultValues;
+    private final ResourceHelper resources = ResourceHelper.getResourceHelper();
+    public void processValues(final WriteableCommandLine commandLine,
+                              final ListIterator arguments,
+                              final Option option)
+        throws OptionException;
+}
+package org.apache.commons.cli2;
+import java.util.List;
+/**
+ * A CommandLine that detected values and options can be written to.
+ */
+public interface WriteableCommandLine extends CommandLine {
+    /**
+     * Adds a value to an Option in the CommandLine.
+     * @param option the Option to add to
+     * @param value the value to add
+     */
+    void addValue(final Option option, final Object value);;
+}
+package org.apache.commons.cli2.commandline;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.resource.ResourceConstants;
+import org.apache.commons.cli2.resource.ResourceHelper;
+/**
+ * A WriteableCommandLine implementation allowing Options to write their
+ * processed information to a CommandLine.
+ */
+public class WriteableCommandLineImpl
+    extends CommandLineImpl implements WriteableCommandLine {
+    private final Properties properties = new Properties();
+    private final List options = new ArrayList();
+    private final Map nameToOption = new HashMap();
+    private final Map values = new HashMap();
+    private final Map switches = new HashMap();
+    private final Map defaultValues = new HashMap();
+    private final Map defaultSwitches = new HashMap();
+    private final List normalised;
+    private final Set prefixes;
+    public List getValues(final Option option,
+                          final List defaultValues);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

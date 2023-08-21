@@ -1,0 +1,28 @@
+LooksLikeOption() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option a = obuilder.withShortName("a").create();
+
+    final Option b = obuilder.withShortName("b").create();
+
+    final Group options =
+        gbuilder
+            .withOption(a)
+            .withOption(b)
+            .withMaximum(1)
+            .withMinimum(1)
+            .create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(options);
+
+    final WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+    final boolean result1 = commandLine.looksLikeOption("x");
+    assertFalse(result1);
+    final boolean result2 = commandLine.looksLikeOption("-a");
+    assertTrue(result2);
+    final boolean result3 = commandLine.looksLikeOption("-x");
+    assertFalse(result3);
+}
+```

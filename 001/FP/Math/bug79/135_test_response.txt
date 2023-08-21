@@ -1,0 +1,4 @@
+  public void newTestMethod_test135()  throws Throwable  {
+      long long0 = MathUtils.subAndCheck((-9223372036854775808L), (-9223372036854775806L));
+      assertEquals(2L, long0);
+  }

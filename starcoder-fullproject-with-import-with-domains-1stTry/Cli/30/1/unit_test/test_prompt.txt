@@ -1,0 +1,144 @@
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+/**
+ * Default parser.
+ * 
+ * @author Emmanuel Bourg
+ * @version $Revision$, $Date$
+ * @since 1.3
+ */
+public class DefaultParser implements CommandLineParser
+{    
+    /** The required options expected to be found when parsing the command line. */
+    protected List expectedOpts;
+    
+    public CommandLine parse(Options options, String[] arguments) throws ParseException;
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options         the specified Options
+     * @param arguments       the command line arguments
+     * @param properties      command line option name-value pairs
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     *
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption) throws ParseException;
+    /**
+     * Sets the values of Options using the values in <code>properties</code>.
+     *
+     * @param properties The value properties to be processed.
+     */
+    private void handleProperties(Properties properties) throws ParseException;
+    public CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException;
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException;
+}
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Properties;
+/**
+ * <code>Parser</code> creates {@link CommandLine}s.
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ * @deprecated The two-pass parsing with the flatten method is not enough flexible to handle complex cases
+ */
+public abstract class Parser implements CommandLineParser
+{
+    private Options options;
+    private List requiredOptions;
+    /**
+     * Sets the values of Options using the values in <code>properties</code>.
+     *
+     * @param properties The value properties to be processed.
+     */
+    protected void processProperties(Properties properties) throws ParseException;
+    /**
+     * Parses the specified <code>arguments</code>
+     * based on the specifed {@link Options}.
+     *
+     * @param options         the <code>Options</code>
+     * @param arguments       the <code>arguments</code>
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException;
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     *                        while parsing the command line tokens.
+     *
+     * @since 1.1
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException;
+    /**
+     * Parses the specified <code>arguments</code> based
+     * on the specifed {@link Options}.
+     *
+     * @param options the <code>Options</code>
+     * @param arguments the <code>arguments</code>
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     * arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments) throws ParseException;
+    /**
+     * Parse the arguments according to the specified options and
+     * properties.
+     *
+     * @param options the specified Options
+     * @param arguments the command line arguments
+     * @param properties command line option name-value pairs
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     *
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     *
+     * @since 1.1
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
+            throws ParseException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

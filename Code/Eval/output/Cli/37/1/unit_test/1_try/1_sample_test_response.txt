@@ -1,0 +1,10 @@
+() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        String[] args = {"-a"};
+        DefaultParser defaultParser = new DefaultParser();
+        CommandLine line = defaultParser.parse(opts, args);
+        assertTrue(line.hasOption("a")); // This assertion should pass
+        assertFalse(line.hasOption("first")); // This assertion should fail
+    }

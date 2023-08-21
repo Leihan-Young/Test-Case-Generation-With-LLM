@@ -1,0 +1,23 @@
+package org.jsoup.nodes;
+import org.apache.commons.lang.Validate;
+import org.jsoup.parser.Tag;
+import java.util.List;
+import java.util.ArrayList;
+/**
+ A HTML Document.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Document extends Element {
+    /**
+     Set the text of the {@code body} of this document. Any existing nodes within the body will be cleared.
+     @param text unencoded text
+     @return this document
+     */
+    @Override
+    public Element text(String text);
+    private void normalise(Element element);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

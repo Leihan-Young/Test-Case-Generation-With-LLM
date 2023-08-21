@@ -1,0 +1,33 @@
+LooksLikeOption() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+        options.defaults(commandLine);
+
+        assertTrue(commandLine.looksLikeOption("-a"));
+
+        assertFalse(commandLine.looksLikeOption("--a"));
+
+        assertFalse(commandLine.looksLikeOption("-c"));
+
+        assertTrue(commandLine.looksLikeOption("-b"));
+
+        assertFalse(commandLine.looksLikeOption("-a -b"));
+
+        assertFalse(commandLine.looksLikeOption("a"));
+    }
+```
+This test method checks whether the looksLikeOption() method of the WriteableCommandLineImpl class is working as expected. It creates a group of options (a and b), sets the default values, creates a new WriteableCommandLineImpl object, and checks whether the looksLikeOption() method correctly identifies the options and non-options in a variety of input strings.

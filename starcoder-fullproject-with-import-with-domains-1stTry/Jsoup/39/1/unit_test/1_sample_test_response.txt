@@ -1,0 +1,20 @@
+ private void assertCharset(String html, String expectedCharset) {
+        Document doc = DataUtil.parseByteData(ByteBuffer.wrap(html.getBytes()), null, "", Parser.htmlParser());
+        assertEquals(expectedCharset, doc.outputSettings().charset().displayName());
+    }
+    private void assertCharset(String html, Charset expectedCharset) {
+        Document doc = DataUtil.parseByteData(ByteBuffer.wrap(html.getBytes()), null, "", Parser.htmlParser());
+        assertEquals(expectedCharset, doc.outputSettings().charset());
+    }
+    private void assertCharset(String html, String baseUri, String expectedCharset) {
+        Document doc = DataUtil.parseByteData(ByteBuffer.wrap(html.getBytes()), null, baseUri, Parser.htmlParser());
+        assertEquals(expectedCharset, doc.outputSettings().charset().displayName());
+    }
+    private void assertCharset(String html, String baseUri, Charset expectedCharset) {
+        Document doc = DataUtil.parseByteData(ByteBuffer.wrap(html.getBytes()), null, baseUri, Parser.htmlParser());
+        assertEquals(expectedCharset, doc.outputSettings().charset());
+    }
+    private void assertNotCharset(String html, String expectedCharset) {
+        Document doc = DataUtil.parseByteData(ByteBuffer.wrap(html.getBytes()), null, "", Parser.htmlParser());
+        assertNotEquals(expectedCharset, doc.outputSettings().charset().displayName());
+    

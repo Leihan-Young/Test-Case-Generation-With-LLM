@@ -1,0 +1,136 @@
+package org.apache.commons.math3.util;
+import java.io.PrintStream;
+/**
+ * Faster, more accurate, portable alternative to {@link Math} and
+ * {@link StrictMath} for large scale computation.
+ * <p>
+ * FastMath is a drop-in replacement for both Math and StrictMath. This
+ * means that for any method in Math (say {@code Math.sin(x)} or
+ * {@code Math.cbrt(y)}), user can directly change the class and use the
+ * methods as is (using {@code FastMath.sin(x)} or {@code FastMath.cbrt(y)}
+ * in the previous example).
+ * </p>
+ * <p>
+ * FastMath speed is achieved by relying heavily on optimizing compilers
+ * to native code present in many JVMs today and use of large tables.
+ * The larger tables are lazily initialised on first use, so that the setup
+ * time does not penalise methods that don't need them.
+ * </p>
+ * <p>
+ * Note that FastMath is
+ * extensively used inside Apache Commons Math, so by calling some algorithms,
+ * the overhead when the the tables need to be intialised will occur
+ * regardless of the end-user calling FastMath methods directly or not.
+ * Performance figures for a specific JVM and hardware can be evaluated by
+ * running the FastMathTestPerformance tests in the test directory of the source
+ * distribution.
+ * </p>
+ * <p>
+ * FastMath accuracy should be mostly independent of the JVM as it relies only
+ * on IEEE-754 basic operations and on embedded tables. Almost all operations
+ * are accurate to about 0.5 ulp throughout the domain range. This statement,
+ * of course is only a rough global observed behavior, it is <em>not</em> a
+ * guarantee for <em>every</em> double numbers input (see William Kahan's <a
+ * href="http://en.wikipedia.org/wiki/Rounding#The_table-maker.27s_dilemma">Table
+ * Maker's Dilemma</a>).
+ * </p>
+ * <p>
+ * FastMath additionally implements the following methods not found in Math/StrictMath:
+ * <ul>
+ * <li>{@link #asinh(double)}</li>
+ * <li>{@link #acosh(double)}</li>
+ * <li>{@link #atanh(double)}</li>
+ * </ul>
+ * The following methods are found in Math/StrictMath since 1.6 only, they are provided
+ * by FastMath even in 1.5 Java virtual machines
+ * <ul>
+ * <li>{@link #copySign(double, double)}</li>
+ * <li>{@link #getExponent(double)}</li>
+ * <li>{@link #nextAfter(double,double)}</li>
+ * <li>{@link #nextUp(double)}</li>
+ * <li>{@link #scalb(double, int)}</li>
+ * <li>{@link #copySign(float, float)}</li>
+ * <li>{@link #getExponent(float)}</li>
+ * <li>{@link #nextAfter(float,double)}</li>
+ * <li>{@link #nextUp(float)}</li>
+ * <li>{@link #scalb(float, int)}</li>
+ * </ul>
+ * </p>
+ * @version $Id$
+ * @since 2.2
+ */
+public class FastMath {
+    private static final double LOG_MAX_VALUE = StrictMath.log(Double.MAX_VALUE);
+    public static final double PI = 105414357.0 / 33554432.0 + 1.984187159361080883e-9;
+    public static final double E = 2850325.0 / 1048576.0 + 8.254840070411028747e-8;
+    private static final boolean RECOMPUTE_TABLES_AT_RUNTIME = false;
+    private static final double LN_2_A = 0.693147063255310059;
+    private static final double LN_2_B = 1.17304635250823482e-7;
+    /** Compute the hyperbolic sine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic sine of x
+     */
+    public static double sinh(double x);
+    /**
+     * Exponential function.
+     *
+     * Computes exp(x), function result is nearly rounded.   It will be correctly
+     * rounded to the theoretical value for 99.9% of input values, otherwise it will
+     * have a 1 UPL error.
+     *
+     * Method:
+     *    Lookup intVal = exp(int(x))
+     *    Lookup fracVal = exp(int(x-int(x) / 1024.0) * 1024.0 );
+     *    Compute z as the exponential of the remaining bits by a polynomial minus one
+     *    exp(x) = intVal * fracVal * (1 + z)
+     *
+     * Accuracy:
+     *    Calculation is done with 63 bits of precision, so result should be correctly
+     *    rounded for 99.9% of input values, with less than 1 ULP error otherwise.
+     *
+     * @param x   a double
+     * @return double e<sup>x</sup>
+     */
+    public static double exp(double x);
+    /**
+     * Get the high order bits from the mantissa.
+     * Equivalent to adding and subtracting HEX_40000 but also works for very large numbers
+     *
+     * @param d the value to split
+     * @return the high order part of the mantissa
+     */
+    private static double doubleHighPart(double d);
+    /**
+     * Internal helper method for exponential function.
+     * @param x original argument of the exponential function
+     * @param extra extra bits of precision on input (To Be Confirmed)
+     * @param hiPrec extra bits of precision on output (To Be Confirmed)
+     * @return exp(x)
+     */
+    private static double exp(double x, double extra, double[] hiPrec);
+    /**
+     * Power function.  Compute x^y.
+     *
+     * @param x   a double
+     * @param y   a double
+     * @return double
+     */
+    public static double pow(double x, double y);
+    /** Compute the hyperbolic cosine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic cosine of x
+     */
+    public static double cosh(double x);
+    /**
+     * Raise a double to an int power.
+     *
+     * @param d Number to raise.
+     * @param e Exponent.
+     * @return d<sup>e</sup>
+     */
+    public static double pow(double d, int e);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

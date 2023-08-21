@@ -1,0 +1,61 @@
+package org.apache.commons.math.ode.nonstiff;
+import org.apache.commons.math.exception.MathIllegalArgumentException;
+import org.apache.commons.math.exception.MathIllegalStateException;
+import org.apache.commons.math.ode.ExpandableStatefulODE;
+import org.apache.commons.math.util.FastMath;
+/**
+ * This class implements the common part of all embedded Runge-Kutta
+ * integrators for Ordinary Differential Equations.
+ *
+ * <p>These methods are embedded explicit Runge-Kutta methods with two
+ * sets of coefficients allowing to estimate the error, their Butcher
+ * arrays are as follows :
+ * <pre>
+ *    0  |
+ *   c2  | a21
+ *   c3  | a31  a32
+ *   ... |        ...
+ *   cs  | as1  as2  ...  ass-1
+ *       |--------------------------
+ *       |  b1   b2  ...   bs-1  bs
+ *       |  b'1  b'2 ...   b's-1 b's
+ * </pre>
+ * </p>
+ *
+ * <p>In fact, we rather use the array defined by ej = bj - b'j to
+ * compute directly the error rather than computing two estimates and
+ * then comparing them.</p>
+ *
+ * <p>Some methods are qualified as <i>fsal</i> (first same as last)
+ * methods. This means the last evaluation of the derivatives in one
+ * step is the same as the first in the next step. Then, this
+ * evaluation can be reused from one step to the next one and the cost
+ * of such a method is really s-1 evaluations despite the method still
+ * has s stages. This behaviour is true only for successful steps, if
+ * the step is rejected after the error estimation phase, no
+ * evaluation is saved. For an <i>fsal</i> method, we have cs = 1 and
+ * asi = bi for all i.</p>
+ *
+ * @version $Id$
+ * @since 1.2
+ */
+public abstract class EmbeddedRungeKuttaIntegrator
+  extends AdaptiveStepsizeIntegrator {
+    private final boolean fsal;
+    private final double[] c;
+    private final double[][] a;
+    private final double[] b;
+    private final RungeKuttaStepInterpolator prototype;
+    private final double exp;
+    private double safety;
+    private double minReduction;
+    private double maxGrowth;
+  /** {@inheritDoc} */
+  @Override
+  public void integrate(final ExpandableStatefulODE equations, final double t)
+      throws MathIllegalStateException, MathIllegalArgumentException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

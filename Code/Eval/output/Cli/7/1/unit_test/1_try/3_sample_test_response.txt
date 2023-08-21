@@ -1,0 +1,24 @@
+CreateOption() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final PatternBuilder pbuilder = new PatternBuilder();
+
+    final Argument arg = new ArgumentBuilder()
+                            .withName("arg")
+                            .withValidator(new ClassValidator())
+                            .create();
+
+    final Option option = obuilder
+                            .withShortName("a")
+                            .withArgument(arg)
+                            .create();
+
+    pbuilder.createOption('a', false, 'a');
+
+    final Option createdOption = pbuilder.create();
+
+    assertEquals(option.getShortName(), createdOption.getShortName());
+    assertEquals(option.getArgument().getName(), createdOption.getArgument().getName());
+    assertEquals(option.getArgument().getValidator(), createdOption.getArgument().getValidator());
+}
+```
+This test method checks whether the createOption() method of PatternBuilder class creates an Option object with the same parameters as when an option is created using DefaultOptionBuilder class. If this test fails, it indicates that there is a bug in the createOption() method.

@@ -1,0 +1,29 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.*;
+import java.util.Iterator;
+/**
+ * @author Jonathan Hedley
+ */
+public class XmlTreeBuilder extends TreeBuilder {
+    void insert(Token.Comment commentToken);
+}
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+/**
+ * Parse tokens for the Tokeniser.
+ */
+abstract class Token {
+    String tokenType();
+}
+package org.jsoup.parser;
+/**
+ * States and transition activations for the Tokeniser.
+ */
+}
+
+public class Test { 
+   <FILL-HERE>
+}

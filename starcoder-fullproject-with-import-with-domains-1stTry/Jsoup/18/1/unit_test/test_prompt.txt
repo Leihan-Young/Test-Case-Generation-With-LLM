@@ -1,0 +1,20 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+/**
+ CharacterReader cosumes tokens off a string. To replace the old TokenQueue.
+ */
+class CharacterReader {
+    private final String input;
+    private final int length;
+    private int pos = 0;
+    private int mark = 0;
+    String consumeToAny(char... seq);
+    int pos();
+    String consumeToEnd();
+    String consumeTo(String seq);
+    String consumeTo(char c);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,22 @@
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+/**
+ * The class PosixParser provides an implementation of the 
+ * {@link Parser#flatten(Options,String[],boolean) flatten} method.
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @see Parser
+ * @version $Revision$
+ */
+public class PosixParser extends Parser {
+    private ArrayList tokens = new ArrayList();
+    private boolean eatTheRest;
+    private Option currentOption;
+    private Options options;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,7 @@
+ public void testCloning() throws Exception {
+        Axis a1 = new NumberAxis("Test");
+        Axis a2 = (Axis) a1.clone();
+        assertTrue(a1!= a2);
+        assertTrue(a1.getClass() == a2.getClass());
+        assertTrue(a1.getLabel().equals(a2.getLabel()));
+    }

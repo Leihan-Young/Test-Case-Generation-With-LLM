@@ -1,0 +1,18 @@
+     public void testUnescapeJava() {
+        assertEquals(null, StringEscapeUtils.unescapeJava(null));
+        assertEquals("", StringEscapeUtils.unescapeJava(""));
+        assertEquals("foo", StringEscapeUtils.unescapeJava("foo"));
+        assertEquals("foo", StringEscapeUtils.unescapeJava("foo"));
+        assertEquals("\"", StringEscapeUtils.unescapeJava("\\\""));
+        assertEquals("\\", StringEscapeUtils.unescapeJava("\\\\"));
+        assertEquals("\b", StringEscapeUtils.unescapeJava("\\b"));
+        assertEquals("\f", StringEscapeUtils.unescapeJava("\\f"));
+        assertEquals("\n", StringEscapeUtils.unescapeJava("\\n"));
+        assertEquals("\r", StringEscapeUtils.unescapeJava("\\r"));
+        assertEquals("\t", StringEscapeUtils.unescapeJava("\\t"));
+        assertEquals("\u0019", StringEscapeUtils.unescapeJava("\\u0019"));
+        assertEquals("\u001A", StringEscapeUtils.unescapeJava("\\u001A"));
+        assertEquals("\u001B", StringEscapeUtils.unescapeJava("\\u001B"));
+        assertEquals("\u001C", StringEscapeUtils.unescapeJava("\\u001C"));
+        assertEquals("\u001D", StringEscapeUtils.unescapeJava("\\u001D"));
+        assertEquals("\u001E", StringEscapeUtils.unescapeJav

@@ -1,0 +1,93 @@
+package org.apache.commons.cli2.option;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.DisplaySetting;
+import org.apache.commons.cli2.Group;
+import org.apache.commons.cli2.HelpLine;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.OptionException;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.resource.ResourceConstants;
+/**
+ * An implementation of Group
+ */
+public class GroupImpl
+    extends OptionImpl implements Group {
+    private final String name;
+    private final String description;
+    private final List options;
+    private final int minimum;
+    private final int maximum;
+    private final List anonymous;
+    private final SortedMap optionMap;
+    private final Set prefixes;
+    public void defaults(final WriteableCommandLine commandLine);
+}
+package org.apache.commons.cli2;
+import java.util.List;
+/**
+ * A CommandLine that detected values and options can be written to.
+ */
+public interface WriteableCommandLine extends CommandLine {
+}
+package org.apache.commons.cli2.commandline;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.option.PropertyOption;
+import org.apache.commons.cli2.resource.ResourceConstants;
+import org.apache.commons.cli2.resource.ResourceHelper;
+/**
+ * A WriteableCommandLine implementation allowing Options to write their
+ * processed information to a CommandLine.
+ */
+public class WriteableCommandLineImpl
+    extends CommandLineImpl implements WriteableCommandLine {
+    private final Map optionToProperties = new HashMap();
+//    private final Properties properties = new Properties();
+    private final List options = new ArrayList();
+    private final Map nameToOption = new HashMap();
+    private final Map values = new HashMap();
+    private final Map switches = new HashMap();
+    private final Map defaultValues = new HashMap();
+    private final Map defaultSwitches = new HashMap();
+    private final List normalised;
+    private final Set prefixes;
+    public void addOption(Option option);
+    /**
+     * Tests whether the passed in trigger looks like an option. This
+     * implementation first checks whether the passed in string starts with a
+     * prefix that indicates an option. If this is the case, it is also checked
+     * whether an option of this name is known for the current option. (This can
+     * lead to reentrant invocations of this method, so care has to be taken
+     * about this.)
+     *
+     * @param trigger the command line element to test
+     * @return a flag whether this element seems to be an option
+     */
+    public boolean looksLikeOption(final String trigger);
+    public Set getProperties();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

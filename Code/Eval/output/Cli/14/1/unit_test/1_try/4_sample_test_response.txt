@@ -1,0 +1,29 @@
+MandatoryGroupBug() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] { "-c" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Unexpected option: -c", exp.getMessage());
+        }
+    }
+```
+This test method checks if the program properly throws an exception when an unexpected option is passed to the parser. If the program does not properly throw an exception, then there may be a bug in the `canProcess` method of the `GroupImpl` class.

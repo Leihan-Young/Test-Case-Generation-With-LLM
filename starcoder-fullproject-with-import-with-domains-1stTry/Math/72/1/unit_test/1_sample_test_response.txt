@@ -1,0 +1,33 @@
+     private void verify(final BrentSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expected)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        verify(solver, f, min, max, expected, 1.0e-12);
+    }
+    private void verify(final BrentSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expected,
+                          final double tolerance)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        final double result = solver.solve(f, min, max);
+        assertEquals(expected, result, tolerance);
+    }
+    private void verify(final BrentSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expectedMin,
+                          final double expectedMax)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        verify(solver, f, min, max, expectedMin, expectedMax, 1.0e-12);
+    }
+    private void verify(final BrentSolver solver,
+                          final UnivariateRealFunction f,
+                          final double min, final double max,
+                          final double expectedMin,
+                          final double expectedMax,
+                          final double tolerance)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        final double[] result = solver.solveAll(f, min, max);
+        assertEquals(expectedMi

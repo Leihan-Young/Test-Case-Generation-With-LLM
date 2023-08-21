@@ -1,0 +1,13 @@
+ public void testIterateDomainBounds() {
+        XYSeries s1 = new XYSeries("S1");
+        s1.add(1.0, 1.0);
+        s1.add(2.0, 2.0);
+        XYSeries s2 = new XYSeries("S2");
+        s2.add(3.0, 3.0);
+        s2.add(4.0, 4.0);
+        XYSeriesCollection c = new XYSeriesCollection();
+        c.addSeries(s1);
+        c.addSeries(s2);
+        Range r = DatasetUtilities.iterateDomainBounds(c);
+        assertTrue(r.equals(new Range(1.0, 4.0)));
+    }

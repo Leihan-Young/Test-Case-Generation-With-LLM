@@ -1,0 +1,483 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+/**
+ * Default parser.
+ * 
+ * @author Emmanuel Bourg
+ * @version $Revision$, $Date$
+ * @since 1.3
+ */
+public class DefaultParser implements CommandLineParser
+{    
+    private void checkRequiredOptions() throws MissingOptionException;
+    private void checkRequiredArgs() throws ParseException;
+    private void handleToken(String token) throws ParseException;
+    private boolean isArgument(String token);
+    private boolean isNegativeNumber(String token);
+    private boolean isOption(String token);
+    private boolean isShortOption(String token);
+    private boolean isLongOption(String token);
+    private void handleUnknownToken(String token) throws ParseException;
+    private void handleLongOption(String token) throws ParseException;
+    private void handleLongOptionWithoutEqual(String token) throws ParseException;
+    private void handleLongOptionWithEqual(String token) throws ParseException;
+    private void handleShortAndLongOption(String token) throws ParseException;
+    private String getLongPrefix(String token);
+    private boolean isJavaProperty(String token);
+    private void handleOption(Option option) throws ParseException;
+    private void updateRequiredOptions(Option option) throws AlreadySelectedException;
+    protected void handleConcatenatedOptions(String token) throws ParseException;
+    /** The required options expected to be found when parsing the command line. */
+    protected List expectedOpts;
+    
+    public CommandLine parse(Options options, String[] arguments) throws ParseException
+    {
+        return parse(options, arguments, null);
+    }
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options         the specified Options
+     * @param arguments       the command line arguments
+     * @param properties      command line option name-value pairs
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     *
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption) throws ParseException
+    {
+        this.options = options;
+        this.stopAtNonOption = stopAtNonOption;
+        skipParsing = false;
+        currentOption = null;
+        expectedOpts = new ArrayList(options.getRequiredOptions());
+        
+        // clear the data from the groups
+        for (Iterator it = options.getOptionGroups().iterator(); it.hasNext();)
+        {
+            OptionGroup group = (OptionGroup) it.next();
+            group.setSelected(null);
+        }
+        
+        cmd = new CommandLine();
+
+        if (arguments != null)
+        {
+            for (int i = 0; i < arguments.length; i++)
+            {
+                handleToken(arguments[i]);
+            }
+        }
+        
+        // check the arguments of the last option
+        checkRequiredArgs();
+        
+        // add the default options
+        handleProperties(properties);
+        
+        checkRequiredOptions();
+        
+        return cmd;
+    }
+    public CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException
+    {
+        return parse(options, arguments, null, stopAtNonOption);
+    }
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException
+    {
+        return parse(options, arguments, properties, false);
+    }
+    /**
+     * Sets the values of Options using the values in <code>properties</code>.
+     *
+     * @param properties The value properties to be processed.
+     */
+    private void handleProperties(Properties properties) throws ParseException
+    {
+        if (properties == null)
+        {
+            return;
+        }
+        
+        for (Enumeration e = properties.propertyNames(); e.hasMoreElements();)
+        {
+            String option = e.nextElement().toString();
+            
+            if (!cmd.hasOption(option))
+            {
+                Option opt = options.getOption(option);
+            
+            // if the option is part of a group, check if another option of the group has been selected
+            
+                // get the value from the properties
+                String value = properties.getProperty(option);
+                
+                if (opt.hasArg())
+                {
+                    if (opt.getValues() == null || opt.getValues().length == 0)
+                    {
+                        opt.addValueForProcessing(value);
+                    }
+                }
+                else if (!("yes".equalsIgnoreCase(value)
+                        || "true".equalsIgnoreCase(value)
+                        || "1".equalsIgnoreCase(value)))
+                {
+                    // if the value is not yes, true or 1 then don't add the option to the CommandLine
+                    continue;
+                }
+                
+                handleOption(opt);
+                currentOption = null;
+            }
+        }
+    }
+}
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Properties;
+/**
+ * <code>Parser</code> creates {@link CommandLine}s.
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ * @deprecated The two-pass parsing with the flatten method is not enough flexible to handle complex cases
+ */
+public abstract class Parser implements CommandLineParser
+{
+    private Options options;
+    private List requiredOptions;
+    protected void setOptions(final Options options);
+    protected Options getOptions();
+    protected List getRequiredOptions();
+    protected void checkRequiredOptions() throws MissingOptionException;
+    public void processArgs(Option opt, ListIterator iter) throws ParseException;
+    protected void processOption(String arg, ListIterator iter) throws ParseException;
+    private void updateRequiredOptions(Option opt) throws ParseException;
+    /**
+     * Parses the specified <code>arguments</code> based
+     * on the specifed {@link Options}.
+     *
+     * @param options the <code>Options</code>
+     * @param arguments the <code>arguments</code>
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     * arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments) throws ParseException
+    {
+        return parse(options, arguments, null, false);
+    }
+    /**
+     * Sets the values of Options using the values in <code>properties</code>.
+     *
+     * @param properties The value properties to be processed.
+     */
+    protected void processProperties(Properties properties) throws ParseException
+    {
+        if (properties == null)
+        {
+            return;
+        }
+
+        for (Enumeration e = properties.propertyNames(); e.hasMoreElements();)
+        {
+            String option = e.nextElement().toString();
+            
+            if (!cmd.hasOption(option))
+            {
+                Option opt = getOptions().getOption(option);
+            
+            // if the option is part of a group, check if another option of the group has been selected
+            
+                // get the value from the properties instance
+                String value = properties.getProperty(option);
+
+                if (opt.hasArg())
+                {
+                    if (opt.getValues() == null || opt.getValues().length == 0)
+                    {
+                        try
+                        {
+                            opt.addValueForProcessing(value);
+                        }
+                        catch (RuntimeException exp)
+                        {
+                            // if we cannot add the value don't worry about it
+                        }
+                    }
+                }
+                else if (!("yes".equalsIgnoreCase(value)
+                        || "true".equalsIgnoreCase(value)
+                        || "1".equalsIgnoreCase(value)))
+                {
+                    // if the value is not yes, true or 1 then don't add the
+                    // option to the CommandLine
+                    continue;
+                }
+
+                cmd.addOption(opt);
+                updateRequiredOptions(opt);
+            }
+        }
+    }
+    /**
+     * Parses the specified <code>arguments</code>
+     * based on the specifed {@link Options}.
+     *
+     * @param options         the <code>Options</code>
+     * @param arguments       the <code>arguments</code>
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException
+    {
+        return parse(options, arguments, null, stopAtNonOption);
+    }
+    /**
+     * Parse the arguments according to the specified options and
+     * properties.
+     *
+     * @param options the specified Options
+     * @param arguments the command line arguments
+     * @param properties command line option name-value pairs
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     *
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     *
+     * @since 1.1
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
+            throws ParseException
+    {
+        // clear out the data in options in case it's been used before (CLI-71)
+        for (Iterator it = options.helpOptions().iterator(); it.hasNext();)
+        {
+            Option opt = (Option) it.next();
+            opt.clearValues();
+        }
+        
+        // clear the data from the groups
+        for (Iterator it = options.getOptionGroups().iterator(); it.hasNext();)
+        {
+            OptionGroup group = (OptionGroup) it.next();
+            group.setSelected(null);
+        }        
+
+        // initialise members
+        setOptions(options);
+
+        cmd = new CommandLine();
+
+        boolean eatTheRest = false;
+
+        if (arguments == null)
+        {
+            arguments = new String[0];
+        }
+
+        List tokenList = Arrays.asList(flatten(getOptions(), arguments, stopAtNonOption));
+
+        ListIterator iterator = tokenList.listIterator();
+
+        // process each flattened token
+        while (iterator.hasNext())
+        {
+            String t = (String) iterator.next();
+
+            // the value is the double-dash
+            if ("--".equals(t))
+            {
+                eatTheRest = true;
+            }
+
+            // the value is a single dash
+            else if ("-".equals(t))
+            {
+                if (stopAtNonOption)
+                {
+                    eatTheRest = true;
+                }
+                else
+                {
+                    cmd.addArg(t);
+                }
+            }
+
+            // the value is an option
+            else if (t.startsWith("-"))
+            {
+                if (stopAtNonOption && !getOptions().hasOption(t))
+                {
+                    eatTheRest = true;
+                    cmd.addArg(t);
+                }
+                else
+                {
+                    processOption(t, iterator);
+                }
+            }
+
+            // the value is an argument
+            else
+            {
+                cmd.addArg(t);
+
+                if (stopAtNonOption)
+                {
+                    eatTheRest = true;
+                }
+            }
+
+            // eat the remaining tokens
+            if (eatTheRest)
+            {
+                while (iterator.hasNext())
+                {
+                    String str = (String) iterator.next();
+
+                    // ensure only one double-dash is added
+                    if (!"--".equals(str))
+                    {
+                        cmd.addArg(str);
+                    }
+                }
+            }
+        }
+
+        processProperties(properties);
+        checkRequiredOptions();
+
+        return cmd;
+    }
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     *                        while parsing the command line tokens.
+     *
+     * @since 1.1
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException
+    {
+        return parse(options, arguments, properties, false);
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Real world test with long and short options.
+     */
+    public void testNLT() throws Exception {
+        Option help = new Option("h", "help", false, "print this message");
+        Option version = new Option("v", "version", false, "print version information");
+        Option newRun = new Option("n", "new", false, "Create NLT cache entries only for new items");
+        Option trackerRun = new Option("t", "tracker", false, "Create NLT cache entries only for tracker items");
+
+        Option timeLimit = OptionBuilder.withLongOpt("limit").hasArg()
+                                        .withValueSeparator()
+                                        .withDescription("Set time limit for execution, in minutes")
+                                        .create("l");
+
+        Option age = OptionBuilder.withLongOpt("age").hasArg()
+                                  .withValueSeparator()
+                                  .withDescription("Age (in days) of cache item before being recomputed")
+                                  .create("a");
+
+        Option server = OptionBuilder.withLongOpt("server").hasArg()
+                                     .withValueSeparator()
+                                     .withDescription("The NLT server address")
+                                     .create("s");
+
+        Option numResults = OptionBuilder.withLongOpt("results").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Number of results per item")
+                                         .create("r");
+
+        Option configFile = OptionBuilder.withLongOpt("file").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Use the specified configuration file")
+                                         .create();
+
+        Options options = new Options();
+        options.addOption(help);
+        options.addOption(version);
+        options.addOption(newRun);
+        options.addOption(trackerRun);
+        options.addOption(timeLimit);
+        options.addOption(age);
+        options.addOption(server);
+        options.addOption(numResults);
+        options.addOption(configFile);
+
+        // create the command line parser
+        CommandLineParser parser = new PosixParser();
+
+        String[] args = new String[] {
+                "-v",
+                "-l",
+                "10",
+                "-age",
+                "5",
+                "-file",
+                "filename"
+            };
+
+        CommandLine line = parser.parse(options, args);
+        assertTrue(line.hasOption("v"));
+        assertEquals(line.getOptionValue("l"), "10");
+        assertEquals(line.getOptionValue("limit"), "10");
+        assertEquals(line.getOptionValue("a"), "5");
+        assertEquals(line.getOptionValue("age"), "5");
+        assertEquals(line.getOptionValue("file"), "filename");
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

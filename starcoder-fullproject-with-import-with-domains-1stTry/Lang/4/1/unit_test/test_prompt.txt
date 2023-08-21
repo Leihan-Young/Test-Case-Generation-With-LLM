@@ -1,0 +1,24 @@
+package org.apache.commons.lang3.text.translate;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+/**
+ * Translates a value using a lookup table.
+ *
+ * @since 3.0
+ * @version $Id$
+ */
+public class LookupTranslator extends CharSequenceTranslator {
+    private final HashMap<CharSequence, CharSequence> lookupMap;
+    private final int shortest;
+    private final int longest;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int translate(final CharSequence input, final int index, final Writer out) throws IOException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

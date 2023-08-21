@@ -1,0 +1,18 @@
+Equal() {
+    GeneralPath p1 = new GeneralPath();
+    p1.moveTo(0, 0);
+    p1.lineTo(10, 10);
+    p1.closePath();
+    GeneralPath p2 = new GeneralPath();
+    p2.moveTo(0, 0);
+    p2.lineTo(10, 10);
+    p2.closePath();
+    boolean result = ShapeUtilities.equal(p1, p2);
+    assertTrue(result);
+    //add a point to p2
+    p2.lineTo(5, 5);
+    result = ShapeUtilities.equal(p1, p2);
+    assertFalse(result);
+}
+```
+The bug in the program is that in the `equal()` method, the `PathIterator` for `p2` is initialized with `null` instead of `p2`, causing it to iterate over the path of `p1` instead of `p2`. To fix this, change the `p1` in `PathIterator iterator2 = p1.getPathIterator(null);` to `p2`, like this: `PathIterator iterator2 = p2.getPathIterator(null);`.

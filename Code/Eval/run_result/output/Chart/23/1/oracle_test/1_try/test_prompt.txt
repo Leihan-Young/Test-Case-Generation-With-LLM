@@ -1,0 +1,482 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.renderer;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.EventListener;
+import java.util.List;
+import javax.swing.event.EventListenerList;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.plot.DrawingSupplier;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.text.TextAnchor;
+import org.jfree.chart.util.BooleanList;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintList;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ShapeList;
+import org.jfree.chart.util.ShapeUtilities;
+import org.jfree.chart.util.StrokeList;
+/**
+ * Base class providing common services for renderers.  Most methods that update
+ * attributes of the renderer will fire a {@link RendererChangeEvent}, which 
+ * normally means the plot that owns the renderer will receive notification that
+ * the renderer has been changed (the plot will, in turn, notify the chart).
+ */
+public abstract class AbstractRenderer implements Cloneable, Serializable {
+    private static final long serialVersionUID = -828267569428206075L;
+    public static final Double ZERO = new Double(0.0);
+    public static final Paint DEFAULT_PAINT = Color.blue;
+    public static final Paint DEFAULT_OUTLINE_PAINT = Color.gray;
+    public static final Stroke DEFAULT_STROKE = new BasicStroke(1.0f);
+    public static final Stroke DEFAULT_OUTLINE_STROKE = new BasicStroke(1.0f);
+    public static final Paint DEFAULT_VALUE_LABEL_PAINT = Color.black;
+    private BooleanList seriesVisibleList;
+    private boolean baseSeriesVisible;
+    private BooleanList seriesVisibleInLegendList;
+    private boolean baseSeriesVisibleInLegend;
+    private PaintList paintList;
+    private boolean autoPopulateSeriesPaint;
+    private transient Paint basePaint;
+    private PaintList fillPaintList;
+    private boolean autoPopulateSeriesFillPaint;
+    private transient Paint baseFillPaint;
+    private PaintList outlinePaintList;
+    private boolean autoPopulateSeriesOutlinePaint;
+    private transient Paint baseOutlinePaint;
+    private StrokeList strokeList;
+    private boolean autoPopulateSeriesStroke;
+    private transient Stroke baseStroke;
+    private StrokeList outlineStrokeList;
+    private transient Stroke baseOutlineStroke;
+    private boolean autoPopulateSeriesOutlineStroke;
+    private ShapeList shapeList;
+    private boolean autoPopulateSeriesShape;
+    private transient Shape baseShape;
+    private BooleanList itemLabelsVisibleList;
+    private boolean baseItemLabelsVisible;
+    private ObjectList itemLabelFontList;
+    private Font baseItemLabelFont;
+    private PaintList itemLabelPaintList;
+    private transient Paint baseItemLabelPaint;
+    private ObjectList positiveItemLabelPositionList;
+    private ItemLabelPosition basePositiveItemLabelPosition;
+    private ObjectList negativeItemLabelPositionList;
+    private ItemLabelPosition baseNegativeItemLabelPosition;
+    private double itemLabelAnchorOffset = 2.0;
+    private BooleanList createEntitiesList;
+    private boolean baseCreateEntities;
+    private transient EventListenerList listenerList;
+    private transient RendererChangeEvent event;
+    /**
+     * Tests this renderer for equality with another object.
+     *
+     * @param obj  the object (<code>null</code> permitted).
+     *
+     * @return <code>true</code> or <code>false</code>.
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof AbstractRenderer)) {
+            return false;
+        }
+        AbstractRenderer that = (AbstractRenderer) obj;
+        if (!this.seriesVisibleList.equals(that.seriesVisibleList)) {
+            return false;   
+        }
+        if (this.baseSeriesVisible != that.baseSeriesVisible) {
+            return false;   
+        }
+        if (!this.seriesVisibleInLegendList.equals(
+                that.seriesVisibleInLegendList)) {
+            return false;   
+        }
+        if (this.baseSeriesVisibleInLegend != that.baseSeriesVisibleInLegend) {
+            return false;   
+        }
+        if (!ObjectUtilities.equal(this.paintList, that.paintList)) {
+            return false;
+        }
+        if (!PaintUtilities.equal(this.basePaint, that.basePaint)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.fillPaintList, that.fillPaintList)) {
+            return false;
+        }
+        if (!PaintUtilities.equal(this.baseFillPaint, that.baseFillPaint)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.outlinePaintList,
+                that.outlinePaintList)) {
+            return false;
+        }
+        if (!PaintUtilities.equal(this.baseOutlinePaint, 
+                that.baseOutlinePaint)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.strokeList, that.strokeList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseStroke, that.baseStroke)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.outlineStrokeList, 
+                that.outlineStrokeList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(
+            this.baseOutlineStroke, that.baseOutlineStroke)
+        ) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.shapeList, that.shapeList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseShape, that.baseShape)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.itemLabelsVisibleList, 
+                that.itemLabelsVisibleList)) {
+            return false;
+        }
+        if (this.baseItemLabelsVisible != that.baseItemLabelsVisible) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.itemLabelFontList, 
+                that.itemLabelFontList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseItemLabelFont, 
+                that.baseItemLabelFont)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.itemLabelPaintList, 
+                that.itemLabelPaintList)) {
+            return false;
+        }
+        if (!PaintUtilities.equal(this.baseItemLabelPaint, 
+                that.baseItemLabelPaint)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.positiveItemLabelPositionList, 
+                that.positiveItemLabelPositionList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.basePositiveItemLabelPosition, 
+                that.basePositiveItemLabelPosition)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.negativeItemLabelPositionList, 
+                that.negativeItemLabelPositionList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseNegativeItemLabelPosition, 
+                that.baseNegativeItemLabelPosition)) {
+            return false;
+        }
+        if (this.itemLabelAnchorOffset != that.itemLabelAnchorOffset) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.createEntitiesList, 
+                that.createEntitiesList)) {
+            return false;   
+        }
+        if (this.baseCreateEntities != that.baseCreateEntities) {
+            return false;   
+        }
+        return true;
+    }
+}
+package org.jfree.chart.renderer.category;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.CategoryItemEntity;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.CategorySeriesLabelGenerator;
+import org.jfree.chart.labels.CategoryToolTipGenerator;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategorySeriesLabelGenerator;
+import org.jfree.chart.plot.CategoryMarker;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.DrawingSupplier;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.Marker;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.PlotRenderingInfo;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.renderer.AbstractRenderer;
+import org.jfree.chart.text.TextUtilities;
+import org.jfree.chart.urls.CategoryURLGenerator;
+import org.jfree.chart.util.GradientPaintTransformer;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.LengthAdjustmentType;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleAnchor;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * An abstract base class that you can use to implement a new
+ * {@link CategoryItemRenderer}.  When you create a new
+ * {@link CategoryItemRenderer} you are not required to extend this class,
+ * but it makes the job easier.
+ */
+public abstract class AbstractCategoryItemRenderer extends AbstractRenderer
+    implements CategoryItemRenderer, Cloneable, PublicCloneable, Serializable {
+    private static final long serialVersionUID = 1247553218442497391L;
+    private CategoryPlot plot;
+    private ObjectList itemLabelGeneratorList;
+    private CategoryItemLabelGenerator baseItemLabelGenerator;
+    private ObjectList toolTipGeneratorList;
+    private CategoryToolTipGenerator baseToolTipGenerator;
+    private ObjectList urlGeneratorList;
+    private CategoryURLGenerator baseURLGenerator;
+    private CategorySeriesLabelGenerator legendItemLabelGenerator;
+    private CategorySeriesLabelGenerator legendItemToolTipGenerator;
+    private CategorySeriesLabelGenerator legendItemURLGenerator;
+    private List backgroundAnnotations;
+    private List foregroundAnnotations;
+    private transient int rowCount;
+    private transient int columnCount;
+    /**
+     * Tests this renderer for equality with another object.
+     *
+     * @param obj  the object.
+     *
+     * @return <code>true</code> or <code>false</code>.
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof AbstractCategoryItemRenderer)) {
+            return false;
+        }
+        AbstractCategoryItemRenderer that = (AbstractCategoryItemRenderer) obj;
+
+        if (!ObjectUtilities.equal(this.itemLabelGeneratorList,
+                that.itemLabelGeneratorList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseItemLabelGenerator,
+                that.baseItemLabelGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.toolTipGeneratorList,
+                that.toolTipGeneratorList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseToolTipGenerator,
+                that.baseToolTipGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.urlGeneratorList, 
+                that.urlGeneratorList)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.baseURLGenerator,
+                that.baseURLGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.legendItemLabelGenerator,
+                that.legendItemLabelGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.legendItemToolTipGenerator,
+                that.legendItemToolTipGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.legendItemURLGenerator,
+                that.legendItemURLGenerator)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.backgroundAnnotations,
+                that.backgroundAnnotations)) {
+            return false;
+        }
+        if (!ObjectUtilities.equal(this.foregroundAnnotations,
+                that.foregroundAnnotations)) {
+            return false;
+        }
+        return super.equals(obj);
+    }
+}
+package org.jfree.chart.renderer.category;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import javax.swing.Icon;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.category.CategoryDataset;
+/**
+ * Renderer for drawing min max plot. This renderer draws all the series under 
+ * the same category in the same x position using <code>objectIcon</code> and 
+ * a line from the maximum value to the minimum value.
+ * <p>
+ * For use with the {@link org.jfree.chart.plot.CategoryPlot} class.
+ */
+public class MinMaxCategoryRenderer extends AbstractCategoryItemRenderer {
+    private static final long serialVersionUID = 2935615937671064911L;
+    private boolean plotLines = false;
+    private transient Paint groupPaint = Color.black;
+    private transient Stroke groupStroke = new BasicStroke(1.0f);
+    private int lastCategory = -1;
+    private double min;
+    private double max;
+    /**
+     * Sets the paint used to draw the line between the minimum and maximum
+     * value items in each category and sends a {@link RendererChangeEvent} to
+     * all registered listeners.
+     *
+     * @param paint  the paint (<code>null</code> not permitted).
+     * 
+     * @see #getGroupPaint()
+     */
+    public void setGroupPaint(Paint paint) {
+        if (paint == null) {
+            throw new IllegalArgumentException("Null 'paint' argument.");
+        }
+        this.groupPaint = paint;
+        notifyListeners(new RendererChangeEvent(this));
+    }
+    /**
+     * Sets the stroke of the line between the minimum value and the maximum 
+     * value and sends a {@link RendererChangeEvent} to all registered 
+     * listeners.
+     *
+     * @param stroke the new stroke (<code>null</code> not permitted).
+     */
+    public void setGroupStroke(Stroke stroke) {
+        if (stroke == null) {
+            throw new IllegalArgumentException("Null 'stroke' argument.");
+        }
+        this.groupStroke = stroke;
+        notifyListeners(new RendererChangeEvent(this));        
+    }
+    /**
+     * Sets the flag that controls whether or not lines are drawn to connect
+     * the items within a series and sends a {@link RendererChangeEvent} to 
+     * all registered listeners.
+     *
+     * @param draw  the new value of the flag.
+     * 
+     * @see #isDrawLines()
+     */
+    public void setDrawLines(boolean draw) {
+        if (this.plotLines != draw) {
+            this.plotLines = draw;
+            this.notifyListeners(new RendererChangeEvent(this));
+        }
+        
+    }
+    /**
+     * Default constructor.
+     */
+    public MinMaxCategoryRenderer() {
+        super();
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testEquals() {
+        MinMaxCategoryRenderer r1 = new MinMaxCategoryRenderer();
+        MinMaxCategoryRenderer r2 = new MinMaxCategoryRenderer();
+        _tmp_var_0_ = r1;
+        _tmp_var_1_ =  r2;
+        $ASSERT$
+        
+        r1.setDrawLines(true);
+        _tmp_var_2_ = r1.equals(r2);
+        $ASSERT$
+        r2.setDrawLines(true);
+        _tmp_var_3_ = r1.equals(r2);
+        $ASSERT$
+        
+        r1.setGroupPaint(new GradientPaint(1.0f, 2.0f, Color.red, 3.0f, 4.0f, 
+                Color.yellow));
+        _tmp_var_4_ = r1.equals(r2);
+        $ASSERT$
+        r2.setGroupPaint(new GradientPaint(1.0f, 2.0f, Color.red, 3.0f, 4.0f, 
+                Color.yellow));
+        _tmp_var_5_ = r1.equals(r2);
+        $ASSERT$
+        
+        r1.setGroupStroke(new BasicStroke(1.2f));
+        _tmp_var_6_ = r1.equals(r2);
+        $ASSERT$
+        r2.setGroupStroke(new BasicStroke(1.2f));
+        _tmp_var_7_ = r1.equals(r2);
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

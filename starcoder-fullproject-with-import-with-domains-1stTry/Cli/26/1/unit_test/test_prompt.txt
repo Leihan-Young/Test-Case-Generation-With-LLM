@@ -1,0 +1,63 @@
+package org.apache.commons.cli;
+/**
+ * OptionBuilder allows the user to create Options using descriptive methods.
+ *
+ * <p>Details on the Builder pattern can be found at
+ * <a href="http://c2.com/cgi-bin/wiki?BuilderPattern">
+ * http://c2.com/cgi-bin/wiki?BuilderPattern</a>.</p>
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ * @since 1.0
+ */
+public final class OptionBuilder
+{
+    private static String longopt;
+    private static String description;
+    private static String argName;
+    private static boolean required;
+    private static int numberOfArgs = Option.UNINITIALIZED;
+    private static Object type;
+    private static boolean optionalArg;
+    private static char valuesep;
+    private static OptionBuilder instance = new OptionBuilder();
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the <code>java.lang.String</code> representation
+     * of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(String opt) throws IllegalArgumentException;
+    /**
+     * Create an Option using the current settings
+     *
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>longOpt</code> has not been set.
+     */
+    public static Option create() throws IllegalArgumentException;
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the character representation of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(char opt) throws IllegalArgumentException;
+    /**
+     * The next Option created will have the specified description
+     *
+     * @param newDescription a description of the Option's purpose
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder withDescription(String newDescription);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

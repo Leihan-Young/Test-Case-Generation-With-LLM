@@ -1,0 +1,13 @@
+StripLeadingAndTrailingQuotes() {
+    String str1 = "\"test\"";
+    String str2 = "\"test";
+    String str3 = "test\"";
+    String str4 = "test";
+
+    assertEquals("test", Util.stripLeadingAndTrailingQuotes(str1));
+    assertEquals("\"test", Util.stripLeadingAndTrailingQuotes(str2));
+    assertEquals("test\"", Util.stripLeadingAndTrailingQuotes(str3));
+    assertEquals("test", Util.stripLeadingAndTrailingQuotes(str4));
+}
+```
+The above test method checks if the `stripLeadingAndTrailingQuotes()` method of the `Util` class is working as expected by passing different types of strings with quotes. It should return the string without the quotes and should handle cases where only one of the quotes is present.

@@ -1,0 +1,16 @@
+GetDataset() {
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset()); // expecting null since dataset is not set
+    DefaultPieDataset dataset = new DefaultPieDataset();
+    dataset.setValue("Category 1", 1);
+    dataset.setValue("Category 2", 2);
+    dataset.setValue("Category 3", 3);
+    CategoryToPieDataset categoryToPieDataset = new CategoryToPieDataset(dataset, TableOrder.BY_ROW, 0);
+    plot.setDataset(categoryToPieDataset);
+    assertEquals(categoryToPieDataset, plot.getDataset());
+}
+``` 
+
+Explanation:
+
+The original `MultiplePiePlot` class uses a `CategoryDataset`, but the test code was using a `DefaultCategoryDataset` which is not compatible with `CategoryToPieDataset`. Therefore, I changed the dataset to a `DefaultPieDataset` which is compatible with `CategoryToPieDataset`. Additionally, I created a `CategoryToPieDataset` object and set the dataset with it. Finally, I compared the dataset with the `CategoryToPieDataset` object, which should be equal.

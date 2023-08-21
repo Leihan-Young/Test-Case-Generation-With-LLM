@@ -1,0 +1,27 @@
+     /**
+     * Test of optimize method, of class CMAESOptimizer.
+     */
+    @Test
+    public void testOptimize() {
+        System.out.println("optimize");
+        final CMAESOptimizer instance = new CMAESOptimizer();
+        instance.setRandomGenerator(new Well19937a(0));
+        instance.setConvergenceChecker(new SimpleValueChecker(1e-12, 1e-12));
+        instance.setMaxIterations(1000);
+        instance.setPopulationSize(10);
+        instance.setSigma(1);
+        instance.setDiagonalOnly(0);
+        instance.setIsActiveCMA(true);
+        instance.setCheckFeasableCount(0);
+        instance.setStopFitness(Double.POSITIVE_INFINITY);
+        instance.setStopTolFun(1e-12);
+        instance.setStopTolX(1e-12);
+        instance.setStopTolUpX(1e-12);
+        instance.setStopTolHistFun(1e-12);
+        try {
+            instance.optimize(100, new MultivariateFunction() {
+
+                public double value(final double[] point) {
+                    return Math.pow(point[0], 4) + Math.pow(point[1], 2);
+                }
+            }, GoalType.MINIMIZE, new double[

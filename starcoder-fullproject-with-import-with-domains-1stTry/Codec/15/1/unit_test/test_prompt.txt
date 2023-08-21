@@ -1,0 +1,63 @@
+package org.apache.commons.codec.language;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+/**
+ * Encodes a string into a Soundex value. Soundex is an encoding used to relate similar names, but can also be used as a
+ * general purpose scheme to find word with similar phonemes.
+ *
+ * This class is thread-safe.
+ * Although not strictly immutable, the {@link #maxLength} field is not actually used.
+ *
+ * @version $Id$
+ */
+public class Soundex implements StringEncoder {
+    public static final String US_ENGLISH_MAPPING_STRING = "01230120022455012623010202";
+    private static final char[] US_ENGLISH_MAPPING = US_ENGLISH_MAPPING_STRING.toCharArray();
+    public static final Soundex US_ENGLISH = new Soundex();
+    private int maxLength = 4;
+    private final char[] soundexMapping;
+    /**
+     * Used internally by the Soundex algorithm.
+     *
+     * Consonants from the same code group separated by W or H are treated as one.
+     *
+     * @param str
+     *                  the cleaned working string to encode (in upper case).
+     * @param index
+     *                  the character position to encode
+     * @return Mapping code for a particular character
+     * @throws IllegalArgumentException
+     *                  if the character is not mapped
+     */
+    private char getMappingCode(final String str, final int index);
+    /**
+     * Encodes an Object using the soundex algorithm. This method is provided in order to satisfy the requirements of
+     * the Encoder interface, and will throw an EncoderException if the supplied object is not of type java.lang.String.
+     *
+     * @param obj
+     *                  Object to encode
+     * @return An object (or type java.lang.String) containing the soundex code which corresponds to the String
+     *             supplied.
+     * @throws EncoderException
+     *                  if the parameter supplied is not of type java.lang.String
+     * @throws IllegalArgumentException
+     *                  if a character is not mapped
+     */
+    @Override
+    public Object encode(final Object obj) throws EncoderException;
+    /**
+     * Encodes a String using the soundex algorithm.
+     *
+     * @param str
+     *                  A String object to encode
+     * @return A Soundex code corresponding to the String supplied
+     * @throws IllegalArgumentException
+     *                  if a character is not mapped
+     */
+    @Override
+    public String encode(final String str);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

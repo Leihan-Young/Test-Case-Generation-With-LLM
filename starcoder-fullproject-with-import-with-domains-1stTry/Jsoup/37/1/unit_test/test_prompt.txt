@@ -1,0 +1,59 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.*;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private Tag tag;
+    private Set<String> classNames;
+    /**
+     * Find elements that match the {@link Selector} CSS query, with this element as the starting context. Matched elements
+     * may include this element, or any of its children.
+     * <p/>
+     * This method is generally more powerful to use than the DOM-type {@code getElementBy*} methods, because
+     * multiple filters can be combined, e.g.:
+     * <ul>
+     * <li>{@code el.select("a[href]")} - finds links ({@code a} tags with {@code href} attributes)
+     * <li>{@code el.select("a[href*=example.com]")} - finds links pointing to example.com (loosely)
+     * </ul>
+     * <p/>
+     * See the query syntax documentation in {@link org.jsoup.select.Selector}.
+     *
+     * @param cssQuery a {@link Selector} CSS-like query
+     * @return elements that match the query (empty if none match)
+     * @see org.jsoup.select.Selector
+     */
+    public Elements select(String cssQuery);
+    /**
+     * Retrieves the element's inner HTML. E.g. on a {@code <div>} with one empty {@code <p>}, would return
+     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
+     * 
+     * @return String of HTML.
+     * @see #outerHtml()
+     */
+    public String html();
+    private void html(StringBuilder accum);
+    /**
+     * Set this element's inner HTML. Clears the existing HTML first.
+     * @param html HTML to parse and set into this element
+     * @return this element
+     * @see #append(String)
+     */
+    public Element html(String html);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,58 @@
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+/**
+ * Default parser.
+ * 
+ * @version $Id$
+ * @since 1.3
+ */
+public class DefaultParser implements CommandLineParser
+{
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options    the specified Options
+     * @param arguments  the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties) throws ParseException;
+    /**
+     * Tells if the token looks like a short option.
+     * 
+     * @param token
+     */
+    private boolean isShortOption(String token);
+    /**
+     * Parse the arguments according to the specified options and properties.
+     *
+     * @param options         the specified Options
+     * @param arguments       the command line arguments
+     * @param properties      command line option name-value pairs
+     * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
+     *     the parsing and the remaining arguments are added to the 
+     *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
+     *     argument triggers a ParseException.
+     *
+     * @return the list of atomic option and value tokens
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, Properties properties, boolean stopAtNonOption)
+            throws ParseException;
+    /** The required options and groups expected to be found when parsing the command line. */
+    protected List expectedOpts;
+ 
+    public CommandLine parse(Options options, String[] arguments) throws ParseException;
+    public CommandLine parse(Options options, String[] arguments, boolean stopAtNonOption) throws ParseException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

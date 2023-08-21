@@ -1,0 +1,10 @@
+     public void testRound() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(2002, Calendar.MARCH, 28, 13, 45, 1);
+        cal.set(Calendar.MILLISECOND, 231);
+        DateUtils.round(cal, Calendar.HOUR_OF_DAY);
+        assertEquals(13, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, cal.get(Calendar.MINUTE));
+        assertEquals(0, cal.get(Calendar.SECOND));
+        assertEquals(0, cal.get(Calendar.MILLISECOND));
+    }

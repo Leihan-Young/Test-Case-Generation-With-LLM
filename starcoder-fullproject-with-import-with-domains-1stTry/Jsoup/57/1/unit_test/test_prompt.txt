@@ -1,0 +1,38 @@
+package org.jsoup.nodes;
+import org.jsoup.SerializationException;
+import org.jsoup.helper.Validate;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+/**
+ * The attributes of an Element.
+ * <p>
+ * Attributes are treated as a map: there can be only one value associated with an attribute key/name.
+ * </p>
+ * <p>
+ * Attribute name and value comparisons are  <b>case sensitive</b>. By default for HTML, attribute names are
+ * normalized to lower-case on parsing. That means you should use lower-case strings when referring to attributes by
+ * name.
+ * </p>
+ *
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Attributes implements Iterable<Attribute>, Cloneable {
+    private LinkedHashMap<String, Attribute> attributes = null;
+    /**
+     Remove an attribute by key. <b>Case insensitive.</b>
+     @param key attribute key to remove
+     */
+    public void removeIgnoreCase(String key);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

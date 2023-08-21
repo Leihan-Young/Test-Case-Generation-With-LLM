@@ -1,0 +1,392 @@
+package org.apache.commons.math.util;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.exception.util.Localizable;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.exception.NonMonotonousSequenceException;
+/**
+ * Some useful additions to the built-in functions in {@link Math}.
+ * @version $Revision$ $Date$
+ */
+public final class MathUtils {
+    public static final double EPSILON = 0x1.0p-53;
+    public static final double SAFE_MIN = 0x1.0p-1022;
+    public static final double TWO_PI = 2 * FastMath.PI;
+    private static final byte  NB = (byte)-1;
+    private static final short NS = (short)-1;
+    private static final byte  PB = (byte)1;
+    private static final short PS = (short)1;
+    private static final byte  ZB = (byte)0;
+    private static final short ZS = (short)0;
+    private static final int NAN_GAP = 4 * 1024 * 1024;
+    private static final long SGN_MASK = 0x8000000000000000L;
+    /**
+     * Add two long integers, checking for overflow.
+     *
+     * @param a an addend
+     * @param b an addend
+     * @return the sum <code>a+b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long addAndCheck(long a, long b) {
+        return addAndCheck(a, b, LocalizedFormats.OVERFLOW_IN_ADDITION);
+    }
+    /**
+     * Returns an exact representation of the <a
+     * href="http://mathworld.wolfram.com/BinomialCoefficient.html"> Binomial
+     * Coefficient</a>, "<code>n choose k</code>", the number of
+     * <code>k</code>-element subsets that can be selected from an
+     * <code>n</code>-element set.
+     * <p>
+     * <Strong>Preconditions</strong>:
+     * <ul>
+     * <li> <code>0 <= k <= n </code> (otherwise
+     * <code>IllegalArgumentException</code> is thrown)</li>
+     * <li> The result is small enough to fit into a <code>long</code>. The
+     * largest value of <code>n</code> for which all coefficients are
+     * <code> < Long.MAX_VALUE</code> is 66. If the computed value exceeds
+     * <code>Long.MAX_VALUE</code> an <code>ArithMeticException</code> is
+     * thrown.</li>
+     * </ul></p>
+     *
+     * @param n the size of the set
+     * @param k the size of the subsets to be counted
+     * @return <code>n choose k</code>
+     * @throws IllegalArgumentException if preconditions are not met.
+     * @throws ArithmeticException if the result is too large to be represented
+     *         by a long integer.
+     */
+    public static long binomialCoefficient(final int n, final int k) {
+        checkBinomial(n, k);
+        if ((n == k) || (k == 0)) {
+            return 1;
+        }
+        if ((k == 1) || (k == n - 1)) {
+            return n;
+        }
+        // Use symmetry for large k
+        if (k > n / 2)
+            return binomialCoefficient(n, n - k);
+
+        // We use the formula
+        // (n choose k) = n! / (n-k)! / k!
+        // (n choose k) == ((n-k+1)*...*n) / (1*...*k)
+        // which could be written
+        // (n choose k) == (n-1 choose k-1) * n / k
+        long result = 1;
+        if (n <= 61) {
+            // For n <= 61, the naive implementation cannot overflow.
+            int i = n - k + 1;
+            for (int j = 1; j <= k; j++) {
+                result = result * i / j;
+                i++;
+            }
+        } else if (n <= 66) {
+            // For n > 61 but n <= 66, the result cannot overflow,
+            // but we must take care not to overflow intermediate values.
+            int i = n - k + 1;
+            for (int j = 1; j <= k; j++) {
+                // We know that (result * i) is divisible by j,
+                // but (result * i) may overflow, so we split j:
+                // Filter out the gcd, d, so j/d and i/d are integer.
+                // result is divisible by (j/d) because (j/d)
+                // is relative prime to (i/d) and is a divisor of
+                // result * (i/d).
+                final long d = gcd(i, j);
+                result = (result / (j / d)) * (i / d);
+                i++;
+            }
+        } else {
+            // For n > 66, a result overflow might occur, so we check
+            // the multiplication, taking care to not overflow
+            // unnecessary.
+            int i = n - k + 1;
+            for (int j = 1; j <= k; j++) {
+                final long d = gcd(i, j);
+                result = mulAndCheck(result / (j / d), i / d);
+                i++;
+            }
+        }
+        return result;
+    }
+    /**
+     * Add two integers, checking for overflow.
+     *
+     * @param x an addend
+     * @param y an addend
+     * @return the sum <code>x+y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int addAndCheck(int x, int y) {
+        long s = (long)x + (long)y;
+        if (s < Integer.MIN_VALUE || s > Integer.MAX_VALUE) {
+            throw MathRuntimeException.createArithmeticException(LocalizedFormats.OVERFLOW_IN_ADDITION, x, y);
+        }
+        return (int)s;
+    }
+    /**
+     * Returns true if both arguments are equal or within the range of allowed
+     * error (inclusive).
+     *
+     * @param x first value
+     * @param y second value
+     * @param eps the amount of absolute error to allow.
+     * @return {@code true} if the values are equal or within range of each other.
+     */
+    public static boolean equals(double x, double y, double eps) {
+        return equals(x, y, 1) || FastMath.abs(y - x) <= eps;
+    }
+    /**
+     * Returns true if both arguments are equal or within the range of allowed
+     * error (inclusive).
+     * Two float numbers are considered equal if there are {@code (maxUlps - 1)}
+     * (or less) floating point numbers between them (i.e. two adjacent floating
+     * point numbers are considered equal.
+     * Adapted from <a
+     * href="http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm">
+     * Bruce Dawson</a>
+     *
+     * @param x first value
+     * @param y second value
+     * @param maxUlps {@code (maxUlps - 1)} is the number of floating point
+     * values between {@code x} and {@code y}.
+     * @return {@code true} if there are less than {@code maxUlps} floating
+     * point values between {@code x} and {@code y}.
+     */
+    public static boolean equals(double x, double y, int maxUlps) {
+        // Check that "maxUlps" is non-negative and small enough so that
+        // NaN won't compare as equal to anything (except another NaN).
+        assert maxUlps > 0 && maxUlps < NAN_GAP;
+
+        long xInt = Double.doubleToLongBits(x);
+        long yInt = Double.doubleToLongBits(y);
+
+        // Make lexicographically ordered as a two's-complement integer.
+        if (xInt < 0) {
+            xInt = SGN_MASK - xInt;
+        }
+        if (yInt < 0) {
+            yInt = SGN_MASK - yInt;
+        }
+
+        final boolean isEqual = FastMath.abs(xInt - yInt) <= maxUlps;
+
+        return isEqual && !Double.isNaN(x) && !Double.isNaN(y);
+    }
+    /**
+     * Returns true iff both arguments are null or have same dimensions and all
+     * their elements are equal as defined by
+     * {@link #equals(double,double) this method}.
+     *
+     * @param x first array
+     * @param y second array
+     * @return true if the values are both null or have same dimension
+     * and equal elements.
+     */
+    public static boolean equals(double[] x, double[] y) {
+        if ((x == null) || (y == null)) {
+            return !((x == null) ^ (y == null));
+        }
+        if (x.length != y.length) {
+            return false;
+        }
+        for (int i = 0; i < x.length; ++i) {
+            if (!equals(x[i], y[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Multiply two integers, checking for overflow.
+     *
+     * @param x a factor
+     * @param y a factor
+     * @return the product <code>x*y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int mulAndCheck(int x, int y) {
+        long m = ((long)x) * ((long)y);
+        if (m < Integer.MIN_VALUE || m > Integer.MAX_VALUE) {
+            throw new ArithmeticException("overflow: mul");
+        }
+        return (int)m;
+    }
+    /**
+     * Returns the <a href="http://mathworld.wolfram.com/HyperbolicCosine.html">
+     * hyperbolic cosine</a> of x.
+     *
+     * @param x double value for which to find the hyperbolic cosine
+     * @return hyperbolic cosine of x
+     */
+    public static double cosh(double x) {
+        return (FastMath.exp(x) + FastMath.exp(-x)) / 2.0;
+    }
+    /**
+     * Returns true iff they are equal as defined by
+     * {@link #equals(double,double,int) equals(x, y, 1)}.
+     *
+     * @param x first value
+     * @param y second value
+     * @return {@code true} if the values are equal.
+     */
+    public static boolean equals(double x, double y) {
+        return (Double.isNaN(x) && Double.isNaN(y)) || x == y;
+    }
+    /**
+     * Subtract two long integers, checking for overflow.
+     *
+     * @param a first value
+     * @param b second value
+     * @return the difference <code>a-b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long subAndCheck(long a, long b) {
+        long ret;
+        String msg = "overflow: subtract";
+        if (b == Long.MIN_VALUE) {
+            if (a < 0) {
+                ret = a - b;
+            } else {
+                throw new ArithmeticException(msg);
+            }
+        } else {
+            // use additive inverse
+            ret = addAndCheck(a, -b, LocalizedFormats.OVERFLOW_IN_ADDITION);
+        }
+        return ret;
+    }
+    /**
+     * Add two long integers, checking for overflow.
+     *
+     * @param a an addend
+     * @param b an addend
+     * @param pattern the pattern to use for any thrown exception.
+     * @return the sum <code>a+b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    private static long addAndCheck(long a, long b, Localizable pattern) {
+        long ret;
+        if (a > b) {
+            // use symmetry to reduce boundary cases
+            ret = addAndCheck(b, a, pattern);
+        } else {
+            // assert a <= b
+
+            if (a < 0) {
+                if (b < 0) {
+                    // check for negative overflow
+                    if (Long.MIN_VALUE - b <= a) {
+                        ret = a + b;
+                    } else {
+                        throw MathRuntimeException.createArithmeticException(pattern, a, b);
+                    }
+                } else {
+                    // opposite sign addition is always safe
+                    ret = a + b;
+                }
+            } else {
+                // assert a >= 0
+                // assert b >= 0
+
+                // check for positive overflow
+                if (a <= Long.MAX_VALUE - b) {
+                    ret = a + b;
+                } else {
+                    throw MathRuntimeException.createArithmeticException(pattern, a, b);
+                }
+            }
+        }
+        return ret;
+    }
+    /**
+     * Subtract two integers, checking for overflow.
+     *
+     * @param x the minuend
+     * @param y the subtrahend
+     * @return the difference <code>x-y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int subAndCheck(int x, int y) {
+        long s = (long)x - (long)y;
+        if (s < Integer.MIN_VALUE || s > Integer.MAX_VALUE) {
+            throw MathRuntimeException.createArithmeticException(LocalizedFormats.OVERFLOW_IN_SUBTRACTION, x, y);
+        }
+        return (int)s;
+    }
+    /**
+     * Multiply two long integers, checking for overflow.
+     *
+     * @param a first value
+     * @param b second value
+     * @return the product <code>a * b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long mulAndCheck(long a, long b) {
+        long ret;
+        String msg = "overflow: multiply";
+        if (a > b) {
+            // use symmetry to reduce boundary cases
+            ret = mulAndCheck(b, a);
+        } else {
+            if (a < 0) {
+                if (b < 0) {
+                    // check for positive overflow with negative a, negative b
+                    if (a >= Long.MAX_VALUE / b) {
+                        ret = a * b;
+                    } else {
+                        throw new ArithmeticException(msg);
+                    }
+                } else if (b > 0) {
+                    // check for negative overflow with negative a, positive b
+                    if (Long.MIN_VALUE / b <= a) {
+                        ret = a * b;
+                    } else {
+                        throw new ArithmeticException(msg);
+
+                    }
+                } else {
+                    // assert b == 0
+                    ret = 0;
+                }
+            } else if (a > 0) {
+                // assert a > 0
+                // assert b > 0
+
+                // check for positive overflow with positive a, positive b
+                if (a <= Long.MAX_VALUE / b) {
+                    ret = a * b;
+                } else {
+                    throw new ArithmeticException(msg);
+                }
+            } else {
+                // assert a == 0
+                ret = 0;
+            }
+        }
+        return ret;
+    }
+}
+
+  public void test039()  throws Throwable  {
+      double[] doubleArray0 = new double[2];
+      doubleArray0[0] = Double.NaN;
+      boolean boolean0 = MathUtils.equals(doubleArray0, doubleArray0);<FILL-HERE>
+}
+

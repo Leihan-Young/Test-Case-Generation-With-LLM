@@ -1,0 +1,17 @@
+WriteableCommandLineImpl() {
+    Option option = new PropertyOption("p", "property", true, "property description");
+    WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+
+    // add property to option
+    option.addProperty("key", "value");
+
+    // add option to command line
+    commandLine.addOption(option);
+
+    // get property from command line
+    String propertyValue = commandLine.getProperty(option, "key", "defaultValue");
+
+    assertEquals("value", propertyValue);
+}
+```
+This test method checks if the `getProperty` method of `WriteableCommandLineImpl` correctly retrieves the value of a property added to an option and added to the command line. However, there is a bug in the implementation of `getProperty` method that causes it to always return the default value, regardless of whether the specified property exists or not. Therefore, this test method would fail even if the implementation is correct.

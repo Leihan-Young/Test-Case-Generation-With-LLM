@@ -1,0 +1,28 @@
+ private static Document parse(String html) {
+        return Parser.parseBodyFragment(html, "http://foo.com/");
+    }
+    private void assertTitle(String html, String expectedTitle) {
+        assertEquals(expectedTitle, parse(html).title());
+    }
+    private void assertTitle(String html, String expectedTitle, String baseUri) {
+        assertEquals(expectedTitle, parse(html, baseUri).title());
+    }
+    private void assertCharset(String html, Charset expectedCharset) {
+        assertEquals(expectedCharset, parse(html).outputSettings().charset());
+    }
+    private void assertCharset(String html, Charset expectedCharset, String baseUri) {
+        assertEquals(expectedCharset, parse(html, baseUri).outputSettings().charset());
+    }
+    private void assertCharset(String html, String expectedCharset) {
+        assertCharset(html, Charset.forName(expectedCharset));
+    }
+    private void assertCharset(String html, String expectedCharset, String baseUri) {
+        assertCharset(html, Charset.forName(expectedCharset), baseUri);
+    }
+    private void assertMetaCharset(String html, Charset expectedCharset) {
+        assertEquals(expectedCharset, parse(html).outputSettings().charset());
+    }
+    private void assertMetaCharset(String html, Charset expectedCharset, String baseUri) {
+        assertEquals(expectedCharset, parse(html, baseUri).outputSettings().charset());
+    }
+    private void asser

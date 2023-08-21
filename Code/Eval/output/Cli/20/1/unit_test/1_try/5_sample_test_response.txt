@@ -1,0 +1,18 @@
+PosixParser() throws Exception {
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("a", false, "option a");
+        options.addOption("b", false, "option b");
+        options.addOption("c", true, "option c");
+
+        String[] args = new String[]{"-a", "-b", "-c"};
+
+        CommandLine line = parser.parse(options, args);
+
+        assertTrue(line.hasOption("a"));
+        assertTrue(line.hasOption("b"));
+        assertTrue(line.hasOption("c"));
+        assertEquals("", line.getOptionValue("c"));
+    }
+```
+The above test method tests if the PosixParser can correctly handle command line arguments with options. It expects that all three options -a, -b, and -c are recognized and the value of -c is an empty string. However, since there is a bug in the PosixParser, this test may fail. The bug is that the "processOptionToken" method does not set the "currentOption" variable when it encounters a two character option, causing the value of the last option to be assigned to -c. To fix the bug, the "processOptionToken" method should set the "currentOption" variable to the correct option object.

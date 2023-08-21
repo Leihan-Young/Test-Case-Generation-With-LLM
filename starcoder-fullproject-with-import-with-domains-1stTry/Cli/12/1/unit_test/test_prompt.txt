@@ -1,0 +1,17 @@
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * The class GnuParser provides an implementation of the 
+ * {@link Parser#flatten(Options,String[],boolean) flatten} method.
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @see Parser
+ * @version $Revision$
+ */
+public class GnuParser extends Parser {
+}
+
+public class Test { 
+   <FILL-HERE>
+}

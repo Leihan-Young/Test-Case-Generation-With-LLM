@@ -1,0 +1,29 @@
+     private void check(final double expected, final double actual) {
+        if (Double.isNaN(expected)) {
+            assertTrue(Double.isNaN(actual));
+        } else {
+            assertEquals(expected, actual, 1.0e-12);
+        }
+    }
+    private void check(final double[] expected, final double[] actual) {
+        assertEquals(expected.length, actual.length);
+        for (int i = 0; i < expected.length; i++) {
+            check(expected[i], actual[i]);
+        }
+    }
+    private void check(final RealMatrix expected, final RealMatrix actual) {
+        assertEquals(expected.getRowDimension(), actual.getRowDimension());
+        assertEquals(expected.getColumnDimension(), actual.getColumnDimension());
+        for (int i = 0; i < expected.getRowDimension(); i++) {
+            check(expected.getRowVector(i), actual.getRowVector(i));
+        }
+    }
+    private void check(final RealVector expected, final RealVector actual) {
+        assertEquals(expected.getDimension(), actual.getDimension());
+        for (int i = 0; i < expected.getDimension(); i++) {
+            check(expected.getEntry(i), actual.getEntry(i));
+        }
+    }
+    private void check(final RealPointValuePair expected,
+                       final RealPointValuePair actual) {
+        check(expected.getPointRef(), actual.getPointRef())

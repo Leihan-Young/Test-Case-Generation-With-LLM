@@ -1,0 +1,45 @@
+OptionGroup() throws Exception {
+        Option option1 = new Option("a", "apple", false, "option 1");
+        Option option2 = new Option("b", "banana", false, "option 2");
+        Option option3 = new Option("c", "cherry", false, "option 3");
+
+        OptionGroup optionGroup = new OptionGroup();
+        optionGroup.addOption(option1);
+        optionGroup.addOption(option2);
+        optionGroup.addOption(option3);
+
+        // Test the initial state
+        assertNull(optionGroup.getSelected());
+
+        // Test selecting an option
+        optionGroup.setSelected(option1);
+        assertEquals(option1.getOpt(), optionGroup.getSelected());
+
+        // Test selecting a different option
+        optionGroup.setSelected(option2);
+        assertEquals(option2.getOpt(), optionGroup.getSelected());
+
+        // Test selecting the same option again
+        optionGroup.setSelected(option2);
+        assertEquals(option2.getOpt(), optionGroup.getSelected());
+
+        // Test selecting a different option after one has already been selected
+        try {
+            optionGroup.setSelected(option3);
+            fail("Expected AlreadySelectedException was not thrown.");
+        } catch (AlreadySelectedException e) {
+            // Expected exception
+        }
+    }
+```
+The bug in the java program is that the `getNames()` and `getOptions()` methods are declared but not implemented. These methods are required for the OptionGroup class to function properly. To fix the bug, the methods need to be implemented as follows:
+```
+public Collection<String> getNames() {
+        return optionMap.keySet();
+    }
+
+    public Collection<Option> getOptions() {
+        return optionMap.values();
+    }
+```
+After implementing these methods, the test method should run without any errors and the OptionGroup class should function properly.

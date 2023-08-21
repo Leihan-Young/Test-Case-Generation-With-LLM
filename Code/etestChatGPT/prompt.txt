@@ -1,0 +1,51 @@
+# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+/**
+ * Contains useful helper methods for classes within this package.
+ *
+ * @author John Keyes (john at integralsource.com)
+ */
+class Util {
+    static String stripLeadingAndTrailingQuotes(String str);
+    /**
+     * <p>Remove the hyphens from the begining of <code>str</code> and
+     * return the new String.</p>
+     *
+     * @param str The string from which the hyphens should be removed.
+     *
+     * @return the new String.
+     */
+    static String stripLeadingHyphens(String str)
+    {
+        if (str.startsWith("--"))
+        {
+            return str.substring(2, str.length());
+        }
+        else if (str.startsWith("-"))
+        {
+            return str.substring(1, str.length());
+        }
+
+        return str;
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the java program.
+```
+public void testSingleOptionNoArgument() throws Exception {
+    Parser parser = createDefaultValueParser(new String[]{"100", "1000"});
+    String[] args = new String[]{"-b"};
+    CommandLine cl = parser.parse(args);
+    CommandLine cmd = cl;
+    assertNotNull(cmd);
+    List b = cmd.getValues("-b");
+    assertEquals("[100, 1000]", b + "");
+}
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

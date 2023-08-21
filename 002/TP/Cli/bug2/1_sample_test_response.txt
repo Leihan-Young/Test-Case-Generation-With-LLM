@@ -1,0 +1,9 @@
+  public void newTestMethod_test2()  throws Throwable  {
+      String[] stringArray0 = new String[1];
+      stringArray0[0] = "-Jem?E\"";
+      PosixParser posixParser0 = new PosixParser();
+      Options options0 = new Options();
+      String[] stringArray1 = posixParser0.flatten(options0, stringArray0, false);
+      String[] stringArray2 = posixParser0.flatten(options0, stringArray1, false);
+      assertEquals(1, stringArray2.length);
+  }

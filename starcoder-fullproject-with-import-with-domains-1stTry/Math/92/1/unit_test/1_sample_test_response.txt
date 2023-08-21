@@ -1,0 +1,8 @@
+     public void testCosh() {
+        assertEquals(Double.POSITIVE_INFINITY, MathUtils.cosh(Double.POSITIVE_INFINITY), 0);
+        assertEquals(Double.POSITIVE_INFINITY, MathUtils.cosh(Double.NEGATIVE_INFINITY), 0);
+        assertEquals(0, MathUtils.cosh(0), 0);
+        assertEquals(Double.NaN, MathUtils.cosh(Double.NaN), 0);
+        assertEquals(Double.MAX_VALUE, MathUtils.cosh(Double.MAX_VALUE), 0);
+        assertEquals(Double.MAX_VALUE, MathUtils.cosh(-Double.MAX_VALUE), 0);
+    }

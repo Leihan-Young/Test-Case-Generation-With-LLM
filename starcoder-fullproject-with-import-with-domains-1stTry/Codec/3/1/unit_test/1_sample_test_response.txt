@@ -1,0 +1,17 @@
+     private void assertDoubleMetaphone(String value, String expected) {
+        assertEquals(expected, doubleMetaphone.doubleMetaphone(value));
+    }
+    private void assertDoubleMetaphone(String value, String expected, boolean alternate) {
+        assertEquals(expected, doubleMetaphone.doubleMetaphone(value, alternate));
+    }
+    private void assertDoubleMetaphone(String value, String expected, boolean alternate, boolean slavoGermanic) {
+        assertEquals(expected, doubleMetaphone.doubleMetaphone(value, alternate, slavoGermanic));
+    }
+    private void assertDoubleMetaphone(String value, String expected, boolean alternate, boolean slavoGermanic, boolean alternate2) {
+        assertEquals(expected, doubleMetaphone.doubleMetaphone(value, alternate, slavoGermanic, alternate2));
+    }
+    private void assertDoubleMetaphone(String value, String expected, boolean alternate, boolean slavoGermanic, boolean alternate2, boolean alternate3) {
+        assertEquals(expected, doubleMetaphone.doubleMetaphone(value, alternate, slavoGermanic, alternate2, alternate3));
+    }
+    private void assertDoubleMetaphone(String value, String expected, boolean alternate, boolean slavoGermanic, boolean alternate2, boolean alternate3, boolean alternate4) {
+        assertEquals(expected, doubleMe

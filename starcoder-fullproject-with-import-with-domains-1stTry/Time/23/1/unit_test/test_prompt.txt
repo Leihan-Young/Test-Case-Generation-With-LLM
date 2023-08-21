@@ -1,0 +1,115 @@
+package org.joda.time;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+import org.joda.time.chrono.BaseChronology;
+import org.joda.time.field.FieldUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.FormatUtils;
+import org.joda.time.tz.DefaultNameProvider;
+import org.joda.time.tz.FixedDateTimeZone;
+import org.joda.time.tz.NameProvider;
+import org.joda.time.tz.Provider;
+import org.joda.time.tz.UTCProvider;
+import org.joda.time.tz.ZoneInfoProvider;
+/**
+ * DateTimeZone represents a time zone.
+ * <p>
+ * A time zone is a system of rules to convert time from one geographic 
+ * location to another. For example, Paris, France is one hour ahead of
+ * London, England. Thus when it is 10:00 in London, it is 11:00 in Paris.
+ * <p>
+ * All time zone rules are expressed, for historical reasons, relative to
+ * Greenwich, London. Local time in Greenwich is referred to as Greenwich Mean
+ * Time (GMT).  This is similar, but not precisely identical, to Universal 
+ * Coordinated Time, or UTC. This library only uses the term UTC.
+ * <p>
+ * Using this system, America/Los_Angeles is expressed as UTC-08:00, or UTC-07:00
+ * in the summer. The offset -08:00 indicates that America/Los_Angeles time is
+ * obtained from UTC by adding -08:00, that is, by subtracting 8 hours.
+ * <p>
+ * The offset differs in the summer because of daylight saving time, or DST.
+ * The following definitions of time are generally used:
+ * <ul>
+ * <li>UTC - The reference time.
+ * <li>Standard Time - The local time without a daylight saving time offset.
+ * For example, in Paris, standard time is UTC+01:00.
+ * <li>Daylight Saving Time - The local time with a daylight saving time 
+ * offset. This offset is typically one hour, but not always. It is typically
+ * used in most countries away from the equator.  In Paris, daylight saving 
+ * time is UTC+02:00.
+ * <li>Wall Time - This is what a local clock on the wall reads. This will be
+ * either Standard Time or Daylight Saving Time depending on the time of year
+ * and whether the location uses Daylight Saving Time.
+ * </ul>
+ * <p>
+ * Unlike the Java TimeZone class, DateTimeZone is immutable. It also only
+ * supports long format time zone ids. Thus EST and ECT are not accepted.
+ * However, the factory that accepts a TimeZone will attempt to convert from
+ * the old short id to a suitable long id.
+ * <p>
+ * DateTimeZone is thread-safe and immutable, and all subclasses must be as
+ * well.
+ * 
+ * @author Brian S O'Neill
+ * @author Stephen Colebourne
+ * @since 1.0
+ */
+public abstract class DateTimeZone implements Serializable {
+    private static final long serialVersionUID = 5546345482340108586L;
+    public static final DateTimeZone UTC = new FixedDateTimeZone("UTC", "UTC", 0, 0);
+    private static Provider cProvider;
+    private static NameProvider cNameProvider;
+    private static Set<String> cAvailableIDs;
+    private static volatile DateTimeZone cDefault;
+    private static DateTimeFormatter cOffsetFormatter;
+    private static Map<String, SoftReference<DateTimeZone>> iFixedOffsetCache;
+    private static Map<String, String> cZoneIdConversion;
+    /**
+     * Gets a time zone instance for a JDK TimeZone.
+     * <p>
+     * DateTimeZone only accepts a subset of the IDs from TimeZone. The
+     * excluded IDs are the short three letter form (except UTC). This 
+     * method will attempt to convert between time zones created using the
+     * short IDs and the full version.
+     * <p>
+     * This method is not designed to parse time zones with rules created by
+     * applications using <code>SimpleTimeZone</code> directly.
+     * 
+     * @param zone  the zone to convert, null means default
+     * @return the DateTimeZone object for the zone
+     * @throws IllegalArgumentException if the zone is not recognised
+     */
+    public static DateTimeZone forTimeZone(TimeZone zone);
+    /**
+     * Converts an old style id to a new style id.
+     * 
+     * @param id  the old style id
+     * @return the new style id, null if not found
+     */
+    private static synchronized String getConvertedId(String id);
+    /**
+     * Gets the ID of this datetime zone.
+     * 
+     * @return the ID of this datetime zone
+     */
+    @ToString
+    public final String getID();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

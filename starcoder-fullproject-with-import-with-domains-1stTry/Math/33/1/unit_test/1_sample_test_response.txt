@@ -1,0 +1,8 @@
+ public void testDropPhase1Objective() {
+        LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] { -1, 0, 0, 0, 0, 0, 0, 1, 0 }, 0);
+        List<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
+        constraints.add(new LinearConstraint(new double[] { 0, 1, -15, -10, 0, 0, 0, 0, 0 }, Relationship.LEQ, 0, "c1"));
+        constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 0, 0, 1, 0, 0, 2 }, Relationship.LEQ, 0, "c2"));
+        constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 1, 0, 0, 1, 0, 3 }, Relationship.LEQ, 0, "c3"));
+        constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 1, 0, 0, 0, 1, 4 }, Relationship.LEQ, 0, "c4"));
+        SimplexTableau tableau = new SimplexTableau(f, constraints, GoalType.MA

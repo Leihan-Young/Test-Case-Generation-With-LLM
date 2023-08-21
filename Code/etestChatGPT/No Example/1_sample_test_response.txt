@@ -1,0 +1,9 @@
+WriteableCommandLineImpl() {
+    WriteableCommandLineImpl cli = new WriteableCommandLineImpl();
+    Option option = new PropertyOption("p", "property", true, "A property");
+    cli.addProperty(option, "key", "value");
+    String value = cli.getProperty("p", "key", "defaultValue");
+    assertEquals("value", value);
+}
+``` 
+The current implementation of `getProperty()` method does not return the default value when the property is not found. This can be tested by passing a non-existent property to the method and checking if it returns the expected default value.

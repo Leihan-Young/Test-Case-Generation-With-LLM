@@ -1,0 +1,19 @@
+CLI_bug() {
+    Options options = new Options();
+    options.addOption(new Option("a","aaa",false,"aaaaaaa"));
+    options.addOption(new Option(null,"bbb",false,"bbbbbbb dksh fkshd fkhs dkfhsdk fhskd hksdks dhfowehfsdhfkjshf skfhkshf sf jkshfk sfh skfh skf f"));
+    options.addOption(new Option("c",null,false,"ccccccc"));
+
+    CommandLineParser parser = new DefaultParser();
+    String[] args = {"-a","-b","-c"}; // missing argument for -b
+    try {
+        CommandLine cmd = parser.parse(options, args);
+        assertFalse(cmd.hasOption("a"));
+        assertFalse(cmd.hasOption("b")); // this should fail
+        assertFalse(cmd.hasOption("c"));
+    } catch (ParseException e) {
+        // expected exception
+    }
+}
+```
+In the `testCLI_bug` method, the `-b` option is missing an argument, but it is not throwing an exception as expected. This is because the `getOptionValues` method is not checking if the returned array is empty before accessing its first element. A fix for this bug would be to add a check for the array's length before returning the first element in `getOptionValue` and `getOptionValues` methods.

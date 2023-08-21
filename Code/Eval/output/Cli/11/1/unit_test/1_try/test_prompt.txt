@@ -1,0 +1,265 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ */
+public class HelpFormatter {
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    public void setWidth(int width);
+    public int getWidth();
+    public void setLeftPadding(int padding);
+    public int getLeftPadding();
+    public void setDescPadding(int padding);
+    public int getDescPadding();
+    public void setSyntaxPrefix(String prefix);
+    public String getSyntaxPrefix();
+    public void setNewLine(String newline);
+    public String getNewLine();
+    public void setOptPrefix(String prefix);
+    public String getOptPrefix();
+    public void setLongOptPrefix(String prefix);
+    public String getLongOptPrefix();
+    public String getArgName();
+    public Comparator getOptionComparator();
+    public void setOptionComparator(Comparator comparator);
+    public void printHelp(String cmdLineSyntax, Options options);
+    public void printHelp(String cmdLineSyntax, Options options, 
+                          boolean autoUsage);
+    public void printHelp(String cmdLineSyntax, String header, Options options, 
+                          String footer);
+    public void printHelp(String cmdLineSyntax, String header, Options options, 
+                          String footer, boolean autoUsage);
+    public void printHelp(int width, String cmdLineSyntax, String header, 
+                          Options options, String footer);
+    public void printHelp(int width, String cmdLineSyntax, String header, 
+                          Options options, String footer, boolean autoUsage);
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
+                          String header, Options options, int leftPad, 
+                          int descPad, String footer);
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
+                          String header, Options options, int leftPad, 
+                          int descPad, String footer, boolean autoUsage);
+    private void appendOptionGroup(final StringBuffer buff, 
+                                          final OptionGroup group);
+    public void printOptions(PrintWriter pw, int width, Options options, 
+                             int leftPad, int descPad);
+    public void printWrapped(PrintWriter pw, int width, String text);
+    public void printWrapped(PrintWriter pw, int width, int nextLineTabStop, 
+                             String text);
+    protected StringBuffer renderOptions(StringBuffer sb, int width, 
+                                         Options options, int leftPad, 
+                                         int descPad);
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
+                                             int nextLineTabStop, String text);
+    protected int findWrapPos(String text, int width, int startPos);
+    protected String createPadding(int len);
+    protected String rtrim(String s);
+    /**
+     * <p>Prints the usage statement for the specified application.</p>
+     *
+     * @param pw The PrintWriter to print the usage statement 
+     * @param width The number of characters to display per line
+     * @param app The application name
+     * @param options The command line Options
+     *
+     */
+    public void printUsage(PrintWriter pw, int width, String app, 
+                           Options options)
+    {
+        // initialise the string buffer
+        StringBuffer buff = new StringBuffer(defaultSyntaxPrefix).append(app)
+                                                                 .append(" ");
+
+        // create a list for processed option groups
+        final Collection processedGroups = new ArrayList();
+
+        // temp variable
+        Option option;
+
+        List optList = new ArrayList(options.getOptions());
+        Collections.sort(optList, getOptionComparator() );
+        // iterate over the options
+        for (Iterator i = optList.iterator(); i.hasNext();)
+        {
+            // get the next Option
+            option = (Option) i.next();
+
+            // check if the option is part of an OptionGroup
+            OptionGroup group = options.getOptionGroup(option);
+
+            // if the option is part of a group 
+            if (group != null)
+            {
+                // and if the group has not already been processed
+                if (!processedGroups.contains(group))
+                {
+                    // add the group to the processed list
+                    processedGroups.add(group);
+
+
+                    // add the usage clause
+                    appendOptionGroup(buff, group);
+                }
+
+                // otherwise the option was displayed in the group
+                // previously so ignore it.
+            }
+
+            // if the Option is not part of an OptionGroup
+            else
+            {
+                appendOption(buff, option, option.isRequired());
+            }
+
+            if (i.hasNext())
+            {
+                buff.append(" ");
+            }
+        }
+
+
+        // call printWrapped
+        printWrapped(pw, width, buff.toString().indexOf(' ') + 1, 
+                     buff.toString());
+    }
+    /**
+     * Appends the usage clause for an Option to a StringBuffer.  
+     *
+     * @param buff the StringBuffer to append to
+     * @param option the Option to append
+     * @param required whether the Option is required or not
+     */
+    private static void appendOption(final StringBuffer buff, 
+                                     final Option option, 
+                                     final boolean required)
+    {
+        if (!required)
+        {
+            buff.append("[");
+        }
+
+        if (option.getOpt() != null)
+        {
+            buff.append("-").append(option.getOpt());
+        }
+        else
+        {
+            buff.append("--").append(option.getLongOpt());
+        }
+
+        // if the Option has a value
+        if (option.hasArg() && (option.getArgName() != null))
+        {
+            buff.append(" <").append(option.getArgName()).append(">");
+        }
+
+        // if the Option is not a required option
+        if (!required)
+        {
+            buff.append("]");
+        }
+    }
+    /**
+     * Sets the 'argName'.
+     *
+     * @param name the new value of 'argName'
+     */
+    public void setArgName(String name)
+    {
+        this.defaultArgName = name;
+    }
+    /**
+     * <p>Print the cmdLineSyntax to the specified writer, using the
+     * specified width.</p>
+     *
+     * @param pw The printWriter to write the help to
+     * @param width The number of characters per line for the usage statement.
+     * @param cmdLineSyntax The usage statement.
+     */
+    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax)
+    {
+        int argPos = cmdLineSyntax.indexOf(' ') + 1;
+
+        printWrapped(pw, width, defaultSyntaxPrefix.length() + argPos, 
+                     defaultSyntaxPrefix + cmdLineSyntax);
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Ant test
+     */
+    public void testAnt() throws Exception {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser( );
+        Options options = new Options();
+        options.addOption( "help", false, "print this message" );
+        options.addOption( "projecthelp", false, "print project help information" );
+        options.addOption( "version", false, "print the version information and exit" );
+        options.addOption( "quiet", false, "be extra quiet" );
+        options.addOption( "verbose", false, "be extra verbose" );
+        options.addOption( "debug", false, "print debug information" );
+        options.addOption( "logfile", true, "use given file for log" );
+        options.addOption( "logger", true, "the class which is to perform the logging" );
+        options.addOption( "listener", true, "add an instance of a class as a project listener" );
+        options.addOption( "buildfile", true, "use given buildfile" );
+        options.addOption( OptionBuilder.withDescription( "use value for given property" )
+                                        .hasArgs()
+                                        .withValueSeparator()
+                                        .create( 'D' ) );
+                           //, null, true, , false, true );
+        options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
+
+        String[] args = new String[]{ "-buildfile", "mybuild.xml",
+            "-Dproperty=value", "-Dproperty1=value1",
+            "-projecthelp" };
+
+        CommandLine line = parser.parse( options, args );
+
+        // check multiple values
+        String[] opts = line.getOptionValues( "D" );
+        assertEquals( "property", opts[0] );
+        assertEquals( "value", opts[1] );
+        assertEquals( "property1", opts[2] );
+        assertEquals( "value1", opts[3] );
+
+        // check single value
+        assertEquals( line.getOptionValue( "buildfile"), "mybuild.xml" );
+
+        // check option
+        assertTrue( line.hasOption( "projecthelp") );
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

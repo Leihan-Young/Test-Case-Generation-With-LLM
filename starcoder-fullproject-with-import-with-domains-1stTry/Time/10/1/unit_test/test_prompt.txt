@@ -1,0 +1,59 @@
+package org.joda.time.base;
+import java.io.Serializable;
+import org.joda.time.Chronology;
+import org.joda.time.DateTimeUtils;
+import org.joda.time.DurationField;
+import org.joda.time.DurationFieldType;
+import org.joda.time.MutablePeriod;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.ReadableInstant;
+import org.joda.time.ReadablePartial;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.chrono.ISOChronology;
+import org.joda.time.field.FieldUtils;
+/**
+ * BaseSingleFieldPeriod is an abstract implementation of ReadablePeriod that
+ * manages a single duration field, such as days or minutes.
+ * <p>
+ * This class should generally not be used directly by API users.
+ * The {@link ReadablePeriod} interface should be used when different 
+ * kinds of period objects are to be referenced.
+ * <p>
+ * BaseSingleFieldPeriod subclasses may be mutable and not thread-safe.
+ *
+ * @author Stephen Colebourne
+ * @since 1.4
+ */
+public abstract class BaseSingleFieldPeriod
+        implements ReadablePeriod, Comparable<BaseSingleFieldPeriod>, Serializable {
+    private static final long serialVersionUID = 9386874258972L;
+    private volatile int iPeriod;
+    /**
+     * Calculates the number of whole units between the two specified datetimes.
+     *
+     * @param start  the start instant, validated to not be null
+     * @param end  the end instant, validated to not be null
+     * @param field  the field type to use, must not be null
+     * @return the period
+     * @throws IllegalArgumentException if the instants are null or invalid
+     */
+    protected static int between(ReadableInstant start, ReadableInstant end, DurationFieldType field);
+    /**
+     * Calculates the number of whole units between the two specified partial datetimes.
+     * <p>
+     * The two partials must contain the same fields, for example you can specify
+     * two <code>LocalDate</code> objects.
+     *
+     * @param start  the start partial date, validated to not be null
+     * @param end  the end partial date, validated to not be null
+     * @param zeroInstance  the zero instance constant, must not be null
+     * @return the period
+     * @throws IllegalArgumentException if the partials are null or invalid
+     */
+    protected static int between(ReadablePartial start, ReadablePartial end, ReadablePeriod zeroInstance);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

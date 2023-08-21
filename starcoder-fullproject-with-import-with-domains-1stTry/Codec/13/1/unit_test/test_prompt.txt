@@ -1,0 +1,98 @@
+package org.apache.commons.codec.language;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+/**
+ * Encodes a string into a double metaphone value. This Implementation is based on the algorithm by <CITE>Lawrence
+ * Philips</CITE>.
+ * <p>
+ * This class is conditionally thread-safe. The instance field {@link #maxCodeLen} is mutable
+ * {@link #setMaxCodeLen(int)} but is not volatile, and accesses are not synchronized. If an instance of the class is
+ * shared between threads, the caller needs to ensure that suitable synchronization is used to ensure safe publication
+ * of the value between threads, and must not invoke {@link #setMaxCodeLen(int)} after initial setup.
+ *
+ * @see <a href="http://drdobbs.com/184401251?pgno=2">Original Article</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Metaphone">http://en.wikipedia.org/wiki/Metaphone</a>
+ *
+ * @version $Id$
+ */
+public class DoubleMetaphone implements StringEncoder {
+    private static final String VOWELS = "AEIOUY";
+    private int maxCodeLen = 4;
+    /**
+     * Encode a value with Double Metaphone.
+     *
+     * @param value String to encode
+     * @return an encoded string
+     */
+    public String doubleMetaphone(final String value);
+    /**
+     * Encode the value using DoubleMetaphone.  It will only work if
+     * <code>obj</code> is a <code>String</code> (like <code>Metaphone</code>).
+     *
+     * @param obj Object to encode (should be of type String)
+     * @return An encoded Object (will be of type String)
+     * @throws EncoderException encode parameter is not of type String
+     */
+    @Override
+    public Object encode(final Object obj) throws EncoderException;
+    /**
+     * Encode the value using DoubleMetaphone.
+     *
+     * @param value String to encode
+     * @return An encoded String
+     */
+    @Override
+    public String encode(final String value);
+    /**
+     * Encode a value with Double Metaphone, optionally using the alternate encoding.
+     *
+     * @param value String to encode
+     * @param alternate use alternate encode
+     * @return an encoded string
+     */
+    public String doubleMetaphone(String value, final boolean alternate);
+    /**
+     * Check if the Double Metaphone values of two <code>String</code> values
+     * are equal.
+     *
+     * @param value1 The left-hand side of the encoded {@link String#equals(Object)}.
+     * @param value2 The right-hand side of the encoded {@link String#equals(Object)}.
+     * @return {@code true} if the encoded <code>String</code>s are equal;
+     *          {@code false} otherwise.
+     * @see #isDoubleMetaphoneEqual(String,String,boolean)
+     */
+    public boolean isDoubleMetaphoneEqual(final String value1, final String value2);
+}
+package org.apache.commons.codec.binary;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.codec.Charsets;
+/**
+ * Converts String to and from bytes using the encodings required by the Java specification. These encodings are
+ * specified in <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">
+ * Standard charsets</a>.
+ *
+ * <p>This class is immutable and thread-safe.</p>
+ *
+ * @see CharEncoding
+ * @see <a href="http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
+ * @version $Id$
+ * @since 1.4
+ */
+public class StringUtils {
+    /**
+     * Calls {@link String#getBytes(Charset)}
+     *
+     * @param string
+     *            The string to encode (if null, return null).
+     * @param charset
+     *            The {@link Charset} to encode the {@code String}
+     * @return the encoded bytes
+     */
+    private static byte[] getBytes(final String string, final Charset charset);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,5 @@
+  public void newTestMethod_test06()  throws Throwable  {
+      double[] doubleArray0 = new double[1];
+      Array2DRowRealMatrix array2DRowRealMatrix0 = new Array2DRowRealMatrix(doubleArray0);
+      EigenDecompositionImpl eigenDecompositionImpl0 = new EigenDecompositionImpl(array2DRowRealMatrix0);
+  }

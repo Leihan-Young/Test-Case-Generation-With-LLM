@@ -1,0 +1,27 @@
+GetValues() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final ArgumentBuilder abuilder = new DefaultArgumentBuilder();
+
+        final Option opt = obuilder.withShortName("opt").withArgument(abuilder.create()).create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(new GroupBuilder().withOption(opt).create());
+
+        final String arg1 = "arg1";
+        final String arg2 = "arg2";
+
+        try {
+            parser.parse(new String[] { "-opt", arg1, arg2 });
+            fail("Expected UnexpectedArgumentException not caught");
+        } catch (final OptionException exp) {
+            assertEquals("Unexpected argument(s): " + arg2, exp.getMessage());
+        }
+
+        final WriteableCommandLine cl = parser.parse(new String[] { "-opt", arg1 });
+        assertNotNull(cl);
+        assertTrue(cl.hasOption(opt));
+        assertEquals(1, cl.getValues(opt, Collections.emptyList()).size());
+        assertEquals(arg1, cl.getValues(opt, Collections.emptyList()).get(0));
+    }
+```
+The above test method tests the `getValues()` method of the `WriteableCommandLineImpl` class. It creates an option with an argument and tries to parse it with an extra argument. It expects an `UnexpectedArgumentException` and checks the error message. Then it parses the option with a valid argument and checks that the `getValues()` method returns the correct value. This test method can reveal if the `getValues()` method is working correctly or not.

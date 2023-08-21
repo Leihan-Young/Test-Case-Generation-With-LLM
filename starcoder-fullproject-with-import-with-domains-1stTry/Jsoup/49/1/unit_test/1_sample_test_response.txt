@@ -1,0 +1,27 @@
+ private static void assertListEquals(List<Node> expected, List<Node> actual) {
+        assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++)
+            assertEquals(expected.get(i).outerHtml(), actual.get(i).outerHtml());
+    }
+    private static Document parse(String html) {
+        return Parser.parseBodyFragment(html, "http://foo.com/");
+    }
+    private static List<Node> children(Node node) {
+        final List<Node> nodes = new ArrayList<Node>();
+        NodeTraversor.traverse(new NodeVisitor() {
+            @Override
+            public void tail(Node node, int depth) {
+            }
+            @Override
+            public void head(Node node, int depth) {
+                nodes.add(node);
+            }
+        }, node);
+        return nodes;
+    }
+    public void testCloning() {
+        Document doc = parse("<div><p>Hello</p></div>");
+        Element div = doc.select("div").first();
+        Element div2 = (Element) div.clone();
+        assertEquals(div.outerHtml(), div2.outerHtml());
+    }

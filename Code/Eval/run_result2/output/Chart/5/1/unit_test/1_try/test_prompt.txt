@@ -1,0 +1,184 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------
+ * XYSeries.java
+ * -------------
+ * (C) Copyright 2001-2008, Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Aaron Metzger;
+ *                   Jonathan Gabbai;
+ *                   Richard Atkinson;
+ *                   Michel Santos;
+ *                   Ted Schwartz (fix for bug 1955483);
+ *
+ * Changes
+ * -------
+ * 15-Nov-2001 : Version 1 (DG);
+ * 03-Apr-2002 : Added an add(double, double) method (DG);
+ * 29-Apr-2002 : Added a clear() method (ARM);
+ * 06-Jun-2002 : Updated Javadoc comments (DG);
+ * 29-Aug-2002 : Modified to give user control over whether or not duplicate
+ *               x-values are allowed (DG);
+ * 07-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 11-Nov-2002 : Added maximum item count, code contributed by Jonathan
+ *               Gabbai (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 04-Aug-2003 : Added getItems() method (DG);
+ * 15-Aug-2003 : Changed 'data' from private to protected, added new add()
+ *               methods with a 'notify' argument (DG);
+ * 22-Sep-2003 : Added getAllowDuplicateXValues() method (RA);
+ * 29-Jan-2004 : Added autoSort attribute, based on a contribution by
+ *               Michel Santos - see patch 886740 (DG);
+ * 03-Feb-2004 : Added indexOf() method (DG);
+ * 16-Feb-2004 : Added remove() method (DG);
+ * 18-Aug-2004 : Moved from org.jfree.data --> org.jfree.data.xy (DG);
+ * 21-Feb-2005 : Added update(Number, Number) and addOrUpdate(Number, Number)
+ *               methods (DG);
+ * 03-May-2005 : Added a new constructor, fixed the setMaximumItemCount()
+ *               method to remove items (and notify listeners) if necessary,
+ *               fixed the add() and addOrUpdate() methods to handle unsorted
+ *               series (DG);
+ * ------------- JFreeChart 1.0.x ---------------------------------------------
+ * 11-Jan-2005 : Renamed update(int, Number) --> updateByIndex() (DG);
+ * 15-Jan-2007 : Added toArray() method (DG);
+ * 20-Jun-2007 : Removed deprecated code and JCommon dependencies (DG);
+ * 31-Oct-2007 : Implemented faster hashCode() (DG);
+ * 22-Nov-2007 : Reimplemented clone() (DG);
+ * 01-May-2008 : Fixed bug 1955483 in addOrUpdate() method, thanks to
+ *               Ted Schwartz (DG);
+ * 24-Nov-2008 : Further fix for 1955483 (DG);
+ *
+ */
+package org.jfree.data.xy;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * Represents a sequence of zero or more data items in the form (x, y).  By
+ * default, items in the series will be sorted into ascending order by x-value,
+ * and duplicate x-values are permitted.  Both the sorting and duplicate
+ * defaults can be changed in the constructor.  Y-values can be
+ * <code>null</code> to represent missing values.
+ */
+public class XYSeries extends Series implements Cloneable, Serializable {
+    private int maximumItemCount = Integer.MAX_VALUE;
+    private boolean autoSort;
+    private boolean allowDuplicateXValues;
+    /**
+     * Adds or updates an item in the series and sends a
+     * {@link SeriesChangeEvent} to all registered listeners.
+     *
+     * @param x  the x-value (<code>null</code> not permitted).
+     * @param y  the y-value (<code>null</code> permitted).
+     *
+     * @return A copy of the overwritten data item, or <code>null</code> if no
+     *         item was overwritten.
+     */
+    public XYDataItem addOrUpdate(Number x, Number y) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null 'x' argument.");
+        }
+
+        // if we get to here, we know that duplicate X values are not permitted
+        XYDataItem overwritten = null;
+        int index = indexOf(x);
+        if (index >= 0 && !this.allowDuplicateXValues) {
+            XYDataItem existing = (XYDataItem) this.data.get(index);
+            try {
+                overwritten = (XYDataItem) existing.clone();
+            }
+            catch (CloneNotSupportedException e) {
+                throw new SeriesException("Couldn't clone XYDataItem!");
+            }
+            existing.setY(y);
+        }
+        else {
+            // if the series is sorted, the negative index is a result from
+            // Collections.binarySearch() and tells us where to insert the
+            // new item...otherwise it will be just -1 and we should just
+            // append the value to the list...
+            if (this.autoSort) {
+                this.data.add(-index - 1, new XYDataItem(x, y));
+            }
+            else {
+                this.data.add(new XYDataItem(x, y));
+            }
+            // check if this addition will exceed the maximum item count...
+            if (getItemCount() > this.maximumItemCount) {
+                this.data.remove(0);
+            }
+        }
+        fireSeriesChanged();
+        return overwritten;
+    }
+    /**
+     * Returns the number of items in the series.
+     *
+     * @return The item count.
+     */
+    public int getItemCount() {
+        return this.data.size();
+    }
+    /**
+     * Adds or updates an item in the series and sends a
+     * {@link SeriesChangeEvent} to all registered listeners.
+     *
+     * @param x  the x-value.
+     * @param y  the y-value.
+     *
+     * @return The item that was overwritten, if any.
+     *
+     * @since 1.0.10
+     */
+    public XYDataItem addOrUpdate(double x, double y) {
+        return addOrUpdate(new Double(x), new Double(y));
+    }
+    /**
+     * Returns the y-value at the specified index.
+     *
+     * @param index  the index (zero-based).
+     *
+     * @return The y-value (possibly <code>null</code>).
+     */
+    public Number getY(int index) {
+        return getDataItem(index).getY();
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

@@ -1,0 +1,20 @@
+() throws ParseException {
+        Option optionA = new Option("a", true, "description");
+        Option optionB = new Option("b", false, "description");
+        Option optionC = new Option("c", true, "description");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        opts.addOption(optionB);
+        opts.addOption(optionC);
+        String[] args = {"-a", "-b", "valueB", "-c", "valueC"};
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(opts, args);
+        assertTrue(cmd.hasOption("a"));
+        assertTrue(cmd.hasOption("b"));
+        assertTrue(cmd.hasOption("c"));
+        assertEquals("valueB", cmd.getOptionValue("b"));
+        assertEquals("valueC", cmd.getOptionValue("c"));
+        assertEquals(null, cmd.getOptionValue("a"));
+    }
+```
+Explanation: The original code did not properly handle short options with values. The test method above adds options with different properties and values and tests if they can be parsed correctly. The bug is revealed because the test method expects the value of option "-b" to be "valueB" but the actual value is null. This is because the code did not properly handle short options with values.

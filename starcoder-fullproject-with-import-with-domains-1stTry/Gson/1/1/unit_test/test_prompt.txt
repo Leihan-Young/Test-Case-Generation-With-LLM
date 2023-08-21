@@ -1,0 +1,23 @@
+package com.google.gson;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+/**
+ * A static factory class used to construct the "TypeInfo" objects.
+ *
+ * @author Inderjeet Singh
+ * @author Joel Leitch
+ */
+final class TypeInfoFactory {
+  private static Type getActualType(
+      Type typeToEvaluate, Type parentType, Class<?> rawParentClass);
+  private static Type[] extractRealTypes(
+      Type[] actualTypeArguments, Type parentType, Class<?> rawParentClass);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

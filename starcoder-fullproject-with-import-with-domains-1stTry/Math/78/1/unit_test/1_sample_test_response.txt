@@ -1,0 +1,26 @@
+     private void doTest(final EventHandler handler,
+                          final double t0, final double[] y0,
+                          final double t1, final double[] y1)
+        throws DerivativeException, EventException,
+               MathRuntimeException, ConvergenceException {
+        doTest(handler, t0, y0, t1, y1, 1.0e-12);
+    }
+    private void doTest(final EventHandler handler,
+                          final double t0, final double[] y0,
+                          final double t1, final double[] y1,
+                          final double epsilon)
+        throws DerivativeException, EventException,
+               MathRuntimeException, ConvergenceException {
+        final double[] absTol = new double[y0.length];
+        final double[] relTol = new double[y0.length];
+        for (int i = 0; i < y0.length; ++i) {
+            absTol[i] = epsilon;
+            relTol[i] = epsilon;
+        }
+        doTest(handler, t0, y0, t1, y1, absTol, relTol);
+    }
+    private void doTest(final EventHandler handler,
+                          final double t0, final double[] y0,
+                          final double t1, final double[] y1,
+                          final double[] absTol, final double[] relTol)
+        throws DerivativeException, EventExceptio

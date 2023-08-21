@@ -1,0 +1,42 @@
+package org.apache.commons.cli;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+/**
+ * A group of mutually exclusive options.
+ *
+ * @author John Keyes ( john at integralsource.com )
+ * @version $Revision$, $Date$
+ */
+public class OptionGroup implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    private Map optionMap = new HashMap();
+    private String selected;
+    private boolean required;
+    /**
+     * Set the selected option of this group to <code>name</code>.
+     *
+     * @param option the option that is selected
+     * @throws AlreadySelectedException if an option from this group has 
+     * already been selected.
+     */
+    public void setSelected(Option option) throws AlreadySelectedException;
+    /**
+     * @return the selected option name
+     */
+    public String getSelected();
+    /**
+     * Add the specified <code>Option</code> to this group.
+     *
+     * @param option the option to add to this group
+     * @return this option group with the option added
+     */
+    public OptionGroup addOption(Option option);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

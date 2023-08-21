@@ -1,0 +1,20 @@
+PosixParserBug() throws ParseException {
+    final String debugOpt = "debug";
+    Option debug = OptionBuilder
+        .withArgName(debugOpt)
+        .withDescription("turn on debugging")
+        .withLongOpt(debugOpt)
+        .hasArg()
+        .create('d');
+    Options options = new Options();
+    options.addOption(debug);
+    CommandLine commandLine = new PosixParser().parse(options, new String[]{"-dtrue"});
+
+    assertEquals("true", commandLine.getOptionValue(debugOpt));
+    assertEquals("true", commandLine.getOptionValue('d'));
+    assertTrue(commandLine.hasOption('d'));
+    assertTrue(commandLine.hasOption(debugOpt));
+}
+
+```
+The bug in the program is that when the argument for an option is concatenated with the option itself (e.g. "-dtrue" instead of "-d true"), the program does not correctly parse the argument and returns "true" instead of the intended value. This can be revealed by running the above test method, which uses the concatenated form of the argument and expects the value "true" to be returned. However, the program returns "null" instead.

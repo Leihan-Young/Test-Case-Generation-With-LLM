@@ -1,0 +1,30 @@
+MultiplePiePlot() {
+    // create a category dataset
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1.0, "Category 1", "Item 1");
+    dataset.addValue(2.0, "Category 1", "Item 2");
+    dataset.addValue(3.0, "Category 2", "Item 3");
+    dataset.addValue(4.0, "Category 2", "Item 4");
+
+    // create a multiple pie plot
+    MultiplePiePlot plot = new MultiplePiePlot();
+    plot.setDataset(dataset);
+    plot.setDataExtractOrder(TableOrder.BY_COLUMN);
+    plot.setLimit(2.0); // set a limit for aggregation
+
+    // create a JFreeChart object and set the plot
+    JFreeChart chart = ChartFactory.createMultiplePieChart("Multiple Pie Chart", dataset, TableOrder.BY_COLUMN, true, true, false);
+    
+    // set the legend position
+    chart.getLegend().setPosition(RectangleEdge.RIGHT);
+
+    // create a chart panel and add it to a frame
+    ChartPanel chartPanel = new ChartPanel(chart);
+    javax.swing.JFrame frame = new javax.swing.JFrame("Test");
+    frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    frame.getContentPane().add(chartPanel);
+    frame.pack();
+    frame.setVisible(true);
+}
+```
+The updated test code fixes the missing symbol errors by importing `org.jfree.chart.ui.RectangleEdge` and `javax.swing.WindowConstants`. It also updates the `JFrame` import to `javax.swing.JFrame`. This should allow the test to run without errors.

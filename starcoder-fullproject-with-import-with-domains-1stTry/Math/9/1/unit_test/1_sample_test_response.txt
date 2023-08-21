@@ -1,0 +1,17 @@
+ private void checkPoint(final Vector3D p, final double x, final double y, final double z) {
+        Assert.assertEquals(x, p.getX(), 1.0e-15);
+        Assert.assertEquals(y, p.getY(), 1.0e-15);
+        Assert.assertEquals(z, p.getZ(), 1.0e-15);
+    }
+    private void checkPoints(final Vector3D p1, final Vector3D p2) {
+        Assert.assertEquals(p1.getX(), p2.getX(), 1.0e-15);
+        Assert.assertEquals(p1.getY(), p2.getY(), 1.0e-15);
+        Assert.assertEquals(p1.getZ(), p2.getZ(), 1.0e-15);
+    }
+    private void checkVector(final Vector3D v, final double x, final double y, final double z) {
+        Assert.assertEquals(x, v.getX(), 1.0e-15);
+        Assert.assertEquals(y, v.getY(), 1.0e-15);
+        Assert.assertEquals(z, v.getZ(), 1.0e-15);
+    }
+    private void checkVectors(final Vector3D v1, final Vector3D v2) {
+        Assert.assertEquals(v1.getX(), 

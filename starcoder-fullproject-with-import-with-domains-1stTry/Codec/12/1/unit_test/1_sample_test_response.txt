@@ -1,0 +1,4 @@
+     public void testEmptyStream() throws Exception {
+        InputStream in = new Base64InputStream(new ByteArrayInputStream(new byte[0]), true);
+        assertEquals(-1, in.read());
+    }

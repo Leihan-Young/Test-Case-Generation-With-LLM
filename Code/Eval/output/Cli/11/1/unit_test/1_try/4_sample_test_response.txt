@@ -1,0 +1,31 @@
+() throws Exception {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption(Option.builder("f").longOpt("file").desc("File path").hasArg().required().build());
+        options.addOption(Option.builder("o").longOpt("output").desc("Output file").hasArg().required().build());
+
+        // missing required option
+        String[] args1 = new String[]{"-f", "/path/to/file.txt"};
+        try {
+            CommandLine line1 = parser.parse(options, args1);
+            fail("Expected ParseException");
+        } catch (ParseException e) {
+            // expected
+        }
+
+        // correct usage
+        String[] args2 = new String[]{"-f", "/path/to/file.txt", "-o", "/path/to/output.txt"};
+        CommandLine line2 = parser.parse(options, args2);
+        assertEquals(line2.getOptionValue("f"), "/path/to/file.txt");
+        assertEquals(line2.getOptionValue("o"), "/path/to/output.txt");
+
+        // unknown option
+        String[] args3 = new String[]{"-f", "/path/to/file.txt", "-o", "/path/to/output.txt", "-x"};
+        try {
+            CommandLine line3 = parser.parse(options, args3);
+            fail("Expected UnrecognizedOptionException");
+        } catch (UnrecognizedOptionException e) {
+            // expected
+        }
+    }

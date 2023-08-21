@@ -1,0 +1,37 @@
+   private void doTest(final String name,
+                        final FirstOrderDifferentialEquations equations,
+                        final double t0,
+                        final double[] y0,
+                        final double t1,
+                        final double[] y1,
+                        final double maxError,
+                        final int maxEvaluations)
+        throws MathIllegalArgumentException,
+               DimensionMismatchException,
+               NumberIsTooSmallException,
+               MaxCountExceededException,
+               NoBracketingException,
+               MathIllegalStateException {
+        final double minStep = 0;
+        final double maxStep = Double.POSITIVE_INFINITY;
+        doTest(name, equations, t0, y0, t1, y1, minStep, maxStep, maxError, maxEvaluations);
+    }
+    private void doTest(final String name,
+                        final FirstOrderDifferentialEquations equations,
+                        final double t0,
+                        final double[] y0,
+                        final double t1,
+                        final double[] y1,
+                        final double minStep,
+                        final double maxStep,
+                        final double maxError,
+                        final int maxEvaluations)
+        throws MathIllegalArgumentException,
+               DimensionMismatchException,
+               NumberIsTooSmallException,
+               MaxCountExceededException,
+               NoBracketingException,
+               MathIllegalStateException {
+        FirstOrderIntegrator integ = null;
+        if (name.equals(DormandPrince853Integrator.INTEGRATOR_NAME)) {
+            integ = new DormandPrince853Integ

@@ -1,0 +1,19 @@
+Parser() {
+        // use the Default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption(Option.builder("f").longOpt("file").hasArg().desc("input file").required().build());
+        options.addOption(Option.builder("o").longOpt("output").hasArg().desc("output file").build());
+
+        String[] args = new String[]{"-f", "input.txt"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+            assertTrue(line.hasOption("f"));
+            assertTrue(line.getOptionValue("f").equals("input.txt"));
+            assertFalse(line.hasOption("o")); // this should fail, because -o is not present in args
+        } catch (ParseException exp) {
+            fail("Unexpected exception: " + exp.getMessage());
+        }
+    }
+```

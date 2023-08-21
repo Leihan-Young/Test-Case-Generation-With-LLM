@@ -1,0 +1,8 @@
+     public void testAbs() {
+        assertEquals(ONE, ONE.abs());
+        assertEquals(ONE, MINUS_ONE.abs());
+        assertEquals(new Fraction(3, 5), new Fraction(3, 5).abs());
+        assertEquals(new Fraction(3, 5), new Fraction(-3, 5).abs());
+        assertEquals(new Fraction(3, 5), new Fraction(3, -5).abs());
+        assertEquals(new Fraction(3, 5), new Fraction(-3, -5).abs());
+    }

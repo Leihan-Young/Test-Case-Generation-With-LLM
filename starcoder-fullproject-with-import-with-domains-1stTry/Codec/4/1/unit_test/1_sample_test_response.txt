@@ -1,0 +1,13 @@
+ private static final String FOO = "foo";
+    private static final byte[] FOO_BYTES = { 102, 111, 111 };
+    private static final String FOO_B64 = "Zm9v";
+    private static final byte[] FOO_B64_BYTES = { 102, 111, 111 };
+    private static final String FOO_B64_URL = "Zm9v";
+    private static final byte[] FOO_B64_URL_BYTES = { 102, 111, 111 };
+    private static final String EMPTY = "";
+    private static final byte[] EMPTY_BYTES = {};
+    private static final String EMPTY_B64 = "";
+    private static final byte[] EMPTY_B64_BYTES = {};
+    private static final String EMPTY_B64_URL = "";
+    private static final byte[] EMPTY_B64_URL_BYTES = {};
+    private static final String LONG = "12345678901234567890123456789012345678901234567890123456789012345678901234567

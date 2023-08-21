@@ -1,0 +1,155 @@
+package org.apache.commons.math.util;
+import java.math.BigDecimal;
+import java.util.Arrays;
+/**
+ * Some useful additions to the built-in functions in {@link Math}.
+ * @version $Revision$ $Date$
+ */
+public final class MathUtils {
+    public static final double EPSILON = 0x1.0p-53;
+    public static final double SAFE_MIN = 0x1.0p-1022;
+    private static final byte  NB = (byte)-1;
+    private static final short NS = (short)-1;
+    private static final byte  PB = (byte)1;
+    private static final short PS = (short)1;
+    private static final byte  ZB = (byte)0;
+    private static final short ZS = (short)0;
+    private static final double TWO_PI = 2 * Math.PI;
+    /**
+     * Multiply two long integers, checking for overflow.
+     * 
+     * @param a first value
+     * @param b second value
+     * @return the product <code>a * b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long mulAndCheck(long a, long b);
+    /**
+     * Add two long integers, checking for overflow.
+     * 
+     * @param a an addend
+     * @param b an addend
+     * @param msg the message to use for any thrown exception.
+     * @return the sum <code>a+b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    private static long addAndCheck(long a, long b, String msg);
+    /**
+     * Add two integers, checking for overflow.
+     * 
+     * @param x an addend
+     * @param y an addend
+     * @return the sum <code>x+y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int addAndCheck(int x, int y);
+    /**
+     * Returns the natural logarithm of n!.
+     * <p>
+     * <Strong>Preconditions</strong>:
+     * <ul>
+     * <li> <code>n >= 0</code> (otherwise
+     * <code>IllegalArgumentException</code> is thrown)</li>
+     * </ul></p>
+     * 
+     * @param n argument
+     * @return <code>n!</code>
+     * @throws IllegalArgumentException if preconditions are not met.
+     */
+    public static double factorialLog(final int n);
+    /**
+     * Multiply two integers, checking for overflow.
+     * 
+     * @param x a factor
+     * @param y a factor
+     * @return the product <code>x*y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int mulAndCheck(int x, int y);
+    /**
+     * Subtract two integers, checking for overflow.
+     * 
+     * @param x the minuend
+     * @param y the subtrahend
+     * @return the difference <code>x-y</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         int
+     * @since 1.1
+     */
+    public static int subAndCheck(int x, int y);
+    /**
+     * Subtract two long integers, checking for overflow.
+     * 
+     * @param a first value
+     * @param b second value
+     * @return the difference <code>a-b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long subAndCheck(long a, long b);
+    /**
+     * Returns an exact representation of the <a
+     * href="http://mathworld.wolfram.com/BinomialCoefficient.html"> Binomial
+     * Coefficient</a>, "<code>n choose k</code>", the number of
+     * <code>k</code>-element subsets that can be selected from an
+     * <code>n</code>-element set.
+     * <p>
+     * <Strong>Preconditions</strong>:
+     * <ul>
+     * <li> <code>0 <= k <= n </code> (otherwise
+     * <code>IllegalArgumentException</code> is thrown)</li>
+     * <li> The result is small enough to fit into a <code>long</code>. The
+     * largest value of <code>n</code> for which all coefficients are
+     * <code> < Long.MAX_VALUE</code> is 66. If the computed value exceeds
+     * <code>Long.MAX_VALUE</code> an <code>ArithMeticException
+     *      </code> is
+     * thrown.</li>
+     * </ul></p>
+     * 
+     * @param n the size of the set
+     * @param k the size of the subsets to be counted
+     * @return <code>n choose k</code>
+     * @throws IllegalArgumentException if preconditions are not met.
+     * @throws ArithmeticException if the result is too large to be represented
+     *         by a long integer.
+     */
+    public static long binomialCoefficient(final int n, final int k);
+    /**
+     * Add two long integers, checking for overflow.
+     * 
+     * @param a an addend
+     * @param b an addend
+     * @return the sum <code>a+b</code>
+     * @throws ArithmeticException if the result can not be represented as an
+     *         long
+     * @since 1.2
+     */
+    public static long addAndCheck(long a, long b);
+    /**
+     * <p>
+     * Gets the greatest common divisor of the absolute value of two numbers,
+     * using the "binary gcd" method which avoids division and modulo
+     * operations. See Knuth 4.5.2 algorithm B. This algorithm is due to Josef
+     * Stein (1961).
+     * </p>
+     * 
+     * @param u a non-zero number
+     * @param v a non-zero number
+     * @return the greatest common divisor, never zero
+     * @since 1.1
+     */
+    public static int gcd(int u, int v);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,15 @@
+OptionGroup() throws AlreadySelectedException {
+        Option optionA = new Option("a", "first");
+        Option optionB = new Option("b", "second");
+        OptionGroup group = new OptionGroup();
+        group.addOption(optionA);
+        group.addOption(optionB);
+        group.setSelected(optionA);
+        assertTrue(group.getSelected().equals("a"));
+        group.setSelected(optionB);
+        assertTrue(group.getSelected().equals("b"));
+        group.setSelected(optionA);
+        assertFalse(group.getSelected().equals("b")); // This assertion should fail
+    }
+```
+The bug in the program is that the `setSelected` method of the `OptionGroup` class does not check if an option in the same group has already been selected. The `AlreadySelectedException` is not thrown in this case, which results in the wrong option being selected.

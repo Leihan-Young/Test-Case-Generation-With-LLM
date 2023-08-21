@@ -1,0 +1,11 @@
+GetDataset() {
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset()); // expecting null since dataset is not set
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1, "Series 1", "Category 1");
+    dataset.addValue(2, "Series 1", "Category 2");
+    dataset.addValue(3, "Series 1", "Category 3");
+    plot.setDataset(dataset);
+    assertEquals(dataset, plot.getDataset());
+}
+```

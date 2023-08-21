@@ -1,0 +1,22 @@
+     public void testGroup() {
+        final Argument arg1 = new ArgumentImpl("arg1");
+        final Argument arg2 = new ArgumentImpl("arg2");
+        final Argument arg3 = new ArgumentImpl("arg3");
+        final Argument arg4 = new ArgumentImpl("arg4");
+        final Argument arg5 = new ArgumentImpl("arg5");
+        final Argument arg6 = new ArgumentImpl("arg6");
+        final Argument arg7 = new ArgumentImpl("arg7");
+        final Argument arg8 = new ArgumentImpl("arg8");
+        final Argument arg9 = new ArgumentImpl("arg9");
+        final Argument arg10 = new ArgumentImpl("arg10");
+        final Argument arg11 = new ArgumentImpl("arg11");
+        final Argument arg12 = new ArgumentImpl("arg12");
+        final Argument arg13 = new ArgumentImpl("arg13");
+        final Argument arg14 = new ArgumentImpl("arg14");
+        final Argument arg15 = new ArgumentImpl("arg15");
+        final Argument arg16 = new ArgumentImpl("arg16");
+        final Argument arg17 = new ArgumentImpl("arg17");
+        final Argument arg18 = new ArgumentImpl("arg18");
+        final Argument arg19 = new ArgumentImpl("arg19");
+        final Argument arg20 = new ArgumentImpl("arg20");
+        final Argument arg21 = new ArgumentImpl(

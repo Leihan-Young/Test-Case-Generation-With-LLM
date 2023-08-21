@@ -1,0 +1,6 @@
+ public void testCloning() throws Exception {
+        MultiplePiePlot plot = new MultiplePiePlot();
+        plot.setDataset(null);
+        plot.setPieChart(null);
+        plot.clone();
+    }

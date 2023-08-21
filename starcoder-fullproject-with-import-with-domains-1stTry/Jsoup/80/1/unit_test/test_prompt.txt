@@ -1,0 +1,23 @@
+package org.jsoup.parser;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.*;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.List;
+/**
+ * Use the {@code XmlTreeBuilder} when you want to parse XML without any of the HTML DOM rules being applied to the
+ * document.
+ * <p>Usage example: {@code Document xmlDoc = Jsoup.parse(html, baseUrl, Parser.xmlParser());}</p>
+ *
+ * @author Jonathan Hedley
+ */
+public class XmlTreeBuilder extends TreeBuilder {
+    Document parse(Reader input, String baseUri);
+    Document parse(String input, String baseUri);
+    void insert(Token.Comment commentToken);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

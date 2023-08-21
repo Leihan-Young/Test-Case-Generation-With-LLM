@@ -1,0 +1,24 @@
+ public void testStopAtNonOption() throws Exception {
+        Options options = new Options();
+        options.addOption(OptionBuilder.create("a"));
+        options.addOption(OptionBuilder.create("b"));
+        options.addOption(OptionBuilder.create("c"));
+        options.addOption(OptionBuilder.create("d"));
+        options.addOption(OptionBuilder.create("e"));
+        options.addOption(OptionBuilder.create("f"));
+        options.addOption(OptionBuilder.create("g"));
+        options.addOption(OptionBuilder.create("h"));
+        options.addOption(OptionBuilder.create("i"));
+        options.addOption(OptionBuilder.create("j"));
+        options.addOption(OptionBuilder.create("k"));
+        options.addOption(OptionBuilder.create("l"));
+        options.addOption(OptionBuilder.create("m"));
+        options.addOption(OptionBuilder.create("n"));
+        options.addOption(OptionBuilder.create("o"));
+        options.addOption(OptionBuilder.create("p"));
+        options.addOption(OptionBuilder.create("q"));
+        options.addOption(OptionBuilder.create("r"));
+        options.addOption(OptionBuilder.create("s"));
+        options.addOption(OptionBuilder.create("t"));
+        options.addOption(OptionBuilder.create("u"));
+        options.addOption(OptionBuilder

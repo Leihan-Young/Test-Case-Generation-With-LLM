@@ -1,0 +1,17 @@
+     private void checkPearson(double[] x, double[] y, double expected) {
+        PearsonsCorrelation corr = new PearsonsCorrelation(new double[][] {x, y});
+        assertEquals(expected, corr.getCorrelationMatrix().getEntry(0, 1), 1.0e-12);
+    }
+    private void checkPearson(double[] x, double[] y, double[] z, double expected) {
+        PearsonsCorrelation corr = new PearsonsCorrelation(new double[][] {x, y, z});
+        assertEquals(expected, corr.getCorrelationMatrix().getEntry(0, 1), 1.0e-12);
+    }
+    private void checkPearson(double[][] data, double expected) {
+        PearsonsCorrelation corr = new PearsonsCorrelation(data);
+        assertEquals(expected, corr.getCorrelationMatrix().getEntry(0, 1), 1.0e-12);
+    }
+    private void checkCovariance(double[] x, double[] y, double expected) {
+        PearsonsCorrelation corr = new PearsonsCorrelation(new double[][] {x, y});
+        assertEquals(expected, corr.getCorrelationMatrix().getEntry(0, 1), 1.0e-12);
+    }
+    private void checkCovariance(double[] x, double[

@@ -1,0 +1,36 @@
+     private void assertParseFailure(CommandLineParser parser, String[] arguments, String message) {
+        try {
+            parser.parse(options, arguments);
+            fail("Expected ParseException");
+        } catch (ParseException e) {
+            assertEquals(message, e.getMessage());
+        }
+    }
+    private void assertParseFailure(CommandLineParser parser, Options options, String[] arguments, String message) {
+        try {
+            parser.parse(options, arguments);
+            fail("Expected ParseException");
+        } catch (ParseException e) {
+            assertEquals(message, e.getMessage());
+        }
+    }
+    private void assertParseSuccess(CommandLineParser parser, Options options, String[] arguments, CommandLine expected) {
+        try {
+            CommandLine actual = parser.parse(options, arguments);
+            assertEquals(expected, actual);
+        } catch (ParseException e) {
+            fail("Expected success: " + e.getMessage());
+        }
+    }
+    private void assertParseSuccess(CommandLineParser parser, String[] arguments, CommandLine expected) {
+        try {
+            CommandLine actual = parser.parse(options, arguments);
+            assertEquals(expected, actual);
+        } catch (ParseException e) {
+            fail("Expected success: " + e.getMessage());
+        }
+    }
+    private void assertParseSuccess(CommandLineParser parser, Options options, String[] arguments, String[] argList, CommandLine expected) {
+        try {
+            CommandLine actual = parser.parse(options, arguments);
+            assertEquals(expected, actua

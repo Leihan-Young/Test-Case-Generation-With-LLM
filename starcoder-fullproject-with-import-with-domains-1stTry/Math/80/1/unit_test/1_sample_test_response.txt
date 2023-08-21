@@ -1,0 +1,7 @@
+     public void testNonSquare() {
+        try {
+            new EigenDecompositionImpl(MatrixUtils.createRealMatrix(2, 3));
+            fail("an exception should have been thrown");
+        } catch (InvalidMatrixException expected) {
+        }
+    }

@@ -1,0 +1,33 @@
+OptionBuilder() {
+        Option option = OptionBuilder.withLongOpt("output")
+                .withDescription("output file")
+                .isRequired()
+                .hasArgs()
+                .create("o");
+
+        assertNotNull(option);
+        assertTrue(option.hasLongOpt());
+        assertEquals("output", option.getLongOpt());
+        assertTrue(option.isRequired());
+        assertTrue(option.hasArgs());
+        assertEquals(Option.UNINITIALIZED, option.getArgs());
+        assertEquals("o", option.getOpt());
+    }
+``` 
+
+The bug in the code is that the `reset()` method is not implemented. The method needs to reset all the static variables to their default values. Here is the corrected code for the `reset()` method:
+
+```
+private static void reset() {
+    longopt = null;
+    description = null;
+    argName = null;
+    required = false;
+    numberOfArgs = Option.UNINITIALIZED;
+    type = null;
+    optionalArg = false;
+    valuesep = '=';
+}
+``` 
+
+After adding this method, the test method should run without any errors or failures.

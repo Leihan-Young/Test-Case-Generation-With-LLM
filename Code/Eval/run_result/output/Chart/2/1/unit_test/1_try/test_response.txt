@@ -1,0 +1,42 @@
+IterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(1.0, 2.0);
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(1.0, range.getLowerBound(), 0.0001);
+    assertEquals(1.0, range.getUpperBound(), 0.0001);
+}
+```
+This test method tests the `iterateDomainBounds()` method of the `DatasetUtilities` class. It creates a dataset with one series and one data point (x=1.0, y=2.0), and calls the method with `includeInterval = true`. It asserts that the range returned by the method is not null, and that it has the correct lower and upper bounds (both should be 1.0). 
+
+The bug in the program is that it always sets the upper bound of the domain range to the maximum x-value found in the dataset, regardless of the value of `includeInterval`. This means that if `includeInterval` is true and the dataset is not an `IntervalXYDataset`, the upper bound of the range will be incorrect. 
+
+To reveal this bug, we can modify the test method to create a dataset that is not an `IntervalXYDataset`, and set the x-value of the data point to a value greater than 1.0. We expect the upper bound of the range to be this value, but the program will incorrectly set it to 1.0. 
+
+Here is the modified test method:
+```
+public void testIterateDomainBounds() {
+    // create a dataset with one series and one data point
+    XYSeries series = new XYSeries("Series 1");
+    series.add(2.0, 2.0); // set x-value to 2.0
+    XYDataset dataset = new XYSeriesCollection(series);
+
+    // call the method with includeInterval = true
+    Range range = DatasetUtilities.iterateDomainBounds(dataset, true);
+
+    // assert that the range is not null
+    assertNotNull(range);
+
+    // assert that the range is correct
+    assertEquals(2.0, range.getLowerBound(), 0.0001);
+    assertEquals(2.0, range.getUpperBound(), 0.0001); // expect 2.0, but program will return 1.0
+}
+```

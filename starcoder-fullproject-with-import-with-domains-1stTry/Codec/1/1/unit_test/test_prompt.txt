@@ -1,0 +1,128 @@
+package org.apache.commons.codec.language;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+/**
+ * Utility methods for {@link Soundex} and {@link RefinedSoundex} classes.
+ * 
+ * @author Apache Software Foundation
+ * @version $Id$
+ * @since 1.3
+ */
+final class SoundexUtils {
+    /**
+	 * Cleans up the input string before Soundex processing by only returning
+	 * upper case letters.
+	 * 
+	 * @param str
+	 *                  The String to clean.
+	 * @return A clean String.
+	 */
+    static String clean(String str);
+}
+package org.apache.commons.codec.language;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+/**
+ * Encodes a string into a metaphone value. 
+ * <p>
+ * Initial Java implementation by <CITE>William B. Brogden. December, 1997</CITE>. 
+ * Permission given by <CITE>wbrogden</CITE> for code to be used anywhere.
+ * </p>
+ * <p>
+ * <CITE>Hanging on the Metaphone</CITE> by <CITE>Lawrence Philips</CITE> in <CITE>Computer Language of Dec. 1990, p
+ * 39.</CITE>
+ * </p>
+ * <p>
+ * Note, that this does not match the algorithm that ships with PHP, or the algorithm 
+ * found in the Perl <a href="http://search.cpan.org/~mschwern/Text-Metaphone-1.96/Metaphone.pm">Text:Metaphone-1.96</a>.
+ * They have had undocumented changes from the originally published algorithm. 
+ * </p>
+ * 
+ * @author Apache Software Foundation
+ * @version $Id$
+ */
+public class Metaphone implements StringEncoder {
+    private static final String VOWELS = "AEIOU" ;
+    private static final String FRONTV = "EIY"   ;
+    private static final String VARSON = "CSPTG" ;
+    private int maxCodeLen = 4 ;
+    /**
+     * Encodes a String using the Metaphone algorithm. 
+     *
+     * @param pString String object to encode
+     * @return The metaphone code corresponding to the String supplied
+     */
+    public String encode(String pString);
+    /**
+     * Find the metaphone value of a String. This is similar to the
+     * soundex algorithm, but better at finding similar sounding words.
+     * All input is converted to upper case.
+     * Limitations: Input format is expected to be a single ASCII word
+     * with only characters in the A - Z range, no punctuation or numbers.
+     *
+     * @param txt String to find the metaphone code for
+     * @return A metaphone code corresponding to the String supplied
+     */
+    public String metaphone(String txt);
+    /**
+     * Encodes an Object using the metaphone algorithm.  This method
+     * is provided in order to satisfy the requirements of the
+     * Encoder interface, and will throw an EncoderException if the
+     * supplied object is not of type java.lang.String.
+     *
+     * @param pObject Object to encode
+     * @return An object (or type java.lang.String) containing the 
+     *         metaphone code which corresponds to the String supplied.
+     * @throws EncoderException if the parameter supplied is not
+     *                          of type java.lang.String
+     */
+    public Object encode(Object pObject) throws EncoderException;
+}
+package org.apache.commons.codec.language;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.StringEncoder;
+/**
+ * Encodes a string into a caverphone value. 
+ *
+ * This is an algorithm created the Caversham Project at the University of Otago. 
+ * It implements the Caverphone 2.0 algorithm:
+ *
+ *
+ * @author Apache Software Foundation
+ * @version $Id$
+ * @see <a href="http://en.wikipedia.org/wiki/Caverphone">Wikipedia - Caverphone</a>
+ * @see <a href="http://caversham.otago.ac.nz/files/working/ctp150804.pdf">Caverphone 2.0 specification</a>
+ */
+public class Caverphone implements StringEncoder {
+    /**
+     * Encodes an Object using the caverphone algorithm.  This method
+     * is provided in order to satisfy the requirements of the
+     * Encoder interface, and will throw an EncoderException if the
+     * supplied object is not of type java.lang.String.
+     *
+     * @param pObject Object to encode
+     * @return An object (or type java.lang.String) containing the 
+     *         caverphone code which corresponds to the String supplied.
+     * @throws EncoderException if the parameter supplied is not
+     *                          of type java.lang.String
+     */
+    public Object encode(Object pObject) throws EncoderException;
+    /**
+     * Encodes a String using the Caverphone algorithm. 
+     *
+     * @param pString String object to encode
+     * @return The caverphone code corresponding to the String supplied
+     */
+    public String encode(String pString);
+    /**
+     * Find the caverphone value of a String. 
+     *
+     * @param txt String to find the caverphone code for
+     * @return A caverphone code corresponding to the String supplied
+     */
+    public String caverphone(String txt);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

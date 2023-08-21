@@ -1,0 +1,170 @@
+DEBUG:root:bug_folder=Math/1/1
+DEBUG:root:bug_folder=Math/2/1
+DEBUG:root:bug_folder=Math/3/1
+DEBUG:root:bug_folder=Math/4/1
+DEBUG:root:bug_folder=Math/5/1
+DEBUG:root:project=Math,bug_number=1
+DEBUG:root:project=Math,bug_number=2
+DEBUG:root:project=Math,bug_number=3
+DEBUG:root:project=Math,bug_number=4
+DEBUG:root:project=Math,bug_number=5
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 1b -w /Code/Eval/src/Math/1b >/dev/null 2>&1
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 2b -w /Code/Eval/src/Math/2b >/dev/null 2>&1
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 3b -w /Code/Eval/src/Math/3b >/dev/null 2>&1
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 4b -w /Code/Eval/src/Math/4b >/dev/null 2>&1
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 5b -w /Code/Eval/src/Math/5b >/dev/null 2>&1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testDigitLimitConstructor() throws ConvergenceException {
+        assertFraction(2, 5, new BigFraction(0.4, 9));
+        assertFraction(2, 5, new BigFraction(0.4, 99));
+        assertFraction(2, 5, new BigFraction(0.4, 999));
+
+        assertFraction(3, 5, new BigFraction(0.6152, 9));
+        assertFraction(8, 13, new BigFraction(0.6152, 99));
+        assertFraction(510, 829, new BigFraction(0.6152, 999));
+        assertFraction(769, 1250, new BigFraction(0.6152, 9999));
+        
+        // MATH-996
+        assertFraction(1, 2, new BigFraction(0.5000000001, 10));
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/1b -t org.apache.commons.math3.fraction.BigFractionTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testMath1021() {
+        final int N = 43130568;
+        final int m = 42976365;
+        final int n = 50;
+        final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
+
+        for (int i = 0; i < 100; i++) {
+            final int sample = dist.sample();
+            Assert.assertTrue("sample=" + sample, 0 <= sample);
+            Assert.assertTrue("sample=" + sample, sample <= n);
+        }
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/2b -t org.apache.commons.math3.distribution.HypergeometricDistributionTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testLinearCombinationWithSingleElementArray() {
+        final double[] a = { 1.23456789 };
+        final double[] b = { 98765432.1 };
+
+        Assert.assertEquals(a[0] * b[0], MathArrays.linearCombination(a, b), 0d);
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/3b -t org.apache.commons.math3.util.MathArraysTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testReciprocalZero() {
+        Assert.assertEquals(Complex.ZERO.reciprocal(), Complex.INF);
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/5b -t org.apache.commons.math3.complex.ComplexTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testIntersectionNotIntersecting() throws MathIllegalArgumentException {
+        SubLine sub1 = new SubLine(new Vector3D(1, 1, 1), new Vector3D(1.5, 1, 1));
+        SubLine sub2 = new SubLine(new Vector3D(2, 3, 0), new Vector3D(2, 3, 0.5));
+        Assert.assertNull(sub1.intersection(sub2, true));
+        Assert.assertNull(sub1.intersection(sub2, false));
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/4b -t org.apache.commons.math3.geometry.euclidean.threed.SubLineTest::newTestMethod1
+DEBUG:root:org.apache.commons.math3.complex.ComplexTest::newTestMethod1:
+DEBUG:root:Failing tests: 1
+
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 5f -w /Code/Eval/src/Math/5f >/dev/null 2>&1
+DEBUG:root:org.apache.commons.math3.util.MathArraysTest::newTestMethod1:
+DEBUG:root:Failing tests: 1
+
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 3f -w /Code/Eval/src/Math/3f >/dev/null 2>&1
+DEBUG:root:org.apache.commons.math3.geometry.euclidean.threed.SubLineTest::newTestMethod1:
+DEBUG:root:Failing tests: 1
+
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 4f -w /Code/Eval/src/Math/4f >/dev/null 2>&1
+DEBUG:root:org.apache.commons.math3.distribution.HypergeometricDistributionTest::newTestMethod1:
+DEBUG:root:Failing tests: 1
+
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 2f -w /Code/Eval/src/Math/2f >/dev/null 2>&1
+DEBUG:root:org.apache.commons.math3.fraction.BigFractionTest::newTestMethod1:
+DEBUG:root:Failing tests: 1
+
+DEBUG:root:checkout_cmd=defects4j checkout -p Math -v 1f -w /Code/Eval/src/Math/1f >/dev/null 2>&1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testReciprocalZero() {
+        Assert.assertEquals(Complex.ZERO.reciprocal(), Complex.INF);
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/5f -t org.apache.commons.math3.complex.ComplexTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testLinearCombinationWithSingleElementArray() {
+        final double[] a = { 1.23456789 };
+        final double[] b = { 98765432.1 };
+
+        Assert.assertEquals(a[0] * b[0], MathArrays.linearCombination(a, b), 0d);
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/3f -t org.apache.commons.math3.util.MathArraysTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testIntersectionNotIntersecting() throws MathIllegalArgumentException {
+        SubLine sub1 = new SubLine(new Vector3D(1, 1, 1), new Vector3D(1.5, 1, 1));
+        SubLine sub2 = new SubLine(new Vector3D(2, 3, 0), new Vector3D(2, 3, 0.5));
+        Assert.assertNull(sub1.intersection(sub2, true));
+        Assert.assertNull(sub1.intersection(sub2, false));
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/4f -t org.apache.commons.math3.geometry.euclidean.threed.SubLineTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testMath1021() {
+        final int N = 43130568;
+        final int m = 42976365;
+        final int n = 50;
+        final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
+
+        for (int i = 0; i < 100; i++) {
+            final int sample = dist.sample();
+            Assert.assertTrue("sample=" + sample, 0 <= sample);
+            Assert.assertTrue("sample=" + sample, sample <= n);
+        }
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/2f -t org.apache.commons.math3.distribution.HypergeometricDistributionTest::newTestMethod1
+DEBUG:root:trigger_method_lines=    @Test
+    public void testDigitLimitConstructor() throws ConvergenceException {
+        assertFraction(2, 5, new BigFraction(0.4, 9));
+        assertFraction(2, 5, new BigFraction(0.4, 99));
+        assertFraction(2, 5, new BigFraction(0.4, 999));
+
+        assertFraction(3, 5, new BigFraction(0.6152, 9));
+        assertFraction(8, 13, new BigFraction(0.6152, 99));
+        assertFraction(510, 829, new BigFraction(0.6152, 999));
+        assertFraction(769, 1250, new BigFraction(0.6152, 9999));
+        
+        // MATH-996
+        assertFraction(1, 2, new BigFraction(0.5000000001, 10));
+    }
+
+DEBUG:root:test_cmd=defects4j test -w /Code/Eval/src/Math/1f -t org.apache.commons.math3.fraction.BigFractionTest::newTestMethod1
+DEBUG:root:org.apache.commons.math3.complex.ComplexTest::newTestMethod1:
+DEBUG:root:Failing tests: 0
+
+DEBUG:root:-----------------------------------------------
+DEBUG:root:unit_res_in_bug=Test failed,unit_res_in_fix=Test passed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed
+DEBUG:root:org.apache.commons.math3.util.MathArraysTest::newTestMethod1:
+DEBUG:root:Failing tests: 0
+
+DEBUG:root:-----------------------------------------------
+DEBUG:root:unit_res_in_bug=Test failed,unit_res_in_fix=Test passed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed
+DEBUG:root:org.apache.commons.math3.geometry.euclidean.threed.SubLineTest::newTestMethod1:
+DEBUG:root:Failing tests: 0
+
+DEBUG:root:-----------------------------------------------
+DEBUG:root:unit_res_in_bug=Test failed,unit_res_in_fix=Test passed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed
+DEBUG:root:org.apache.commons.math3.distribution.HypergeometricDistributionTest::newTestMethod1:
+DEBUG:root:Failing tests: 0
+
+DEBUG:root:-----------------------------------------------
+DEBUG:root:unit_res_in_bug=Test failed,unit_res_in_fix=Test passed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed
+DEBUG:root:org.apache.commons.math3.fraction.BigFractionTest::newTestMethod1:
+DEBUG:root:Failing tests: 0
+
+DEBUG:root:-----------------------------------------------
+DEBUG:root:unit_res_in_bug=Test failed,unit_res_in_fix=Test passed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed

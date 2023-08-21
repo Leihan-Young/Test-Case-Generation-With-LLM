@@ -1,0 +1,32 @@
+MinMaxCategoryRenderer() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(1, "Series 1", "Category 1");
+    dataset.addValue(2, "Series 1", "Category 2");
+    dataset.addValue(3, "Series 1", "Category 3");
+    dataset.addValue(4, "Series 1", "Category 4");
+    MinMaxCategoryRenderer renderer = new MinMaxCategoryRenderer();
+    JFreeChart chart = ChartFactory.createBarChart("Test Chart", "Category", "Value", dataset);
+    CategoryPlot plot = chart.getCategoryPlot();
+    plot.setRenderer(renderer);
+    ChartPanel panel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Test Frame");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().add(panel);
+    frame.pack();
+    frame.setVisible(true);
+}
+```
+
+The error message suggests that some of the required packages are not imported in the test class. To fix this error, the following import statements need to be added to the test class:
+
+```
+import javax.swing.JFrame;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.data.category.DefaultCategoryDataset;
+```
+
+Once these import statements are added, the test method should be able to build successfully.

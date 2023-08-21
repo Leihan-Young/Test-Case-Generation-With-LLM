@@ -1,0 +1,35 @@
+     private void assertMatches(CharacterReader reader, String seq) {
+        assertTrue(reader.matchConsume(seq));
+    }
+    private void assertNotMatches(CharacterReader reader, String seq) {
+        assertFalse(reader.matchConsume(seq));
+    }
+    private void assertMatches(CharacterReader reader, char seq) {
+        assertTrue(reader.matchConsume(seq));
+    }
+    private void assertNotMatches(CharacterReader reader, char seq) {
+        assertFalse(reader.matchConsume(seq));
+    }
+    private void assertEndOfFile(CharacterReader reader) {
+        assertTrue(reader.isEmpty());
+    }
+    private void assertPosition(CharacterReader reader, int pos) {
+        assertEquals(pos, reader.getPosition());
+    }
+    private void assertLine(CharacterReader reader, int line) {
+        assertEquals(line, reader.getLineNumber());
+    }
+    private void assertColumn(CharacterReader reader, int col) {
+        assertEquals(col, reader.getColumnNumber());
+    }
+    private void assertBufferPosition(CharacterReader reader, int pos) {
+        assertEquals(pos, reader.getBufferPosition());
+    }
+    private void assertCurrentChar(CharacterReader reader, char c) {
+        assertEquals(c, reader.current());
+    }
+    private void assertConsume(CharacterReader reader, char c) {
+        assertEquals(c, reader.consume());
+    }
+    private void assertConsume(CharacterReader reader, String seq) {
+        assertEquals

@@ -1,0 +1,21 @@
+     private void checkInverse(RealMatrix m) {
+        RealMatrix mI = m.inverse();
+        assertEquals(m.getRowDimension(), mI.getRowDimension());
+        assertEquals(m.getColumnDimension(), mI.getColumnDimension());
+        assertTrue(m.multiply(mI).equals(MatrixUtils.createRealIdentityMatrix(m.getRowDimension())));
+        assertTrue(mI.multiply(m).equals(MatrixUtils.createRealIdentityMatrix(m.getRowDimension())));
+    }
+    private void checkInverse(RealMatrix m, RealMatrix mI) {
+        assertEquals(m.getRowDimension(), mI.getRowDimension());
+        assertEquals(m.getColumnDimension(), mI.getColumnDimension());
+        assertTrue(m.multiply(mI).equals(MatrixUtils.createRealIdentityMatrix(m.getRowDimension())));
+        assertTrue(mI.multiply(m).equals(MatrixUtils.createRealIdentityMatrix(m.getRowDimension())));
+    }
+    private void checkInverse(ComplexMatrix m) {
+        ComplexMatrix mI = m.inverse();
+        assertEquals(m.getRowDimension(), mI.getRowDimension());
+        assertEquals(m.getColumnDimension(), mI.getColumnDimension());
+        assertTrue(m.multiply(mI).equals(MatrixUtils.createComplexIdentityMatrix(m.getRowDimension())));
+        assertTrue(mI.multiply(m).equals(MatrixUtils.createComplexIdentityMatrix(m.getRowDimension())));
+    }
+    privat

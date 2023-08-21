@@ -1,0 +1,49 @@
+ private void testCumulativeProbability(int numberOfSuccesses,
+                                          int sampleSize,
+                                          int populationSize,
+                                          int x,
+                                          double expected) {
+        HypergeometricDistribution distribution =
+            new HypergeometricDistribution(numberOfSuccesses,
+                                           sampleSize,
+                                           populationSize);
+        assertEquals(expected,
+                     distribution.cumulativeProbability(x),
+                     0);
+    }
+    private void testCumulativeProbability(int numberOfSuccesses,
+                                          int sampleSize,
+                                          int populationSize,
+                                          int x0,
+                                          int x1,
+                                          double expected) {
+        HypergeometricDistribution distribution =
+            new HypergeometricDistribution(numberOfSuccesses,
+                                           sampleSize,
+                                           populationSize);
+        assertEquals(expected,
+                     distribution.cumulativeProbability(x0, x1),
+                     0);
+    }
+    private void testInverseCumulativeProbability(int numberOfSuccesses,
+                                                  int sampleSize,
+                                                  int populationSize,
+                                                  double p,
+                                                  int expected) {
+        HypergeometricDistribution distribution =
+            new HypergeometricDistribution(numberOfSuccesses,
+                                           sampleSize,
+                                           populationSize);
+        assertEquals(expected,
+                     distribution.inverseCumulativeProbability(p),
+                     0);
+    }
+    private void testInverseCumulativeProbability(int numberOfSuccesses,
+                                                  int sampleSize,
+                                                  int populationSize,
+                                                  double p0,
+                                                  double p1,
+                                                  int expected) {
+        HypergeometricDistribution distribution =
+            new HypergeometricDistribution(numberOfSuccesses,
+                                           sampleSiz

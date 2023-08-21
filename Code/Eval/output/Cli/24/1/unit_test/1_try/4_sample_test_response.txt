@@ -1,0 +1,21 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option optionA = new Option("a", "first", true, "first option");
+        Option optionB = new Option("b", "second", true, "second option");
+        Option optionC = new Option("c", "third", false, "third option");
+        OptionGroup group = new OptionGroup();
+        group.addOption(optionA);
+        group.addOption(optionB);
+        group.addOption(optionC);
+        opts.addOptionGroup(group);
+
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+        formatter.printHelp(pw, formatter.getWidth(), "app", opts, "footer", true);
+        String output = out.toString();
+
+        assertTrue(output.contains("-a,--first <arg>   first option"));
+        assertTrue(output.contains("-b,--second <arg>  second option"));
+        assertTrue(output.contains("-c,--third         third option"));
+    }
+```

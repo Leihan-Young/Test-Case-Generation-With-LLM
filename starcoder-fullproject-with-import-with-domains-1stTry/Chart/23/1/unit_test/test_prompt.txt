@@ -1,0 +1,93 @@
+package org.jfree.chart.renderer.category;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import javax.swing.Icon;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.category.CategoryDataset;
+/**
+ * Renderer for drawing min max plot. This renderer draws all the series under 
+ * the same category in the same x position using <code>objectIcon</code> and 
+ * a line from the maximum value to the minimum value.
+ * <p>
+ * For use with the {@link org.jfree.chart.plot.CategoryPlot} class.
+ */
+public class MinMaxCategoryRenderer extends AbstractCategoryItemRenderer {
+    private static final long serialVersionUID = 2935615937671064911L;
+    private boolean plotLines = false;
+    private transient Paint groupPaint = Color.black;
+    private transient Stroke groupStroke = new BasicStroke(1.0f);
+    private int lastCategory = -1;
+    private double min;
+    private double max;
+    /**
+     * Sets the stroke of the line between the minimum value and the maximum 
+     * value and sends a {@link RendererChangeEvent} to all registered 
+     * listeners.
+     *
+     * @param stroke the new stroke (<code>null</code> not permitted).
+     */
+    public void setGroupStroke(Stroke stroke);
+    /**
+     * Sets the flag that controls whether or not lines are drawn to connect
+     * the items within a series and sends a {@link RendererChangeEvent} to 
+     * all registered listeners.
+     *
+     * @param draw  the new value of the flag.
+     * 
+     * @see #isDrawLines()
+     */
+    public void setDrawLines(boolean draw);
+    /**
+     * Draw a single data item.
+     *
+     * @param g2  the graphics device.
+     * @param state  the renderer state.
+     * @param dataArea  the area in which the data is drawn.
+     * @param plot  the plot.
+     * @param domainAxis  the domain axis.
+     * @param rangeAxis  the range axis.
+     * @param dataset  the dataset.
+     * @param row  the row index (zero-based).
+     * @param column  the column index (zero-based).
+     * @param pass  the pass index.
+     */
+    public void drawItem(Graphics2D g2, CategoryItemRendererState state,
+            Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis,
+            ValueAxis rangeAxis, CategoryDataset dataset, int row, int column,
+            int pass);
+    /**
+     * Sets the paint used to draw the line between the minimum and maximum
+     * value items in each category and sends a {@link RendererChangeEvent} to
+     * all registered listeners.
+     *
+     * @param paint  the paint (<code>null</code> not permitted).
+     * 
+     * @see #getGroupPaint()
+     */
+    public void setGroupPaint(Paint paint);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

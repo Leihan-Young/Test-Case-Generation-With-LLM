@@ -1,0 +1,67 @@
+package org.joda.time.tz;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+import org.joda.time.Chronology;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.MutableDateTime;
+import org.joda.time.chrono.ISOChronology;
+import org.joda.time.chrono.LenientChronology;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+/**
+ * Compiles Olson ZoneInfo database files into binary files for each time zone
+ * in the database. {@link DateTimeZoneBuilder} is used to construct and encode
+ * compiled data files. {@link ZoneInfoProvider} loads the encoded files and
+ * converts them back into {@link DateTimeZone} objects.
+ * <p>
+ * Although this tool is similar to zic, the binary formats are not
+ * compatible. The latest Olson database files may be obtained
+ * <a href="http://www.twinsun.com/tz/tz-link.htm">here</a>.
+ * <p>
+ * ZoneInfoCompiler is mutable and not thread-safe, although the main method
+ * may be safely invoked by multiple threads.
+ *
+ * @author Brian S O'Neill
+ * @since 1.0
+ */
+public class ZoneInfoCompiler {
+    /**
+     * Launches the ZoneInfoCompiler tool.
+     *
+     * <pre>
+     * Usage: java org.joda.time.tz.ZoneInfoCompiler &lt;options&gt; &lt;source files&gt;
+     * where possible options include:
+     *   -src &lt;directory&gt;    Specify where to read source files
+     *   -dst &lt;directory&gt;    Specify where to write generated files
+     *   -verbose            Output verbosely (default false)
+     * </pre>
+     */
+    public static void main(String[] args) throws Exception;
+    /**
+     * Gets a flag indicating that verbose logging is required.
+     * @return true to log verbosely
+     */
+    public static boolean verbose();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

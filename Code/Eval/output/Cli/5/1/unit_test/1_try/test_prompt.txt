@@ -1,0 +1,93 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+/**
+ * Contains useful helper methods for classes within this package.
+ *
+ * @author John Keyes (john at integralsource.com)
+ */
+class Util {
+    static String stripLeadingAndTrailingQuotes(String str);
+    /**
+     * <p>Remove the hyphens from the begining of <code>str</code> and
+     * return the new String.</p>
+     *
+     * @param str The string from which the hyphens should be removed.
+     *
+     * @return the new String.
+     */
+    static String stripLeadingHyphens(String str)
+    {
+        if (str.startsWith("--"))
+        {
+            return str.substring(2, str.length());
+        }
+        else if (str.startsWith("-"))
+        {
+            return str.substring(1, str.length());
+        }
+
+        return str;
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Ant test
+     */
+    public void testAnt() {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser( );
+        Options options = new Options();
+        options.addOption( "help", false, "print this message" );
+        options.addOption( "projecthelp", false, "print project help information" );
+        options.addOption( "version", false, "print the version information and exit" );
+        options.addOption( "quiet", false, "be extra quiet" );
+        options.addOption( "verbose", false, "be extra verbose" );
+        options.addOption( "debug", false, "print debug information" );
+        options.addOption( "version", false, "produce logging information without adornments" );
+        options.addOption( "logfile", true, "use given file for log" );
+        options.addOption( "logger", true, "the class which is to perform the logging" );
+        options.addOption( "listener", true, "add an instance of a class as a project listener" );
+        options.addOption( "buildfile", true, "use given buildfile" );
+        options.addOption( OptionBuilder.withDescription( "use value for given property" )
+                                        .hasArgs()
+                                        .withValueSeparator()
+                                        .create( 'D' ) );
+                           //, null, true, , false, true );
+        options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
+
+        String[] args = new String[]{ "-buildfile", "mybuild.xml",
+            "-Dproperty=value", "-Dproperty1=value1",
+            "-projecthelp" };
+
+        try {
+            CommandLine line = parser.parse( options, args );
+
+            // check multiple values
+            String[] opts = line.getOptionValues( "D" );
+            assertEquals( "property", opts[0] );
+            assertEquals( "value", opts[1] );
+            assertEquals( "property1", opts[2] );
+            assertEquals( "value1", opts[3] );
+
+            // check single value
+            assertEquals( line.getOptionValue( "buildfile"), "mybuild.xml" );
+
+            // check option
+            assertTrue( line.hasOption( "projecthelp") );
+        }
+        catch( ParseException exp ) {
+            fail( "Unexpected exception:" + exp.getMessage() );
+        }
+
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

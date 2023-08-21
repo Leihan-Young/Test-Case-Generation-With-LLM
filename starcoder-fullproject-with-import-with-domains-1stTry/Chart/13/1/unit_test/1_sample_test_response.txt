@@ -1,0 +1,25 @@
+ private static final double EPSILON = 0.0000000001;
+    private static void assertSize(Size2D size, double w, double h) {
+        assertTrue(Math.abs(size.getWidth() - w) < EPSILON);
+        assertTrue(Math.abs(size.getHeight() - h) < EPSILON);
+    }
+    private static void assertBounds(Rectangle2D bounds, double x, double y,
+                                     double w, double h) {
+        assertTrue(Math.abs(bounds.getX() - x) < EPSILON);
+        assertTrue(Math.abs(bounds.getY() - y) < EPSILON);
+        assertTrue(Math.abs(bounds.getWidth() - w) < EPSILON);
+        assertTrue(Math.abs(bounds.getHeight() - h) < EPSILON);
+    }
+    private static void assertRange(Range range, double min, double max) {
+        assertTrue(Math.abs(range.getLowerBound() - min) < EPSILON);
+        assertTrue(Math.abs(range.getUpperBound() - max) < EPSILON);
+    }
+    public void testCloning() {
+        BorderArrangement a1 = new BorderArrangement();
+        BorderArrangement a2 = null;
+        try {
+            a2 = (BorderArrangement) a1.clone();
+        }
+        catch (CloneNotSupportedException e) {
+            assertTrue(false);
+        

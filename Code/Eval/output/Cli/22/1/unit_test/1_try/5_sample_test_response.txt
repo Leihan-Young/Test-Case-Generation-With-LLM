@@ -1,0 +1,13 @@
+OptionWithArgument() throws Exception
+    {
+        String[] args = new String[]{
+                "--file=file.txt"
+        };
+
+        CommandLine cl = parser.parse(options, args);
+        assertTrue("Confirm --file is set", cl.hasOption("file"));
+        assertEquals("Confirm file.txt is the argument value", "file.txt", cl.getOptionValue("file"));
+        assertTrue("Confirm all arguments recognized", cl.getArgs().length == 0);
+    }
+```
+The bug in the program is that it does not handle long options with arguments correctly. In the testOptionWithArgument() test method, we pass "--file=file.txt" as an argument, but the program only adds "--file" to the list of processed tokens and ignores the argument "file.txt". This bug can be fixed by modifying the flatten() method to properly handle long options with arguments.

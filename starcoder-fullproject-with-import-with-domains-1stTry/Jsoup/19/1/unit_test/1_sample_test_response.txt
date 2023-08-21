@@ -1,0 +1,23 @@
+     private static Whitelist relaxed() {
+        return new Whitelist()
+               .addTags(
+                         "a", "b", "blockquote", "br", "cite", "code", "dd", "dl", "dt", "em", "i", "li", "ol", "p", "pre",
+                         "q", "small", "span", "strike", "strong", "sub", "sup", "u", "ul", "h1", "h2", "h3", "h4", "h5",
+                         "h6")
+               .addAttributes("a", "href", "title")
+               .addAttributes("blockquote", "cite")
+               .addAttributes("q", "cite")
+               .addProtocols("a", "href", "ftp", "http", "https")
+               .addProtocols("blockquote", "cite", "http", "https")
+               .addProtocols("cite", "cite", "http", "https")
+               .addProtocols("q", "cite", "http", "https");
+    }
+    private static Whitelist relaxedWithImg() {
+        return relaxed().addTags("img").addAttributes("img", "src", "alt");
+    }
+    private static Whitelist simpleText() {
+        return new Whitelist()
+               .addTags()
+               .addAttributes()
+               .addProtocols();
+    }

@@ -1,0 +1,38 @@
+package org.apache.commons.math3.optimization.univariate;
+import org.apache.commons.math3.util.Precision;
+import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.optimization.ConvergenceChecker;
+import org.apache.commons.math3.optimization.GoalType;
+/**
+ * For a function defined on some interval {@code (lo, hi)}, this class
+ * finds an approximation {@code x} to the point at which the function
+ * attains its minimum.
+ * It implements Richard Brent's algorithm (from his book "Algorithms for
+ * Minimization without Derivatives", p. 79) for finding minima of real
+ * univariate functions.
+ * <br/>
+ * This code is an adaptation, partly based on the Python code from SciPy
+ * (module "optimize.py" v0.5); the original algorithm is also modified
+ * <ul>
+ *  <li>to use an initial guess provided by the user,</li>
+ *  <li>to ensure that the best point encountered is the one returned.</li>
+ * </ul>
+ *
+ * @version $Id$
+ * @since 2.0
+ */
+public class BrentOptimizer extends BaseAbstractUnivariateOptimizer {
+    private static final double GOLDEN_SECTION = 0.5 * (3 - FastMath.sqrt(5));
+    private static final double MIN_RELATIVE_TOLERANCE = 2 * FastMath.ulp(1d);
+    private final double relativeThreshold;
+    private final double absoluteThreshold;
+    /** {@inheritDoc} */
+    @Override
+    protected UnivariatePointValuePair doOptimize();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

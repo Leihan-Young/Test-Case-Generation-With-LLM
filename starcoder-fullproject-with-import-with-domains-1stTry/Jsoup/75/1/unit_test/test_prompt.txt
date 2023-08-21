@@ -1,0 +1,38 @@
+package org.jsoup.nodes;
+import org.jsoup.SerializationException;
+import org.jsoup.helper.Validate;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import static org.jsoup.internal.Normalizer.lowerCase;
+/**
+ * The attributes of an Element.
+ * <p>
+ * Attributes are treated as a map: there can be only one value associated with an attribute key/name.
+ * </p>
+ * <p>
+ * Attribute name and value comparisons are  generally <b>case sensitive</b>. By default for HTML, attribute names are
+ * normalized to lower-case on parsing. That means you should use lower-case strings when referring to attributes by
+ * name.
+ * </p>
+ *
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Attributes implements Iterable<Attribute>, Cloneable {
+    private static final int InitialCapacity = 4; // todo - analyze Alexa 1MM sites, determine best setting
+    private static final int GrowthFactor = 2;
+    private static final String EmptyString = "";
+    private int size = 0; // number of slots used (not capacity, which is keys.length
+    final void html(final Appendable accum, final Document.OutputSettings out) throws IOException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

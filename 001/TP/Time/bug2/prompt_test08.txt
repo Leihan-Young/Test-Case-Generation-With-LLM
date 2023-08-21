@@ -1,0 +1,244 @@
+package org.joda.time.field;
+import java.io.Serializable;
+import java.util.HashMap;
+import org.joda.time.DurationField;
+import org.joda.time.DurationFieldType;
+/**
+ * A placeholder implementation to use when a duration field is not supported.
+ * <p>
+ * UnsupportedDurationField is thread-safe and immutable.
+ *
+ * @author Brian S O'Neill
+ * @since 1.0
+ */
+public final class UnsupportedDurationField extends DurationField implements Serializable {
+    private static final long serialVersionUID = -6390301302770925357L;
+    private static HashMap<DurationFieldType, UnsupportedDurationField> cCache;
+    /**
+     * Gets an instance of UnsupportedDurationField for a specific named field.
+     * The returned instance is cached.
+     * 
+     * @param type  the type to obtain
+     * @return the instance
+     */
+    public static synchronized UnsupportedDurationField getInstance(DurationFieldType type) {
+        UnsupportedDurationField field;
+        if (cCache == null) {
+            cCache = new HashMap<DurationFieldType, UnsupportedDurationField>(7);
+            field = null;
+        } else {
+            field = cCache.get(type);
+        }
+        if (field == null) {
+            field = new UnsupportedDurationField(type);
+            cCache.put(type, field);
+        }
+        return field;
+    }
+    /**
+     * Always returns zero.
+     *
+     * @return zero always
+     */
+    public long getUnitMillis() {
+        return 0;
+    }
+    /**
+     * Get a suitable debug string.
+     * 
+     * @return debug string
+     */
+    public String toString() {
+        return "UnsupportedDurationField[" + getName() + ']';
+    }
+}
+package org.joda.time;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import org.joda.time.base.AbstractPartial;
+import org.joda.time.field.AbstractPartialFieldProperty;
+import org.joda.time.field.FieldUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+/**
+ * Partial is an immutable partial datetime supporting any set of datetime fields.
+ * <p>
+ * A Partial instance can be used to hold any combination of fields.
+ * The instance does not contain a time zone, so any datetime is local.
+ * <p>
+ * A Partial can be matched against an instant using {@link #isMatch(ReadableInstant)}.
+ * This method compares each field on this partial with those of the instant
+ * and determines if the partial matches the instant.
+ * Given this definition, an empty Partial instance represents any datetime
+ * and always matches.
+ * <p>
+ * Calculations on Partial are performed using a {@link Chronology}.
+ * This chronology is set to be in the UTC time zone for all calculations.
+ * <p>
+ * Each individual field can be queried in two ways:
+ * <ul>
+ * <li><code>get(DateTimeFieldType.monthOfYear())</code>
+ * <li><code>property(DateTimeFieldType.monthOfYear()).get()</code>
+ * </ul>
+ * The second technique also provides access to other useful methods on the
+ * field:
+ * <ul>
+ * <li>numeric value - <code>monthOfYear().get()</code>
+ * <li>text value - <code>monthOfYear().getAsText()</code>
+ * <li>short text value - <code>monthOfYear().getAsShortText()</code>
+ * <li>maximum/minimum values - <code>monthOfYear().getMaximumValue()</code>
+ * <li>add/subtract - <code>monthOfYear().addToCopy()</code>
+ * <li>set - <code>monthOfYear().setCopy()</code>
+ * </ul>
+ * <p>
+ * Partial is thread-safe and immutable, provided that the Chronology is as well.
+ * All standard Chronology classes supplied are thread-safe and immutable.
+ *
+ * @author Stephen Colebourne
+ * @since 1.1
+ */
+public final class Partial
+        extends AbstractPartial
+        implements ReadablePartial, Serializable {
+    private static final long serialVersionUID = 12324121189002L;
+    private final Chronology iChronology;
+    private final DateTimeFieldType[] iTypes;
+    private final int[] iValues;
+    private transient DateTimeFormatter[] iFormatter;
+    /**
+     * Gets a copy of this date with the specified field set to a new value.
+     * <p>
+     * If this partial did not previously support the field, the new one will.
+     * Contrast this behaviour with {@link #withField(DateTimeFieldType, int)}.
+     * <p>
+     * For example, if the field type is <code>dayOfMonth</code> then the day
+     * would be changed/added in the returned instance.
+     *
+     * @param fieldType  the field type to set, not null
+     * @param value  the value to set
+     * @return a copy of this instance with the field set
+     * @throws IllegalArgumentException if the value is null or invalid
+     */
+    public Partial with(DateTimeFieldType fieldType, int value) {
+        if (fieldType == null) {
+            throw new IllegalArgumentException("The field type must not be null");
+        }
+        int index = indexOf(fieldType);
+        if (index == -1) {
+            DateTimeFieldType[] newTypes = new DateTimeFieldType[iTypes.length + 1];
+            int[] newValues = new int[newTypes.length];
+            
+            // find correct insertion point to keep largest-smallest order
+            int i = 0;
+            DurationField unitField = fieldType.getDurationType().getField(iChronology);
+            if (unitField.isSupported()) {
+                for (; i < iTypes.length; i++) {
+                    DateTimeFieldType loopType = iTypes[i];
+                    DurationField loopUnitField = loopType.getDurationType().getField(iChronology);
+                    if (loopUnitField.isSupported()) {
+                        int compare = unitField.compareTo(loopUnitField);
+                        if (compare > 0) {
+                            break;
+                        } else if (compare == 0) {
+                            DurationField rangeField = fieldType.getRangeDurationType().getField(iChronology);
+                            DurationField loopRangeField = loopType.getRangeDurationType().getField(iChronology);
+                            if (rangeField.compareTo(loopRangeField) > 0) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            System.arraycopy(iTypes, 0, newTypes, 0, i);
+            System.arraycopy(iValues, 0, newValues, 0, i);
+            newTypes[i] = fieldType;
+            newValues[i] = value;
+            System.arraycopy(iTypes, i, newTypes, i + 1, newTypes.length - i - 1);
+            System.arraycopy(iValues, i, newValues, i + 1, newValues.length - i - 1);
+            // use public constructor to ensure full validation
+            // this isn't overly efficient, but is safe
+            Partial newPartial = new Partial(newTypes, newValues, iChronology);
+            iChronology.validate(newPartial, newValues);
+            return newPartial;
+        }
+        if (value == getValue(index)) {
+            return this;
+        }
+        int[] newValues = getValues();
+        newValues = getField(index).set(this, index, newValues, value);
+        return new Partial(this, newValues);
+    }
+    /**
+     * Gets the number of fields in this partial.
+     * 
+     * @return the field count
+     */
+    public int size() {
+        return iTypes.length;
+    }
+    /**
+     * Output the date using the specified format pattern.
+     * Unsupported fields will appear as special unicode characters.
+     *
+     * @param pattern  the pattern specification, null means use <code>toString</code>
+     * @param locale  Locale to use, null means default
+     * @see org.joda.time.format.DateTimeFormat
+     */
+    public String toString(String pattern, Locale locale) {
+        if (pattern == null) {
+            return toString();
+        }
+        return DateTimeFormat.forPattern(pattern).withLocale(locale).print(this);
+    }
+    /**
+     * Output the date using the specified format pattern.
+     * Unsupported fields will appear as special unicode characters.
+     *
+     * @param pattern  the pattern specification, null means use <code>toString</code>
+     * @see org.joda.time.format.DateTimeFormat
+     */
+    public String toString(String pattern) {
+        if (pattern == null) {
+            return toString();
+        }
+        return DateTimeFormat.forPattern(pattern).print(this);
+    }
+    /**
+     * Output the date in an appropriate ISO8601 format.
+     * <p>
+     * This method will output the partial in one of two ways.
+     * If {@link #getFormatter()}
+     * <p>
+     * If there is no appropriate ISO format a dump of the fields is output
+     * via {@link #toStringList()}.
+     * 
+     * @return ISO8601 formatted string
+     */
+    public String toString() {
+        DateTimeFormatter[] f = iFormatter;
+        if (f == null) {
+            getFormatter();
+            f = iFormatter;
+            if (f == null) {
+                return toStringList();
+            }
+        }
+        DateTimeFormatter f1 = f[1];
+        if (f1 == null) {
+            return toStringList();
+        }
+        return f1.print(this);
+    }
+}
+
+  public void test08()  throws Throwable  {
+      DurationFieldType durationFieldType0 = DurationFieldType.minutes();
+      UnsupportedDurationField unsupportedDurationField0 = UnsupportedDurationField.getInstance(durationFieldType0);
+      MillisDurationField millisDurationField0 = (MillisDurationField)MillisDurationField.INSTANCE;
+      int int0 = unsupportedDurationField0.compareTo((DurationField) millisDurationField0);<FILL-HERE>
+}
+

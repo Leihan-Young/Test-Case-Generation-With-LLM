@@ -1,0 +1,25 @@
+DefaultIntervalCategoryDataset() {
+    DefaultIntervalCategoryDataset dataset = new DefaultIntervalCategoryDataset();
+    Comparable[] seriesKeys = {"Series 1", "Series 2"};
+    Comparable[] categoryKeys = {"Category 1", "Category 2", "Category 3"};
+    Number[][] startData = {{1, 2, 3}, {4, 5, 6}};
+    Number[][] endData = {{2, 3, 4}, {5, 6, 7}};
+
+    dataset.setSeriesKeys(seriesKeys);
+    dataset.setCategoryKeys(categoryKeys);
+    dataset.setStartData(startData);
+    dataset.setEndData(endData);
+
+    assertEquals(2, dataset.getSeriesCount());
+    assertEquals(3, dataset.getCategoryCount());
+    assertEquals("Series 1", dataset.getSeriesKey(0));
+    assertEquals("Series 2", dataset.getSeriesKey(1));
+    assertEquals("Category 1", dataset.getCategoryKey(0));
+    assertEquals("Category 2", dataset.getCategoryKey(1));
+    assertEquals("Category 3", dataset.getCategoryKey(2));
+    assertEquals(1, dataset.getStartValue(0, 0));
+    assertEquals(3, dataset.getEndValue(0, 0));
+    assertEquals(4, dataset.getStartValue(1, 0));
+    assertEquals(7, dataset.getEndValue(1, 2));
+}
+```

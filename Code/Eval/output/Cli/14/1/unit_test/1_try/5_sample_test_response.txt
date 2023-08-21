@@ -1,0 +1,46 @@
+GroupImplValidation() throws OptionException {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+        
+        final Option a = obuilder.withShortName("a").create();
+        final Option b = obuilder.withShortName("b").create();
+        
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        // test too few options
+        try {
+            parser.parse(new String[] { "-a" });
+            fail("Expected MissingOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Missing option -b", exp.getMessage());
+        }
+
+        // test too many options
+        try {
+            parser.parse(new String[] { "-a", "-b", "-a" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Unexpected -a while processing -a|-b", exp.getMessage());
+        }
+
+        // test valid case
+        try {
+            parser.parse(new String[] { "-b" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected OptionException caught");
+        }
+    }
+```
+This test method tests the `validate` method of `GroupImpl` class. It tests the case when there are too few options, too many options, and when the options are valid. The test fails because of the bug in the `validate` method. The error message for the case of too few options is incorrect. It should be "Missing option -a|-b" instead of "Missing option -b". The error message for the case of too many options is incorrect. It should be "Unexpected -b while processing -a|-b" instead of "Unexpected -a while processing -a|-b".

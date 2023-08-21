@@ -1,0 +1,31 @@
+package org.apache.commons.math.optimization.univariate;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.MaxIterationsExceededException;
+import org.apache.commons.math.exception.NotStrictlyPositiveException;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+import org.apache.commons.math.optimization.GoalType;
+/**
+ * Implements Richard Brent's algorithm (from his book "Algorithms for
+ * Minimization without Derivatives", p. 79) for finding minima of real
+ * univariate functions. This implementation is an adaptation partly
+ * based on the Python code from SciPy (module "optimize.py" v0.5).
+ *
+ * @version $Revision$ $Date$
+ * @since 2.0
+ */
+public class BrentOptimizer extends AbstractUnivariateRealOptimizer {
+    private static final double GOLDEN_SECTION = 0.5 * (3 - Math.sqrt(5));
+    /**
+     * Perform the optimization.
+     *
+     * @return the optimum.
+     */
+    protected double doOptimize()
+        throws MaxIterationsExceededException, FunctionEvaluationException;
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType, final double min, final double max, final double startValue) throws MaxIterationsExceededException, FunctionEvaluationException;
+    public double optimize(final UnivariateRealFunction f, final GoalType goalType, final double min, final double max) throws MaxIterationsExceededException, FunctionEvaluationException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

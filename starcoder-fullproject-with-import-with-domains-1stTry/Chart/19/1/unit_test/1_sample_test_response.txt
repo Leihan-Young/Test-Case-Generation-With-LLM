@@ -1,0 +1,29 @@
+ public void testSerialization() throws Exception {
+        CategoryPlot plot = new CategoryPlot();
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        CategoryAxis domainAxis = new CategoryAxis("Domain");
+        plot.setDomainAxis(domainAxis);
+        ValueAxis rangeAxis = new NumberAxis("Range");
+        plot.setRangeAxis(rangeAxis);
+        CategoryItemRenderer renderer = new BarRenderer();
+        plot.setRenderer(renderer);
+        plot.setDataset(new MyCategoryDataset());
+        plot.mapDatasetToRangeAxis(0, 0);
+        plot.mapDatasetToDomainAxis(0, 0);
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(buffer);
+        out.writeObject(plot);
+        out.close();
+
+        ObjectInputStream in = new ObjectInputStream(
+                new ByteArrayInputStream(buffer.toByteArray()));
+        CategoryPlot result = (CategoryPlot) in.readObject();
+        in.close();
+
+        assertEquals(plot.getOrientation(), result.getOrientation());
+        assertEquals(plot.getDomainAxis(), result.getDomainAxis());
+        assertEquals(plot.getRangeAxis(), result.getRangeAxis());
+        assertEquals(plot.getRenderer(), result.getRenderer());
+        assertEquals(plot.getDataset(), result.getDataset());
+    }

@@ -1,0 +1,5 @@
+ public void testSerialization() throws Exception {
+        MinMaxCategoryRenderer r1 = new MinMaxCategoryRenderer();
+        MinMaxCategoryRenderer r2 = (MinMaxCategoryRenderer) SerialUtilities.readObject(r1);
+        assertEquals(r1, r2);
+    }

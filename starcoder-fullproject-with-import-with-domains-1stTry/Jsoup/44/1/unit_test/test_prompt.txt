@@ -1,0 +1,22 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import java.util.ArrayList;
+/**
+ * @author Jonathan Hedley
+ */
+abstract class TreeBuilder {
+    private Token.StartTag start = new Token.StartTag(); // start tag to process
+    private Token.EndTag end  = new Token.EndTag();
+    protected abstract boolean process(Token token);
+
+    protected boolean processStartTag(String name);
+    Document parse(String input, String baseUri, ParseErrorList errors);
+    Document parse(String input, String baseUri);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

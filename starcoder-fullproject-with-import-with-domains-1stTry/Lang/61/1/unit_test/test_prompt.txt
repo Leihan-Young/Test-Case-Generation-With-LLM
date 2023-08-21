@@ -1,0 +1,143 @@
+package org.apache.commons.lang.text;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.SystemUtils;
+/**
+ * Builds a string from constituent parts providing a more flexible and powerful API
+ * than StringBuffer.
+ * <p>
+ * The main differences from StringBuffer/StringBuilder are:
+ * <ul>
+ * <li>Not synchronized</li>
+ * <li>Not final</li>
+ * <li>Subclasses have direct access to character array</li>
+ * <li>Additional methods
+ *  <ul>
+ *   <li>appendWithSeparators - adds an array of values, with a separator</li>
+ *   <li>appendPadding - adds a length padding characters</li>
+ *   <li>appendFixedLength - adds a fixed width field to the builder</li>
+ *   <li>toCharArray/getChars - simpler ways to get a range of the character array</li>
+ *   <li>delete - delete char or string</li>
+ *   <li>replace - search and replace for a char or string</li>
+ *   <li>leftString/rightString/midString - substring without exceptions</li>
+ *   <li>contains - whether the builder contains a char or string</li>
+ *   <li>size/clear/isEmpty - collections style API methods</li>
+ *  </ul>
+ * </li>
+ * </ul>
+ * <li>Views
+ *  <ul>
+ *   <li>asTokenizer - uses the internal buffer as the source of a StrTokenizer</li>
+ *   <li>asReader - uses the internal buffer as the source of a Reader</li>
+ *   <li>asWriter - allows a Writer to write directly to the internal buffer</li>
+ *  </ul>
+ * </li>
+ * </ul>
+ * <p>
+ * The aim has been to provide an API that mimics very closely what StringBuffer
+ * provides, but with additional methods. It should be noted that some edge cases,
+ * with invalid indices or null input, have been altered - see individual methods.
+ * The biggest of these changes is that by default, null will not output the text
+ * 'null'. This can be controlled by a property, {@link #setNullText(String)}.
+ *
+ * @author Stephen Colebourne
+ * @since 2.2
+ * @version $Id$
+ */
+public class StrBuilder implements Cloneable {
+    private static final long serialVersionUID = 7628716375283629643L;
+    private String newLine;
+    private String nullText;
+    /**
+     * Searches the string builder using the matcher to find the first
+     * match searching from the given index.
+     * <p>
+     * Matchers can be used to perform advanced searching behaviour.
+     * For example you could write a matcher to find the character 'a'
+     * followed by a number.
+     *
+     * @param matcher  the matcher to use, null returns -1
+     * @param startIndex  the index to start at, invalid index rounded to edge
+     * @return the first index matched, or -1 if not found
+     */
+    public int indexOf(StrMatcher matcher, int startIndex);
+    /**
+     * Deletes the first match within the builder using the specified matcher.
+     * <p>
+     * Matchers can be used to perform advanced deletion behaviour.
+     * For example you could write a matcher to delete
+     * where the character 'a' is followed by a number.
+     *
+     * @param matcher  the matcher to use to find the deletion, null causes no action
+     * @return this, to enable chaining
+     */
+    public StrBuilder deleteFirst(StrMatcher matcher);
+    /**
+     * Searches the string builder to find the first reference to the specified char.
+     * 
+     * @param ch  the character to find
+     * @return the first index of the character, or -1 if not found
+     */
+    public int indexOf(char ch);
+    /**
+     * Searches the string builder to find the first reference to the specified
+     * string starting searching from the given index.
+     * <p>
+     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 
+     * @param str  the string to find, null returns -1
+     * @param startIndex  the index to start at, invalid index rounded to edge
+     * @return the first index of the string, or -1 if not found
+     */
+    public int indexOf(String str, int startIndex);
+    /**
+     * Searches the string builder using the matcher to find the first match.
+     * <p>
+     * Matchers can be used to perform advanced searching behaviour.
+     * For example you could write a matcher to find the character 'a'
+     * followed by a number.
+     *
+     * @param matcher  the matcher to use, null returns -1
+     * @return the first index matched, or -1 if not found
+     */
+    public int indexOf(StrMatcher matcher);
+    /**
+     * Deletes the string wherever it occurs in the builder.
+     *
+     * @param str  the string to delete, null causes no action
+     * @return this, to enable chaining
+     */
+    public StrBuilder deleteFirst(String str);
+    /**
+     * Searches the string builder to find the first reference to the specified char.
+     * 
+     * @param ch  the character to find
+     * @param startIndex  the index to start at, invalid index rounded to edge
+     * @return the first index of the character, or -1 if not found
+     */
+    public int indexOf(char ch, int startIndex);
+    /**
+     * Searches the string builder to find the first reference to the specified string.
+     * <p>
+     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 
+     * @param str  the string to find, null returns -1
+     * @return the first index of the string, or -1 if not found
+     */
+    public int indexOf(String str);
+    /**
+     * Deletes the character wherever it occurs in the builder.
+     *
+     * @param ch  the character to delete
+     * @return this, to enable chaining
+     */
+    public StrBuilder deleteFirst(char ch);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

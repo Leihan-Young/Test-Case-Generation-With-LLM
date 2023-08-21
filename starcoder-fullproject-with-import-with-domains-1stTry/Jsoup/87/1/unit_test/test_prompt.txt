@@ -1,0 +1,145 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import java.util.HashMap;
+import java.util.Map;
+/**
+ * HTML Tag capabilities.
+ *
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Tag {
+    private static final Map<String, Tag> tags = new HashMap<>(); // map of known tags
+    private String tagName;
+    private boolean isBlock = true; // block or inline
+    private boolean formatAsBlock = true; // should be formatted as a block
+    private boolean canContainInline = true; // only pcdata if not
+    private boolean empty = false; // can hold nothing; e.g. img
+    private boolean selfClosing = false; // can self close (<foo />). used for unknown tags that self close, without forcing them as empty.
+    private boolean preserveWhitespace = false; // for pre, textarea, script etc
+    private boolean formList = false; // a control that appears in forms: input, textarea, output etc
+    private boolean formSubmit = false; // a control that can be submitted in a form: input etc
+    /**
+     * Get this tag's name.
+     *
+     * @return the tag's name
+     */
+    public String getName();
+}
+package org.jsoup.parser;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.CDataNode;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.FormElement;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import static org.jsoup.internal.StringUtil.inSorted;
+/**
+ * HTML Tree Builder; creates a DOM from Tokens.
+ */
+public class HtmlTreeBuilder extends TreeBuilder {
+    Element getFromStack(String elName);
+    void resetInsertionMode();
+    void pushActiveFormattingElements(Element in);
+    private boolean inSpecificScope(String[] targetNames, String[] baseTypes, String[] extraTypes);
+    List<String> getPendingTableCharacters();
+    void popStackToClose(String... elNames);
+    boolean isSpecial(Element el);
+    boolean inSelectScope(String targetName);
+    void popStackToClose(String elName);
+    void popStackToBefore(String elName);
+    void reconstructFormattingElements();
+    private void clearStackToContext(String... nodeNames);
+    Element getActiveFormattingElement(String nodeName);
+}
+package org.jsoup.parser;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.DocumentType;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import java.util.ArrayList;
+/**
+ * The Tree Builder's current state. Each state embodies the processing for the state, and transitions to other states.
+ */
+}
+package org.jsoup.nodes;
+import org.jsoup.helper.ChangeNotifyingArrayList;
+import org.jsoup.helper.Validate;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Collector;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+import org.jsoup.select.QueryParser;
+import org.jsoup.select.Selector;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import static org.jsoup.internal.Normalizer.normalize;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private static final List<Node> EMPTY_NODES = Collections.emptyList();
+    private static final Pattern classSplit = Pattern.compile("\\s+");
+    private Tag tag;
+    private WeakReference<List<Element>> shadowChildrenRef; // points to child elements shadowed from node children
+    private Attributes attributes;
+    private String baseUri;
+    /**
+     * Get the name of the tag for this element. E.g. {@code div}. If you are using {@link ParseSettings#preserveCase
+     * case preserving parsing}, this will return the source's original case.
+     * 
+     * @return the tag name
+     */
+    public String tagName();
+    /**
+     * Retrieves the element's inner HTML. E.g. on a {@code <div>} with one empty {@code <p>}, would return
+     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
+     * 
+     * @return String of HTML.
+     * @see #outerHtml()
+     */
+    public String html();
+    @Override
+    public <T extends Appendable> T html(T appendable);
+    /**
+     * Set this element's inner HTML. Clears the existing HTML first.
+     * @param html HTML to parse and set into this element
+     * @return this element
+     * @see #append(String)
+     */
+    public Element html(String html);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

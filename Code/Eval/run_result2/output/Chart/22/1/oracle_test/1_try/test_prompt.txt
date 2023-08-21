@@ -1,0 +1,252 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * ------------------
+ * KeyedObject2D.java
+ * ------------------
+ * (C) Copyright 2003-2007, by Object Refinery Limited.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 05-Feb-2003 : Version 1 (DG);
+ * 01-Mar-2004 : Added equals() and clone() methods and implemented 
+ *               Serializable (DG);
+ * 03-Oct-2007 : Updated getObject() to handle modified behaviour in 
+ *               KeyedObjects class (DG);
+ *
+ */
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+/**
+ * A data structure that stores zero, one or many objects, where each object is
+ * associated with two keys (a 'row' key and a 'column' key).
+ */
+public class KeyedObjects2D implements Cloneable, Serializable {
+    private static final long serialVersionUID = -1015873563138522374L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex) {
+        Comparable columnKey = getColumnKey(columnIndex);
+        removeColumn(columnKey);
+    }
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @throws UnknownKeyException if <code>rowKey</code> is not recognised.
+     * 
+     * @see #removeRow(Comparable)
+     */
+    public void removeColumn(Comparable columnKey) {
+        int index = getColumnIndex(columnKey);
+        if (index < 0) {
+            throw new UnknownKeyException("Column key (" + columnKey 
+                    + ") not recognised.");
+        }
+        Iterator iterator = this.rows.iterator();
+        while (iterator.hasNext()) {
+            KeyedObjects rowData = (KeyedObjects) iterator.next();
+                rowData.removeValue(columnKey);
+        }
+        this.columnKeys.remove(columnKey);
+    }
+    /**
+     * Returns the object for a given row and column.
+     *
+     * @param row  the row index (in the range 0 to getRowCount() - 1).
+     * @param column  the column index (in the range 0 to getColumnCount() - 1).
+     *
+     * @return The object (possibly <code>null</code>).
+     * 
+     * @see #getObject(Comparable, Comparable)
+     */
+    public Object getObject(int row, int column) {
+        Object result = null;
+        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);
+        if (rowData != null) {
+            Comparable columnKey = (Comparable) this.columnKeys.get(column);
+            if (columnKey != null) {
+                int index = rowData.getIndex(columnKey);
+                if (index >= 0) {
+                    result = rowData.getObject(columnKey);
+                }
+            }
+        }
+        return result;
+    }
+    /**
+     * Returns the object for the given row and column keys.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     *
+     * @return The object (possibly <code>null</code>).
+     * 
+     * @throws IllegalArgumentException if <code>rowKey<code> or 
+     *         <code>columnKey</code> is <code>null</code>.
+     * @throws UnknownKeyException if <code>rowKey</code> or 
+     *         <code>columnKey</code> is not recognised.
+     */
+    public Object getObject(Comparable rowKey, Comparable columnKey) {
+        if (rowKey == null) {
+            throw new IllegalArgumentException("Null 'rowKey' argument.");
+        }
+        if (columnKey == null) {
+            throw new IllegalArgumentException("Null 'columnKey' argument.");
+        }
+        int row = this.rowKeys.indexOf(rowKey);
+        if (row < 0) {
+            throw new UnknownKeyException("Row key (" + rowKey 
+                    + ") not recognised.");
+        }
+        int column = this.columnKeys.indexOf(columnKey);
+        if (column < 0) {
+            throw new UnknownKeyException("Column key (" + columnKey 
+                    + ") not recognised.");
+        }
+        if (row >= 0) {
+        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);
+            return rowData.getObject(columnKey);
+        }
+        else {
+            return null;
+        }
+    }
+    /**
+     * Creates a new instance (initially empty).
+     */
+    public KeyedObjects2D() {
+        this.rowKeys = new java.util.ArrayList();
+        this.columnKeys = new java.util.ArrayList();
+        this.rows = new java.util.ArrayList();
+    }
+    /**
+     * Adds or updates an object.
+     *
+     * @param object  the object.
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     */
+    public void setObject(Object object, Comparable rowKey, 
+            Comparable columnKey) {
+
+        if (rowKey == null) {
+            throw new IllegalArgumentException("Null 'rowKey' argument.");
+        }
+        if (columnKey == null) {
+            throw new IllegalArgumentException("Null 'columnKey' argument.");
+        }
+        KeyedObjects row;
+        int rowIndex = this.rowKeys.indexOf(rowKey);
+        if (rowIndex >= 0) {
+            row = (KeyedObjects) this.rows.get(rowIndex);
+        }
+        else {
+            this.rowKeys.add(rowKey);
+            row = new KeyedObjects();
+            this.rows.add(row);
+        }
+        row.setObject(columnKey, object);
+        int columnIndex = this.columnKeys.indexOf(columnKey);
+        if (columnIndex < 0) {
+            this.columnKeys.add(columnKey);
+        }
+
+    }
+    /**
+     * Returns the column count.
+     *
+     * @return The column count.
+     * 
+     * @see #getRowCount()
+     */
+    public int getColumnCount() {
+        return this.columnKeys.size();
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testRemoveColumnByKey() {
+        KeyedObjects2D data = new KeyedObjects2D();
+        data.setObject("Obj1", "R1", "C1");
+        data.setObject("Obj2", "R2", "C2");
+        data.removeColumn("C2");
+        _tmp_var_0_ = 1;
+        _tmp_var_1_ =  data.getColumnCount();
+        $ASSERT$
+        _tmp_var_2_ = "Obj1";
+        _tmp_var_3_ =  data.getObject(0, 0);
+        $ASSERT$
+        
+        // try unknown column key
+        boolean pass = false;
+        try {
+            data.removeColumn("XXX");
+        }
+        catch ($EXCEPTION$ e) {
+            pass = true;
+        }
+        _tmp_var_4_ = pass;
+        $ASSERT$
+        
+        // try null column key
+        pass = false;
+        try {
+            data.removeColumn(null);
+        }
+        catch ($EXCEPTION$ e) {
+            pass = true;
+        }
+        _tmp_var_5_ = pass;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

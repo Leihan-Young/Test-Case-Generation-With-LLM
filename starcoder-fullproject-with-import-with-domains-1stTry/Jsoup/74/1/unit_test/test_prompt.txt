@@ -1,0 +1,28 @@
+package org.jsoup.helper;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+/**
+ * A minimal String utility class. Designed for internal jsoup use only.
+ */
+public final class StringUtil {
+    /**
+     * Tests if a code point is "whitespace" as defined by what it looks like. Used for Element.text etc.
+     * @param c code point to test
+     * @return true if code point is whitespace, false otherwise
+     */
+    public static boolean isActuallyWhitespace(int c);
+    /**
+     * After normalizing the whitespace within a string, appends it to a string builder.
+     * @param accum builder to append to
+     * @param string string to normalize whitespace within
+     * @param stripLeading set to true if you wish to remove any leading whitespace
+     */
+    public static void appendNormalisedWhitespace(StringBuilder accum, String string, boolean stripLeading);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,12 @@
+NegativeNumber() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        DefaultParser parser = new DefaultParser();
+        String[] args = {"-a", "-1"};
+        CommandLine line = parser.parse(opts, args);
+        assertTrue(line.hasOption("a"));
+        assertTrue(line.getOptionValue("a").equals("-1"));
+    }
+``` 
+This test method checks if the negative number option is being parsed correctly by the `DefaultParser` class. The bug in the code is that the method `isNegativeNumber(String token)` is not implemented and called by the `handleToken(String token)` method, which causes negative numbers to be treated as options rather than arguments. This test will fail, indicating the presence of this bug.

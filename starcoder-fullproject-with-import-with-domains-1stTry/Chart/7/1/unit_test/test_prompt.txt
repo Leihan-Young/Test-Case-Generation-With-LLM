@@ -1,0 +1,70 @@
+package org.jfree.data.time;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.data.general.Series;
+import org.jfree.data.general.SeriesChangeEvent;
+import org.jfree.data.general.SeriesException;
+/**
+ * A structure containing zero, one or many {@link TimePeriodValue} instances.  
+ * The time periods can overlap, and are maintained in the order that they are 
+ * added to the collection.
+ * <p>
+ * This is similar to the {@link TimeSeries} class, except that the time 
+ * periods can have irregular lengths.
+ */
+public class TimePeriodValues extends Series implements Serializable {
+    private String domain;
+    private String range;
+    private List data;
+    private int minStartIndex = -1;
+    private int maxStartIndex = -1;
+    private int minMiddleIndex = -1;
+    private int maxMiddleIndex = -1;
+    private int minEndIndex = -1;
+    private int maxEndIndex = -1;
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value (<code>null</code> permitted).
+     */
+    public void add(TimePeriod period, Number value);
+    /**
+     * Adds a data item to the series and sends a {@link SeriesChangeEvent} to
+     * all registered listeners.
+     *
+     * @param item  the item (<code>null</code> not permitted).
+     */
+    public void add(TimePeriodValue item);
+    /**
+     * Update the index values for the maximum and minimum bounds.
+     * 
+     * @param period  the time period.
+     * @param index  the index of the time period.
+     */
+    private void updateBounds(TimePeriod period, int index);
+    /**
+     * Adds a new data item to the series and sends a {@link SeriesChangeEvent}
+     * to all registered listeners.
+     *
+     * @param period  the time period (<code>null</code> not permitted).
+     * @param value  the value.
+     * 
+     * @see #add(TimePeriod, Number)
+     */
+    public void add(TimePeriod period, double value);
+    /**
+     * Returns the index of the time period with the maximum middle 
+     * milliseconds.
+     * 
+     * @return The index.
+     */
+    public int getMaxMiddleIndex();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

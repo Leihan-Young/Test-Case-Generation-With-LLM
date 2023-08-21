@@ -1,0 +1,31 @@
+     private void assertUnescaped(final String expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final int expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final long expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final char expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final float expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final double expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final boolean expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final short expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final byte expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final BigInteger expected, final String input) {
+        assertEquals(expected, unescapeXml(input));
+    }
+    private void assertUnescaped(final BigDecimal expecte

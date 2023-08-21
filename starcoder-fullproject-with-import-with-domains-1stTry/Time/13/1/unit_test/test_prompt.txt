@@ -1,0 +1,77 @@
+package org.joda.time.format;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.TreeSet;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DurationFieldType;
+import org.joda.time.PeriodType;
+import org.joda.time.ReadWritablePeriod;
+import org.joda.time.ReadablePeriod;
+/**
+ * Factory that creates complex instances of PeriodFormatter via method calls.
+ * <p>
+ * Period formatting is performed by the {@link PeriodFormatter} class.
+ * Three classes provide factory methods to create formatters, and this is one.
+ * The others are {@link PeriodFormat} and {@link ISOPeriodFormat}.
+ * <p>
+ * PeriodFormatterBuilder is used for constructing formatters which are then
+ * used to print or parse. The formatters are built by appending specific fields
+ * or other formatters to an instance of this builder.
+ * <p>
+ * For example, a formatter that prints years and months, like "15 years and 8 months",
+ * can be constructed as follows:
+ * <p>
+ * <pre>
+ * PeriodFormatter yearsAndMonths = new PeriodFormatterBuilder()
+ *     .printZeroAlways()
+ *     .appendYears()
+ *     .appendSuffix(" year", " years")
+ *     .appendSeparator(" and ")
+ *     .printZeroRarelyLast()
+ *     .appendMonths()
+ *     .appendSuffix(" month", " months")
+ *     .toFormatter();
+ * </pre>
+ * <p>
+ * PeriodFormatterBuilder itself is mutable and not thread-safe, but the
+ * formatters that it builds are thread-safe and immutable.
+ *
+ * @author Brian S O'Neill
+ * @since 1.0
+ * @see PeriodFormat
+ */
+public class PeriodFormatterBuilder {
+    private static final int PRINT_ZERO_RARELY_FIRST = 1;
+    private static final int PRINT_ZERO_RARELY_LAST = 2;
+    private static final int PRINT_ZERO_IF_SUPPORTED = 3;
+    private static final int PRINT_ZERO_ALWAYS = 4;
+    private static final int PRINT_ZERO_NEVER = 5;
+    private static final int YEARS = 0;
+    private static final int MONTHS = 1;
+    private static final int WEEKS = 2;
+    private static final int DAYS = 3;
+    private static final int HOURS = 4;
+    private static final int MINUTES = 5;
+    private static final int SECONDS = 6;
+    private static final int MILLIS = 7;
+    private static final int SECONDS_MILLIS = 8;
+    private static final int SECONDS_OPTIONAL_MILLIS = 9;
+    private static final int MAX_FIELD = SECONDS_OPTIONAL_MILLIS;
+    private int iMinPrintedDigits;
+    private int iPrintZeroSetting;
+    private int iMaxParsedDigits;
+    private boolean iRejectSignedValues;
+    private PeriodFieldAffix iPrefix;
+    private List<Object> iElementPairs;
+    private boolean iNotPrinter;
+    private boolean iNotParser;
+    private FieldFormatter[] iFieldFormatters;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

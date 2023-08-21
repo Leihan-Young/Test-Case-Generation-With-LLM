@@ -1,0 +1,94 @@
+package org.apache.commons.cli;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Properties;
+/**
+ * <p><code>Parser</code> creates {@link CommandLine}s.</p>
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @see Parser
+ * @version $Revision$
+ */
+public abstract class Parser implements CommandLineParser {
+    private Options options;
+    private List requiredOptions;
+    /**
+     * Parse the arguments according to the specified options and
+     * properties.
+     *
+     * @param options the specified Options
+     * @param arguments the command line arguments
+     * @param properties command line option name-value pairs
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, 
+                             Properties properties)
+        throws ParseException;
+    /**
+     * <p>Parses the specified <code>arguments</code> 
+     * based on the specifed {@link Options}.</p>
+     *
+     * @param options the <code>Options</code>
+     * @param arguments the <code>arguments</code>
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     * arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments)
+                      throws ParseException;
+    /**
+     * <p>Parses the specified <code>arguments</code> 
+     * based on the specifed {@link Options}.</p>
+     *
+     * @param options the <code>Options</code>
+     * @param arguments the <code>arguments</code>
+     * @param stopAtNonOption specifies whether to stop 
+     * interpreting the arguments when a non option has 
+     * been encountered and to add them to the CommandLines
+     * args list.
+     *
+     * @return the <code>CommandLine</code>
+     * @throws ParseException if an error occurs when parsing the
+     * arguments.
+     */
+    public CommandLine parse(Options options, String[] arguments, 
+                             boolean stopAtNonOption)
+        throws ParseException;
+    /**
+     * Parse the arguments according to the specified options and
+     * properties.
+     *
+     * @param options the specified Options
+     * @param arguments the command line arguments
+     * @param properties command line option name-value pairs
+     * @param stopAtNonOption stop parsing the arguments when the first
+     * non option is encountered.
+     *
+     * @return the list of atomic option and value tokens
+     *
+     * @throws ParseException if there are any problems encountered
+     * while parsing the command line tokens.
+     */
+    public CommandLine parse(Options options, String[] arguments, 
+                             Properties properties, boolean stopAtNonOption)
+        throws ParseException;
+    /**
+     * <p>Throws a {@link MissingOptionException} if all of the
+     * required options are no present.</p>
+     *
+     * @throws MissingOptionException if any of the required Options
+     * are not present.
+     */
+    protected void checkRequiredOptions()
+        throws MissingOptionException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,35 @@
+     private void doTest(final double min, final double max)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        doTest(min, max, min);
+    }
+    private void doTest(final double min, final double max, final double initial)
+        throws MaxIterationsExceededException, FunctionEvaluationException {
+        final BrentSolver solver = new BrentSolver();
+        final double x = solver.solve(min, max, initial);
+        assertTrue(x >= min && x <= max);
+    }
+    private void doExceptionTest(final double min, final double max, final double initial) {
+        final BrentSolver solver = new BrentSolver();
+        try {
+            solver.solve(min, max, initial);
+            fail("an exception should have been thrown");
+        } catch (IllegalArgumentException iae) {
+            // expected
+        } catch (FunctionEvaluationException fee) {
+            // expected
+        } catch (MaxIterationsExceededException miee) {
+            // expected
+        }
+    }
+    private void doExceptionTest(final double min, final double max) {
+        final BrentSolver solver = new BrentSolver();
+        try {
+            solver.solve(min, max);
+            fail("an exception should have been thrown");
+        } catch (IllegalArgumentException iae) {
+            // expected
+        } catch (FunctionEvaluationException fee) {
+            // expected
+        } catch (MaxIterationsExceededException miee) {
+            // expected
+        

@@ -1,0 +1,33 @@
+     private void assertLinesEqual(String expected, String actual) {
+        String[] expectedLines = expected.split(System.getProperty("line.separator"));
+        String[] actualLines = actual.split(System.getProperty("line.separator"));
+        assertEquals("line count", expectedLines.length, actualLines.length);
+        for (int i = 0; i < expectedLines.length; i++) {
+            assertEquals("line " + i, expectedLines[i], actualLines[i]);
+        }
+    }
+    public void testSortOptions() {
+        Options options = new Options();
+        options.addOption("a");
+        options.addOption("b");
+        options.addOption("c");
+        options.addOption("d");
+        options.addOption("e");
+        options.addOption("f");
+        options.addOption("g");
+        options.addOption("h");
+        options.addOption("i");
+        options.addOption("j");
+        options.addOption("k");
+        options.addOption("l");
+        options.addOption("m");
+        options.addOption("n");
+        options.addOption("o");
+        options.addOption("p");
+        options.addOption("q");
+        options.addOption("r");
+        options.addOption("s");
+        options.addOption("t");
+        options.addOption("u");
+        options.addOption("v");
+        option

@@ -1,0 +1,22 @@
+GrayPaintScale() {
+    GrayPaintScale scale = new GrayPaintScale();
+    Color color = (Color) scale.getPaint(0.5);
+    // This assertion will fail if the bug in the getPaint() method has not been fixed
+    assertEquals(new Color(127, 127, 127), color);
+    
+    // Test with value below lowerBound
+    Color belowLowerBoundColor = (Color) scale.getPaint(-0.5);
+    assertEquals(new Color(0, 0, 0), belowLowerBoundColor);
+    
+    // Test with value above upperBound
+    Color aboveUpperBoundColor = (Color) scale.getPaint(1.5);
+    assertEquals(new Color(255, 255, 255), aboveUpperBoundColor);
+}
+```
+
+The test method now includes two additional assertions to test the behavior of `getPaint()` when the value is below the lower bound and above the upper bound. If these assertions fail, it indicates that the bug in the `getPaint()` method has not been fixed. The bug is that the `getPaint()` method should use the `v` variable instead of the `value` variable to calculate the gray level of the color. The corrected code is:
+
+```
+int g = (int) ((v - this.lowerBound) / (this.upperBound 
+                - this.lowerBound) * 255.0);
+```

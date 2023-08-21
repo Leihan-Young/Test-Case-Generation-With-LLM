@@ -1,0 +1,12 @@
+DefaultIntervalCategoryDataset() {
+    Comparable[] series = { "Series 1", "Series 2" };
+    Comparable[] categories = { "Category 1", "Category 2", "Category 3" };
+    Number[][] startData = { { 1, 2, 3 }, { 4, 5, 6 } };
+    Number[][] endData = { { 2, 3, 4 }, { 5, 6, 7 } };
+    DefaultIntervalCategoryDataset dataset = new DefaultIntervalCategoryDataset(
+            series, categories, startData, endData);
+    assertEquals(3, dataset.getCategoryCount()); // bug: should return 3, but returns 0
+}
+``` 
+
+The error is due to the fact that `DefaultIntervalCategoryDataset` needs data to be initialized. The test method needs to provide data to the constructor.

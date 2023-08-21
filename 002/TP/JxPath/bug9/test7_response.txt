@@ -1,0 +1,7 @@
+  public void newTestMethod_test7()  throws Throwable  {
+      Float float0 = new Float((-2850.23717));
+      Constant constant0 = new Constant(float0);
+      CoreOperationNotEqual coreOperationNotEqual0 = new CoreOperationNotEqual(constant0, constant0);
+      boolean boolean0 = coreOperationNotEqual0.equal("-2850.237060546875", "-2850.237060546875");
+      assertFalse(boolean0);
+  }

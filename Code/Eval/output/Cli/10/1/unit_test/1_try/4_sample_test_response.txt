@@ -1,0 +1,40 @@
+() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("file", true, "specify a file to process");
+
+        // missing required option "file"
+        String[] args1 = new String[]{"--help"};
+        try {
+            CommandLine line1 = parser.parse(options, args1);
+            fail("MissingOptionException not thrown for missing required option");
+        } catch (MissingOptionException e) {
+            assertTrue(true); // expected exception thrown
+        } catch (ParseException e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+
+        // invalid option
+        String[] args2 = new String[]{"--invalid"};
+        try {
+            CommandLine line2 = parser.parse(options, args2);
+            fail("UnrecognizedOptionException not thrown for invalid option");
+        } catch (UnrecognizedOptionException e) {
+            assertTrue(true); // expected exception thrown
+        } catch (ParseException e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+
+        // valid input
+        String[] args3 = new String[]{"--file", "example.txt"};
+        try {
+            CommandLine line3 = parser.parse(options, args3);
+            assertTrue(line3.hasOption("file")); // expected option present
+            assertEquals(line3.getOptionValue("file"), "example.txt"); // expected value
+        } catch (ParseException e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+    }

@@ -1,0 +1,24 @@
+ private static Whitelist whitelist(String... tags) {
+        return new Whitelist().addTags(tags).addAttributes(":all", "style");
+    }
+    private static String clean(String html, Whitelist whitelist) {
+        return Jsoup.clean(html, "", whitelist, new Document.OutputSettings().prettyPrint(false));
+    }
+    private static String cleanBody(String html, Whitelist whitelist) {
+        return Jsoup.clean(html, "", whitelist, new Document.OutputSettings().prettyPrint(false)).body().html();
+    }
+    private static String cleanFull(String html, Whitelist whitelist) {
+        return Jsoup.clean(html, "", whitelist, new Document.OutputSettings().prettyPrint(false)).html();
+    }
+    private void assertBody(String html, String expectedHtml) {
+        assertEquals(expectedHtml, cleanBody(html, whitelist));
+    }
+    private void assertFull(String html, String expectedHtml) {
+        assertEquals(expectedHtml, cleanFull(html, whitelist));
+    }
+    private void testSafeTag(String tag) {
+        assertBody("<" + tag + ">foo</" + tag + ">", "<" + tag + ">foo</" + tag + ">");
+    }
+    private void testStripTag(String tag) {
+        assertBody("<" + tag + ">foo</" + tag + ">", "");
+        assertBody("<p><" + tag + ">fo

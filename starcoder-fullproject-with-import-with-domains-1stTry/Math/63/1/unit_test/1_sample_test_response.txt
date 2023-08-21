@@ -1,0 +1,28 @@
+     public void testBinomialCoefficient() {
+        checkBinomialCoefficient(0, 0);
+        checkBinomialCoefficient(1, 0);
+        checkBinomialCoefficient(1, 1);
+        checkBinomialCoefficient(2, 0);
+        checkBinomialCoefficient(2, 1);
+        checkBinomialCoefficient(2, 2);
+        checkBinomialCoefficient(3, 0);
+        checkBinomialCoefficient(3, 1);
+        checkBinomialCoefficient(3, 2);
+        checkBinomialCoefficient(3, 3);
+        checkBinomialCoefficient(4, 0);
+        checkBinomialCoefficient(4, 1);
+        checkBinomialCoefficient(4, 2);
+        checkBinomialCoefficient(4, 3);
+        checkBinomialCoefficient(4, 4);
+        checkBinomialCoefficient(5, 0);
+        checkBinomialCoefficient(5, 1);
+        checkBinomialCoefficient(5, 2);
+        checkBinomialCoefficient(5, 3);
+        checkBinomialCoefficient(5, 4);
+        checkBinomialCoefficient(5, 5);
+        checkBinomialCoefficient(6, 0);
+        checkBinomialCoefficient(6, 1);
+        checkBinomialCoefficient(6, 2);
+        checkBinomialCoefficient(6, 3);
+        checkBinomialCoefficient(6, 4);
+        checkBinomialCoefficien

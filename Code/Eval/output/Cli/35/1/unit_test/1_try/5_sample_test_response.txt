@@ -1,0 +1,15 @@
+MatchingOptions() {
+        Option optionA = new Option("a", "first");
+        Option optionB = new Option("b", "second");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        opts.addOption(optionB);
+        List<String> matchingOptions = opts.getMatchingOptions("f");
+        assertEquals(1, matchingOptions.size());
+        assertTrue(matchingOptions.contains("first"));
+        matchingOptions = opts.getMatchingOptions("s");
+        assertEquals(1, matchingOptions.size());
+        assertTrue(matchingOptions.contains("second"));
+    }
+```
+The bug in the program is that the method `getOption(String opt)` should return `null` if the given `opt` is not found in either `shortOpts` or `longOpts`. However, it currently throws a `NullPointerException`. This can be fixed by adding a null check before accessing the `Option` object in the map. Additionally, the `getOptionGroup(Option opt)` method is missing an implementation, so it will need to be added as well.

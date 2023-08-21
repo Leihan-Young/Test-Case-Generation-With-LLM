@@ -1,0 +1,39 @@
+ private static void assertNotSame(Object a, Object b) {
+        assertFalse(a == b);
+    }
+    private static void assertSame(Object a, Object b) {
+        assertTrue(a == b);
+    }
+    private static void assertEquals(Object a, Object b) {
+        assertTrue(a.equals(b));
+    }
+    private static void assertNotEquals(Object a, Object b) {
+        assertFalse(a.equals(b));
+    }
+    private static void assertTrue(boolean condition) {
+        assertTrue(condition, null);
+    }
+    private static void assertTrue(boolean condition, String message) {
+        if (!condition)
+            if (message == null)
+                fail();
+            else
+                fail(message);
+    }
+    private static void assertFalse(boolean condition) {
+        assertFalse(condition, null);
+    }
+    private static void assertFalse(boolean condition, String message) {
+        assertTrue(!condition, message);
+    }
+    private static void fail() {
+        fail(null);
+    }
+    private static void fail(String message) {
+        if (message == null)
+            throw new AssertionError();
+        else
+            throw new AssertionError(message);
+    }
+    public static void main(String[] args) {
+    }

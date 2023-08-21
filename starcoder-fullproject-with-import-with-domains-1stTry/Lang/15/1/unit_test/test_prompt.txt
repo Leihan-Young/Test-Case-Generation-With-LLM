@@ -1,0 +1,74 @@
+package org.apache.commons.lang3.reflect;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.ClassUtils;
+/**
+ * <p> Utility methods focusing on type inspection, particularly with regard to
+ * generics. </p>
+ *
+ * @since 3.0
+ * @version $Id$
+ */
+public class TypeUtils {
+    /**
+     * <p> Checks if the subject type may be implicitly cast to the target
+     * parameterized type following the Java generics rules. </p>
+     *
+     * @param type the subject type to be assigned to the target type
+     * @param toParameterizedType the target parameterized type
+     * @param typeVarAssigns a map with type variables
+     * @return true if <code>type</code> is assignable to <code>toType</code>.
+     */
+    private static boolean isAssignable(Type type, ParameterizedType toParameterizedType,
+            Map<TypeVariable<?>, Type> typeVarAssigns);
+    public static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass);
+    private static Map<TypeVariable<?>, Type> getTypeArguments(Class<?> cls, Class<?> toClass,
+            Map<TypeVariable<?>, Type> subtypeVarAssigns);
+    /**
+     * <p> Return a map of the type arguments of <code>type</code> in the context of <code>toClass</code>. </p>
+     *
+     * @param type the type in question
+     * @param toClass the class
+     * @param subtypeVarAssigns a map with type variables
+     * @return the map with type arguments
+     */
+    private static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass,
+            Map<TypeVariable<?>, Type> subtypeVarAssigns);
+    /**
+     * <p> Return a map of the type arguments of a parameterized type in the context of <code>toClass</code>. </p>
+     *
+     * @param parameterizedType the parameterized type
+     * @param toClass the class
+     * @param subtypeVarAssigns a map with type variables
+     * @return the map with type arguments
+     */
+    private static Map<TypeVariable<?>, Type> getTypeArguments(
+            ParameterizedType parameterizedType, Class<?> toClass,
+            Map<TypeVariable<?>, Type> subtypeVarAssigns);
+    /**
+     * <p> Retrieves all the type arguments for this parameterized type
+     * including owner hierarchy arguments such as <code>
+     * Outer<K,V>.Inner<T>.DeepInner<E></code> . The arguments are returned in a
+     * {@link Map} specifying the argument type for each {@link TypeVariable}.
+     * </p>
+     *
+     * @param type specifies the subject parameterized type from which to
+     * harvest the parameters.
+     * @return a map of the type arguments to their respective type variables.
+     */
+    public static Map<TypeVariable<?>, Type> getTypeArguments(ParameterizedType type);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

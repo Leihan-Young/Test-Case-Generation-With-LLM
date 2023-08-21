@@ -1,0 +1,79 @@
+package org.apache.commons.math.optimization.univariate;
+import java.util.Arrays;
+import java.util.Comparator;
+import org.apache.commons.math.FunctionEvaluationException;
+import org.apache.commons.math.analysis.UnivariateRealFunction;
+import org.apache.commons.math.exception.MathIllegalStateException;
+import org.apache.commons.math.exception.ConvergenceException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.random.RandomGenerator;
+import org.apache.commons.math.optimization.GoalType;
+import org.apache.commons.math.optimization.ConvergenceChecker;
+import org.apache.commons.math.util.FastMath;
+/**
+ * Special implementation of the {@link UnivariateRealOptimizer} interface
+ * adding multi-start features to an existing optimizer.
+ *
+ * This class wraps a classical optimizer to use it several times in
+ * turn with different starting points in order to avoid being trapped
+ * into a local extremum when looking for a global one.
+ *
+ * @param <FUNC> Type of the objective function to be optimized.
+ *
+ * @version $Revision$ $Date$
+ * @since 3.0
+ */
+public class MultiStartUnivariateRealOptimizer<FUNC extends UnivariateRealFunction>
+    implements BaseUnivariateRealOptimizer<FUNC> {
+    private final BaseUnivariateRealOptimizer<FUNC> optimizer;
+    private int maxEvaluations;
+    private int totalEvaluations;
+    private int starts;
+    private RandomGenerator generator;
+    private UnivariateRealPointValuePair[] optima;
+    /** {@inheritDoc} */
+    public UnivariateRealPointValuePair optimize(final FUNC f,
+                                                 final GoalType goal,
+                                                 final double min, final double max)
+        throws FunctionEvaluationException;
+    /** {@inheritDoc} */
+    public void setMaxEvaluations(int maxEvaluations);
+    /**
+     * Get all the optima found during the last call to {@link
+     * #optimize(FUNC,GoalType,double,double) optimize}.
+     * The optimizer stores all the optima found during a set of
+     * restarts. The {@link #optimize(FUNC,GoalType,double,double) optimize}
+     * method returns the best point only. This method returns all the points
+     * found at the end of each starts, including the best one already
+     * returned by the {@link #optimize(FUNC,GoalType,double,double) optimize}
+     * method.
+     * <br/>
+     * The returned array as one element for each start as specified
+     * in the constructor. It is ordered with the results from the
+     * runs that did converge first, sorted from best to worst
+     * objective value (i.e in ascending order if minimizing and in
+     * descending order if maximizing), followed by {@code null} elements
+     * corresponding to the runs that did not converge. This means all
+     * elements will be {@code null} if the {@link
+     * #optimize(FUNC,GoalType,double,double) optimize} method did throw a
+     * {@link ConvergenceException}). This also means that if the first
+     * element is not {@code null}, it is the best point found across all
+     * starts.
+     *
+     * @return an array containing the optima.
+     * @throws MathIllegalStateException if {@link
+     * #optimize(FUNC,GoalType,double,double) optimize} has not been called.
+     */
+    public UnivariateRealPointValuePair[] getOptima();
+    /** {@inheritDoc} */
+    public UnivariateRealPointValuePair optimize(final FUNC f, final GoalType goal,
+                                                 final double min, final double max,
+                                                 final double startValue)
+        throws FunctionEvaluationException;
+    /** {@inheritDoc} */
+    public int getEvaluations();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

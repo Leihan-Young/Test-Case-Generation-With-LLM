@@ -1,0 +1,9 @@
+ public void findsById() {
+        String html = "<div id=div1><p id=p1>One</p><p id=p2>Two</p></div><div id=div2><p id=p3>Three</p></div>";
+        Document doc = Jsoup.parse(html);
+        Element div1 = doc.getElementById("div1");
+        Elements ps = div1.select("p");
+        assertEquals(2, ps.size());
+        assertEquals("p1", ps.get(0).id());
+        assertEquals("p2", ps.get(1).id());
+    }

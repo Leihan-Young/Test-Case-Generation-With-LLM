@@ -1,0 +1,17 @@
+Delete() {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.add(new Day(1, 1, 2000), 10.0);
+    series.add(new Day(2, 1, 2000), 20.0);
+    series.add(new Day(3, 1, 2000), 30.0);
+
+    int start = 1;
+    int end = 2;
+    series.delete(start, end);
+
+    Assert.assertEquals(1, series.getItemCount()); // Bug: expected 1, actual 2
+    Assert.assertEquals(new Day(1, 1, 2000), series.getTimePeriod(0)); // Bug: expected Day(3, 1, 2000), actual Day(1, 1, 2000)
+    Assert.assertEquals(10.0, series.getValue(0), 0.0001); // Bug: expected 30.0, actual 10.0
+    Assert.assertEquals(new Day(3, 1, 2000), series.getTimePeriod(1));
+    Assert.assertEquals(30.0, series.getValue(1), 0.0001);
+}
+```

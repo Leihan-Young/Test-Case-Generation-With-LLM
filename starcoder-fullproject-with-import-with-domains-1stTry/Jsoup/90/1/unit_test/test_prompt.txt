@@ -1,0 +1,61 @@
+package org.jsoup.helper;
+import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
+import org.jsoup.UncheckedIOException;
+import org.jsoup.UnsupportedMimeTypeException;
+import org.jsoup.internal.ConstrainableInputStream;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.TokenQueue;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+import static org.jsoup.Connection.Method.HEAD;
+import static org.jsoup.internal.Normalizer.lowerCase;
+/**
+ * Implementation of {@link Connection}.
+ * @see org.jsoup.Jsoup#connect(String)
+ */
+public class HttpConnection implements Connection {
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    private static final String USER_AGENT = "User-Agent";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    public static final String FORM_URL_ENCODED = "application/x-www-form-urlencoded";
+    private static final int HTTP_TEMP_REDIR = 307; // http/1.1 temporary redirect, not in Java's set.
+    private static final String DefaultUploadType = "application/octet-stream";
+    public Connection postDataCharset(String charset);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

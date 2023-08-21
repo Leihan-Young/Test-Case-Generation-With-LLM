@@ -1,0 +1,6 @@
+  public void newTestMethod_test039()  throws Throwable  {
+      double[] doubleArray0 = new double[2];
+      doubleArray0[0] = Double.NaN;
+      boolean boolean0 = MathUtils.equals(doubleArray0, doubleArray0);
+      assertFalse(boolean0);
+  }

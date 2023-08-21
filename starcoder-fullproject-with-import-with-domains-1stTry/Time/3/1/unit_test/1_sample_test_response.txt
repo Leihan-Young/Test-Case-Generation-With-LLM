@@ -1,0 +1,24 @@
+ private void check(DateTime dt, int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond) {
+        assertEquals(year, dt.getYear());
+        assertEquals(monthOfYear, dt.getMonthOfYear());
+        assertEquals(dayOfMonth, dt.getDayOfMonth());
+        assertEquals(hourOfDay, dt.getHourOfDay());
+        assertEquals(minuteOfHour, dt.getMinuteOfHour());
+        assertEquals(secondOfMinute, dt.getSecondOfMinute());
+        assertEquals(millisOfSecond, dt.getMillisOfSecond());
+    }
+    private void check(DateTime dt, int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond,
+            DateTimeZone zone) {
+        assertEquals(year, dt.getYear());
+        assertEquals(monthOfYear, dt.getMonthOfYear());
+        assertEquals(dayOfMonth, dt.getDayOfMonth());
+        assertEquals(hourOfDay, dt.getHourOfDay());
+        assertEquals(minuteOfHour, dt.getMinuteOfHour());
+        assertEquals(secondOfMinute, dt.getSecondOfMinute());
+        assertEquals(millisOfSecond, dt.getMillisOfSecond());
+        assertEquals(zone, dt.getZone());
+    }
+    private void check(DateTime dt, int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHou

@@ -1,0 +1,21 @@
+CLI_bug() {
+    Options options = new Options();
+    options.addOption(new Option("f", false, "Test option f"));
+    options.addOption(new Option("g", true, "Test option g"));
+
+    String[] args = {"-f", "-g"};
+
+    CommandLineParser parser = new DefaultParser();
+    CommandLine cmd = null;
+    try {
+        cmd = parser.parse(options, args);
+    } catch (ParseException e) {
+        fail("Parsing failed: " + e.getMessage());
+    }
+    assertTrue(cmd.hasOption("f"));
+    assertTrue(cmd.hasOption("g"));
+    assertEquals(null, cmd.getOptionValue("f"));
+    assertEquals(null, cmd.getOptionValue("g"));
+}
+```
+The bug in the program is that if an option is specified without a value, the `getOptionValue()` method returns null instead of an empty string. This can cause issues if the value of the option is used in concatenation with other strings, as null can't be concatenated. The test method above can reveal this bug by checking the values returned by `getOptionValue()` for an option that is specified without a value.

@@ -1,0 +1,212 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+/** 
+ * <p>Represents list of arguments parsed against
+ * a {@link Options} descriptor.<p>
+ *
+ * <p>It allows querying of a boolean {@link #hasOption(String opt)},
+ * in addition to retrieving the {@link #getOptionValue(String opt)}
+ * for options requiring arguments.</p>
+ *
+ * <p>Additionally, any left-over or unrecognized arguments,
+ * are available for further processing.</p>
+ *
+ * @author bob mcwhirter (bob @ werken.com)
+ * @author <a href="mailto:jstrachan@apache.org">James Strachan</a>
+ * @author John Keyes (john at integralsource.com)
+ */
+public class CommandLine {
+    private List args = new LinkedList();
+    private Map options = new HashMap();
+    private Map names = new HashMap();
+//    private Set allOptions = new HashSet();
+    private Map hashcodeMap = new HashMap();
+    public Object getOptionObject(char opt);
+    public String[] getOptionValues(char opt);
+    public String[] getArgs();
+    public List getArgList();
+    public Option[] getOptions();
+    /** 
+     * Retrieve the argument, if any, of an option.
+     *
+     * @param opt name of the option
+     * @param defaultValue is the default value to be returned if the option 
+     * is not specified
+     * @return Value of the argument if option is set, and has an argument,
+     * otherwise <code>defaultValue</code>.
+     */
+    public String getOptionValue(String opt, String defaultValue)
+    {
+        String answer = getOptionValue(opt);
+
+        return (answer != null) ? answer : defaultValue;
+    }
+    /**
+     * Add left-over unrecognized option/argument.
+     *
+     * @param arg the unrecognised option/argument.
+     */
+    void addArg(String arg)
+    {
+        args.add(arg);
+    }
+    /** 
+     * Query to see if an option has been set.
+     *
+     * @param opt Short name of the option
+     * @return true if set, false if not
+     */
+    public boolean hasOption(String opt)
+    {
+        return options.containsKey(opt);
+    }
+    /** 
+     * Query to see if an option has been set.
+     *
+     * @param opt character name of the option
+     * @return true if set, false if not
+     */
+    public boolean hasOption(char opt)
+    {
+        return hasOption(String.valueOf(opt));
+    }
+    /** 
+     * Retrieve the argument, if any, of this option.
+     *
+     * @param opt the character name of the option
+     * @return Value of the argument if option is set, and has an argument,
+     * otherwise null.
+     */
+    public String getOptionValue(char opt)
+    {
+        return getOptionValue(String.valueOf(opt));
+    }
+    /** 
+     * Retrieve the argument, if any, of this option.
+     *
+     * @param opt the name of the option
+     * @return Value of the argument if option is set, and has an argument,
+     * otherwise null.
+     */
+    public String getOptionValue(String opt)
+    {
+        String[] values = getOptionValues(opt);
+
+        return (values == null) ? null : values[0];
+    }
+    /**
+     * Returns an iterator over the Option members of CommandLine.
+     *
+     * @return an <code>Iterator</code> over the processed {@link Option} 
+     * members of this {@link CommandLine}
+     */
+    public Iterator iterator()
+    {
+        return hashcodeMap.values().iterator();
+    }
+    /** 
+     * Retrieve the argument, if any, of an option.
+     *
+     * @param opt character name of the option
+     * @param defaultValue is the default value to be returned if the option 
+     * is not specified
+     * @return Value of the argument if option is set, and has an argument,
+     * otherwise <code>defaultValue</code>.
+     */
+    public String getOptionValue(char opt, String defaultValue)
+    {
+        return getOptionValue(String.valueOf(opt), defaultValue);
+    }
+    /** 
+     * Retrieves the array of values, if any, of an option.
+     *
+     * @param opt string name of the option
+     * @return Values of the argument if option is set, and has an argument,
+     * otherwise null.
+     */
+    public String[] getOptionValues(String opt)
+    {
+        opt = Util.stripLeadingHyphens(opt);
+
+        String key = opt;
+        if (names.containsKey(opt))
+
+        {
+            key = (String) names.get(opt);
+        }
+
+        if (options.containsKey(key))
+        {
+            return ((Option) options.get(key)).getValues();
+        }
+        return null;
+        }
+    /**
+     * Add an option to the command line.  The values of 
+     * the option are stored.
+     *
+     * @param opt the processed option
+     */
+    void addOption(Option opt)
+    {
+        hashcodeMap.put(new Integer(opt.hashCode()), opt);
+        String key = opt.getKey();
+        if (key == null)
+        {
+            key = opt.getLongOpt();
+        }
+        else
+        {
+            names.put(opt.getLongOpt(), key);
+        }
+        options.put(key, opt);
+    }
+    /**
+     * Return the <code>Object</code> type of this <code>Option</code>.
+     *
+     * @param opt the name of the option
+     * @return the type of this <code>Option</code>
+     */
+    public Object getOptionObject(String opt)
+    {
+        String res = getOptionValue(opt);
+
+        if (!options.containsKey(opt))
+        {
+            return null;
+        }
+
+        Object type = ((Option) options.get(opt)).getType();
+
+        return (res == null)        ? null : TypeHandler.createValue(res, type);
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+  public void testCLI18() {
+    Options options = new Options();
+    options.addOption(new Option("a","aaa",false,"aaaaaaa"));
+    options.addOption(new Option(null,"bbb",false,"bbbbbbb dksh fkshd fkhs dkfhsdk fhskd hksdks dhfowehfsdhfkjshf skfhkshf sf jkshfk sfh skfh skf f"));
+    options.addOption(new Option("c",null,false,"ccccccc"));
+
+    HelpFormatter formatter = new HelpFormatter();
+    StringWriter out = new StringWriter();
+
+    formatter.printHelp(new PrintWriter(out),80, "foobar", "dsfkfsh kdh hsd hsdh fkshdf ksdh fskdh fsdh fkshfk sfdkjhskjh fkjh fkjsh khsdkj hfskdhf skjdfh ksf khf s", options, 2, 2, "blort j jgj j jg jhghjghjgjhgjhg jgjhgj jhg jhg hjg jgjhghjg jhg hjg jhgjg jgjhghjg jg jgjhgjgjg jhg jhgjh" + '\r' + '\n' + "rarrr", true);
+  }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

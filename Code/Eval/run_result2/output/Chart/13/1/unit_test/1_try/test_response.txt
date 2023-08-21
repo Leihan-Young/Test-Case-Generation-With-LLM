@@ -1,0 +1,17 @@
+BorderArrangement() {
+    BlockContainer container = new BlockContainer(new BorderArrangement());
+    Block block1 = new EmptyBlock(100.0, 50.0);
+    Block block2 = new EmptyBlock(100.0, 50.0);
+    Block block3 = new EmptyBlock(100.0, 50.0);
+    Block block4 = new EmptyBlock(100.0, 50.0);
+    Block block5 = new EmptyBlock(100.0, 50.0);
+    container.add(block1, RectangleEdge.TOP);
+    container.add(block2, RectangleEdge.BOTTOM);
+    container.add(block3, RectangleEdge.LEFT);
+    container.add(block4, RectangleEdge.RIGHT);
+    container.add(block5, null);
+    Size2D size = container.arrange(null, new RectangleConstraint(500.0, 300.0));
+    assertEquals(500.0, size.width, EPSILON);
+    assertEquals(300.0, size.height, EPSILON);
+}
+```

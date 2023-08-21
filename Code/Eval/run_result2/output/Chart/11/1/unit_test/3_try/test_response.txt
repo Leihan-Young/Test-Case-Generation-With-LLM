@@ -1,0 +1,35 @@
+ShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+```
+
+The added test checks if two ellipses with different coordinates are considered equal. According to the implementation of `equal(Ellipse2D e1, Ellipse2D e2)` method, this should return `false`. However, the current implementation of `equal(Shape s1, Shape s2)` method returns `true` for these two ellipses. This is a bug in the program.

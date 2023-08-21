@@ -1,0 +1,106 @@
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+/**
+ * A data structure that stores zero, one or many objects, where each object is
+ * associated with two keys (a 'row' key and a 'column' key).
+ */
+public class KeyedObjects2D implements Cloneable, Serializable {
+    private static final long serialVersionUID = -1015873563138522374L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    /**
+     * Removes an entire row from the table.
+     *
+     * @param rowIndex  the row index.
+     * 
+     * @see #removeColumn(int)
+     */
+    public void removeRow(int rowIndex);
+    /**
+     * Returns the object for the given row and column keys.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     *
+     * @return The object (possibly <code>null</code>).
+     * 
+     * @throws IllegalArgumentException if <code>rowKey<code> or 
+     *         <code>columnKey</code> is <code>null</code>.
+     * @throws UnknownKeyException if <code>rowKey</code> or 
+     *         <code>columnKey</code> is not recognised.
+     */
+    public Object getObject(Comparable rowKey, Comparable columnKey);
+    /**
+     * Returns the column count.
+     *
+     * @return The column count.
+     * 
+     * @see #getRowCount()
+     */
+    public int getColumnCount();
+    /**
+     * Removes an object from the table by setting it to <code>null</code>.  If
+     * all the objects in the specified row and/or column are now 
+     * <code>null</code>, the row and/or column is removed from the table.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #addObject(Object, Comparable, Comparable)
+     */
+    public void removeObject(Comparable rowKey, Comparable columnKey);
+    /**
+     * Tests this object for equality with an arbitrary object.
+     *
+     * @param obj  the object to test (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public boolean equals(Object obj);
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex);
+    /**
+     * Returns the object for a given row and column.
+     *
+     * @param row  the row index (in the range 0 to getRowCount() - 1).
+     * @param column  the column index (in the range 0 to getColumnCount() - 1).
+     *
+     * @return The object (possibly <code>null</code>).
+     * 
+     * @see #getObject(Comparable, Comparable)
+     */
+    public Object getObject(int row, int column);
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @throws UnknownKeyException if <code>rowKey</code> is not recognised.
+     * 
+     * @see #removeRow(Comparable)
+     */
+    public void removeColumn(Comparable columnKey);
+    /**
+     * Adds or updates an object.
+     *
+     * @param object  the object.
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     */
+    public void setObject(Object object, Comparable rowKey, 
+            Comparable columnKey);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

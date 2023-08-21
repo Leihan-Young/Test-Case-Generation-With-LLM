@@ -1,0 +1,8 @@
+Bug1955483() {
+    XYSeries series = new XYSeries("Series", true, false); // allowDuplicateXValues set to false
+    series.addOrUpdate(1.0, 1.0);
+    series.addOrUpdate(1.0, 2.0);
+    assertEquals(new Double(1.0), series.getY(0)); // assert that the first y-value is 1.0
+    assertEquals(new Double(2.0), series.getY(1)); // assert that the second y-value is 2.0
+    assertEquals(1, series.getItemCount()); // assert that there is only one item in the series
+}

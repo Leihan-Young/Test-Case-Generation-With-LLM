@@ -1,0 +1,130 @@
+package org.jsoup.parser;
+import org.jsoup.nodes.Attributes;
+import static org.jsoup.internal.Normalizer.lowerCase;
+/**
+ * Controls parser settings, to optionally preserve tag and/or attribute name case.
+ */
+public class ParseSettings {
+    public static final ParseSettings htmlDefault;
+    public static final ParseSettings preserveCase;
+    /**
+     * Returns true if preserving tag name case.
+     */
+    public boolean preserveTagCase();
+}
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.CDataNode;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.DocumentType;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.nodes.XmlDeclaration;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.List;
+/**
+ * Use the {@code XmlTreeBuilder} when you want to parse XML without any of the HTML DOM rules being applied to the
+ * document.
+ * <p>Usage example: {@code Document xmlDoc = Jsoup.parse(html, baseUrl, Parser.xmlParser());}</p>
+ *
+ * @author Jonathan Hedley
+ */
+public class XmlTreeBuilder extends TreeBuilder {
+    Element insert(Token.StartTag startTag);
+}
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.internal.StringUtil;
+import org.jsoup.nodes.CDataNode;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.FormElement;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import static org.jsoup.internal.StringUtil.inSorted;
+/**
+ * HTML Tree Builder; creates a DOM from Tokens.
+ */
+public class HtmlTreeBuilder extends TreeBuilder {
+    void error(HtmlTreeBuilderState state);
+}
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Attributes;
+import static org.jsoup.internal.Normalizer.lowerCase;
+/**
+ * Parse tokens for the Tokeniser.
+ */
+abstract class Token {
+    /**
+     * Reset the data represent by this token, for reuse. Prevents the need to create transfer objects for every
+     * piece of data, which immediately get GCed.
+     */
+    abstract Token reset();
+
+    static void reset(StringBuilder sb);
+}
+package org.jsoup.nodes;
+import org.jsoup.SerializationException;
+import org.jsoup.helper.Validate;
+import org.jsoup.internal.StringUtil;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import static org.jsoup.internal.Normalizer.lowerCase;
+/**
+ * The attributes of an Element.
+ * <p>
+ * Attributes are treated as a map: there can be only one value associated with an attribute key/name.
+ * </p>
+ * <p>
+ * Attribute name and value comparisons are  generally <b>case sensitive</b>. By default for HTML, attribute names are
+ * normalized to lower-case on parsing. That means you should use lower-case strings when referring to attributes by
+ * name.
+ * </p>
+ *
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Attributes implements Iterable<Attribute>, Cloneable {
+    private static final int InitialCapacity = 4; // todo - analyze Alexa 1MM sites, determine best setting
+    private static final int GrowthFactor = 2;
+    private static final String EmptyString = "";
+    private int size = 0; // number of slots used (not capacity, which is keys.length
+    /**
+     * Internal method. Lowercases all keys.
+     */
+    public void normalize();
+    /**
+     * Get an attribute's value by case-insensitive key
+     * @param key the attribute name
+     * @return the first matching attribute value if set; or empty string if not set (ora boolean attribute).
+     */
+    public String getIgnoreCase(String key);
+    /**
+     Get the number of attributes in this set.
+     @return size
+     */
+    public int size();
+    private void checkCapacity(int minNewSize);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

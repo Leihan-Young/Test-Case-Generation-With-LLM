@@ -1,0 +1,8 @@
+     public void testEqualsAndHashCode() {
+        final double real = Math.random();
+        final double imaginary = Math.random();
+        Complex c1 = new Complex(real, imaginary);
+        Complex c2 = new Complex(real, imaginary);
+        assertEquals(c1, c2);
+        assertEquals(c1.hashCode(), c2.hashCode());
+    }

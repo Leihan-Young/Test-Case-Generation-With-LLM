@@ -1,0 +1,27 @@
+() {
+    //create a DefaultKeyedValues object
+    DefaultKeyedValues values = new DefaultKeyedValues();
+    //add some values
+    values.addValue("A", 1);
+    values.addValue("B", 2);
+    values.addValue("C", 3);
+    //remove a value using index
+    values.removeValue(1);
+    //check if the value has been removed
+    assertEquals(2, values.getValue(1));
+    //remove a value using key
+    values.removeValue("A");
+    //check if the value has been removed
+    assertNull(values.getValue("A"));
+}
+```
+The bug in the program is in the `DefaultKeyedValues` class's `removeValue(int index)` method. When removing an item from the `keys` and `values` ArrayLists, the `rebuildIndex()` method should be called only if the `index` is less than the size of the `keys` ArrayList. So the correct implementation of the `removeValue(int index)` method should be:
+```
+public void removeValue(int index) {
+    this.keys.remove(index);
+    this.values.remove(index);
+    if (index < this.keys.size()) {
+        rebuildIndex();
+    }
+}
+```

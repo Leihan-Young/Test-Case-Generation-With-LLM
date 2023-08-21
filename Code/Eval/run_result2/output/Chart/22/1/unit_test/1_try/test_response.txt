@@ -1,0 +1,19 @@
+KeyedObjects2D() {
+    KeyedObjects2D data = new KeyedObjects2D();
+    data.setObject("value1", "row1", "column1");
+    data.setObject("value2", "row1", "column2");
+    data.setObject("value3", "row2", "column1");
+    assertEquals("value1", data.getObject("row1", "column1"));
+    assertEquals("value2", data.getObject("row1", "column2"));
+    assertEquals("value3", data.getObject("row2", "column1"));
+    // test removeObject
+    data.removeObject("row1", "column1");
+    assertNull(data.getObject("row1", "column1"));
+    // test removeRow
+    data.removeRow(0);
+    assertNull(data.getObject("row1", "column2"));
+    // test removeColumn
+    data.removeColumn("column1");
+    assertNull(data.getObject("row2", "column1"));
+}
+```

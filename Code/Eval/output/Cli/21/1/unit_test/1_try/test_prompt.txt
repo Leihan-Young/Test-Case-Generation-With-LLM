@@ -1,0 +1,262 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli2;
+import java.util.List;
+/**
+ * A CommandLine that detected values and options can be written to.
+ */
+public interface WriteableCommandLine extends CommandLine {
+    void addOption(final Option option);;
+    void addValue(final Option option, final Object value);;
+    List getUndefaultedValues(final Option option);;
+    void setDefaultValues(final Option option, final List defaultValues);;
+    void addSwitch(final Option option, final boolean value) throws IllegalStateException;;
+    void setDefaultSwitch(final Option option, final Boolean defaultSwitch);;
+    void addProperty(final Option option, final String property, final String value);;
+    void addProperty(final String property, final String value);;
+    boolean looksLikeOption(final String argument);;
+}
+package org.apache.commons.cli2.commandline;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.option.PropertyOption;
+import org.apache.commons.cli2.resource.ResourceConstants;
+import org.apache.commons.cli2.resource.ResourceHelper;
+/**
+ * A WriteableCommandLine implementation allowing Options to write their
+ * processed information to a CommandLine.
+ */
+public class WriteableCommandLineImpl
+    extends CommandLineImpl implements WriteableCommandLine {
+    private final Map optionToProperties = new HashMap();
+//    private final Properties properties = new Properties();
+    private final List options = new ArrayList();
+    private final Map nameToOption = new HashMap();
+    private final Map values = new HashMap();
+    private final Map switches = new HashMap();
+    private final Map defaultValues = new HashMap();
+    private final Map defaultSwitches = new HashMap();
+    private final List normalised;
+    private final Set prefixes;
+    public void addValue(final Option option,
+                         final Object value);
+    public void addSwitch(final Option option,
+                          final boolean value);
+    public boolean hasOption(final Option option);
+    public Option getOption(final String trigger);
+    public List getValues(final Option option,
+                          List defaultValues);
+    public List getUndefaultedValues(Option option);
+    public Boolean getSwitch(final Option option,
+                             final Boolean defaultValue);
+    public String getProperty(final String property);
+    public void addProperty(final Option option,
+                            final String property,
+                            final String value);
+    public void addProperty(final String property, final String value);
+    public String getProperty(final Option option,
+                              final String property,
+                              final String defaultValue);
+    public Set getProperties(final Option option);
+    public String toString();
+    public List getOptions();
+    public Set getOptionTriggers();
+    public void setDefaultValues(final Option option,
+                                 final List defaults);
+    public void setDefaultSwitch(final Option option,
+                                 final Boolean defaultSwitch);
+    public List getNormalised();
+    /**
+     * Tests whether the passed in trigger looks like an option. This
+     * implementation first checks whether the passed in string starts with a
+     * prefix that indicates an option. If this is the case, it is also checked
+     * whether an option of this name is known for the current option. (This can
+     * lead to reentrant invocations of this method, so care has to be taken
+     * about this.)
+     *
+     * @param trigger the command line element to test
+     * @return a flag whether this element seems to be an option
+     */
+    public boolean looksLikeOption(final String trigger)
+    {
+            // this is a reentrant call
+
+            for (final Iterator i = prefixes.iterator(); i.hasNext();)
+            {
+                final String prefix = (String) i.next();
+
+                if (trigger.startsWith(prefix))
+                {
+                        return true;
+                }
+            }
+            return false;
+    }
+    public void addOption(Option option) {
+        options.add(option);
+        nameToOption.put(option.getPreferredName(), option);
+
+        for (Iterator i = option.getTriggers().iterator(); i.hasNext();) {
+            nameToOption.put(i.next(), option);
+        }
+
+        // ensure that all parent options are also added
+        Option parent = option.getParent();
+        while (parent != null && !options.contains(parent)) {
+            options.add(parent);
+            parent = parent.getParent();
+        }
+    }
+    public Set getProperties() {
+        return getProperties(new PropertyOption());
+    }
+}
+package org.apache.commons.cli2.option;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.DisplaySetting;
+import org.apache.commons.cli2.Group;
+import org.apache.commons.cli2.HelpLine;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.OptionException;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.resource.ResourceConstants;
+/**
+ * An implementation of Group
+ */
+public class GroupImpl
+    extends OptionImpl implements Group {
+    private final String name;
+    private final String description;
+    private final List options;
+    private final int minimum;
+    private final int maximum;
+    private final List anonymous;
+    private final SortedMap optionMap;
+    private final Set prefixes;
+    public boolean canProcess(final WriteableCommandLine commandLine,
+                              final String arg);
+    public Set getPrefixes();
+    public Set getTriggers();
+    public void process(final WriteableCommandLine commandLine,
+                        final ListIterator arguments)
+        throws OptionException;
+    public void validate(final WriteableCommandLine commandLine)
+        throws OptionException;
+    public String getPreferredName();
+    public String getDescription();
+    public void appendUsage(final StringBuffer buffer,
+                            final Set helpSettings,
+                            final Comparator comp);
+    public void appendUsage(final StringBuffer buffer,
+                            final Set helpSettings,
+                            final Comparator comp,
+                            final String separator);
+    public List helpLines(final int depth,
+                          final Set helpSettings,
+                          final Comparator comp);
+    public List getOptions();
+    public List getAnonymous();
+    public Option findOption(final String trigger);
+    public int getMinimum();
+    public int getMaximum();
+    public boolean isRequired();
+    private boolean looksLikeOption(final WriteableCommandLine commandLine,
+            final String trigger);
+    public void defaults(final WriteableCommandLine commandLine) {
+        super.defaults(commandLine);
+
+        for (final Iterator i = options.iterator(); i.hasNext();) {
+            final Option option = (Option) i.next();
+            option.defaults(commandLine);
+        }
+
+        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+            final Option option = (Option) i.next();
+            option.defaults(commandLine);
+        }
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    public void testMandatoryGroup() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] {
+            });
+            fail("Expected MissingOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Missing option -a|-b", exp.getMessage());
+        }
+
+        try {
+            parser.parse(new String[] { "-a" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-b" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals(
+                "Unexpected -b while processing -a|-b",
+                exp.getMessage());
+        }
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

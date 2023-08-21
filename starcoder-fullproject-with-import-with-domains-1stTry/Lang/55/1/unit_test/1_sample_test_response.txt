@@ -1,0 +1,15 @@
+     public void testStopStart() {
+        StopWatch watch = new StopWatch();
+        try {
+            watch.stop();
+            fail();
+        } catch (IllegalStateException ise) {
+            // expected
+        }
+        try {
+            watch.start();
+            fail();
+        } catch (IllegalStateException ise) {
+            // expected
+        }
+    }

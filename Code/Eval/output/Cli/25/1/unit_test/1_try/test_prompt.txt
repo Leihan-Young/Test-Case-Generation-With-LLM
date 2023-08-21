@@ -1,0 +1,302 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ */
+public class HelpFormatter
+{
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    public void setWidth(int width);
+    public int getWidth();
+    public void setLeftPadding(int padding);
+    public int getLeftPadding();
+    public void setDescPadding(int padding);
+    public int getDescPadding();
+    public void setSyntaxPrefix(String prefix);
+    public String getSyntaxPrefix();
+    public void setNewLine(String newline);
+    public String getNewLine();
+    public void setOptPrefix(String prefix);
+    public String getOptPrefix();
+    public void setLongOptPrefix(String prefix);
+    public String getLongOptPrefix();
+    public void setArgName(String name);
+    public String getArgName();
+    public Comparator getOptionComparator();
+    public void setOptionComparator(Comparator comparator);
+    public void printUsage(PrintWriter pw, int width, String app, Options options);
+    private void appendOptionGroup(final StringBuffer buff, final OptionGroup group);
+    private static void appendOption(final StringBuffer buff, final Option option, final boolean required);
+    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax);
+    public void printOptions(PrintWriter pw, int width, Options options, 
+                             int leftPad, int descPad);
+    public void printWrapped(PrintWriter pw, int width, String text);
+    public void printWrapped(PrintWriter pw, int width, int nextLineTabStop, String text);
+    protected StringBuffer renderOptions(StringBuffer sb, int width, Options options, int leftPad, int descPad);
+    protected int findWrapPos(String text, int width, int startPos);
+    protected String createPadding(int len);
+    protected String rtrim(String s);
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.
+     *
+     * @param pw the writer to which the help will be written
+     * @param width the number of characters to be displayed on each line
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param leftPad the number of characters of padding to be prefixed
+     * to each line
+     * @param descPad the number of characters of padding to be prefixed
+     * to each description line
+     * @param footer the banner to display at the end of the help
+     *
+     * @throws IllegalStateException if there is no room to print a line
+     */
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, 
+                          String header, Options options, int leftPad, 
+                          int descPad, String footer)
+    {
+        printHelp(pw, width, cmdLineSyntax, header, options, leftPad, descPad, footer, false);
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to 
+     * System.out.
+     *
+     * @param cmdLineSyntax the syntax for this application
+     * @param options the Options instance
+     * @param autoUsage whether to print an automatically generated
+     * usage statement
+     */
+    public void printHelp(String cmdLineSyntax, Options options, boolean autoUsage)
+    {
+        printHelp(defaultWidth, cmdLineSyntax, null, options, null, autoUsage);
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to
+     * System.out.
+     *
+     * @param width the number of characters to be displayed on each line
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param footer the banner to display at the end of the help
+     * @param autoUsage whether to print an automatically generated 
+     * usage statement
+     */
+    public void printHelp(int width, String cmdLineSyntax, String header,
+                          Options options, String footer, boolean autoUsage)
+    {
+        PrintWriter pw = new PrintWriter(System.out);
+
+        printHelp(pw, width, cmdLineSyntax, header, options, defaultLeftPad, defaultDescPad, footer, autoUsage);
+        pw.flush();
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to
+     * System.out.
+     *
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param footer the banner to display at the end of the help
+     */
+    public void printHelp(String cmdLineSyntax, String header, Options options, String footer)
+    {
+        printHelp(cmdLineSyntax, header, options, footer, false);
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.
+     *
+     * @param pw the writer to which the help will be written
+     * @param width the number of characters to be displayed on each line
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param leftPad the number of characters of padding to be prefixed
+     * to each line
+     * @param descPad the number of characters of padding to be prefixed
+     * to each description line
+     * @param footer the banner to display at the end of the help
+     * @param autoUsage whether to print an automatically generated
+     * usage statement
+     *
+     * @throws IllegalStateException if there is no room to print a line
+     */
+    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax,
+                          String header, Options options, int leftPad,
+                          int descPad, String footer, boolean autoUsage)
+    {
+        if ((cmdLineSyntax == null) || (cmdLineSyntax.length() == 0))
+        {
+            throw new IllegalArgumentException("cmdLineSyntax not provided");
+        }
+
+        if (autoUsage)
+        {
+            printUsage(pw, width, cmdLineSyntax, options);
+        }
+        else
+        {
+            printUsage(pw, width, cmdLineSyntax);
+        }
+
+        if ((header != null) && (header.trim().length() > 0))
+        {
+            printWrapped(pw, width, header);
+        }
+
+        printOptions(pw, width, options, leftPad, descPad);
+
+        if ((footer != null) && (footer.trim().length() > 0))
+        {
+            printWrapped(pw, width, footer);
+        }
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to
+     * System.out.
+     *
+     * @param cmdLineSyntax the syntax for this application
+     * @param options the Options instance
+     */
+    public void printHelp(String cmdLineSyntax, Options options)
+    {
+        printHelp(defaultWidth, cmdLineSyntax, null, options, null, false);
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to 
+     * System.out.
+     *
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param footer the banner to display at the end of the help
+     * @param autoUsage whether to print an automatically generated
+     * usage statement
+     */
+    public void printHelp(String cmdLineSyntax, String header, Options options, String footer, boolean autoUsage)
+    {
+        printHelp(defaultWidth, cmdLineSyntax, header, options, footer, autoUsage);
+    }
+    /**
+     * Render the specified text and return the rendered Options
+     * in a StringBuffer.
+     *
+     * @param sb The StringBuffer to place the rendered text into.
+     * @param width The number of characters to display per line
+     * @param nextLineTabStop The position on the next line for the first tab.
+     * @param text The text to be rendered.
+     *
+     * @return the StringBuffer with the rendered Options contents.
+     */
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
+                                             int nextLineTabStop, String text)
+    {
+        int pos = findWrapPos(text, width, 0);
+
+        if (pos == -1)
+        {
+            sb.append(rtrim(text));
+
+            return sb;
+        }
+        sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+
+        if (nextLineTabStop >= width)
+        {
+            // stops infinite loop happening
+            nextLineTabStop = width - 1;
+        }
+
+        // all following lines must be padded with nextLineTabStop space 
+        // characters
+        final String padding = createPadding(nextLineTabStop);
+
+        while (true)
+        {
+            text = padding + text.substring(pos).trim();
+            pos = findWrapPos(text, width, 0);
+
+            if (pos == -1)
+            {
+                sb.append(text);
+
+                return sb;
+            }
+            
+            if ( (text.length() > width) && (pos == nextLineTabStop - 1) ) 
+            {
+                pos = width;
+            }
+
+            sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+        }
+    }
+    /**
+     * Print the help for <code>options</code> with the specified
+     * command line syntax.  This method prints help information to
+     * System.out.
+     *
+     * @param width the number of characters to be displayed on each line
+     * @param cmdLineSyntax the syntax for this application
+     * @param header the banner to display at the begining of the help
+     * @param options the Options instance
+     * @param footer the banner to display at the end of the help
+     */
+    public void printHelp(int width, String cmdLineSyntax, String header, Options options, String footer)
+    {
+        printHelp(width, cmdLineSyntax, header, options, footer, false);
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    public void testOrder() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        PosixParser posixParser = new PosixParser();
+        CommandLine line = posixParser.parse(opts, null);
+        assertFalse(line.hasOption(null));
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

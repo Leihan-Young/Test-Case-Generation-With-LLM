@@ -1,0 +1,51 @@
+DrawWithNullMeanVertical() {
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            chart.createBufferedImage(300, 200, null);
+            fail("Expected exception not thrown.");
+        }
+        catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+        catch (Exception e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+    }
+```
+# Bug Explanation:
+The `StatisticalBarRenderer` class extends the `BarRenderer` class, which has a constructor that sets the `shadowVisible` field to `false`. However, the `StatisticalBarRenderer` class does not override this behavior, and instead only sets the `errorIndicatorPaint` and `errorIndicatorStroke` fields in its constructor. This means that the `shadowVisible` field remains `false`, even though it should be `true` to show the shadow of the bar. This bug could cause the bar chart to be displayed incorrectly without the expected shadow.
+
+The test method `testDrawWithNullMeanVertical()` tries to create a `DefaultStatisticalCategoryDataset` with a null value for the mean value of a bar, which should throw an `IllegalArgumentException`. However, the test code does not actually assert anything, and instead just prints the stack trace of any exceptions that occur. This means that the test method does not actually test anything, and could miss the intended bug in the `StatisticalBarRenderer` class. 
+
+To fix the test method, we need to replace `$EXCEPTION$` with `IllegalArgumentException` to specify the type of exception that is expected to be thrown. And we need to replace `$ASSERT$` with an assertion statement to check that the expected exception is thrown. 
+
+# Fixed Test Code:
+```
+public void testDrawWithNullMeanVertical() {
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            chart.createBufferedImage(300, 200, null);
+            fail("Expected exception not thrown.");
+        }
+        catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+        catch (Exception e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+    }
+```

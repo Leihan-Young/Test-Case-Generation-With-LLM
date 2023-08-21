@@ -1,0 +1,494 @@
+Getting Chart-10 focal context...
+focal_context=package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+Getting Chart-10 test prefix...
+oracle_focal_context=package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Creates a new instance.
+     */
+    public StandardToolTipTagFragmentGenerator() {
+        super();
+    }
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java, test_prefix=    public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        _tmp_var_0_ = " title=\"abc\" alt=\"\"";
+        _tmp_var_1_ =  g.generateToolTipFragment("abc");
+        $ASSERT$
+        _tmp_var_2_ = " title=\"Series &quot;A&quot;;
+        _tmp_var_3_ =  100.0\" alt=\"\"";
+        _tmp_var_4_ =  g.generateToolTipFragment("Series \"A\", 100.0");
+        $ASSERT$
+    }
+
+Constructing unit test prompt for Chart-10
+unit_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-10 unit test
+unit_test_response=GenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+```
+# Bug Description:
+The bug in the program is that when the `toolTipText` argument contains double quotes, the returned HTML string will be invalid because the double quotes will not be properly escaped. This can cause issues when the HTML code is rendered in a browser. For example, if `toolTipText` is `"This "is" a tooltip"`, the returned HTML string will be `title="This "is" a tooltip" alt=""`, which is invalid HTML syntax. To fix this bug, the double quotes in `toolTipText` need to be escaped properly before they are concatenated with the HTML string. One way to do this is to replace any double quotes in `toolTipText` with the HTML entity `&quot;`.
+Constructing test code for Chart-10 unit test
+Finished constructing test code for Chart-10 unit test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-10 unit test
+Constructing oracle test prompt for Chart-10
+oracle_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Creates a new instance.
+     */
+    public StandardToolTipTagFragmentGenerator() {
+        super();
+    }
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        _tmp_var_0_ = " title=\"abc\" alt=\"\"";
+        _tmp_var_1_ =  g.generateToolTipFragment("abc");
+        $ASSERT$
+        _tmp_var_2_ = " title=\"Series &quot;A&quot;;
+        _tmp_var_3_ =  100.0\" alt=\"\"";
+        _tmp_var_4_ =  g.generateToolTipFragment("Series \"A\", 100.0");
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-10 oracle test
+oracle_test_response=GenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        assertEquals(expected2, actual2);
+    }
+Constructing test code for Chart-10 oracle test
+Finished constructing test code for Chart-10 oracle test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-10 oracle test
+Checking out Chart 10b...
+checkout_cmd=defects4j checkout -p Chart -v 10b -w /jTrans/Eval/src/Chart/10b >/dev/null 2>&1
+Finished checking out Chart 10b.
+Checking out Chart 10f...
+checkout_cmd=defects4j checkout -p Chart -v 10f -w /jTrans/Eval/src/Chart/10f >/dev/null 2>&1
+Finished checking out Chart 10f.
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testGenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    Assert.assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    Assert.assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    Assert.assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    Assert.assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+, check_out_path=/jTrans/Eval/src/Chart/10b, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10b/tests
+trigger_method_lines=public void testGenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    Assert.assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    Assert.assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    Assert.assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    Assert.assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10b -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+runTest
+trigger_code=public void testGenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    Assert.assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    Assert.assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    Assert.assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    Assert.assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+, check_out_path=/jTrans/Eval/src/Chart/10f, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10f/tests
+trigger_method_lines=public void testGenerateToolTipFragment() {
+    StandardToolTipTagFragmentGenerator generator = new StandardToolTipTagFragmentGenerator();
+    
+    // Test case 1: empty tooltip text
+    String result1 = generator.generateToolTipFragment("");
+    Assert.assertEquals(" title=\"\" alt=\"\"", result1);
+    
+    // Test case 2: non-empty tooltip text
+    String result2 = generator.generateToolTipFragment("This is a tooltip");
+    Assert.assertEquals(" title=\"This is a tooltip\" alt=\"\"", result2);
+    
+    // Test case 3: tooltip text with special characters
+    String result3 = generator.generateToolTipFragment("<html><body><p>This is a tooltip</p></body></html>");
+    Assert.assertEquals(" title=\"<html><body><p>This is a tooltip</p></body></html>\" alt=\"\"", result3);
+    
+    // Test case 4: tooltip text with double quotes
+    String result4 = generator.generateToolTipFragment("This \"is\" a tooltip");
+    Assert.assertEquals(" title=\"This \"is\" a tooltip\" alt=\"\"", result4);
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10f -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+res_in_bug=Test passed, res_in_fix=Test failed
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/10b, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10b/tests
+trigger_method_lines=public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10b -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/10f, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10f/tests
+trigger_method_lines=public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10f -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+res_in_bug=Test failed, res_in_fix=Test failed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.chart.imagemap;
+/**
+ * Generates tooltips using the HTML title attribute for image map area tags.
+ */
+public class StandardToolTipTagFragmentGenerator 
+        implements ToolTipTagFragmentGenerator {
+    /**
+     * Creates a new instance.
+     */
+    public StandardToolTipTagFragmentGenerator() {
+        super();
+    }
+    /**
+     * Generates a tooltip string to go in an HTML image map.
+     *
+     * @param toolTipText  the tooltip.
+     * 
+     * @return The formatted HTML area tag attribute(s).
+     */
+    public String generateToolTipFragment(String toolTipText) {
+        return " title=\"" + toolTipText
+            + "\" alt=\"\"";
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testGenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        _tmp_var_0_ = " title=\"abc\" alt=\"\"";
+        _tmp_var_1_ =  g.generateToolTipFragment("abc");
+        $ASSERT$
+        _tmp_var_2_ = " title=\"Series &quot;A&quot;;
+        _tmp_var_3_ =  100.0\" alt=\"\"";
+        _tmp_var_4_ =  g.generateToolTipFragment("Series \"A\", 100.0");
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+
+[assistant]:GenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g
+                = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;;100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        assertEquals(expected2, actual2);
+    }
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-10 NO.2 try
+runTestWithRetry NO.2 try
+runTest
+trigger_code=public void testGenerateToolTipFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+        String expected3 = " title=\"\" alt=\"\"";
+        String actual3 = g.generateToolTipFragment("");
+        Assert.assertEquals(expected3, actual3);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/10b, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10b/tests
+trigger_method_lines=public void testGenerateToolTipFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+        String expected3 = " title=\"\" alt=\"\"";
+        String actual3 = g.generateToolTipFragment("");
+        Assert.assertEquals(expected3, actual3);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10b -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 1
+runTest
+trigger_code=public void testGenerateToolTipFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+        String expected3 = " title=\"\" alt=\"\"";
+        String actual3 = g.generateToolTipFragment("");
+        Assert.assertEquals(expected3, actual3);
+    }
+, check_out_path=/jTrans/Eval/src/Chart/10f, test_class_path=org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests.java
+test_code_path=/jTrans/Eval/src/Chart/10f/tests
+trigger_method_lines=public void testGenerateToolTipFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        Assert.assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        Assert.assertEquals(expected2, actual2);
+        String expected3 = " title=\"\" alt=\"\"";
+        String actual3 = g.generateToolTipFragment("");
+        Assert.assertEquals(expected3, actual3);
+    }
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/10f -t org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests::newTestMethod1
+org/jfree/chart/imagemap/junit/StandardToolTipTagFragmentGeneratorTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+res_in_bug=Test failed, res_in_fix=Test passed
+unit_res_in_bug=Test passed,unit_res_in_fix=Test failed,oracle_res_in_bug=Test failed,oracle_res_in_fix=Test passed

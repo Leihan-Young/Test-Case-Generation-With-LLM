@@ -1,0 +1,139 @@
+package org.apache.commons.codec.binary;
+import java.math.BigInteger;
+import org.apache.commons.codec.BinaryDecoder;
+import org.apache.commons.codec.BinaryEncoder;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.EncoderException;
+/**
+ * Provides Base64 encoding and decoding as defined by RFC 2045.
+ * 
+ * <p>
+ * This class implements section <cite>6.8. Base64 Content-Transfer-Encoding</cite> from RFC 2045 <cite>Multipurpose
+ * Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</cite> by Freed and Borenstein.
+ * </p>
+ * <p>
+ * The class can be parameterized in the following manner with various constructors:
+ * <ul>
+ * <li>URL-safe mode: Default off.</li>
+ * <li>Line length: Default 76. Line length that aren't multiples of 4 will still essentially end up being multiples of
+ * 4 in the encoded data.
+ * <li>Line separator: Default is CRLF ("\r\n")</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Since this class operates directly on byte streams, and not character streams, it is hard-coded to only encode/decode
+ * character encodings which are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, UTF-8, etc).
+ * </p>
+ * 
+ * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
+ * @author Apache Software Foundation
+ * @since 1.0
+ * @version $Id$
+ */
+public class Base64 implements BinaryEncoder, BinaryDecoder {
+    private static final int DEFAULT_BUFFER_RESIZE_FACTOR = 2;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    public static final int MIME_CHUNK_SIZE = 76;
+    public static final int PEM_CHUNK_SIZE = 64;
+    /**
+     * Encodes binary data using the base64 algorithm, optionally chunking the output into 76 character blocks.
+     * 
+     * @param binaryData
+     *            Array containing binary data to encode.
+     * @param isChunked
+     *            if <code>true</code> this encoder will chunk the base64 output into 76 character blocks
+     * @param urlSafe
+     *            if <code>true</code> this encoder will emit - and _ instead of the usual + and / characters.
+     * @param maxResultSize
+     *            The maximum result size to accept.
+     * @return Base64-encoded data.
+     * @throws IllegalArgumentException
+     *             Thrown when the input array needs an output array bigger than maxResultSize
+     * @since 1.4
+     */
+    public static byte[] encodeBase64(byte[] binaryData, boolean isChunked, boolean urlSafe, int maxResultSize);
+    /**
+     * Decodes a Base64 String into octets
+     *
+     * @param base64String
+     *            String containing Base64 data
+     * @return Array containing decoded data.
+     * @since 1.4
+     */
+    public static byte[] decodeBase64(String base64String);
+    /**
+     * Encodes binary data using the base64 algorithm, optionally chunking the output into 76 character blocks.
+     * 
+     * @param binaryData
+     *            Array containing binary data to encode.
+     * @param isChunked
+     *            if <code>true</code> this encoder will chunk the base64 output into 76 character blocks
+     * @param urlSafe
+     *            if <code>true</code> this encoder will emit - and _ instead of the usual + and / characters.
+     * @return Base64-encoded data.
+     * @throws IllegalArgumentException
+     *             Thrown when the input array needs an output array bigger than {@link Integer#MAX_VALUE}
+     * @since 1.4
+     */
+    public static byte[] encodeBase64(byte[] binaryData, boolean isChunked, boolean urlSafe);
+    /**
+     * Encodes binary data using the base64 algorithm but does not chunk the output.
+     * 
+     * @param binaryData
+     *            binary data to encode
+     * @return byte[] containing Base64 characters in their UTF-8 representation.
+     */
+    public static byte[] encodeBase64(byte[] binaryData);
+    /**
+     * Decodes Base64 data into octets
+     * 
+     * @param base64Data
+     *            Byte array containing Base64 data
+     * @return Array containing decoded data.
+     */
+    public static byte[] decodeBase64(byte[] base64Data);
+    /**
+     * Encodes binary data using the base64 algorithm into 76 character blocks separated by CRLF.
+     *
+     * @param binaryData
+     *            binary data to encode
+     * @return String containing Base64 characters.
+     * @since 1.4
+     */    
+    public static String encodeBase64String(byte[] binaryData);
+    /**
+     * Encodes a byte[] containing binary data, into a String containing characters in the Base64 alphabet.
+     *
+     * @param pArray
+     *            a byte array containing binary data
+     * @return A String containing only Base64 character data
+     * @since 1.4
+     */    
+    public String encodeToString(byte[] pArray);
+    /**
+     * Encodes binary data using the base64 algorithm, optionally chunking the output into 76 character blocks.
+     * 
+     * @param binaryData
+     *            Array containing binary data to encode.
+     * @param isChunked
+     *            if <code>true</code> this encoder will chunk the base64 output into 76 character blocks
+     * @return Base64-encoded data.
+     * @throws IllegalArgumentException
+     *             Thrown when the input array needs an output array bigger than {@link Integer#MAX_VALUE}
+     */
+    public static byte[] encodeBase64(byte[] binaryData, boolean isChunked);
+    /**
+     * Encodes binary data using a URL-safe variation of the base64 algorithm but does not chunk the output. The
+     * url-safe variation emits - and _ instead of + and / characters.
+     *
+     * @param binaryData
+     *            binary data to encode
+     * @return String containing Base64 characters
+     * @since 1.4
+     */    
+    public static String encodeBase64URLSafeString(byte[] binaryData);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

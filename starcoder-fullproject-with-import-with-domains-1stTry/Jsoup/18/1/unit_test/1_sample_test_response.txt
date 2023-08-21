@@ -1,0 +1,25 @@
+ private void assertConsume(CharacterReader reader, String expected) {
+        assertEquals(expected, reader.consumeTo(null));
+    }
+    private void assertConsume(CharacterReader reader, char expected) {
+        assertEquals(String.valueOf(expected), reader.consumeTo(null));
+    }
+    private void assertNotConsume(CharacterReader reader, char c) {
+        assertNotEquals(String.valueOf(c), reader.consumeTo(null));
+    }
+    private void assertNotConsume(CharacterReader reader, String seq) {
+        assertNotEquals(seq, reader.consumeTo(null));
+    }
+    private void assertConsume(CharacterReader reader, String seq, String expected) {
+        assertEquals(expected, reader.consumeTo(seq));
+    }
+    private void assertConsume(CharacterReader reader, char seq, String expected) {
+        assertEquals(expected, reader.consumeTo(seq));
+    }
+    private void assertNotConsume(CharacterReader reader, char seqA, char seqB) {
+        assertNotEquals(String.valueOf(seqA), reader.consumeTo(seqB));
+        assertNotEquals(String.valueOf(seqB), reader.consumeTo(seqA));
+    }
+    private void assertNotConsume(CharacterReader reader, String seqA, String seqB) {
+        assertNotEquals(seqA, reader.consumeTo(seqB));
+        assertNotEquals(seqB, reader.consumeTo(seq

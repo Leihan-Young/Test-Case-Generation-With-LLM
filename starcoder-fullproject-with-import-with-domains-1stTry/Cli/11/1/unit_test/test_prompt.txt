@@ -1,0 +1,71 @@
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ */
+public class HelpFormatter {
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    /**
+     * <p>Print the cmdLineSyntax to the specified writer, using the
+     * specified width.</p>
+     *
+     * @param pw The printWriter to write the help to
+     * @param width The number of characters per line for the usage statement.
+     * @param cmdLineSyntax The usage statement.
+     */
+    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax);
+    /**
+     * Sets the 'argName'.
+     *
+     * @param name the new value of 'argName'
+     */
+    public void setArgName(String name);
+    /**
+     * <p>Prints the usage statement for the specified application.</p>
+     *
+     * @param pw The PrintWriter to print the usage statement 
+     * @param width The number of characters to display per line
+     * @param app The application name
+     * @param options The command line Options
+     *
+     */
+    public void printUsage(PrintWriter pw, int width, String app, 
+                           Options options);
+    /**
+     * Appends the usage clause for an Option to a StringBuffer.  
+     *
+     * @param buff the StringBuffer to append to
+     * @param option the Option to append
+     * @param required whether the Option is required or not
+     */
+    private static void appendOption(final StringBuffer buff, 
+                                     final Option option, 
+                                     final boolean required);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

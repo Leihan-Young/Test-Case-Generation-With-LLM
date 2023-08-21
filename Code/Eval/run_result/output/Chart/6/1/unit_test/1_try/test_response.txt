@@ -1,0 +1,21 @@
+ShapeListEquals() {
+    ShapeList list1 = new ShapeList();
+    ShapeList list2 = new ShapeList();
+    Shape shape1 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    Shape shape2 = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+    Shape shape3 = new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0);
+
+    // test equality of empty lists
+    assertTrue(list1.equals(list2));
+
+    // test inequality of lists with different shapes
+    list1.set(0, shape1);
+    list2.set(0, shape3);
+    assertFalse(list1.equals(list2));
+
+    // test equality of lists with same shapes
+    list2.set(0, shape2);
+    assertTrue(list1.equals(list2));
+}
+```
+Note: This code assumes that all necessary imports have been done.

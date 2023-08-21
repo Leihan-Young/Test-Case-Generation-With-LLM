@@ -1,0 +1,52 @@
+XYPlot() {
+    XYDataset dataset = new AbstractXYDataset() {
+        public int getSeriesCount() {
+            return 1;
+        }
+        public Comparable<?> getSeriesKey(int series) {
+            return "Series 1";
+        }
+        public int getItemCount(int series) {
+            return 3;
+        }
+        public Number getX(int series, int item) {
+            return new Double(item + 1);
+        }
+        public Number getY(int series, int item) {
+            return new Double(item + 1);
+        }
+    };
+    XYItemRenderer renderer = new AbstractXYItemRenderer() {
+        public Shape getItemShape(int series, int item) {
+            return new Line2D.Double(-1.0, -1.0, 1.0, 1.0);
+        }
+    };
+    XYPlot plot = new XYPlot(dataset, null, null, renderer);
+    ValueAxis domainAxis = new NumberAxis("X");
+    ValueAxis rangeAxis = new NumberAxis("Y");
+    plot.setDomainAxis(domainAxis);
+    plot.setRangeAxis(rangeAxis);
+    JFreeChart chart = new JFreeChart(plot);
+    try {
+        ChartUtilities.saveChartAsPNG(new File("test.png"), chart, 500, 300);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+```
+The above code creates an `XYDataset` with three `(x,y)` pairs and a `Line2D` renderer. It then creates an `XYPlot` with the dataset and renderer, and sets the domain and range axes. Finally, it creates a `JFreeChart` with the plot and saves it as a PNG file. This test method should reveal any bugs in the `XYPlot` class.
+
+The error message suggests that the necessary classes and interfaces are not imported. Make sure to import the following packages at the top of your Java file:
+```
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
+import org.jfree.data.xy.AbstractXYDataset;
+import org.jfree.data.xy.XYDataset;
+import java.awt.Shape;
+import java.awt.geom.Line2D;
+import java.io.File;
+import java.io.IOException;
+```

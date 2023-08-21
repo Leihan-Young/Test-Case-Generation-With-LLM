@@ -1,0 +1,20 @@
+GetLegendItems() {
+    AbstractCategoryItemRenderer renderer = new AbstractCategoryItemRenderer() {
+        public LegendItem getLegendItem(int series, int category) {
+            return new LegendItem("Test Series", "Test ToolTip", "Test URL", "Test Desc", new Rectangle2D.Double(), Color.BLACK);
+        }
+        public void drawItem(Graphics2D g2, CategoryItemRendererState state, Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis, ValueAxis rangeAxis, CategoryDataset dataset, int row, int column, int pass) {
+            // do nothing
+        }
+    };
+    renderer.setSeriesVisible(0, false);
+    CategoryPlot plot = new CategoryPlot();
+    plot.setDataset(DatasetUtilities.createCategoryDataset("R", "C", new double[][] {{1.0}}, true));
+    plot.setRenderer(renderer);
+    renderer.setPlot(plot);
+    LegendItemCollection items = renderer.getLegendItems();
+    assertEquals("Expected 0 items", 0, items.getItemCount());
+}
+```
+
+The error occurred because the `@Override` annotation is not supported in source 1.4. To fix this, remove the `@Override` annotation before the `getLegendItem` and `drawItem` methods.

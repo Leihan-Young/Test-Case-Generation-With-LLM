@@ -1,0 +1,18 @@
+DefaultValueOption() throws Exception {
+    OptionBuilder obuilder = OptionBuilder.withLongName("default")
+            .withDescription("Default value")
+            .withShortName("d")
+            .withArgument(
+                    ArgumentBuilder.withName("default").create());
+    Option defaultOption = obuilder.create();
+    Parser parser = new Parser();
+    parser.setGroup(createDefaultOptionGroup());
+    parser.addOption(defaultOption);
+    String[] args = new String[]{"-b"};
+    CommandLine cl = parser.parse(args);
+    CommandLine cmd = cl;
+    assertNotNull(cmd);
+    List b = cmd.getValues("-b");
+    assertEquals("[null]", b + "");
+}
+```

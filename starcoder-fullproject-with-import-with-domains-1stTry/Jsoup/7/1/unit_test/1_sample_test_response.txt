@@ -1,0 +1,13 @@
+ private static Document createShell(String baseUri) {
+        Document doc = new Document("");
+        doc.setBaseUri(baseUri);
+        Element html = new Element(Tag.valueOf("html"), "");
+        doc.appendChild(html);
+        Element head = new Element(Tag.valueOf("head"), "");
+        html.appendChild(head);
+        Element body = new Element(Tag.valueOf("body"), "");
+        html.appendChild(body);
+        return doc;
+    }
+    public static void main(String[] args) {
+    }

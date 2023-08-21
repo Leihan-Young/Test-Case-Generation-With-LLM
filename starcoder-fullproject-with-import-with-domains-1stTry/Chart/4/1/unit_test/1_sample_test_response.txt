@@ -1,0 +1,23 @@
+ private static XYDataset createDataset() {
+        XYSeries series1 = new XYSeries("S1");
+        series1.add(1.0, 1.0);
+        series1.add(2.0, 2.0);
+        series1.add(3.0, 3.0);
+        XYSeries series2 = new XYSeries("S2");
+        series2.add(1.0, 2.0);
+        series2.add(2.0, 3.0);
+        series2.add(3.0, 4.0);
+        return new XYSeriesCollection(series1, series2);
+    }
+    private static XYPlot createPlot(XYDataset dataset) {
+        ValueAxis xAxis = new NumberAxis("X");
+        ValueAxis yAxis = new NumberAxis("Y");
+        XYItemRenderer renderer = new StandardXYItemRenderer();
+        XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        plot.setBackgroundPaint(Color.lightGray);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+        plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+        plot.setDomainCrosshairVisible(true);
+        plot.se

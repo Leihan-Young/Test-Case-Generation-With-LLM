@@ -1,0 +1,25 @@
+ private static void assertMapEquals(Map<String, String> map, String... keyValues) {
+        assertEquals(keyValues.length / 2, map.size());
+        for (int i = 0; i < keyValues.length; i += 2) {
+            assertEquals(keyValues[i + 1], map.get(keyValues[i]));
+        }
+    }
+    private static void assertMapEquals(Map<String, String> map, Map<String, String> expected) {
+        assertEquals(expected.size(), map.size());
+        for (Map.Entry<String, String> entry : expected.entrySet()) {
+            assertEquals(entry.getValue(), map.get(entry.getKey()));
+        }
+    }
+    private static void assertListEquals(List<String> list, String... values) {
+        assertEquals(values.length, list.size());
+        for (int i = 0; i < values.length; i++) {
+            assertEquals(values[i], list.get(i));
+        }
+    }
+    private static void assertListEquals(List<Map.Entry<String, String>> list, Map.Entry<String, String>... values) {
+        assertEquals(values.length, list.size());
+        for (int i = 0; i < values.length; i++) {
+            assertEquals(values[i], list.get(i));
+        }
+    }
+    publi

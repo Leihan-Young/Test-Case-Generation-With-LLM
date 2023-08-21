@@ -1,0 +1,5 @@
+  public void newTestMethod_test27()  throws Throwable  {
+      Class<Long> class0 = Long.class;
+      Long long0 = Matchers.isA(class0);
+      assertNotNull(long0);
+  }

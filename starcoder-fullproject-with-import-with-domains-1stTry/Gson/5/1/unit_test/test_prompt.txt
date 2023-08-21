@@ -1,0 +1,31 @@
+package com.google.gson.internal.bind.util;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.util.*;
+/**
+ * Utilities methods for manipulating dates in iso8601 format. This is much much faster and GC friendly than using SimpleDateFormat so
+ * highly suitable if you (un)serialize lots of date objects.
+ * 
+ * Supported parse format: [yyyy-MM-dd|yyyyMMdd][T(hh:mm[:ss[.sss]]|hhmm[ss[.sss]])]?[Z|[+-]hh[:]mm]]
+ * 
+ * @see <a href="http://www.w3.org/TR/NOTE-datetime">this specification</a>
+ */
+public class ISO8601Utils
+{
+    private static final String UTC_ID = "UTC";
+    private static final TimeZone TIMEZONE_UTC = TimeZone.getTimeZone(UTC_ID);
+    /**
+     * Parse a date from ISO-8601 formatted string. It expects a format
+     * [yyyy-MM-dd|yyyyMMdd][T(hh:mm[:ss[.sss]]|hhmm[ss[.sss]])]?[Z|[+-]hh[:mm]]]
+     * 
+     * @param date ISO string to parse in the appropriate format.
+     * @param pos The position to start parsing from, updated to where parsing stopped.
+     * @return the parsed date
+     * @throws ParseException if the date is not in the appropriate format
+     */
+    public static Date parse(String date, ParsePosition pos) throws ParseException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

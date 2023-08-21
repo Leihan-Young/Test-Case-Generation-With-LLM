@@ -1,0 +1,13 @@
+Flatten() {
+        String[] args = new String[]{
+                "-abc"
+        };
+
+        CommandLine cl = parser.parse(options, args);
+        assertFalse("Confirm -a is not set", cl.hasOption("a"));
+        assertFalse("Confirm -b is not set", cl.hasOption("b"));
+        assertFalse("Confirm -c is not set", cl.hasOption("c"));
+        assertTrue("Confirm all arguments recognized", cl.getArgs().length == 0);
+    }
+```
+This test method checks if the flatten() method can handle short options (options with only one hyphen) properly. The expected result is that none of the options (-a, -b, -c) are set. If the test fails, it means there is a bug in the flatten() method when processing short options.

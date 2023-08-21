@@ -1,0 +1,33 @@
+package org.jsoup.parser;
+import org.jsoup.helper.DescendableLinkedList;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.*;
+import org.jsoup.select.Elements;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+/**
+ * HTML Tree Builder; creates a DOM from Tokens.
+ */
+class HtmlTreeBuilder extends TreeBuilder {
+    private HtmlTreeBuilderState state; // the current state
+    private HtmlTreeBuilderState originalState; // original / marked state
+    private boolean baseUriSetFromDoc = false;
+    private Element headElement; // the current head element
+    private FormElement formElement; // the current form element
+    private Element contextElement; // fragment parse context -- could be null even if fragment parsing
+    private DescendableLinkedList<Element> formattingElements = new DescendableLinkedList<Element>(); // active (open) formatting elements
+    private List<Token.Character> pendingTableCharacters = new ArrayList<Token.Character>(); // chars in table to be shifted out
+    private boolean framesetOk = true; // if ok to go into frameset
+    private boolean fosterInserts = false; // if next inserts should be fostered
+    private boolean fragmentParsing = false; // if parsing a fragment of html
+    @Override
+    Document parse(String input, String baseUri, ParseErrorList errors);
+    Element insert(Token.StartTag startTag);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

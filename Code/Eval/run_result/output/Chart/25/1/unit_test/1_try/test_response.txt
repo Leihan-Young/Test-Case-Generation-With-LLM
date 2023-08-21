@@ -1,0 +1,37 @@
+StatisticalBarRenderer() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    dataset.addValue(10, "Series 1", "Category 1");
+    dataset.addValue(20, "Series 1", "Category 2");
+    dataset.addValue(15, "Series 2", "Category 1");
+    dataset.addValue(25, "Series 2", "Category 2");
+
+    StatisticalCategoryDataset statDataset = DatasetUtilities.createCategoryDataset("Series ", "", dataset);
+
+    StatisticalBarRenderer renderer = new StatisticalBarRenderer();
+    CategoryPlot plot = new CategoryPlot(statDataset, new CategoryAxis(""), new ValueAxis(""), renderer);
+    JFreeChart chart = new JFreeChart(plot);
+
+    BufferedImage image = chart.createBufferedImage(500, 500);
+    assertNotNull(image);
+
+    // check if the mean values are correctly displayed
+    assertEquals(Color.BLACK, renderer.getItemPaint(0, 0)); // Series 1, Category 1
+    assertEquals(Color.BLACK, renderer.getItemPaint(0, 1)); // Series 1, Category 2
+    assertEquals(Color.BLACK, renderer.getItemPaint(1, 0)); // Series 2, Category 1
+    assertEquals(Color.BLACK, renderer.getItemPaint(1, 1)); // Series 2, Category 2
+
+    // check if the standard deviation lines are displayed
+    Stroke defaultStroke = new BasicStroke();
+    assertEquals(defaultStroke, renderer.getItemOutlineStroke(0, 0)); // Series 1, Category 1
+    assertEquals(defaultStroke, renderer.getItemOutlineStroke(0, 1)); // Series 1, Category 2
+    assertEquals(defaultStroke, renderer.getItemOutlineStroke(1, 0)); // Series 2, Category 1
+    assertEquals(defaultStroke, renderer.getItemOutlineStroke(1, 1)); // Series 2, Category 2
+
+    // check if the standard deviation lines have the correct color
+    assertEquals(Color.BLACK, renderer.getItemOutlinePaint(0, 0)); // Series 1, Category 1
+    assertEquals(Color.BLACK, renderer.getItemOutlinePaint(0, 1)); // Series 1, Category 2
+    assertEquals(Color.BLACK, renderer.getItemOutlinePaint(1, 0)); // Series 2, Category 1
+    assertEquals(Color.BLACK, renderer.getItemOutlinePaint(1, 1)); // Series 2, Category 2
+}
+```
+The test method creates a bar chart using `StatisticalBarRenderer` with a dataset containing four values. It then checks if the mean values of the bars are correctly displayed and if the standard deviation lines are displayed with the correct color and stroke. This test method can reveal any bugs in the implementation of `StatisticalBarRenderer`.

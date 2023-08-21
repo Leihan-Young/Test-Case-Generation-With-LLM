@@ -1,0 +1,45 @@
+BugInWriteableCommandLineImpl() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final Option a = obuilder.withShortName("a").create();
+
+    final WriteableCommandLineImpl commandLine = new WriteableCommandLineImpl();
+    commandLine.addOption(a);
+
+    assertFalse(commandLine.hasOption(a));
+
+    commandLine.addValue(a, "value1");
+    assertTrue(commandLine.hasOption(a));
+
+    final List values = commandLine.getUndefaultedValues(a);
+    assertEquals(1, values.size());
+    assertEquals("value1", values.get(0));
+
+    final List defaultValues = new ArrayList();
+    defaultValues.add("default1");
+    commandLine.setDefaultValues(a, defaultValues);
+
+    final List valuesWithDefault = commandLine.getValues(a,
+            Collections.EMPTY_LIST);
+    assertEquals(1, valuesWithDefault.size());
+    assertEquals("value1", valuesWithDefault.get(0));
+
+    commandLine.addSwitch(a, true);
+    final Boolean switchValue = commandLine.getSwitch(a, false);
+    assertEquals(true, switchValue);
+
+    commandLine.setDefaultSwitch(a, true);
+    final Boolean defaultSwitchValue = commandLine.getSwitch(a, false);
+    assertEquals(true, defaultSwitchValue);
+
+    commandLine.addProperty(a, "key1", "value1");
+    final String propertyValue = commandLine.getProperty(a, "key1", null);
+    assertEquals("value1", propertyValue);
+
+    commandLine.addProperty("key2", "value2");
+    final String globalPropertyValue = commandLine.getProperty("key2");
+    assertEquals("value2", globalPropertyValue);
+
+    final boolean looksLikeOption = commandLine.looksLikeOption("test");
+    assertFalse(looksLikeOption);
+}
+```

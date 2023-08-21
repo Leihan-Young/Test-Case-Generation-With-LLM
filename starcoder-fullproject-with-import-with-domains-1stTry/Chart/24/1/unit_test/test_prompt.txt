@@ -1,0 +1,42 @@
+package org.jfree.chart.renderer;
+import java.awt.Color;
+import java.awt.Paint;
+import java.io.Serializable;
+import org.jfree.chart.util.PublicCloneable;
+/**
+ * A paint scale that returns shades of gray.
+ * 
+ * @since 1.0.4
+ */
+public class GrayPaintScale 
+        implements PaintScale, PublicCloneable, Serializable {
+    private double lowerBound;
+    private double upperBound;
+    /**
+     * Tests this <code>GrayPaintScale</code> instance for equality with an
+     * arbitrary object.  This method returns <code>true</code> if and only
+     * if:
+     * <ul>
+     * <li><code>obj</code> is not <code>null</code>;</li>
+     * <li><code>obj</code> is an instance of <code>GrayPaintScale</code>;</li>
+     * </ul>
+     * 
+     * @param obj  the object (<code>null</code> permitted).
+     * 
+     * @return A boolean.
+     */
+    public boolean equals(Object obj);
+    /**
+     * Returns a paint for the specified value.
+     * 
+     * @param value  the value (must be within the range specified by the
+     *         lower and upper bounds for the scale).
+     * 
+     * @return A paint for the specified value.
+     */
+    public Paint getPaint(double value);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

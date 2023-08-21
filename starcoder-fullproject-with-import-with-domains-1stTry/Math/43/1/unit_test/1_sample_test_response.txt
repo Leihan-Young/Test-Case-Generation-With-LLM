@@ -1,0 +1,29 @@
+     public void testSerializability() {
+        SummaryStatistics stats = new SummaryStatistics();
+        stats.addValue(1.0);
+        stats.addValue(2.0);
+        stats.addValue(3.0);
+        stats.addValue(4.0);
+        stats.addValue(5.0);
+        stats.addValue(6.0);
+        stats.addValue(7.0);
+        stats.addValue(8.0);
+        stats.addValue(9.0);
+        stats.addValue(10.0);
+        stats.addValue(11.0);
+        stats.addValue(12.0);
+        stats.addValue(13.0);
+        stats.addValue(14.0);
+        stats.addValue(15.0);
+        stats.addValue(16.0);
+        stats.addValue(17.0);
+        stats.addValue(18.0);
+        stats.addValue(19.0);
+        stats.addValue(20.0);
+        stats.addValue(21.0);
+        stats.addValue(22.0);
+        stats.addValue(23.0);
+        stats.addValue(24.0);
+        stats.addValue(25.0);
+        stats.addValue(26.0);
+        stats.addValu

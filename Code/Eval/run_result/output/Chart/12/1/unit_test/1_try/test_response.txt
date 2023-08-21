@@ -1,0 +1,8 @@
+GetDataset() {
+    MultiplePiePlot plot = new MultiplePiePlot();
+    assertNull(plot.getDataset()); // expecting null since dataset is not set
+    CategoryDataset dataset = DatasetUtilities.createCategoryDataset("row", "column", new double[][]{{1,2,3},{4,5,6}});
+    plot.setDataset(dataset);
+    assertEquals(dataset, plot.getDataset());
+}
+```

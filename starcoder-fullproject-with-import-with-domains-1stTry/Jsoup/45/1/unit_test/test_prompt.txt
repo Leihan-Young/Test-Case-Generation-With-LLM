@@ -1,0 +1,19 @@
+package org.jsoup.parser;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.*;
+import org.jsoup.select.Elements;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * HTML Tree Builder; creates a DOM from Tokens.
+ */
+public class HtmlTreeBuilder extends TreeBuilder {
+    void resetInsertionMode();
+    @Override
+    Document parse(String input, String baseUri, ParseErrorList errors);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

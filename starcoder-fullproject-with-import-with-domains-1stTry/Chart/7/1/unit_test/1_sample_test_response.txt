@@ -1,0 +1,6 @@
+ public void testSerialization() throws Exception {
+        TimePeriodValues s1 = new TimePeriodValues("S1");
+        TimePeriodValues s2 = (TimePeriodValues) ObjectUtilities.clone(s1);
+        assertTrue(s1!= s2);
+        assertTrue(s1.getClass() == s2.getClass());
+    }

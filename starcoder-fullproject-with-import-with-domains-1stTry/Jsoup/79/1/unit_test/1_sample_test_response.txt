@@ -1,0 +1,22 @@
+ private static void assertListEquals(List<Node> expected, List<Node> actual) {
+        Assert.assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assert.assertSame(expected.get(i), actual.get(i));
+        }
+    }
+    private static void assertListEquals(String msg, List<Node> expected, List<Node> actual) {
+        Assert.assertEquals(msg, expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assert.assertSame(msg, expected.get(i), actual.get(i));
+        }
+    }
+    private static void assertListNotSame(List<Node> expected, List<Node> actual) {
+        Assert.assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assert.assertNotSame(expected.get(i), actual.get(i));
+        }
+    }
+    private static void assertListNotSame(String msg, List<Node> expected, List<Node> actual) {
+        Assert.assertEquals(msg, expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assert.assertNotSame(msg, expected.get(i), actua

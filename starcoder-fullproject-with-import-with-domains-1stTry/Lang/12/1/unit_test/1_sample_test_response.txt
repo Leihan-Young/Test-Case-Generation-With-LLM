@@ -1,0 +1,29 @@
+     private void random(int count) {
+        random(count, false, false);
+    }
+    private void random(int count, boolean letters, boolean numbers) {
+        random(count, 0, 0, letters, numbers, null, RANDOM);
+    }
+    private void random(int count, int start, int end, boolean letters, boolean numbers, char... chars) {
+        random(count, start, end, letters, numbers, chars, RANDOM);
+    }
+    private void random(int count, int start, int end, boolean letters, boolean numbers, char[] chars, Random random) {
+        String randomString = RandomStringUtils.random(count, start, end, letters, numbers, chars, random);
+        assertEquals(count, randomString.length());
+        if (chars == null) {
+            chars = new char[256];
+            for (int i = 0; i < chars.length; i++) {
+                chars[i] = (char) i;
+            }
+        }
+        if (start == 0 && end == 0) {
+            if (letters && numbers) {
+                start = 32;
+                end = 126;
+            } else if (letters) {
+                start = 65;
+                end = 90;
+            } else if (numbers) {
+                start = 48;
+                end = 57;
+            

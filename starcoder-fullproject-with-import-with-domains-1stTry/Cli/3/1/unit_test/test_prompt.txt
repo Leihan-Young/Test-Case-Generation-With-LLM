@@ -1,0 +1,40 @@
+package org.apache.commons.cli;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+import org.apache.commons.lang.math.NumberUtils;
+/**
+  * This is a temporary implementation. TypeHandler will handle the 
+  * pluggableness of OptionTypes and it will direct all of these types 
+  * of conversion functionalities to ConvertUtils component in Commons 
+  * alreayd. BeanUtils I think.
+  *
+  * @author Henri Yandell (bayard @ generationjava.com)
+  * @version $Revision$
+  */
+public class TypeHandler {
+    /**
+     * <p>Returns the <code>Object</code> of type <code>obj</code>
+     * with the value of <code>str</code>.</p>
+     *
+     * @param str the command line value
+     * @param obj the type of argument
+     * @return The instance of <code>obj</code> initialised with
+     * the value of <code>str</code>.
+     */
+    public static Object createValue(String str, Object obj);
+    /**
+     * <p>Create a number from a String. If a . is present, it creates a 
+     *    Double, otherwise a Long. </p>
+     *
+     * @param str the value
+     * @return the number represented by <code>str</code>, if <code>str</code>
+     * is not a number, null is returned.
+     */
+    public static Number createNumber(String str);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

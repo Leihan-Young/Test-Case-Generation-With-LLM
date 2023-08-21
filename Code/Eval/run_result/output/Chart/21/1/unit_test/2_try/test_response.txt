@@ -1,0 +1,10 @@
+DefaultBoxAndWhiskerCategoryDataset() {
+        DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+        dataset.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, null, null, null), "Row 1", "Column 1");
+        dataset.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, null, null, null), "Row 1", "Column 2");
+        dataset.add(new BoxAndWhiskerItem(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, null, null, null), "Row 1", "Column 3");
+        Range range = dataset.getRangeBounds(true);
+        assertEquals(1.0, range.getLowerBound(), 0.00001);
+        assertEquals(6.0, range.getUpperBound(), 0.00001);
+    }
+```

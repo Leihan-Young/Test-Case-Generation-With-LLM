@@ -1,0 +1,222 @@
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ */
+public class HelpFormatter
+{
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    private String longOptSeparator = DEFAULT_LONG_OPT_SEPARATOR;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    /**
+     * Prints the usage statement for the specified application.
+     *
+     * @param pw The PrintWriter to print the usage statement 
+     * @param width The number of characters to display per line
+     * @param app The application name
+     * @param options The command line Options
+     */
+    public void printUsage(PrintWriter pw, int width, String app, Options options);
+    /**
+     * Appends the usage clause for an Option to a StringBuffer.  
+     *
+     * @param buff the StringBuffer to append to
+     * @param option the Option to append
+     * @param required whether the Option is required or not
+     */
+    private void appendOption(final StringBuffer buff, final Option option, final boolean required);
+    /**
+     * Sets the 'argName'.
+     *
+     * @param name the new value of 'argName'
+     */
+    public void setArgName(String name);
+    /**
+     * Print the cmdLineSyntax to the specified writer, using the
+     * specified width.
+     *
+     * @param pw The printWriter to write the help to
+     * @param width The number of characters per line for the usage statement.
+     * @param cmdLineSyntax The usage statement.
+     */
+    public void printUsage(PrintWriter pw, int width, String cmdLineSyntax);
+}
+package org.apache.commons.cli;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+/** <p>Describes a single command-line option.  It maintains
+ * information regarding the short-name of the option, the long-name,
+ * if any exists, a flag indicating if an argument is required for
+ * this option, and a self-documenting description of the option.</p>
+ *
+ * <p>An Option is not created independantly, but is create through
+ * an instance of {@link Options}.<p>
+ *
+ * @see org.apache.commons.cli.Options
+ * @see org.apache.commons.cli.CommandLine
+ *
+ * @author bob mcwhirter (bob @ werken.com)
+ * @author <a href="mailto:jstrachan@apache.org">James Strachan</a>
+ * @version $Revision$, $Date$
+ */
+public class Option implements Cloneable, Serializable
+{
+    private static final long serialVersionUID = 1L;
+    public static final int UNINITIALIZED = -1;
+    public static final int UNLIMITED_VALUES = -2;
+    private String opt;
+    private String longOpt;
+    private String argName = "arg";
+    private String description;
+    private boolean required;
+    private boolean optionalArg;
+    private int numberOfArgs = UNINITIALIZED;
+    private Object type;
+    private List values = new ArrayList();
+    private char valuesep;
+    /** 
+     * Query to see if this Option requires an argument
+     *
+     * @return boolean flag indicating if an argument is required
+     */
+    public boolean hasArg();
+    /**
+     * Sets the display name for the argument value.
+     *
+     * @param argName the display name for the argument value.
+     */
+    public void setArgName(String argName);
+    /** 
+     * Query to see if this Option requires an argument
+     *
+     * @return boolean flag indicating if an argument is required
+     */
+    public boolean isRequired();
+    /** 
+     * Dump state, suitable for debugging.
+     *
+     * @return Stringified form of this object
+     */
+    public String toString();
+    /**
+     * Returns the id of this Option.  This is only set when the
+     * Option shortOpt is a single character.  This is used for switch
+     * statements.
+     *
+     * @return the id of this Option
+     */
+    public int getId();
+}
+package org.apache.commons.cli;
+/**
+ * OptionBuilder allows the user to create Options using descriptive methods.
+ *
+ * <p>Details on the Builder pattern can be found at
+ * <a href="http://c2.com/cgi-bin/wiki?BuilderPattern">
+ * http://c2.com/cgi-bin/wiki?BuilderPattern</a>.</p>
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ * @since 1.0
+ */
+public final class OptionBuilder
+{
+    private static String longopt;
+    private static String description;
+    private static String argName;
+    private static boolean required;
+    private static int numberOfArgs = Option.UNINITIALIZED;
+    private static Object type;
+    private static boolean optionalArg;
+    private static char valuesep;
+    private static OptionBuilder instance = new OptionBuilder();
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the character representation of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(char opt) throws IllegalArgumentException;
+    /**
+     * The next Option created will be required.
+     *
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder isRequired();
+    /**
+     * The next Option created will require an argument value.
+     *
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder hasArg();
+    /**
+     * Resets the member variables to their default values.
+     */
+    private static void reset();
+    /**
+     * Create an Option using the current settings
+     *
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>longOpt</code> has not been set.
+     */
+    public static Option create() throws IllegalArgumentException;
+    /**
+     * The next Option created will require an argument value if
+     * <code>hasArg</code> is true.
+     *
+     * @param hasArg if true then the Option has an argument value
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder hasArg(boolean hasArg);
+    /**
+     * The next Option created will be required if <code>required</code>
+     * is true.
+     *
+     * @param newRequired if true then the Option is required
+     * @return the OptionBuilder instance
+     */
+    public static OptionBuilder isRequired(boolean newRequired);
+    /**
+     * Create an Option using the current settings and with
+     * the specified Option <code>char</code>.
+     *
+     * @param opt the <code>java.lang.String</code> representation
+     * of the Option
+     * @return the Option instance
+     * @throws IllegalArgumentException if <code>opt</code> is not
+     * a valid character.  See Option.
+     */
+    public static Option create(String opt) throws IllegalArgumentException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

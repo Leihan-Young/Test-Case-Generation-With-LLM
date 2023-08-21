@@ -1,0 +1,189 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+package org.jfree.data;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+/**
+ * A data structure that stores zero, one or many objects, where each object is
+ * associated with two keys (a 'row' key and a 'column' key).
+ */
+public class KeyedObjects2D implements Cloneable, Serializable {
+    private static final long serialVersionUID = -1015873563138522374L;
+    private List rowKeys;
+    private List columnKeys;
+    private List rows;
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnIndex  the column index.
+     * 
+     * @see #removeRow(int)
+     */
+    public void removeColumn(int columnIndex) {
+        Comparable columnKey = getColumnKey(columnIndex);
+        removeColumn(columnKey);
+    }
+    /**
+     * Returns the object for the given row and column keys.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     *
+     * @return The object (possibly <code>null</code>).
+     * 
+     * @throws IllegalArgumentException if <code>rowKey<code> or 
+     *         <code>columnKey</code> is <code>null</code>.
+     * @throws UnknownKeyException if <code>rowKey</code> or 
+     *         <code>columnKey</code> is not recognised.
+     */
+    public Object getObject(Comparable rowKey, Comparable columnKey) {
+        if (rowKey == null) {
+            throw new IllegalArgumentException("Null 'rowKey' argument.");
+        }
+        if (columnKey == null) {
+            throw new IllegalArgumentException("Null 'columnKey' argument.");
+        }
+        int row = this.rowKeys.indexOf(rowKey);
+        if (row < 0) {
+            throw new UnknownKeyException("Row key (" + rowKey 
+                    + ") not recognised.");
+        }
+        int column = this.columnKeys.indexOf(columnKey);
+        if (column < 0) {
+            throw new UnknownKeyException("Column key (" + columnKey 
+                    + ") not recognised.");
+        }
+        if (row >= 0) {
+        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);
+            return rowData.getObject(columnKey);
+        }
+        else {
+            return null;
+        }
+    }
+    /**
+     * Removes an entire row from the table.
+     *
+     * @param rowIndex  the row index.
+     * 
+     * @see #removeColumn(int)
+     */
+    public void removeRow(int rowIndex) {
+        this.rowKeys.remove(rowIndex);
+        this.rows.remove(rowIndex);
+    }
+    /**
+     * Tests this object for equality with an arbitrary object.
+     *
+     * @param obj  the object to test (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof KeyedObjects2D)) {
+            return false;
+        }
+        
+        KeyedObjects2D that = (KeyedObjects2D) obj;
+        if (!getRowKeys().equals(that.getRowKeys())) {
+            return false;
+        }
+        if (!getColumnKeys().equals(that.getColumnKeys())) {
+            return false;
+        }
+        int rowCount = getRowCount();
+        if (rowCount != that.getRowCount()) {
+            return false;
+        }
+        int colCount = getColumnCount();
+        if (colCount != that.getColumnCount()) {
+            return false;
+        }
+        for (int r = 0; r < rowCount; r++) {
+            for (int c = 0; c < colCount; c++) {
+                Object v1 = getObject(r, c);
+                Object v2 = that.getObject(r, c);
+                if (v1 == null) {
+                    if (v2 != null) {
+                        return false;
+                    }
+                }
+                else {
+                    if (!v1.equals(v2)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * Removes an entire column from the table.
+     *
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @throws UnknownKeyException if <code>rowKey</code> is not recognised.
+     * 
+     * @see #removeRow(Comparable)
+     */
+    public void removeColumn(Comparable columnKey) {
+        int index = getColumnIndex(columnKey);
+        if (index < 0) {
+            throw new UnknownKeyException("Column key (" + columnKey 
+                    + ") not recognised.");
+        }
+        Iterator iterator = this.rows.iterator();
+        while (iterator.hasNext()) {
+            KeyedObjects rowData = (KeyedObjects) iterator.next();
+                rowData.removeValue(columnKey);
+        }
+        this.columnKeys.remove(columnKey);
+    }
+    /**
+     * Removes an object from the table by setting it to <code>null</code>.  If
+     * all the objects in the specified row and/or column are now 
+     * <code>null</code>, the row and/or column is removed from the table.
+     *
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #addObject(Object, Comparable, Comparable)
+     */
+    public void removeObject(Comparable rowKey, Comparable columnKey) {
+        setObject(null, rowKey, columnKey);
+        
+        // 1. check whether the row is now empty.
+        boolean allNull = true;
+        int rowIndex = getRowIndex(rowKey);
+        KeyedObjects row = (KeyedObjects) this.rows.get(rowIndex);
+
+        for (int item = 0, itemCount = row.getItemCount(); item < itemCount; 
+             item++) {
+            if (row.getObject(item) != null) {
+                allNull = false;
+                break;
+            }
+        }
+        
+        if (allNull) {
+            this.rowKeys.remove(rowIndex);
+            this.rows.remove(rowIndex);
+        }
+        
+        // 2. check whether the column is now empty.
+        
+        
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

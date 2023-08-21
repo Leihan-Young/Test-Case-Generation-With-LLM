@@ -1,0 +1,31 @@
+AxisDrawLabel() {
+    Axis axis = new Axis() {
+        @Override
+        public AxisState draw(Graphics2D g2, double cursor, Rectangle2D plotArea, Rectangle2D dataArea,
+                RectangleEdge edge, PlotRenderingInfo plotState) {
+            return null;
+        }
+    };
+
+    Graphics2D g2 = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics();
+    Rectangle2D plotArea = new Rectangle2D.Double(0, 0, 500, 500);
+    Rectangle2D dataArea = new Rectangle2D.Double(0, 0, 400, 400);
+    AxisState state = new AxisState(cursor);
+    RectangleEdge edge = RectangleEdge.BOTTOM;
+    PlotRenderingInfo plotState = new PlotRenderingInfo(null);
+
+    // test with null state
+    try {
+        axis.drawLabel("test", g2, plotArea, dataArea, edge, null, plotState);
+        fail("Expected an IllegalArgumentException to be thrown");
+    } catch (IllegalArgumentException e) {
+        // expected
+    }
+
+    // test with empty label
+    state = axis.drawLabel("", g2, plotArea, dataArea, edge, state, plotState);
+    assertEquals(cursor, state.getCursor(), EPSILON);
+
+    // TODO: add more test cases to reveal the bug
+}
+```

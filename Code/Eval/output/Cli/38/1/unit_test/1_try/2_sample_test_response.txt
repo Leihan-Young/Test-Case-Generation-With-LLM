@@ -1,0 +1,22 @@
+HandleToken() throws ParseException {
+    // create options
+    Option optionA = new Option("a", "first");
+    Option optionB = new Option("b", "second");
+    Options opts = new Options();
+    opts.addOption(optionA);
+    opts.addOption(optionB);
+
+    // create parser
+    DefaultParser parser = new DefaultParser();
+
+    // parse arguments
+    String[] arguments = {"-a", "-b"};
+    CommandLine line = parser.parse(opts, arguments);
+
+    // test if options are present
+    assertTrue(line.hasOption("a"));
+    assertTrue(line.hasOption("b"));
+}
+
+```
+The above test case tests if the `handleToken()` method in the `DefaultParser` class correctly handles multiple options passed as command-line arguments. The test creates two options `optionA` and `optionB` and adds them to the `opts` object. It then creates a `DefaultParser` object and passes the `opts` and `arguments` to the `parse()` method. The test checks if both options are present in the `CommandLine` object returned by the `parse()` method. If the `handleToken()` method is working correctly, this test should pass.

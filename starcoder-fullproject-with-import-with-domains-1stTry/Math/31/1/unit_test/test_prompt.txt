@@ -1,0 +1,25 @@
+package org.apache.commons.math3.util;
+import org.apache.commons.math3.exception.ConvergenceException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+/**
+ * Provides a generic means to evaluate continued fractions.  Subclasses simply
+ * provided the a and b coefficients to evaluate the continued fraction.
+ *
+ * <p>
+ * References:
+ * <ul>
+ * <li><a href="http://mathworld.wolfram.com/ContinuedFraction.html">
+ * Continued Fraction</a></li>
+ * </ul>
+ * </p>
+ *
+ * @version $Id$
+ */
+public abstract class ContinuedFraction {
+    private static final double DEFAULT_EPSILON = 10e-9;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

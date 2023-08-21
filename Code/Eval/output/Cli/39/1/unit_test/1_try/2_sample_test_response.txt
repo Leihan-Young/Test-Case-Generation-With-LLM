@@ -1,0 +1,47 @@
+CreateValue() throws Exception {
+        // Test creating a String value
+        Object obj = TypeHandler.createValue("test", PatternOptionBuilder.STRING_VALUE);
+        assertTrue(obj instanceof String);
+        assertEquals(obj, "test");
+
+        // Test creating an Object value
+        obj = TypeHandler.createValue("java.lang.Object", PatternOptionBuilder.OBJECT_VALUE);
+        assertTrue(obj instanceof Object);
+        assertEquals(obj.getClass(), Class.forName("java.lang.Object"));
+
+        // Test creating a Number value
+        obj = TypeHandler.createValue("10", PatternOptionBuilder.NUMBER_VALUE);
+        assertTrue(obj instanceof Number);
+        assertEquals(obj, 10);
+
+        // Test creating a Date value
+        obj = TypeHandler.createValue("2022/01/01", PatternOptionBuilder.DATE_VALUE);
+        assertTrue(obj instanceof Date);
+        assertEquals(obj, new SimpleDateFormat("yyyy/MM/dd").parse("2022/01/01"));
+
+        // Test creating a Class value
+        obj = TypeHandler.createValue("java.lang.String", PatternOptionBuilder.CLASS_VALUE);
+        assertTrue(obj instanceof Class);
+        assertEquals(obj, String.class);
+
+        // Test creating a File value
+        obj = TypeHandler.createValue("test.txt", PatternOptionBuilder.FILE_VALUE);
+        assertTrue(obj instanceof File);
+        assertEquals(obj, new File("test.txt"));
+
+        // Test creating an Existing File value
+        obj = TypeHandler.createValue("test.txt", PatternOptionBuilder.EXISTING_FILE_VALUE);
+        assertTrue(obj instanceof File);
+        assertEquals(obj, new File("test.txt"));
+
+        // Test creating a Files value
+        obj = TypeHandler.createValue("test1.txt,test2.txt", PatternOptionBuilder.FILES_VALUE);
+        assertTrue(obj instanceof File[]);
+        assertArrayEquals((File[]) obj, new File[]{new File("test1.txt"), new File("test2.txt")});
+
+        // Test creating a URL value
+        obj = TypeHandler.createValue("http://www.example.com", PatternOptionBuilder.URL_VALUE);
+        assertTrue(obj instanceof URL);
+        assertEquals(obj, new URL("http://www.example.com"));
+    }
+```

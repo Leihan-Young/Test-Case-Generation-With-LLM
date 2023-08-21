@@ -1,0 +1,14 @@
+GenerateToolTipFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        String expected1 = " title=\"abc\" alt=\"\"";
+        String actual1 = g.generateToolTipFragment("abc");
+        assertEquals(expected1, actual1);
+        String expected2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actual2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        assertEquals(expected2, actual2);
+        String expected3 = " title=\"\" alt=\"\"";
+        String actual3 = g.generateToolTipFragment("");
+        assertEquals(expected3, actual3);
+    }
+```
+The bug in the original program is that it does not handle the case where the tooltip text contains a comma properly, resulting in a malformed HTML attribute. The test method tests this by passing "Series "A", 100.0" as input and comparing the generated tooltip to the expected value. Additionally, the test method tests the case where the input is an empty string, to ensure that the program can handle this case as well.

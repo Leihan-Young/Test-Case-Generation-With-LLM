@@ -1,0 +1,40 @@
+     private void assertParseFailure(String[] arguments, String message) {
+        try {
+            parser.parse(options, arguments);
+            fail("Expected ParseException");
+        } catch (ParseException e) {
+            assertEquals(message, e.getMessage());
+        }
+    }
+    private void assertParseFailure(Options options, String[] arguments, String message) {
+        try {
+            parser.parse(options, arguments);
+            fail("Expected ParseException");
+        } catch (ParseException e) {
+            assertEquals(message, e.getMessage());
+        }
+    }
+    private void assertParseSuccess(Options options, String[] arguments, String[] expected) {
+        try {
+            CommandLine cl = parser.parse(options, arguments);
+            assertNotNull(cl);
+            String[] actual = cl.getArgs();
+            if (expected == null) {
+                assertNull(actual);
+            } else {
+                assertNotNull(actual);
+                assertEquals(expected.length, actual.length);
+                for (int i = 0; i < expected.length; i++) {
+                    assertEquals(expected[i], actual[i]);
+                }
+            }
+        } catch (ParseException e) {
+            fail("Unexpected ParseException " + e.getMessage());
+        }
+    }
+    private void assertParseSuccess(String[] arguments, String[] expected) {
+        try {
+            CommandLine cl = parser.parse(options, arguments);
+            assertNotNull(cl);
+            String[] actual = cl.getArgs();
+            if (expected =

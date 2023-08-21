@@ -1,0 +1,10 @@
+ private static final String FOO = "foo";
+    private static final byte[] FOO_BYTES = {102, 111, 111};
+    private static final String FOO_B64 = "Zm9v";
+    private static final byte[] FOO_B64_BYTES = {0x66, 0x6f, 0x6f};
+    private static final String EMPTY = "";
+    private static final byte[] EMPTY_BYTES = {};
+    private static final String EMPTY_B64 = "";
+    private static final byte[] EMPTY_B64_BYTES = {};
+    private static final String LONG = "12345678901234567890123456789012345678901234567890123456789012345678901234567890";
+    private static final byte[] LONG_BYTES = {0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30, 0x31, 0

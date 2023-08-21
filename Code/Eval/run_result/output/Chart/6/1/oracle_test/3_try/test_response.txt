@@ -1,0 +1,34 @@
+Serialization() {
+    ShapeList l1 = new ShapeList();
+    l1.setShape(0, new Rectangle(1, 2, 3, 4));
+    l1.setShape(1, new Line2D.Double(1.0, 2.0, 3.0, 4.0));
+    l1.setShape(2, null);
+
+    ShapeList l2 = null;
+
+    try {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(buffer);
+        out.writeObject(l1);
+        out.close();
+
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(
+                buffer.toByteArray()));
+        l2 = (ShapeList) in.readObject();
+        in.close();
+    } catch (IOException e) {
+        fail("IOException thrown: " + e.getMessage());
+    } catch (ClassNotFoundException e) {
+        fail("ClassNotFoundException thrown: " + e.getMessage());
+    }
+
+    assertNotNull(l2);
+    assertEquals(l1.size(), l2.size());
+    assertNotSame(l1, l2);
+    assertNotSame(l1.get(0), l2.get(0));
+    assertNotSame(l1.get(1), l2.get(1));
+    assertNull(l2.getObject(2));
+    assertEquals(l1.get(0).getBounds(), l2.getShape(0).getBounds());
+    assertEquals(l1.get(1).getBounds(), l2.getShape(1).getBounds());
+}
+```

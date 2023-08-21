@@ -1,0 +1,86 @@
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2);
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2);
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2);
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2);
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2);
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

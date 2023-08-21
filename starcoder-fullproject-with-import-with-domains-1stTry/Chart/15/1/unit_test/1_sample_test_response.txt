@@ -1,0 +1,25 @@
+ private static PieDataset createPieDataset() {
+        DefaultPieDataset result = new DefaultPieDataset();
+        result.setValue("One", new Double(43.2));
+        result.setValue("Two", new Double(10.0));
+        result.setValue("Three", new Double(27.5));
+        result.setValue("Four", new Double(17.5));
+        result.setValue("Five", new Double(11.0));
+        result.setValue("Six", new Double(19.4));
+        return result;
+    }
+    private static PieDataset createPieDataset2() {
+        DefaultPieDataset result = new DefaultPieDataset();
+        result.setValue("One", new Double(-43.2));
+        result.setValue("Two", new Double(-10.0));
+        result.setValue("Three", new Double(-27.5));
+        result.setValue("Four", new Double(-17.5));
+        result.setValue("Five", new Double(-11.0));
+        result.setValue("Six", new Double(-19.4));
+        return result;
+    }
+    private static PieDataset createPieDataset3() {
+        DefaultPieDataset result = new DefaultPieDataset();
+        result.setValue("One", new Double(0.0));
+        result.setValue("Two", new Double(0.0));
+        result.setValue("Three", new Double(0.

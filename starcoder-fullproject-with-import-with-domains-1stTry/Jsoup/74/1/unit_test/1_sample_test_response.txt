@@ -1,0 +1,7 @@
+ public void testIsActuallyWhitespace() {
+        assertFalse(StringUtil.isActuallyWhitespace('a'));
+        assertTrue(StringUtil.isActuallyWhitespace(' '));
+        assertTrue(StringUtil.isActuallyWhitespace('\t'));
+        assertTrue(StringUtil.isActuallyWhitespace('\n'));
+        assertTrue(StringUtil.isActuallyWhitespace('\r'));
+    }

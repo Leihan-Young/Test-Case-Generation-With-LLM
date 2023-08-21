@@ -1,0 +1,14 @@
+WriteableCommandLineImpl() {
+    Option option1 = new OptionImpl("o1", "option1", false, "Option 1");
+    Option option2 = new OptionImpl("o2", "option2", false, "Option 2");
+
+    WriteableCommandLineImpl cmd = new WriteableCommandLineImpl();
+    cmd.addOption(option1);
+    cmd.addOption(option2);
+
+    assertTrue(cmd.hasOption(option1));
+    assertTrue(cmd.hasOption(option2));
+    assertFalse(cmd.hasOption(new OptionImpl("o3", "option3", false, "Option 3")));
+}
+``` 
+This test method checks whether the `hasOption()` method of `WriteableCommandLineImpl` correctly identifies whether an option has been added to the command line or not. It creates two `Option` objects, adds them to a new `WriteableCommandLineImpl` object, and then checks if the `hasOption()` method correctly identifies the presence or absence of those options. However, the bug in the program lies elsewhere and cannot be revealed by this test method.

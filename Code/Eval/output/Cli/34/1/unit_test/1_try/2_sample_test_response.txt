@@ -1,0 +1,18 @@
+Bug() {
+    Option opt = new Option("t", "test", true, "test option"); // create an option with a required argument
+    opt.setRequired(true); // set the option as required
+    Options options = new Options();
+    options.addOption(opt);
+
+    CommandLineParser parser = new DefaultParser();
+    String[] args = new String[] { "-t" }; // provide option without the required argument
+    try {
+        CommandLine line = parser.parse(options, args); // parse the command line
+        fail("Expected MissingOptionException"); // if parsing succeeds, fail the test
+    } catch (MissingOptionException e) {
+        // expected exception, do nothing
+    } catch (Exception e) {
+        fail("Unexpected exception: " + e.getMessage()); // if any other exception is thrown, fail the test
+    }
+}
+```

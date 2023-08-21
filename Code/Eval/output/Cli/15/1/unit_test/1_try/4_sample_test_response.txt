@@ -1,0 +1,54 @@
+GetValues() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final OptionBuilder abuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option input =
+            obuilder.withShortName("i").withDescription("input").create();
+
+        final Option output =
+            obuilder.withShortName("o").withDescription("output").create();
+
+        final Option a =
+            abuilder.withShortName("a").withDescription("option a").create();
+
+        final Option b =
+            abuilder.withShortName("b").withDescription("option b").create();
+
+        final Option c =
+            abuilder.withShortName("c").withDescription("option c").create();
+
+        final Option d =
+            abuilder.withShortName("d").withDescription("option d").create();
+
+        final Group options =
+            gbuilder
+                .withOption(input)
+                .withOption(output)
+                .withOption(a)
+                .withOption(b)
+                .withOption(c)
+                .withOption(d)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        final CommandLine cl = parser.parse(new String[] { "-i", "input.txt",
+                                                           "-a", "1",
+                                                           "-a", "2",
+                                                           "-b",
+                                                           "-c", "3" });
+
+        // Test getting values for option "a"
+        List aValues = cl.getValues(a, new ArrayList());
+        assertEquals(2, aValues.size());
+        assertTrue(aValues.contains("1"));
+        assertTrue(aValues.contains("2"));
+
+        // Test getting default values for option "d"
+        List dValues = cl.getValues(d, new ArrayList());
+        assertEquals(0, dValues.size());
+    }
+```
+The above test method tests the `getValues()` method of the `WriteableCommandLineImpl` class. The test case provides a set of options and values to the `Parser` object. Then it tries to get the values of options "a" and "d" using `cl.getValues()` method. The expected result is that the method should return the correct values for option "a" and an empty list for option "d". If the method returns incorrect values or throws an exception, it indicates a bug in the `WriteableCommandLineImpl` class.

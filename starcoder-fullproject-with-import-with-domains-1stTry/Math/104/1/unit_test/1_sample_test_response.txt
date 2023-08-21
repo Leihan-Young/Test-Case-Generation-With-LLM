@@ -1,0 +1,22 @@
+     private void verifyRegularizedGammaP(double a, double x, double expected)
+        throws MathException {
+        final double actual = Gamma.regularizedGammaP(a, x);
+        final double delta = Math.abs(expected * 1e-12);
+        assertEquals(expected, actual, delta);
+    }
+    private void verifyRegularizedGammaQ(double a, double x, double expected)
+        throws MathException {
+        final double actual = Gamma.regularizedGammaQ(a, x);
+        final double delta = Math.abs(expected * 1e-12);
+        assertEquals(expected, actual, delta);
+    }
+    private void verifyLogGamma(double x, double expected) {
+        final double actual = Gamma.logGamma(x);
+        final double delta = Math.abs(expected * 1e-12);
+        assertEquals(expected, actual, delta);
+    }
+    public void testRegularizedGamma() throws MathException {
+        verifyRegularizedGammaP(0.0, 0.0, 1.0);
+        verifyRegularizedGammaP(1.0, 0.0, 0.0);
+        verifyRegularizedGammaP(1.0, 1.0, 1.0);
+        verifyRegularizedGammaP(2.0, 1.0, 0.63212055882855

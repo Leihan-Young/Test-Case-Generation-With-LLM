@@ -1,0 +1,6 @@
+  public void newTestMethod_test151()  throws Throwable  {
+      int[] intArray0 = new int[2];
+      int int0 = MathUtils.distance1(intArray0, intArray0);
+      assertEquals(0, int0);
+      assertArrayEquals(new int[] {0, 0}, intArray0);
+  }

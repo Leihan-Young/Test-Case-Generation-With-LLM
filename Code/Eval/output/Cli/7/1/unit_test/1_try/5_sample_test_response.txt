@@ -1,0 +1,34 @@
+PatternBuilder() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final PatternBuilder pbuilder = new PatternBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+        final Option b = obuilder.withShortName("b").create();
+        final Option c = obuilder.withShortName("c").withArgument(
+            obuilder.withName("arg").withValidator(
+                new ClassValidator(String.class))
+                .create())
+            .create();
+
+        pbuilder.withPattern("-a -b -c <arg>");
+
+        final Parser parser = new Parser();
+        parser.setGroup(pbuilder.create());
+
+        try {
+            parser.parse(new String[] { "-a", "-b", "-c" });
+            fail("Expected MissingArgumentException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Missing argument for -c", exp.getMessage());
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b", "-c", "java.lang.String" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingArgumentException caught");
+        }
+    }
+```
+The test method tests the PatternBuilder class by creating an instance of it and adding three options (-a, -b, and -c) with -c requiring an argument of type String. The test then attempts to parse the options without providing the argument for -c, expecting a MissingArgumentException to be thrown. However, the test fails because the program does not throw the expected exception. This indicates a bug in the implementation of PatternBuilder.

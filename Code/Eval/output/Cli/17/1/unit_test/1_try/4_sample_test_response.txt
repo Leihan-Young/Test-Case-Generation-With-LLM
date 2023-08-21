@@ -1,0 +1,19 @@
+PosixParser() throws Exception {
+        // use the Posix parser
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption( "a", true, "option a" );
+        options.addOption( "b", false, "option b" );
+        options.addOption( "c", false, "option c" );
+
+        String[] args = new String[]{ "-abc" };
+
+        CommandLine line = parser.parse( options, args );
+
+        // check options
+        assertTrue( line.hasOption( "a" ) );
+        assertEquals( line.getOptionValue( "a" ), "bc" );
+        assertTrue( line.hasOption( "b" ) );
+        assertTrue( line.hasOption( "c" ) );
+    }
+```

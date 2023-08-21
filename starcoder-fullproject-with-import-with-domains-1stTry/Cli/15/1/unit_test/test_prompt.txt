@@ -1,0 +1,38 @@
+package org.apache.commons.cli2.commandline;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.option.PropertyOption;
+import org.apache.commons.cli2.resource.ResourceConstants;
+import org.apache.commons.cli2.resource.ResourceHelper;
+/**
+ * A WriteableCommandLine implementation allowing Options to write their
+ * processed information to a CommandLine.
+ */
+public class WriteableCommandLineImpl
+    extends CommandLineImpl implements WriteableCommandLine {
+    private final Map optionToProperties = new HashMap();
+//    private final Properties properties = new Properties();
+    private final List options = new ArrayList();
+    private final Map nameToOption = new HashMap();
+    private final Map values = new HashMap();
+    private final Map switches = new HashMap();
+    private final Map defaultValues = new HashMap();
+    private final Map defaultSwitches = new HashMap();
+    private final List normalised;
+    private final Set prefixes;
+    public List getValues(final Option option,
+                          List defaultValues);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

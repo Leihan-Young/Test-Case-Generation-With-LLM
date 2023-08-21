@@ -1,0 +1,235 @@
+PatternBuilder() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+    final GroupBuilder gbuilder = new GroupBuilder();
+
+    final Option o =
+        obuilder
+            .withShortName("o")
+            .withArgument(
+                abuilder
+                    .withName("output")
+                    .withValidator(new FileValidator())
+                    .create())
+            .withDescription("The output file")
+            .create();
+
+    final Option t =
+        obuilder
+            .withShortName("t")
+            .withArgument(
+                abuilder
+                    .withName("type")
+                    .withValidator(new ClassValidator())
+                    .create())
+            .withDescription("The type of output")
+            .create();
+
+    final Option d =
+        obuilder
+            .withShortName("d")
+            .withArgument(
+                abuilder
+                    .withName("date")
+                    .withValidator(new DateValidator())
+                    .create())
+            .withDescription("The date of the output")
+            .create();
+
+    final Option n =
+        obuilder
+            .withShortName("n")
+            .withArgument(
+                abuilder
+                    .withName("number")
+                    .withValidator(new NumberValidator())
+                    .create())
+            .withDescription("The number of outputs")
+            .create();
+
+    final Option u =
+        obuilder
+            .withShortName("u")
+            .withArgument(
+                abuilder
+                    .withName("url")
+                    .withValidator(new UrlValidator())
+                    .create())
+            .withDescription("The url of the output")
+            .create();
+
+    final Group options =
+        gbuilder
+            .withOption(o)
+            .withOption(t)
+            .withOption(d)
+            .withOption(n)
+            .withOption(u)
+            .create();
+
+    final OptionBuilder builder = new OptionBuilder();
+
+    final Option help =
+        builder
+            .withShortName("h")
+            .withLongName("help")
+            .withDescription("Display this help message")
+            .create();
+
+    final Parser parser = new Parser();
+    parser.setHelpOption(help);
+    parser.setGroup(options);
+
+    try {
+        parser.parse(new String[] { "-o", "out.txt", "-t", "java.lang.String", "-d", "2020-01-01", "-n", "5", "-u", "http://www.example.com" });
+    }
+    catch (final OptionException exp) {
+        fail("Unexpected OptionException caught: " + exp.getMessage());
+    }
+    // check if options are set correctly
+    assertEquals("out.txt", o.getValue());
+    assertEquals("java.lang.String", t.getValue());
+    assertEquals("2020-01-01", d.getValue());
+    assertEquals("5", n.getValue());
+    assertEquals("http://www.example.com", u.getValue());
+}
+```
+The bug in the `PatternBuilder` is that the `options` variable is not initialized anywhere in the code, so it will throw a `NullPointerException` when calling `options.size()` in the `create()` method. To fix this bug, the `options` variable needs to be initialized as a `Set<Option>` in the constructor of the `PatternBuilder` class. 
+
+Additionally, the `reset()` method needs to return `this` instead of `void` to allow method chaining. 
+
+Here's the corrected code for `PatternBuilder`:
+```
+package org.apache.commons.cli2.builder;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.validation.ClassValidator;
+import org.apache.commons.cli2.validation.DateValidator;
+import org.apache.commons.cli2.validation.FileValidator;
+import org.apache.commons.cli2.validation.NumberValidator;
+import org.apache.commons.cli2.validation.UrlValidator;
+import org.apache.commons.cli2.validation.Validator;
+/**
+ * Builds Options using a String pattern
+ */
+public class PatternBuilder {
+    private final Set<Option> options = new HashSet<>();
+    private final GroupBuilder gbuilder;
+    private final DefaultOptionBuilder obuilder;
+    private final ArgumentBuilder abuilder;
+    public PatternBuilder reset() {
+        options.clear();
+        return this;
+    }
+    private void createOption(
+        final char type,
+        final boolean required,
+        final char opt) {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final ArgumentBuilder abuilder = new ArgumentBuilder();
+
+        final String name = Character.toString(opt);
+
+        final Argument arg =
+            abuilder
+                .withName(name)
+                .withValidator(validator(type))
+                .create();
+
+        final Option option =
+            obuilder
+                .withShortName(name)
+                .withRequired(required)
+                .withArgument(arg)
+                .create();
+
+        options.add(option);
+    }
+    private static Validator validator(final char c) {
+        switch (c) {
+            case '@' :
+                return new ClassValidator();
+            case ':' :
+                return new FileValidator();
+            case '%' :
+                return new DateValidator();
+            case '+' :
+                return new NumberValidator();
+            case '#' :
+                return new UrlValidator();
+            default :
+                throw new IllegalArgumentException("Invalid validator code: " + c);
+        }
+    }
+    /**
+     * Creates a new Option instance.
+     * @return a new Option instance
+     */
+    public Option create() {
+        final Option option;
+
+        if (options.size() == 1) {
+            option = options.iterator().next();
+        }
+        else {
+            gbuilder.reset();
+            for (final Iterator i = options.iterator(); i.hasNext();) {
+                gbuilder.withOption((Option)i.next());
+            }
+            option = gbuilder.create();
+        }
+
+        reset();
+
+        return option;
+    }
+    /**
+     * Builds an Option using a pattern string.
+     * @param pattern the pattern to build from
+     */
+    public void withPattern(final String pattern) {
+        int sz = pattern.length();
+
+        char opt = ' ';
+        char ch = ' ';
+        char type = ' ';
+        boolean required = false;
+
+        for (int i = 0; i < sz; i++) {
+            ch = pattern.charAt(i);
+
+            switch (ch) {
+                case '!' :
+                    required = true;
+                    break;
+                case '@' :
+                case ':' :
+                case '%' :
+                case '+' :
+                case '#' :
+                case '<' :
+                case '>' :
+                case '*' :
+                case '/' :
+                    type = ch;
+                    break;
+                default :
+                    if (opt != ' ') {
+                        createOption(type, required, opt);
+                        required = false;
+                        type = ' ';
+                    }
+
+                    opt = ch;
+            }
+        }
+
+        if (opt != ' ') {
+            createOption(type, required, opt);
+        }
+    }
+}
+```

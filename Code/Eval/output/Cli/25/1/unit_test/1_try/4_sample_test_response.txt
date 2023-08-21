@@ -1,0 +1,24 @@
+HelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option option1 = new Option("a", "first", false, "first option");
+        Option option2 = new Option("b", "second", false, "second option");
+        Option option3 = new Option("c", "third", false, "third option");
+        Option option4 = new Option("d", "fourth", false, "fourth option");
+        Option option5 = new Option("e", "fifth", false, "fifth option");
+        OptionGroup group = new OptionGroup();
+        group.addOption(option1);
+        group.addOption(option2);
+        group.addOption(option3);
+        group.addOption(option4);
+        group.addOption(option5);
+        opts.addOptionGroup(group);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        formatter.printHelp(pw, 80, "test", null, opts, 2, 2, null);
+        String helpText = sw.toString();
+        assertTrue(helpText.indexOf("-a") > helpText.indexOf("-b"));
+        assertTrue(helpText.indexOf("-b") > helpText.indexOf("-c"));
+        assertTrue(helpText.indexOf("-c") > helpText.indexOf("-d"));
+        assertTrue(helpText.indexOf("-d") > helpText.indexOf("-e"));
+    }
+```

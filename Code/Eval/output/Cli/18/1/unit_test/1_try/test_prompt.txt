@@ -1,0 +1,241 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+/**
+ * The class PosixParser provides an implementation of the 
+ * {@link Parser#flatten(Options,String[],boolean) flatten} method.
+ *
+ * @author John Keyes (john at integralsource.com)
+ * @see Parser
+ * @version $Revision$
+ */
+public class PosixParser extends Parser {
+    private List tokens = new ArrayList();
+    private boolean eatTheRest;
+    private Option currentOption;
+    private Options options;
+    private void init();
+    private void gobble(Iterator iter);
+    private void processSingleHyphen(String hyphen);
+    protected void burstToken(String token, boolean stopAtNonOption);
+    /**
+     * <p>If there is a current option and it can have an argument
+     * value then add the token to the processed tokens list and 
+     * set the current option to null.</p>
+     *
+     * <p>If there is a current option and it can have argument
+     * values then add the token to the processed tokens list.</p>
+     *
+     * <p>If there is not a current option add the special token
+     * "<b>--</b>" and the current <code>value</code> to the processed
+     * tokens list.  The add all the remaining <code>argument</code>
+     * values to the processed tokens list.</p>
+     *
+     * @param value The current token
+     */
+    private void process(String value)
+    {
+        if (currentOption != null && currentOption.hasArg())
+        {
+            if (currentOption.hasArg())
+            {
+                tokens.add(value);
+                currentOption = null;
+            }
+            else if (currentOption.hasArgs())
+            {
+                tokens.add(value);
+            }
+        }
+        else
+        {
+            eatTheRest = true;
+            tokens.add("--");
+            tokens.add(value);
+        }
+    }
+    /**
+     * <p>If an {@link Option} exists for <code>token</code> then
+     * set the current option and add the token to the processed 
+     * list.</p>
+     *
+     * <p>If an {@link Option} does not exist and <code>stopAtNonOption</code>
+     * is set then ignore the current token and add the remaining tokens
+     * to the processed tokens list directly.</p>
+     *
+     * @param token The current option token
+     * @param stopAtNonOption Specifies whether flattening should halt
+     * at the first non option.
+     */
+    private void processOptionToken(String token, boolean stopAtNonOption)
+    {
+        if (options.hasOption(token))
+        {
+            currentOption = options.getOption(token);
+            tokens.add(token);
+        }
+        else if (stopAtNonOption)
+        {
+            eatTheRest = true;
+        }
+    }
+    /**
+     * <p>An implementation of {@link Parser}'s abstract
+     * {@link Parser#flatten(Options,String[],boolean) flatten} method.</p>
+     *
+     * <p>The following are the rules used by this flatten method.
+     * <ol>
+     *  <li>if <code>stopAtNonOption</code> is <b>true</b> then do not
+     *  burst anymore of <code>arguments</code> entries, just add each
+     *  successive entry without further processing.  Otherwise, ignore
+     *  <code>stopAtNonOption</code>.</li>
+     *  <li>if the current <code>arguments</code> entry is "<b>--</b>"
+     *  just add the entry to the list of processed tokens</li>
+     *  <li>if the current <code>arguments</code> entry is "<b>-</b>"
+     *  just add the entry to the list of processed tokens</li>
+     *  <li>if the current <code>arguments</code> entry is two characters
+     *  in length and the first character is "<b>-</b>" then check if this
+     *  is a valid {@link Option} id.  If it is a valid id, then add the
+     *  entry to the list of processed tokens and set the current {@link Option}
+     *  member.  If it is not a valid id and <code>stopAtNonOption</code>
+     *  is true, then the remaining entries are copied to the list of 
+     *  processed tokens.  Otherwise, the current entry is ignored.</li>
+     *  <li>if the current <code>arguments</code> entry is more than two
+     *  characters in length and the first character is "<b>-</b>" then
+     *  we need to burst the entry to determine its constituents.  For more
+     *  information on the bursting algorithm see 
+     *  {@link PosixParser#burstToken(String, boolean) burstToken}.</li>
+     *  <li>if the current <code>arguments</code> entry is not handled 
+     *  by any of the previous rules, then the entry is added to the list
+     *  of processed tokens.</li>
+     * </ol>
+     * </p>
+     *
+     * @param options The command line {@link Options}
+     * @param arguments The command line arguments to be parsed
+     * @param stopAtNonOption Specifies whether to stop flattening
+     * when an non option is found.
+     * @return The flattened <code>arguments</code> String array.
+     */
+    protected String[] flatten(Options options, String[] arguments, boolean stopAtNonOption)
+    {
+        init();
+        this.options = options;
+
+        // an iterator for the command line tokens
+        Iterator iter = Arrays.asList(arguments).iterator();
+
+        // process each command line token
+        while (iter.hasNext())
+        {
+            // get the next command line token
+            String token = (String) iter.next();
+
+            // handle SPECIAL TOKEN
+            if (token.startsWith("--"))
+            {
+                if (token.indexOf('=') != -1)
+                {
+                    tokens.add(token.substring(0, token.indexOf('=')));
+                    tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
+                }
+                else
+                {
+                    tokens.add(token);
+                }
+            }
+
+            // single hyphen
+            else if ("-".equals(token))
+            {
+                processSingleHyphen(token);
+            }
+            else if (token.startsWith("-"))
+            {
+                if (token.length() == 2)
+                {
+                    processOptionToken(token, stopAtNonOption);
+                }
+                else if (options.hasOption(token))
+                {
+                    tokens.add(token);
+                }
+                // requires bursting
+                else
+                {
+                    burstToken(token, stopAtNonOption);
+                }
+            }
+            else if (stopAtNonOption)
+            {
+                process(token);
+            }
+            else
+            {
+                tokens.add(token);
+            }
+
+            gobble(iter);
+        }
+
+        return (String[]) tokens.toArray(new String[tokens.size()]);
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    /**
+     * Ant test
+     */
+    public void testAnt() throws Exception {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser( );
+        Options options = new Options();
+        options.addOption( "help", false, "print this message" );
+        options.addOption( "projecthelp", false, "print project help information" );
+        options.addOption( "version", false, "print the version information and exit" );
+        options.addOption( "quiet", false, "be extra quiet" );
+        options.addOption( "verbose", false, "be extra verbose" );
+        options.addOption( "debug", false, "print debug information" );
+        options.addOption( "logfile", true, "use given file for log" );
+        options.addOption( "logger", true, "the class which is to perform the logging" );
+        options.addOption( "listener", true, "add an instance of a class as a project listener" );
+        options.addOption( "buildfile", true, "use given buildfile" );
+        options.addOption( OptionBuilder.withDescription( "use value for given property" )
+                                        .hasArgs()
+                                        .withValueSeparator()
+                                        .create( 'D' ) );
+                           //, null, true, , false, true );
+        options.addOption( "find", true, "search for buildfile towards the root of the filesystem and use it" );
+
+        String[] args = new String[]{ "-buildfile", "mybuild.xml",
+            "-Dproperty=value", "-Dproperty1=value1",
+            "-projecthelp" };
+
+        CommandLine line = parser.parse( options, args );
+
+        // check multiple values
+        String[] opts = line.getOptionValues( "D" );
+        assertEquals( "property", opts[0] );
+        assertEquals( "value", opts[1] );
+        assertEquals( "property1", opts[2] );
+        assertEquals( "value1", opts[3] );
+
+        // check single value
+        assertEquals( line.getOptionValue( "buildfile"), "mybuild.xml" );
+
+        // check option
+        assertTrue( line.hasOption( "projecthelp") );
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

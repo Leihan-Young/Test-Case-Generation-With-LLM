@@ -1,0 +1,17 @@
+CreateCopyMethod() throws CloneNotSupportedException {
+    TimeSeries series = new TimeSeries("Test Series");
+    series.add(new Day(1, 1, 2000), 100);
+    series.add(new Day(2, 1, 2000), 200);
+    series.add(new Day(3, 1, 2000), 300);
+
+    TimeSeries copy = null;
+    try {
+        copy = series.createCopy(1, 0);
+    } catch (CloneNotSupportedException e) {
+        e.printStackTrace();
+    }
+
+    assertEquals(copy.getItemCount(), 0);
+}
+
+```

@@ -1,0 +1,26 @@
+Build failed:
+1.没有import @Test FIXED
+
+2.没有import使用的类HashMap等（can not find symbol）
+
+3.triggerCode中的MethodInvocation在srcCode中没有对应方法，导致focalContext为空（提取code字符串匹配问题） FIXED
+
+4.$ASSERT$未替换，通过javalang的parser但是明显语法不正确（通过parse但是使用不当，比如调用不存在的方法） 
+
+5.存在assertThrows（代码应该替换，但是不知道为什么没换成try catch--代码问题） FIXED
+
+6.调用不存在的method
+
+7.测试后未复原（代码有复原但是看文件没有，按log执行也复原）FIXED
+
+8.response的测试方法调用private method
+
+
+Preparation failed:
+1.triggerCode里调用的方法在focal context里没有（解决部分，有些间接调用的无法解决test->class A->focal Class）
+ e.g. triggerCode -> GroupBuilder(不在搜集的数据中) -> GroupImpl(在搜集的数据中)
+ 搜集数据为modified classes和其extends类
+
+2.调用的方法是src code extends的方法 FIXED
+
+3.triggerCode中调用相关method的地方不在异常栈的class中，在其class的extends class中

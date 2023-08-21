@@ -1,0 +1,68 @@
+package org.apache.commons.cli;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+/** 
+ * A formatter of help messages for the current command line options
+ *
+ * @author Slawek Zachcial
+ * @author John Keyes (john at integralsource.com)
+ * @version $Revision$, $Date$
+ */
+public class HelpFormatter
+{
+    public static final int DEFAULT_WIDTH = 74;
+    public static final int DEFAULT_LEFT_PAD = 1;
+    public static final int DEFAULT_DESC_PAD = 3;
+    public static final String DEFAULT_SYNTAX_PREFIX = "usage: ";
+    public static final String DEFAULT_OPT_PREFIX = "-";
+    public static final String DEFAULT_LONG_OPT_PREFIX = "--";
+    public static final String DEFAULT_LONG_OPT_SEPARATOR = " ";
+    public static final String DEFAULT_ARG_NAME = "arg";
+    public int defaultWidth = DEFAULT_WIDTH;
+    public int defaultLeftPad = DEFAULT_LEFT_PAD;
+    public int defaultDescPad = DEFAULT_DESC_PAD;
+    public String defaultSyntaxPrefix = DEFAULT_SYNTAX_PREFIX;
+    public String defaultNewLine = System.getProperty("line.separator");
+    public String defaultOptPrefix = DEFAULT_OPT_PREFIX;
+    public String defaultLongOptPrefix = DEFAULT_LONG_OPT_PREFIX;
+    private String longOptSeparator = DEFAULT_LONG_OPT_SEPARATOR;
+    public String defaultArgName = DEFAULT_ARG_NAME;
+    /**
+     * Finds the next text wrap position after <code>startPos</code> for the
+     * text in <code>text</code> with the column width <code>width</code>.
+     * The wrap point is the last position before startPos+width having a 
+     * whitespace character (space, \n, \r). If there is no whitespace character
+     * before startPos+width, it will return startPos+width.
+     *
+     * @param text The text being searched for the wrap position
+     * @param width width of the wrapped text
+     * @param startPos position from which to start the lookup whitespace
+     * character
+     * @return postion on which the text must be wrapped or -1 if the wrap
+     * position is at the end of the text
+     */
+    protected int findWrapPos(String text, int width, int startPos);
+    /**
+     * Render the specified text and return the rendered Options
+     * in a StringBuffer.
+     *
+     * @param sb The StringBuffer to place the rendered text into.
+     * @param width The number of characters to display per line
+     * @param nextLineTabStop The position on the next line for the first tab.
+     * @param text The text to be rendered.
+     *
+     * @return the StringBuffer with the rendered Options contents.
+     */
+    protected StringBuffer renderWrappedText(StringBuffer sb, int width, 
+                                             int nextLineTabStop, String text);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

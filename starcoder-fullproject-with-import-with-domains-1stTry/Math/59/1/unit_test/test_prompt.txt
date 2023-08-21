@@ -1,0 +1,117 @@
+package org.apache.commons.math.util;
+/**
+ * Faster, more accurate, portable alternative to StrictMath.
+ * @version $Revision$ $Date$
+ * @since 2.2
+ */
+public class FastMath {
+    public static final double PI = 105414357.0 / 33554432.0 + 1.984187159361080883e-9;
+    public static final double E = 2850325.0 / 1048576.0 + 8.254840070411028747e-8;
+    private static final double EXP_INT_TABLE_A[] = new double[1500];
+    private static final double EXP_INT_TABLE_B[] = new double[1500];
+    private static final double EXP_FRAC_TABLE_A[] = new double[1025];
+    private static final double EXP_FRAC_TABLE_B[] = new double[1025];
+    private static final double FACT[] = new double[20];
+    private static final double LN_MANT[][] = new double[1024][];
+    private static final double LN_2_A = 0.693147063255310059;
+    private static final double LN_2_B = 1.17304635250823482e-7;
+    /** Compute the hyperbolic sine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic sine of x
+     */
+    public static double sinh(double x);
+    /**
+     * Internal helper method for exponential function.
+     * @param x original argument of the exponential function
+     * @param extra extra bits of precision on input (To Be Confirmed)
+     * @param hiPrec extra bits of precision on output (To Be Confirmed)
+     * @return exp(x)
+     */
+    private static double exp(double x, double extra, double[] hiPrec);
+    /**
+     * Exponential function.
+     *
+     * Computes exp(x), function result is nearly rounded.   It will be correctly
+     * rounded to the theoretical value for 99.9% of input values, otherwise it will
+     * have a 1 UPL error.
+     *
+     * Method:
+     *    Lookup intVal = exp(int(x))
+     *    Lookup fracVal = exp(int(x-int(x) / 1024.0) * 1024.0 );
+     *    Compute z as the exponential of the remaining bits by a polynomial minus one
+     *    exp(x) = intVal * fracVal * (1 + z)
+     *
+     * Accuracy:
+     *    Calculation is done with 63 bits of precision, so result should be correctly
+     *    rounded for 99.9% of input values, with less than 1 ULP error otherwise.
+     *
+     * @param x   a double
+     * @return double e<sup>x</sup>
+     */
+    public static double exp(double x);
+    /**
+     * Power function.  Compute x^y.
+     *
+     * @param x   a double
+     * @param y   a double
+     * @return double
+     */
+    public static double pow(double x, double y);
+    /** Compute the minimum of two values
+     * @param a first value
+     * @param b second value
+     * @return a if a is lesser or equal to b, b otherwise
+     */
+    public static double min(final double a, final double b);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static int max(final int a, final int b);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static float max(final float a, final float b);
+    /** Compute the hyperbolic cosine of a number.
+     * @param x number on which evaluation is done
+     * @return hyperbolic cosine of x
+     */
+    public static double cosh(double x);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static long max(final long a, final long b);
+    /** Compute the minimum of two values
+     * @param a first value
+     * @param b second value
+     * @return a if a is lesser or equal to b, b otherwise
+     */
+    public static float min(final float a, final float b);
+    /** Compute the maximum of two values
+     * @param a first value
+     * @param b second value
+     * @return b if a is lesser or equal to b, a otherwise
+     */
+    public static double max(final double a, final double b);
+    /** Compute the minimum of two values
+     * @param a first value
+     * @param b second value
+     * @return a if a is lesser or equal to b, b otherwise
+     */
+    public static long min(final long a, final long b);
+    /** Compute the minimum of two values
+     * @param a first value
+     * @param b second value
+     * @return a if a is lesser or equal to b, b otherwise
+     */
+    public static int min(final int a, final int b);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

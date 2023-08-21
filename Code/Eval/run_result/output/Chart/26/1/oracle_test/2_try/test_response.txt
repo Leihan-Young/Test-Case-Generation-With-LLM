@@ -1,0 +1,17 @@
+DrawWithNullInfo() {
+        try {
+            BufferedImage image = new BufferedImage(200 , 100, 
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = image.createGraphics();
+            PlotRenderingInfo info = new PlotRenderingInfo(null);
+            this.chart.draw(g2, new Rectangle2D.Double(0, 0, 200, 100), null,
+                    null, null, info);
+            g2.dispose();
+            assertNotNull(info.getPlotArea());
+            assertNotNull(info.getDataArea());
+            assertNotNull(info.getEntityCollection());
+        }
+        catch (Exception e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+    }

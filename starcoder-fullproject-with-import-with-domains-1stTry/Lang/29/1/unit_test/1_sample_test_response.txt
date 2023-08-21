@@ -1,0 +1,9 @@
+     public void testJavaVersionMatches() {
+        assertTrue(SystemUtils.IS_JAVA_1_1);
+        assertTrue(SystemUtils.IS_JAVA_1_2);
+        assertTrue(SystemUtils.IS_JAVA_1_3);
+        assertTrue(SystemUtils.IS_JAVA_1_4);
+        assertTrue(SystemUtils.IS_JAVA_1_5);
+        assertTrue(SystemUtils.IS_JAVA_1_6);
+        assertFalse(SystemUtils.IS_JAVA_1_7);
+    }

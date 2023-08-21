@@ -1,0 +1,23 @@
+     private void checkBinomialCoefficient(int n, int k, long expected) {
+        assertEquals(expected, MathUtils.binomialCoefficient(n, k));
+    }
+    public void testBinomialCoefficient() {
+        checkBinomialCoefficient(0, 0, 1);
+        checkBinomialCoefficient(1, 0, 1);
+        checkBinomialCoefficient(1, 1, 1);
+        checkBinomialCoefficient(2, 0, 1);
+        checkBinomialCoefficient(2, 1, 2);
+        checkBinomialCoefficient(2, 2, 1);
+        checkBinomialCoefficient(3, 0, 1);
+        checkBinomialCoefficient(3, 1, 3);
+        checkBinomialCoefficient(3, 2, 3);
+        checkBinomialCoefficient(3, 3, 1);
+        checkBinomialCoefficient(4, 0, 1);
+        checkBinomialCoefficient(4, 1, 4);
+        checkBinomialCoefficient(4, 2, 6);
+        checkBinomialCoefficient(4, 3, 4);
+        checkBinomialCoefficient(4, 4, 1);
+        checkBinomialCoefficient(5, 0, 1);
+        checkBinomialCoefficient(5, 1, 5);
+        checkBinomialCoefficient(5, 2, 10);
+        chec

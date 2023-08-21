@@ -1,0 +1,12 @@
+KeyedObjects2D() {
+    KeyedObjects2D data = new KeyedObjects2D();
+    data.addObject(1, "row1", "col1");
+    data.addObject(2, "row2", "col2");
+    data.addObject(3, "row3", "col3");
+    data.removeObject("row2", "col2");
+    assertNull(data.getObject("row2", "col2"));
+    assertEquals(2, data.getRowCount());
+    assertEquals(3, data.getColumnCount());
+}
+```
+This test method adds three objects with their respective row and column keys to a `KeyedObjects2D` instance. Then, it removes the second object using the `removeObject` method and asserts that the removed object cannot be retrieved using `getObject`. Finally, it asserts that the row count is 2 and the column count is 3. This test method can reveal a bug in the `removeObject` method if it fails any of the assertions.

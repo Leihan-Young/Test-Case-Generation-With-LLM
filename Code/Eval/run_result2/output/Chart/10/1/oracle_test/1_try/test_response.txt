@@ -1,0 +1,13 @@
+GenerateURLFragment() {
+        StandardToolTipTagFragmentGenerator g = new StandardToolTipTagFragmentGenerator();
+        
+        // Test case 1: Generate tooltip with simple text
+        String expectedToolTip1 = " title=\"abc\" alt=\"\"";
+        String actualToolTip1 = g.generateToolTipFragment("abc");
+        assertEquals(expectedToolTip1, actualToolTip1);
+        
+        // Test case 2: Generate tooltip with special characters
+        String expectedToolTip2 = " title=\"Series &quot;A&quot;, 100.0\" alt=\"\"";
+        String actualToolTip2 = g.generateToolTipFragment("Series \"A\", 100.0");
+        assertEquals(expectedToolTip2, actualToolTip2);
+    }

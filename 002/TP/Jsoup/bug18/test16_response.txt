@@ -1,0 +1,5 @@
+  public void newTestMethod_test16()  throws Throwable  {
+      CharacterReader characterReader0 = new CharacterReader("Must be false");
+      String string0 = characterReader0.consumeToEnd();
+      assertEquals("Must be false", string0);
+  }

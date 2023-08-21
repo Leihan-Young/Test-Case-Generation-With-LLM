@@ -1,0 +1,58 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+/**
+ CharacterReader cosumes tokens off a string. To replace the old TokenQueue.
+ */
+class CharacterReader {
+    private final String input;
+    private final int length;
+    private int pos = 0;
+    private int mark = 0;
+    int pos() {
+        return pos;
+    }
+    String consumeToEnd() {
+        String data = input.substring(pos, input.length() - 1);
+        pos = input.length();
+        return data;
+    }
+    String consumeTo(String seq) {
+        int offset = input.indexOf(seq, pos);
+        if (offset != -1) {
+            String consumed = input.substring(pos, offset);
+            pos += consumed.length();
+            return consumed;
+        } else {
+            return consumeToEnd();
+        }
+    }
+    String consumeTo(char c) {
+        int offset = input.indexOf(c, pos);
+        if (offset != -1) {
+            String consumed = input.substring(pos, offset);
+            pos += consumed.length();
+            return consumed;
+        } else {
+            return consumeToEnd();
+        }
+    }
+    String consumeToAny(char... seq) {
+        int start = pos;
+
+        OUTER: while (!isEmpty()) {
+            char c = input.charAt(pos);
+            for (char seek : seq) {
+                if (seek == c)
+                    break OUTER;
+            }
+            pos++;
+        }
+
+        return pos > start ? input.substring(start, pos) : "";
+    }
+}
+
+  public void test16()  throws Throwable  {
+      CharacterReader characterReader0 = new CharacterReader("Must be false");<FILL-HERE>
+}
+

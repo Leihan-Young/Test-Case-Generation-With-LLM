@@ -1,0 +1,5 @@
+     public void testDotProduct() {
+        RealVector v1 = new ArrayRealVector(new double[] {1, 2, 3});
+        RealVector v2 = new ArrayRealVector(new double[] {4, 5, 6});
+        assertEquals(32, v1.dotProduct(v2));
+    }

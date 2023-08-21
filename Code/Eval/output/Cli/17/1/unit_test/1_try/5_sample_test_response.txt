@@ -1,0 +1,15 @@
+PosixParser() throws Exception {
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("a", false, "option a");
+        options.addOption("b", false, "option b");
+        options.addOption("c", true, "option c");
+        String[] args = new String[]{"-abc", "value"};
+        CommandLine line = parser.parse(options, args);
+        assertTrue(line.hasOption("a"));
+        assertTrue(line.hasOption("b"));
+        assertTrue(line.hasOption("c"));
+        assertEquals("value", line.getOptionValue("c"));
+    }
+```
+This test method checks if the options `-a`, `-b`, and `-c` with value `value` are parsed correctly. If the program has a bug in handling options with values, this test method should fail.

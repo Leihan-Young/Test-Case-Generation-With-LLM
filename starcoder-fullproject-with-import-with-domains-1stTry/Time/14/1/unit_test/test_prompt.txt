@@ -1,0 +1,28 @@
+package org.joda.time.chrono;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeUtils;
+import org.joda.time.DurationField;
+import org.joda.time.ReadablePartial;
+import org.joda.time.field.FieldUtils;
+import org.joda.time.field.ImpreciseDateTimeField;
+/**
+ * Provides time calculations for the month of the year component of time.
+ *
+ * @author Guy Allard
+ * @author Stephen Colebourne
+ * @author Brian S O'Neill
+ * @since 1.2, refactored from GJMonthOfYearDateTimeField
+ */
+class BasicMonthOfYearDateTimeField extends ImpreciseDateTimeField {
+    private static final long serialVersionUID = -8258715387168736L;
+    private static final int MIN = DateTimeConstants.JANUARY;
+    private final BasicChronology iChronology;
+    private final int iMax;
+    private final int iLeapMonth;
+    public int[] add(ReadablePartial partial, int fieldIndex, int[] values, int valueToAdd);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

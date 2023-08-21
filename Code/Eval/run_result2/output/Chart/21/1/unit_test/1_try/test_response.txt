@@ -1,0 +1,14 @@
+DefaultBoxAndWhiskerCategoryDataset() {
+    DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+    List<Double> values = new ArrayList<>();
+    values.add(10.0);
+    values.add(15.0);
+    values.add(20.0);
+    values.add(25.0);
+    dataset.add(values, "Row", "Column");
+    Range range = dataset.getRangeBounds(true);
+    assertEquals(10.0, range.getLowerBound(), 0.0001);
+    assertEquals(25.0, range.getUpperBound(), 0.0001);
+}
+```
+The test method adds a list of values to the dataset and then retrieves the range bounds. The assertion checks if the lower and upper bounds of the range are equal to the expected values.

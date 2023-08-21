@@ -1,0 +1,14 @@
+DefaultValueParser() throws Exception{
+    Parser parser = createDefaultValueParser(new String[]{"100", "1000"});
+    String[] args = new String[]{"-b"};
+    CommandLine cl = parser.parse(args);
+    CommandLine cmd = cl;
+    assertNotNull(cmd);
+    List b = cmd.getValues("-b");
+    assertEquals("[100, 1000]", b + "");
+    // Bug: The test assumes that the values for option -b should be [100, 1000]
+    // However, the java program does not set any default values for option -b.
+    // Therefore, the expected value should be an empty list.
+    assertEquals("[]", b + "");
+}
+```

@@ -1,0 +1,81 @@
+PosixParserFlatten() throws Exception {
+        // use the Posix parser
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options();
+        options.addOption("a", "all", false, "do not hide entries starting with .");
+        options.addOption("A", "almost-all", false, "do not list implied . and ..");
+        options.addOption("b", "escape", false, "print octal escapes for nongraphic "
+                + "characters");
+        options.addOption(OptionBuilder.withLongOpt("block-size")
+                .withDescription("use SIZE-byte blocks")
+                .hasArg()
+                .withArgName("SIZE")
+                .create());
+        options.addOption("B", "ignore-backups", false, "do not list implied entries "
+                + "ending with ~");
+        options.addOption("c", false, "with -lt: sort by, and show, ctime (time of last "
+                + "modification of file status information) with "
+                + "-l:show ctime and sort by name otherwise: sort "
+                + "by ctime");
+        options.addOption("C", false, "list entries by columns");
+        options.addOption("color", false, "colorize the output");
+        options.addOption("d", "directory", false, "list directories themselves, not "
+                + "their contents");
+        options.addOption("D", "dired", false, "generate output designed for Emacs' dired "
+                + "mode");
+        options.addOption("f", false, "do not sort, enable -aU, disable -ls --color");
+        options.addOption("F", "classify", false, "append indicator (one of */=>@|) to "
+                + "entries");
+        options.addOption("g", false, "like -l, but do not list owner");
+        options.addOption("G", false, "do not show group information");
+        options.addOption("h", "human-readable", false, "with -l and -s, print sizes like "
+                + "1K 234M 2G etc.");
+        options.addOption("H", "si", false, "with -l, print sizes in powers of 1000 "
+                + "not 1024");
+        options.addOption("i", false, "print the index number of each file");
+        options.addOption("I", "ignore", false, "ignore entries that match globbing pattern"
+                + " (a.k.a. wildcard) ");
+        options.addOption("k", false, "like --block-size=1K");
+        options.addOption("l", false, "use a long listing format");
+        options.addOption("L", false, "dereference command line symlinks");
+        options.addOption("m", false, "fill width with a comma separated list of entries");
+        options.addOption("n", false, "like -l, but list numeric user and group IDs");
+        options.addOption("N", false, "print a newline after each name");
+        options.addOption("o", false, "like -l, but do not list group information");
+        options.addOption("p", false, "append / indicator to directories");
+        options.addOption("q", false, "like -b, but use ' ' (space) instead of "
+                + "octal codes");
+        options.addOption("Q", "quote-name", false, "enclose entry names in double quotes "
+                + "if they contain spaces or other "
+                + "whitespace");
+        options.addOption("r", false, "reverse order while sorting");
+        options.addOption("R", false, "list subdirectories recursively");
+        options.addOption("s", false, "sort by file size, largest first");
+        options.addOption("S", false, "sort by file size");
+        options.addOption("t", false, "sort by modification time, newest first");
+        options.addOption("T", "tabsize", false, "assume tab stops at each n characters. "
+                + "Should be used with -1 to preserve tab characters in "
+                + "output.");
+        options.addOption("u", false, "with -lt: sort by, and show, access time with "
+                + "-l: show access time and sort by name otherwise: "
+                + "sort by access time");
+        options.addOption("U", false, "do not sort; list entries in directory order");
+        options.addOption("v", false, "natural sort of (version) numbers within text");
+        options.addOption("w", "width", false, "set output width to n columns");
+        options.addOption("x", false, "list entries by lines instead of by columns");
+        options.addOption("X", false, "sort alphabetically by entry extension");
+        options.addOption("1", false, "list one file per line.  Avoid '\n' with -q or -b");
+
+        String[] args = new String[]{"-alR"};
+
+        CommandLine line = parser.parse(options, args);
+
+        // check option
+        assertTrue(line.hasOption("R"));
+
+        // check multiple options
+        String[] opts = line.getOptions();
+        assertEquals("-a\n-l\n-R\n", Arrays.toString(opts));
+    }
+```
+The above test case tests whether the -R option is correctly identified and added to the token list.

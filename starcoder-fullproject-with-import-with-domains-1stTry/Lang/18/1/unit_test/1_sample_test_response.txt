@@ -1,0 +1,45 @@
+ private void validate(final String pattern, final TimeZone timeZone, final Locale locale) {
+        FastDateFormat.getInstance(pattern, timeZone, locale);
+    }
+    private void validate(final String pattern, final TimeZone timeZone) {
+        FastDateFormat.getInstance(pattern, timeZone);
+    }
+    private void validate(final String pattern, final Locale locale) {
+        FastDateFormat.getInstance(pattern, locale);
+    }
+    private void validate(final String pattern) {
+        FastDateFormat.getInstance(pattern);
+    }
+    private void invalidPattern(final String pattern) {
+        try {
+            validate(pattern);
+            fail();
+        } catch (final IllegalArgumentException ex) {
+            // expected
+        }
+    }
+    private void invalidPattern(final String pattern, final TimeZone timeZone) {
+        try {
+            validate(pattern, timeZone);
+            fail();
+        } catch (final IllegalArgumentException ex) {
+            // expected
+        }
+    }
+    private void invalidPattern(final String pattern, final Locale locale) {
+        try {
+            validate(pattern, locale);
+            fail();
+        } catch (final IllegalArgumentException ex) {
+            // expected
+        }
+    }
+    private void invalidPattern(final String pattern, final TimeZone timeZone, final Locale locale) {
+        try {
+            validate(pattern, timeZone, locale);
+            fail();
+        } catch (final IllegalArgumentException ex) {
+            // expected
+        }
+    }
+    private void validPattern(final String patter

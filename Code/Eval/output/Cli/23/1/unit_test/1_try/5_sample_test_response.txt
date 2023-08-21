@@ -1,0 +1,25 @@
+() {
+        HelpFormatter formatter = new HelpFormatter();
+        Option option1 = new Option("a", "first");
+        Option option2 = new Option("b", "second");
+        Option option3 = new Option("c", "third");
+        Options options = new Options();
+        options.addOption(option1);
+        options.addOption(option2);
+        options.addOption(option3);
+
+        StringWriter out = new StringWriter();
+        PrintWriter pw = new PrintWriter(out);
+
+        formatter.printHelp(pw, 80, "myapp", "header", options, 2, 2, "footer");
+        String output = out.toString();
+
+        assertTrue(output.contains("-a,--first"));
+        assertTrue(output.contains("-b,--second"));
+        assertTrue(output.contains("-c,--third"));
+
+        // Test for the bug: options are not sorted
+        assertTrue(output.indexOf("-a,--first") < output.indexOf("-b,--second"));
+        assertTrue(output.indexOf("-b,--second") < output.indexOf("-c,--third"));
+    }
+```

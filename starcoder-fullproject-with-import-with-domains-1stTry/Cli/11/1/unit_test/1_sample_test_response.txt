@@ -1,0 +1,28 @@
+     private void assertLinesEqual(String expected, String actual) {
+        String[] expectedLines = expected.split(System.getProperty("line.separator"));
+        String[] actualLines = actual.split(System.getProperty("line.separator"));
+        assertEquals("line count", expectedLines.length, actualLines.length);
+        for (int i = 0; i < expectedLines.length; i++) {
+            assertEquals("line " + i, expectedLines[i], actualLines[i]);
+        }
+    }
+    private void assertFormattedUsageEquals(String expected, Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        formatter.printUsage(pw, 80, "app", options);
+        pw.flush();
+        assertEquals(expected, sw.toString());
+    }
+    private void assertFormattedUsageEquals(String expected, String appName, Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        formatter.printUsage(pw, 80, appName, options);
+        pw.flush();
+        assertEquals(expected, sw.toString());
+    }
+    private void assertFormattedOptionsEquals(String expected, Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(s

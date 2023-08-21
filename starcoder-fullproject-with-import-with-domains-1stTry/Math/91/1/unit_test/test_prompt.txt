@@ -1,0 +1,51 @@
+package org.apache.commons.math.fraction;
+import java.math.BigInteger;
+import org.apache.commons.math.MathRuntimeException;
+import org.apache.commons.math.util.MathUtils;
+/**
+ * Representation of a rational number.
+ *
+ * @since 1.1
+ * @version $Revision$ $Date$
+ */
+public class Fraction extends Number implements Comparable<Fraction> {
+    public static final Fraction TWO = new Fraction(2, 1);
+    public static final Fraction ONE = new Fraction(1, 1);
+    public static final Fraction ZERO = new Fraction(0, 1);
+    public static final Fraction MINUS_ONE = new Fraction(-1, 1);
+    private static final long serialVersionUID = 3071409609509774764L;
+    private final int denominator;
+    private final int numerator;
+    /**
+     * Access the denominator.
+     * @return the denominator.
+     */
+    public int getDenominator();
+    /**
+     * Access the numerator.
+     * @return the numerator.
+     */
+    public int getNumerator();
+    /**
+     * Gets the fraction as a <tt>double</tt>. This calculates the fraction as
+     * the numerator divided by denominator.
+     * @return the fraction as a <tt>double</tt>
+     */
+    public double doubleValue();
+    /**
+     * Returns the absolute value of this fraction.
+     * @return the absolute value.
+     */
+    public Fraction abs();
+    /**
+     * Compares this object to another based on size.
+     * @param object the object to compare to
+     * @return -1 if this is less than <tt>object</tt>, +1 if this is greater
+     *         than <tt>object</tt>, 0 if they are equal.
+     */
+    public int compareTo(Fraction object);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

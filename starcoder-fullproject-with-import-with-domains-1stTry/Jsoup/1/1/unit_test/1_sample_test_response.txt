@@ -1,0 +1,14 @@
+ private static void assertListEquals(List<Node> expected, List<Node> actual) {
+        assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            assertEquals(expected.get(i).getClass(), actual.get(i).getClass());
+            assertEquals(expected.get(i).baseUri(), actual.get(i).baseUri());
+            assertEquals(expected.get(i).nodeName(), actual.get(i).nodeName());
+            assertEquals(expected.get(i).attributes(), actual.get(i).attributes());
+            assertEquals(expected.get(i).hasAttr("id"), actual.get(i).hasAttr("id"));
+            assertEquals(expected.get(i).hasAttr("class"), actual.get(i).hasAttr("class"));
+            assertEquals(expected.get(i).hasAttr("style"), actual.get(i).hasAttr("style"));
+            assertEquals(expected.get(i).hasAttr("title"), actual.get(i).hasAttr("title"));
+            assertEquals(expected.get(i).hasAttr("lang"), actual.get(i).hasAttr("lang"));
+            assertEquals(expected.get(i).hasAttr("dir"), actual.get(i).hasAttr("dir"));
+            assertEquals(expected.get(i).childNodeSize(), actual.get(i).childNodeSize())

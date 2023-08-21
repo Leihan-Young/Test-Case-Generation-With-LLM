@@ -1,0 +1,18 @@
+OptionGroup() {
+        OptionGroup group = new OptionGroup();
+        Option option1 = new Option("a", "first", false, "first option");
+        Option option2 = new Option("b", "second", false, "second option");
+        group.addOption(option1);
+        group.addOption(option2);
+        group.setSelected(option1);
+        assertTrue(group.isRequired()); // bug: expected value is false
+    }
+``` 
+
+The bug in the code is that the `isRequired()` method always returns `false`, even if the `required` field is set to `true`. This means that the `assertTrue` statement in the test method will fail. To fix the bug, the `isRequired()` method should return the value of the `required` field. Here's the fixed code:
+
+```
+public boolean isRequired() {
+    return required;
+}
+```

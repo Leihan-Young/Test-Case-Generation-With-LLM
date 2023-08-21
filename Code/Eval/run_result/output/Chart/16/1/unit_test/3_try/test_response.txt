@@ -1,0 +1,12 @@
+DefaultIntervalCategoryDataset() {
+    Comparable[] series = { "Series 1", "Series 2" };
+    Comparable[] categories = { "Category 1", "Category 2", "Category 3" };
+    Number[][] startData = { { 1, 2, 3 }, { 4, 5, 6 } }; // should use Number instead of int
+    Number[][] endData = { { 2, 3, 4 }, { 5, 6, 7 } }; // should use Number instead of int
+    DefaultIntervalCategoryDataset dataset = new DefaultIntervalCategoryDataset(
+            series, categories, startData, endData);
+    assertEquals(3, dataset.getCategoryCount()); // bug: should return 3, but returns 0
+}
+``` 
+
+The error is due to the fact that the test method tries to use `int` instead of `Number`. The test method needs to use `Number` instead of `int`.

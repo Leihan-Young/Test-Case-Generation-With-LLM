@@ -1,0 +1,11 @@
+ private void assertRoundTrip(String in) {
+        assertEquals(in, Entities.unescape(Entities.escape(in, false)));
+        assertEquals(in, Entities.unescape(Entities.escape(in, true)));
+    }
+    private void assertNotRoundTrip(String in) {
+        assertNotEquals(in, Entities.unescape(Entities.escape(in, false)));
+        assertNotEquals(in, Entities.unescape(Entities.escape(in, true)));
+    }
+    public void testEmptyString() {
+        assertRoundTrip("");
+    }

@@ -1,0 +1,12 @@
+KeyedObjects2D() {
+    KeyedObjects2D data = new KeyedObjects2D();
+    data.addObject("row1", "col1", 1);
+    data.addObject("row2", "col2", 2);
+    data.addObject("row3", "col3", 3);
+    data.removeObject("row2", "col2");
+    assertNull(data.getObject("row2", "col2"));
+    assertEquals(2, data.getRowCount());
+    assertEquals(3, data.getColumnCount());
+}
+```
+The error occurred because the `addObject` method expects an `Object` as the first parameter, but the test code passed an `int`. The corrected version of the test method has the `int` values as the last parameter in the `addObject` method call.

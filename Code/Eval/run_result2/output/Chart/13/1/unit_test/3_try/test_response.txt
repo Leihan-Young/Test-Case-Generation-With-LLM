@@ -1,0 +1,28 @@
+BorderArrangement() {
+    BlockContainer container = new BlockContainer(new BorderArrangement());
+    Block block1 = new EmptyBlock(100.0, 50.0);
+    Block block2 = new EmptyBlock(100.0, 50.0);
+    Block block3 = new EmptyBlock(100.0, 50.0);
+    Block block4 = new EmptyBlock(100.0, 50.0);
+    Block block5 = new EmptyBlock(100.0, 50.0);
+    container.add(block1, RectangleEdge.TOP);
+    container.add(block2, RectangleEdge.BOTTOM);
+    container.add(block3, RectangleEdge.LEFT);
+    container.add(block4, RectangleEdge.RIGHT);
+    container.add(block5, null);
+    Size2D size = container.arrange(null, new RectangleConstraint(500.0, 300.0));
+    // The expected size should be (500.0, 300.0), but the actual size is (500.0, 200.0)
+    assertEquals(500.0, size.width, EPSILON);
+    assertEquals(300.0, size.height, EPSILON);
+}
+``` 
+
+The bug in the program is that when a `RectangleConstraint` with a fixed width is provided, the height of the top and bottom blocks is not taken into account when calculating the height of the center block. This results in the center block being too tall, causing the overall height of the container to be smaller than expected.
+
+To fix the bug, we need to add the height of the top and bottom blocks to the total height available for the center block. This can be done by updating the `h[4]` variable in the `arrangeFF` method as follows:
+
+```
+h[4] = constraint.getHeight() - h[0] - h[1];
+```
+
+With this change, the test method should pass without any errors.

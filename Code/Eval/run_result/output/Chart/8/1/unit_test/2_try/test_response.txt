@@ -1,0 +1,55 @@
+GetYear() {
+    Week week = new Week(2021, 1); // create a week for year 2021, week 1
+    Year year = week.getYear(); // get the year of the week
+    assertEquals(2021, year.getYear()); // assert that the year returned is 2021
+}
+```
+
+The bug in this program is that the `firstMillisecond` and `lastMillisecond` fields in the `Week` class are not being initialized properly. This can cause issues when trying to calculate the date range of a week.
+
+To fix this bug, we need to update the `Week` constructor to initialize these fields. We can do this using the `Calendar` class to determine the first and last millisecond of the week.
+
+Here's the updated `Week` class with the bug fix:
+```
+public class Week extends RegularTimePeriod implements Serializable {
+    private static final long serialVersionUID = 1856387786939865061L;
+    public static final int FIRST_WEEK_IN_YEAR = 1;
+    public static final int LAST_WEEK_IN_YEAR = 53;
+    private short year;
+    private byte week;
+    private long firstMillisecond;
+    private long lastMillisecond;
+    /**
+     * Creates a new week.
+     *
+     * @param year  the year.
+     * @param week  the week number (1 to 53).
+     */
+    public Week(int year, int week) {
+        if (week < FIRST_WEEK_IN_YEAR || week > LAST_WEEK_IN_YEAR) {
+            throw new IllegalArgumentException("Invalid week.");
+        }
+        this.year = (short) year;
+        this.week = (byte) week;
+
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.clear();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+
+        this.firstMillisecond = calendar.getTimeInMillis();
+        calendar.add(Calendar.DAY_OF_YEAR, 6);
+        this.lastMillisecond = calendar.getTimeInMillis();
+    }
+    /**
+     * Returns the year in which the week falls.
+     *
+     * @return The year (never <code>null</code>).
+     */
+    public Year getYear() {
+        return new Year(this.year);
+    }
+}
+```
+
+With this bug fix in place, the `testGetYear()` method should now pass successfully.

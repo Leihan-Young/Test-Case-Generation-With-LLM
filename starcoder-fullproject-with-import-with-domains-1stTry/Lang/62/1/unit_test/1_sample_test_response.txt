@@ -1,0 +1,18 @@
+     public void testUnescape() {
+        assertEquals("\u00A1", Entities.unescape("&aacute;"));
+        assertEquals("\u00A1", Entities.unescape("&Aacute;"));
+        assertEquals("\u00A1", Entities.unescape("&acirc;"));
+        assertEquals("\u00A1", Entities.unescape("&Acirc;"));
+        assertEquals("\u00A1", Entities.unescape("&aring;"));
+        assertEquals("\u00A1", Entities.unescape("&Aring;"));
+        assertEquals("\u00A1", Entities.unescape("&atilde;"));
+        assertEquals("\u00A1", Entities.unescape("&Atilde;"));
+        assertEquals("\u00A1", Entities.unescape("&auml;"));
+        assertEquals("\u00A1", Entities.unescape("&Auml;"));
+        assertEquals("\u00A1", Entities.unescape("&ccedil;"));
+        assertEquals("\u00A1", Entities.unescape("&Ccedil;"));
+        assertEquals("\u00A1", Entities.unescape("&eacute;"));
+        assertEquals("\u00A1", Entities.unescape("&Eacute;"));
+        assertEquals("\u00A1", Entities.unescape("&ecirc;"));
+        assertEquals("\u00A1", Entities.unescape("&Ecirc;"));
+        assertEquals("\u

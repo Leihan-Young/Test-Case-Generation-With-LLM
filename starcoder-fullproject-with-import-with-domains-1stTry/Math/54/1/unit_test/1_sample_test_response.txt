@@ -1,0 +1,8 @@
+     public void testUnEqual() {
+        Dfp a = new Dfp("1.0");
+        Dfp b = new Dfp("2.0");
+        assertTrue(a.unequal(b));
+        assertTrue(b.unequal(a));
+        assertFalse(a.unequal(a));
+        assertFalse(b.unequal(b));
+    }

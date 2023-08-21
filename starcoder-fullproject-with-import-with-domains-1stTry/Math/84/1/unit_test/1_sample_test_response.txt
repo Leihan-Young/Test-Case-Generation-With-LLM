@@ -1,0 +1,19 @@
+     public void testRosenbrock() {
+        MultiDirectional optimizer = new MultiDirectional();
+        RealPointValuePair optimum = optimizer.optimize(1000,
+                                                       new MultivariateRealFunction() {
+                                                           public double value(double[] point) {
+                                                               return Math.pow(1 - point[0], 2)
+                                                                       + 100 * Math.pow(point[1] - Math.pow(point[0], 2), 2);
+                                                           }
+                                                       },
+                                                       GoalType.MINIMIZE,
+                                                       new double[] { -1.2, 1 },
+                                                       new double[] { 0, 0 });
+        final double minF = optimum.getValue();
+        final double minX = optimum.getPoint()[0];
+        final double minY = optimum.getPoint()[1];
+        Assert.assertEquals(0, minX, 1.0e-6);
+        Assert.assertEquals(0, minY, 1.0e-6);
+        Assert.assertEquals(0, minF, 1.0e-6);
+    }

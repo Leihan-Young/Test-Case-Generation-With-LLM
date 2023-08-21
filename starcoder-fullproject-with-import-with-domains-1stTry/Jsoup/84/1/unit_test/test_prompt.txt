@@ -1,0 +1,44 @@
+package org.jsoup.helper;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Stack;
+/**
+ * Helper class to transform a {@link org.jsoup.nodes.Document} to a {@link org.w3c.dom.Document org.w3c.dom.Document},
+ * for integration with toolsets that use the W3C DOM.
+ */
+public class W3CDom {
+    /**
+     * Convert a jsoup Document to a W3C Document.
+     * @param in jsoup doc
+     * @return w3c doc
+     */
+    public Document fromJsoup(org.jsoup.nodes.Document in);
+    /**
+     * Converts a jsoup document into the provided W3C Document. If required, you can set options on the output document
+     * before converting.
+     * @param in jsoup doc
+     * @param out w3c doc
+     * @see org.jsoup.helper.W3CDom#fromJsoup(org.jsoup.nodes.Document)
+     */
+    public void convert(org.jsoup.nodes.Document in, Document out);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

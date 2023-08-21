@@ -1,0 +1,50 @@
+ProcessValuesMultipleArguments() throws OptionException {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final ArgumentBuilder abuilder = new ArgumentBuilder();
+
+        final Argument fileArg =
+            abuilder
+                .withName("file")
+                .withMinimum(2)
+                .create();
+
+        final Option help =
+            obuilder.withLongName("help").create();
+
+        final OptionBuilder builder = new OptionBuilder();
+        final Option version =
+            builder.withLongName("version")
+            .withDescription("Print version information and exit.").create();
+
+        final OptionBuilder builder2 = new OptionBuilder();
+        final Option quiet =
+            builder2.withLongName("quiet").create();
+
+        final OptionBuilder builder3 = new OptionBuilder();
+        final Option verbose =
+            builder3.withLongName("verbose").create();
+
+        final Group group = new GroupBuilder()
+            .withOption(help)
+            .withOption(version)
+            .withOption(quiet)
+            .withOption(verbose)
+            .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(group);
+
+        final WriteableCommandLine cl = new WriteableCommandLineImpl();
+
+        parser.parse(new String[] { "--verbose", "file1.txt", "file2.txt" }, cl);
+
+        assertEquals(true, cl.hasOption(verbose));
+        assertEquals(false, cl.hasOption(help));
+        assertEquals(false, cl.hasOption(version));
+        assertEquals(false, cl.hasOption(quiet));
+
+        assertEquals("file1.txt", cl.getValues(fileArg, Collections.emptyList()).get(0));
+        assertEquals("file2.txt", cl.getValues(fileArg, Collections.emptyList()).get(1));
+    }
+```
+The above test method tests the `processValues` method of the `ArgumentImpl` class by parsing command line arguments with two file names and a `verbose` option. It then checks if the command line has the `verbose` option and if the file names are added to the command line's values correctly. This test may reveal a bug if the `processValues` method fails to add the arguments to the command line's values.

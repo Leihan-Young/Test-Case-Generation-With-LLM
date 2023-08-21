@@ -1,0 +1,63 @@
+package org.apache.commons.codec.binary;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+/**
+ * Provides Base64 encoding and decoding in a streaming fashion (unlimited size). When encoding the default lineLength
+ * is 76 characters and the default lineEnding is CRLF, but these can be overridden by using the appropriate
+ * constructor.
+ * <p>
+ * The default behaviour of the Base64InputStream is to DECODE, whereas the default behaviour of the Base64OutputStream
+ * is to ENCODE, but this behaviour can be overridden by using a different constructor.
+ * </p>
+ * <p>
+ * This class implements section <cite>6.8. Base64 Content-Transfer-Encoding</cite> from RFC 2045 <cite>Multipurpose
+ * Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</cite> by Freed and Borenstein.
+ * </p>
+ * <p>
+ * Since this class operates directly on byte streams, and not character streams, it is hard-coded to only encode/decode
+ * character encodings which are compatible with the lower 127 ASCII chart (ISO-8859-1, Windows-1252, UTF-8, etc).
+ * </p>
+ * 
+ * @author Apache Software Foundation 
+ * @version $Id$
+ * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
+ * @since 1.4
+ */
+public class Base64InputStream extends FilterInputStream {
+    private final boolean doEncode;
+    private final Base64 base64;
+    private final byte[] singleByte = new byte[1];
+    /**
+     * Attempts to read <code>len</code> bytes into the specified <code>b</code> array starting at <code>offset</code>
+     * from this InputStream.
+     * 
+     * @param b
+     *            destination byte array
+     * @param offset
+     *            where to start writing the bytes
+     * @param len
+     *            maximum number of bytes to read
+     * 
+     * @return number of bytes read
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws NullPointerException
+     *             if the byte array parameter is null
+     * @throws IndexOutOfBoundsException
+     *             if offset, len or buffer size are invalid
+     */
+    public int read(byte b[], int offset, int len) throws IOException;
+    /**
+     * Reads one <code>byte</code> from this input stream.
+     * 
+     * @return the byte as an integer in the range 0 to 255. Returns -1 if EOF has been reached.
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    public int read() throws IOException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

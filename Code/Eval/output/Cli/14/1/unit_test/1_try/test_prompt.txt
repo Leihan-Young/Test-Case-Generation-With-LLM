@@ -1,0 +1,172 @@
+[user]:# Java Program:
+A java program with one or more bugs. The method that is implemented needs to be tested.
+```
+package org.apache.commons.cli2.option;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.DisplaySetting;
+import org.apache.commons.cli2.Group;
+import org.apache.commons.cli2.HelpLine;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.OptionException;
+import org.apache.commons.cli2.WriteableCommandLine;
+import org.apache.commons.cli2.resource.ResourceConstants;
+/**
+ * An implementation of Group
+ */
+public class GroupImpl
+    extends OptionImpl implements Group {
+    private final String name;
+    private final String description;
+    private final List options;
+    private final int minimum;
+    private final int maximum;
+    private final List anonymous;
+    private final SortedMap optionMap;
+    private final Set prefixes;
+    public boolean canProcess(final WriteableCommandLine commandLine,
+                              final String arg);
+    public Set getPrefixes();
+    public Set getTriggers();
+    public void process(final WriteableCommandLine commandLine,
+                        final ListIterator arguments)
+        throws OptionException;
+    public String getPreferredName();
+    public String getDescription();
+    public void appendUsage(final StringBuffer buffer,
+                            final Set helpSettings,
+                            final Comparator comp);
+    public void appendUsage(final StringBuffer buffer,
+                            final Set helpSettings,
+                            final Comparator comp,
+                            final String separator);
+    public List helpLines(final int depth,
+                          final Set helpSettings,
+                          final Comparator comp);
+    public List getOptions();
+    public List getAnonymous();
+    public Option findOption(final String trigger);
+    public int getMinimum();
+    public int getMaximum();
+    public boolean isRequired();
+    public void defaults(final WriteableCommandLine commandLine);
+    public void validate(final WriteableCommandLine commandLine)
+        throws OptionException {
+        // number of options found
+        int present = 0;
+
+        // reference to first unexpected option
+        Option unexpected = null;
+
+        for (final Iterator i = options.iterator(); i.hasNext();) {
+            final Option option = (Option) i.next();
+
+            // needs validation?
+            boolean validate = option.isRequired() || option instanceof Group;
+            if (validate) {
+                option.validate(commandLine);
+            }
+
+            // if the child option is present then validate it
+            if (commandLine.hasOption(option)) {
+                if (++present > maximum) {
+                    unexpected = option;
+
+                    break;
+                }
+
+                option.validate(commandLine);
+            }
+        }
+
+        // too many options
+        if (unexpected != null) {
+            throw new OptionException(this, ResourceConstants.UNEXPECTED_TOKEN,
+                                      unexpected.getPreferredName());
+        }
+
+        // too few option
+        if (present < minimum) {
+            throw new OptionException(this, ResourceConstants.MISSING_OPTION);
+        }
+
+        // validate each anonymous argument
+        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+            final Option option = (Option) i.next();
+            option.validate(commandLine);
+        }
+    }
+}
+
+```
+# Test Code:
+An example test method that tests the same java project.
+```
+    public void testMandatoryGroup() throws Exception {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final GroupBuilder gbuilder = new GroupBuilder();
+
+        final Option a = obuilder.withShortName("a").create();
+
+        final Option b = obuilder.withShortName("b").create();
+
+        final Group options =
+            gbuilder
+                .withOption(a)
+                .withOption(b)
+                .withMaximum(1)
+                .withMinimum(1)
+                .create();
+
+        final Parser parser = new Parser();
+        parser.setGroup(options);
+
+        try {
+            parser.parse(new String[] {
+            });
+            fail("Expected MissingOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals("Missing option -a|-b", exp.getMessage());
+        }
+
+        try {
+            parser.parse(new String[] { "-a" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-b" });
+        }
+        catch (final OptionException exp) {
+            fail("Unexpected MissingOptionException caught");
+        }
+
+        try {
+            parser.parse(new String[] { "-a", "-b" });
+            fail("Expected UnexpectedOptionException not caught");
+        }
+        catch (final OptionException exp) {
+            assertEquals(
+                "Unexpected -b while processing -a|-b",
+                exp.getMessage());
+        }
+    }
+
+```
+A test method that can reveal the bug of the java program.
+```
+public void test

@@ -1,0 +1,7 @@
+GetYear() {
+    Week week = new Week(2021, 1); // create a week for year 2021, week 1
+    Year year = week.getYear(); // get the year of the week
+    assertEquals(2021, year.getYear()); // assert that the year returned is 2021
+}
+```
+The bug in this program is that the `Week` class does not have a constructor that takes in parameters for the week number. Therefore, the instantiation of `Week` in the test method is incorrect and will result in an error. To fix this bug, a constructor that takes in both the year and week number should be added to the `Week` class.

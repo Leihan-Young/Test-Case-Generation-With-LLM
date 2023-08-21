@@ -1,0 +1,6 @@
+ public void testGetTypeArguments() throws Exception {
+        assertEquals(0, getTypeArguments(ArrayList.class, List.class).size());
+        assertEquals(0, getTypeArguments(ArrayList.class, Collection.class).size());
+        assertEquals(1, getTypeArguments(ArrayList.class, List.class, true).size());
+        assertEquals(1, getTypeArguments(ArrayList.class, Collection.class, true).size());
+    }

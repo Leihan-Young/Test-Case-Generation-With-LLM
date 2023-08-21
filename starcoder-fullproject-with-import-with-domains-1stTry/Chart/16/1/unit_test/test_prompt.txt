@@ -1,0 +1,56 @@
+package org.jfree.data.category;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
+import org.jfree.data.DataUtilities;
+import org.jfree.data.UnknownKeyException;
+import org.jfree.data.general.AbstractSeriesDataset;
+/**
+ * A convenience class that provides a default implementation of the
+ * {@link IntervalCategoryDataset} interface.
+ * <p>
+ * The standard constructor accepts data in a two dimensional array where the
+ * first dimension is the series, and the second dimension is the category.
+ */
+public class DefaultIntervalCategoryDataset extends AbstractSeriesDataset
+        implements IntervalCategoryDataset {
+    private Comparable[] seriesKeys;
+    private Comparable[] categoryKeys;
+    private Number[][] startData;
+    private Number[][] endData;
+    /**
+     * Returns the number of series in the dataset (possibly zero).
+     *
+     * @return The number of series in the dataset.
+     * 
+     * @see #getRowCount()
+     * @see #getCategoryCount()
+     */
+    public int getSeriesCount();
+    /**
+     * Returns the index for the given category.
+     *
+     * @param category  the category (<code>null</code> not permitted).
+     *
+     * @return The index.
+     * 
+     * @see #getColumnIndex(Comparable)
+     */
+    public int getCategoryIndex(Comparable category);
+    /**
+     * Sets the categories for the dataset.
+     *
+     * @param categoryKeys  an array of objects representing the categories in 
+     *                      the dataset.
+     *                      
+     * @see #getRowKeys()
+     * @see #setSeriesKeys(Comparable[])
+     */
+    public void setCategoryKeys(Comparable[] categoryKeys);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

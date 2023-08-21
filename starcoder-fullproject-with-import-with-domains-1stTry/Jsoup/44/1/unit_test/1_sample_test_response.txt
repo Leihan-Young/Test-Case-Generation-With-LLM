@@ -1,0 +1,33 @@
+ private void assertStartTag(String html) {
+        assertStartTag(html, "");
+    }
+    private void assertStartTag(String html, String expectedName) {
+        assertStart(Token.StartTag, html, expectedName);
+    }
+    private void assertEmptyTag(String html) {
+        assertEmptyTag(html, "");
+    }
+    private void assertEmptyTag(String html, String expectedName) {
+        assertStart(Token.EmptyTag, html, expectedName);
+    }
+    private void assertEndTag(String html) {
+        assertEndTag(html, "");
+    }
+    private void assertEndTag(String html, String expectedName) {
+        assertToken(Token.EndTag, html, expectedName);
+    }
+    private void assertText(String html) {
+        assertToken(Token.Text, html, null);
+    }
+    private void assertComment(String html) {
+        assertToken(Token.Comment, html, null);
+    }
+    private void assertDoctype(String html) {
+        assertToken(Token.Doctype, html, null);
+    }
+    private void assertStart(TokenType type, String html, String expectedName) {
+        Token token = assertToken(type, html, expectedName);
+        assertTrue(token.isStartTag());
+    }
+    private void assertEmpty(TokenType type, String html, String expectedName) {
+        Token token = assertToken(type, html, expecte

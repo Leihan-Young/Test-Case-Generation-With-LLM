@@ -1,0 +1,22 @@
+StripLeadingAndTrailingQuotes() {
+        String input = "\"test string\"";
+        String expected = "test string";
+        String actual = Util.stripLeadingAndTrailingQuotes(input);
+        assertEquals(expected, actual);
+    }
+``` 
+The bug is that if the input string contains only one quote (either at the beginning or at the end), the method does not remove it. To fix the bug, the if statements should check for both starting and ending quotes separately:
+```
+static String stripLeadingAndTrailingQuotes(String str)
+{
+    if (str.startsWith("\""))
+    {
+        str = str.substring(1);
+    }
+    if (str.endsWith("\""))
+    {
+        str = str.substring(0, str.length() - 1);
+    }
+    return str;
+}
+```

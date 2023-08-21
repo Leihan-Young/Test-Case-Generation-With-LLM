@@ -1,0 +1,8 @@
+  public void newTestMethod_test3()  throws Throwable  {
+      BrentOptimizer brentOptimizer0 = new BrentOptimizer();
+      double[] doubleArray0 = new double[2];
+      PolynomialFunction polynomialFunction0 = new PolynomialFunction(doubleArray0);
+      GoalType goalType0 = GoalType.MAXIMIZE;
+      double double0 = brentOptimizer0.optimize((UnivariateRealFunction) polynomialFunction0, goalType0, 1.0E-14, 2515.087912119413);
+      assertEquals(0.0, double0, 0.01);
+  }

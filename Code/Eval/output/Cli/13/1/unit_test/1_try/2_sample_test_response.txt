@@ -1,0 +1,27 @@
+InvalidArgument() throws Exception {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final ArgumentBuilder abuilder = new ArgumentBuilder();
+
+    final Argument arg =
+        abuilder
+            .withName("arg")
+            .withMinimum(1)
+            .withMaximum(1)
+            .withValidator(new NumberValidator())
+            .create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(new GroupBuilder()
+                    .withOption(arg)
+                    .create());
+
+    try {
+        parser.parse(new String[] { "not_a_number" });
+        fail("Expected InvalidArgumentException not caught");
+    }
+    catch (final OptionException exp) {
+        assertEquals("Invalid argument not_a_number for option 'arg'", exp.getMessage());
+    }
+}
+```
+The test method tries to parse an argument which is not a number. The expected behavior is to throw an `InvalidArgumentException`, but the actual behavior is throwing an `OptionException` with the wrong error message. This reveals a bug in the `ArgumentImpl` class.

@@ -1,0 +1,8 @@
+     public void testNoData() {
+        SimpleRegression r = new SimpleRegression();
+        assertEquals(Double.NaN, r.getSlope(), 0);
+        assertEquals(Double.NaN, r.getIntercept(), 0);
+        assertEquals(Double.NaN, r.getR(), 0);
+        assertEquals(Double.NaN, r.getMeanSquareError(), 0);
+        assertEquals(Double.NaN, r.getSumSquaredErrors(), 0);
+    }

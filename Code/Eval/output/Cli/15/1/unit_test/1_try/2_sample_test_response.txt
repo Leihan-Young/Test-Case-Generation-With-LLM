@@ -1,0 +1,28 @@
+GetValues() {
+    final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+    final OptionBuilder abuilder = new OptionBuilder();
+
+    final Option a = obuilder.withShortName("a").create();
+
+    final Option b =
+        abuilder.withShortName("b").withArgument(
+            abuilder
+                .withName("file")
+                .withMinimum(1)
+                .withMaximum(1)
+                .create())
+            .create();
+
+    final Parser parser = new Parser();
+    parser.setGroup(
+        new GroupBuilder()
+            .withOption(a)
+            .withOption(b)
+            .create());
+
+    final CommandLine cl = parser.parse(new String[] { "-a", "-b", "file.txt" });
+
+    // The bug: getValues method returns an empty list instead of the expected value "file.txt"
+    assertEquals(Collections.singletonList("file.txt"), cl.getValues(b, null));
+}
+```

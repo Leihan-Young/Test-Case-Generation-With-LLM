@@ -1,0 +1,53 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.*;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private Tag tag;
+    private static final Pattern classSplit = Pattern.compile("\\s+");
+    /**
+     * Find elements that match the {@link Selector} CSS query, with this element as the starting context. Matched elements
+     * may include this element, or any of its children.
+     * <p>
+     * This method is generally more powerful to use than the DOM-type {@code getElementBy*} methods, because
+     * multiple filters can be combined, e.g.:
+     * </p>
+     * <ul>
+     * <li>{@code el.select("a[href]")} - finds links ({@code a} tags with {@code href} attributes)
+     * <li>{@code el.select("a[href*=example.com]")} - finds links pointing to example.com (loosely)
+     * </ul>
+     * <p>
+     * See the query syntax documentation in {@link org.jsoup.select.Selector}.
+     * </p>
+     * 
+     * @param cssQuery a {@link Selector} CSS-like query
+     * @return elements that match the query (empty if none match)
+     * @see org.jsoup.select.Selector
+     * @throws Selector.SelectorParseException (unchecked) on an invalid CSS query.
+     */
+    public Elements select(String cssQuery);
+    private static <E extends Element> Integer indexInList(Element search, List<E> elements);
+    /**
+     * Get the list index of this element in its element sibling list. I.e. if this is the first element
+     * sibling, returns 0.
+     * @return position in element sibling list
+     */
+    public Integer elementSiblingIndex();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

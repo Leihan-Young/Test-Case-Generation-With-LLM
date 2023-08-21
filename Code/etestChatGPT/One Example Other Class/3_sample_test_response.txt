@@ -1,0 +1,24 @@
+DefaultValue() throws Exception {
+	final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+	final ArgumentBuilder abuilder = new ArgumentBuilder();
+	final GroupBuilder gbuilder = new GroupBuilder();
+
+	final Option testOption =
+		obuilder
+			.withShortName("a")
+			.withArgument(abuilder.withName("test").create())
+			.create();
+
+	final Group options = gbuilder.withOption(testOption).create();
+
+	final Parser parser = new Parser();
+	parser.setGroup(options);
+
+	final CommandLine cmdLine =
+		parser.parse(new String[] { "-a" });
+
+	assertTrue(cmdLine.hasOption("-a"));
+	assertEquals(Collections.EMPTY_LIST, cmdLine.getValues("-a"));
+}
+```
+The test method checks if the default value of an option is set correctly when no value is provided during parsing. However, the `getValues()` method in the `WriteableCommandLineImpl` class has a bug where it always returns an empty list, even if the default value is set. Therefore, this test method cannot reveal the bug and will always pass. A better test method would be to set a default value and then add a value to the option, and then check if the returned value list contains both the default value and the added value.

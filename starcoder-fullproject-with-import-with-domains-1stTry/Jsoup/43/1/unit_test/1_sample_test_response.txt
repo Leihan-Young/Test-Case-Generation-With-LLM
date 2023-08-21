@@ -1,0 +1,25 @@
+     private void assertSelect(String query, String... expectedTexts) {
+        Elements elements = doc.select(query);
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertEquals(expectedTexts[i], elements.get(i).text());
+    }
+    private void assertNotSelect(String query, String... expectedTexts) {
+        Elements elements = doc.select(query);
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertNotSame(expectedTexts[i], elements.get(i).text());
+    }
+    private void assertSameSelect(String query, String... expectedTexts) {
+        Elements elements = doc.select(query);
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertSame(expectedTexts[i], elements.get(i).text());
+    }
+    private void assertNotSameSelect(String query, String... expectedTexts) {
+        Elements elements = doc.select(query);
+        assertEquals(expectedTexts.length, elements.size());
+        for (int i = 0; i < expectedTexts.length; i++)
+            assertNotSame(expectedTexts[i], elements.get(i).text());
+    }
+  

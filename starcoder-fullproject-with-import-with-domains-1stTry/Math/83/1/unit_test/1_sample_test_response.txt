@@ -1,0 +1,28 @@
+     private void checkPhase1Tableau(final SimplexTableau tableau) {
+        checkPhase1Tableau(tableau, 0.0);
+    }
+    private void checkPhase1Tableau(final SimplexTableau tableau,
+                                    final double tolerance) {
+        checkPhase1Objective(tableau, tolerance);
+        checkPhase1Constraints(tableau, tolerance);
+    }
+    private void checkPhase1Objective(final SimplexTableau tableau) {
+        checkPhase1Objective(tableau, 0.0);
+    }
+    private void checkPhase1Objective(final SimplexTableau tableau,
+                                      final double tolerance) {
+        checkPhase1ObjectiveValue(tableau, tolerance);
+        checkPhase1ObjectiveGradient(tableau, tolerance);
+    }
+    private void checkPhase1ObjectiveValue(final SimplexTableau tableau) {
+        checkPhase1ObjectiveValue(tableau, 0.0);
+    }
+    private void checkPhase1ObjectiveValue(final SimplexTableau tableau,
+                                           final double tolerance) {
+        Assert.assertEquals(1.0, tableau.getW().getEntry(0), tolerance);
+    }
+    private void checkPhase1ObjectiveGradient(final SimplexTableau tableau) {
+        checkPhase1ObjectiveGradient(tableau, 0.0);
+    }
+    private void checkPhase1ObjectiveGradient(final SimplexTableau tableau,
+                                              final double toleranc

@@ -1,0 +1,15 @@
+ public void test_normalizedStandard() {
+        Period p = new Period(0, 1, 0, 0, 0, 0, 0, PeriodType.standard());
+        assertEquals(p, p.normalizedStandard());
+        
+        p = new Period(0, 0, 1, 0, 0, 0, 0, PeriodType.standard());
+        assertEquals(new Period(0, 1, 0, 0, 0, 0, 0, PeriodType.standard()), p.normalizedStandard());
+        
+        p = new Period(0, 0, 0, 1, 0, 0, 0, PeriodType.standard());
+        assertEquals(new Period(0, 0, 1, 0, 0, 0, 0, PeriodType.standard()), p.normalizedStandard());
+        
+        p = new Period(0, 0, 0, 0, 1, 0, 0, PeriodType.standard());
+        assertEquals(new Period(0, 0, 0, 1, 0, 0, 0, PeriodType.standard()), p.normalizedStandard());
+        
+        p = new Period(0, 0, 0, 0, 0, 1, 0, PeriodType.standard());
+        assertEquals(new Period(0, 0, 0, 0,

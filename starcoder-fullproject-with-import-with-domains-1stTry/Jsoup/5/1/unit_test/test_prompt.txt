@@ -1,0 +1,35 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.*;
+import java.util.LinkedList;
+/**
+ Parses HTML into a {@link Document}. Generally best to use one of the  more convenient parse methods in {@link org.jsoup.Jsoup}.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Parser {
+    private static final String SQ = "'";
+    private static final String DQ = "\"";
+    private static final Tag htmlTag = Tag.valueOf("html");
+    private static final Tag headTag = Tag.valueOf("head");
+    private static final Tag bodyTag = Tag.valueOf("body");
+    private static final Tag titleTag = Tag.valueOf("title");
+    private static final Tag textareaTag = Tag.valueOf("textarea");
+    private final LinkedList<Element> stack;
+    private final TokenQueue tq;
+    private final Document doc;
+    private String baseUri;
+    private boolean relaxed = false;
+    private Attribute parseAttribute();
+    private Document parse();
+    /**
+     Parse HTML into a Document.
+     @param html HTML to parse
+     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     @return parsed Document
+     */
+    public static Document parse(String html, String baseUri);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

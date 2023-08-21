@@ -1,0 +1,22 @@
+     private void check(Complex expected, Complex result) {
+        assertEquals(expected.getReal(), result.getReal(), 1.0e-12);
+        assertEquals(expected.getImaginary(), result.getImaginary(), 1.0e-12);
+    }
+    private void checkInf(Complex expected, Complex result) {
+        assertEquals(expected.getReal(), result.getReal(), 1.0e-12);
+        assertEquals(expected.getImaginary(), result.getImaginary(), 1.0e-12);
+        assertTrue(Double.isInfinite(result.getReal()));
+        assertTrue(Double.isInfinite(result.getImaginary()));
+    }
+    private void checkNaN(Complex expected, Complex result) {
+        assertEquals(expected.getReal(), result.getReal(), 1.0e-12);
+        assertEquals(expected.getImaginary(), result.getImaginary(), 1.0e-12);
+        assertTrue(Double.isNaN(result.getReal()));
+        assertTrue(Double.isNaN(result.getImaginary()));
+    }
+    public void testMultiplyNaN() {
+        checkNaN(NaN, NaN.multiply(NaN));
+        checkNaN(NaN, NaN.multiply(INF));
+        checkNaN(NaN, NaN.multiply(ONE));
+        checkNaN(NaN, NaN.multiply(I));
+        checkNaN(NaN, NaN.multiply

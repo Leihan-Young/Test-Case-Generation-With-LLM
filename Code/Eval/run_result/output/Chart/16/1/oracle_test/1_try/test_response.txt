@@ -1,0 +1,23 @@
+GetCategoryIndex() {
+    // check an empty dataset
+    DefaultIntervalCategoryDataset empty = new DefaultIntervalCategoryDataset(new double[0][0], new double[0][0]);
+    int expectedIndex = -1;
+    int actualIndex = empty.getCategoryIndex("ABC");
+    assertEquals(expectedIndex, actualIndex);
+
+    // check a non-empty dataset
+    Number[][] startData = {{1, 2, 3}, {4, 5, 6}};
+    Number[][] endData = {{2, 3, 4}, {5, 6, 7}};
+    DefaultIntervalCategoryDataset dataset = new DefaultIntervalCategoryDataset(startData, endData);
+    expectedIndex = 1;
+    actualIndex = dataset.getCategoryIndex(2);
+    assertEquals(expectedIndex, actualIndex);
+
+    // check unknown category
+    try {
+        dataset.getCategoryIndex("unknown");
+        fail("Expected UnknownKeyException was not thrown");
+    } catch (UnknownKeyException e) {
+        // expected exception
+    }
+}

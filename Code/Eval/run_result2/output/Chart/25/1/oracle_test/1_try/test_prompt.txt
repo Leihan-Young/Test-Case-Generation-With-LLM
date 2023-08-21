@@ -1,0 +1,140 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * ---------------------------
+ * StatisticalBarRenderer.java
+ * ---------------------------
+ * (C) Copyright 2002-2007, by Pascal Collet and Contributors.
+ *
+ * Original Author:  Pascal Collet;
+ * Contributor(s):   David Gilbert (for Object Refinery Limited);
+ *                   Christian W. Zuckschwerdt;
+ *
+ * $Id: StatisticalBarRenderer.java,v 1.4.2.6 2007/02/02 15:52:07 mungady Exp $
+ *
+ * Changes
+ * -------
+ * 21-Aug-2002 : Version 1, contributed by Pascal Collet (DG);
+ * 01-Oct-2002 : Fixed errors reported by Checkstyle (DG);
+ * 24-Oct-2002 : Changes to dataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 05-Feb-2003 : Updates for new DefaultStatisticalCategoryDataset (DG);
+ * 25-Mar-2003 : Implemented Serializable (DG);
+ * 30-Jul-2003 : Modified entity constructor (CZ);
+ * 06-Oct-2003 : Corrected typo in exception message (DG);
+ * 05-Nov-2004 : Modified drawItem() signature (DG);
+ * 15-Jun-2005 : Added errorIndicatorPaint attribute (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 19-May-2006 : Added support for tooltips and URLs (DG);
+ * 12-Jul-2006 : Added support for item labels (DG);
+ * 02-Feb-2007 : Removed author tags all over JFreeChart sources (DG);
+ * 20-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Added errorIndicatorStroke attribute (DG);
+ * 11-Jul-2007 : Fixed serialization for new errorIndicatorStroke field (DG);
+ * 28-Aug-2007 : Fixed NullPointerException - see bug 1779941 (DG);
+ * 
+ */
+package org.jfree.chart.renderer.category;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.statistics.StatisticalCategoryDataset;
+/**
+ * A renderer that handles the drawing a bar plot where
+ * each bar has a mean value and a standard deviation line.
+ */
+public class StatisticalBarRenderer extends BarRenderer
+                                    implements CategoryItemRenderer, 
+                                               Cloneable, PublicCloneable, 
+                                               Serializable {
+    private static final long serialVersionUID = -4986038395414039117L;
+    private transient Paint errorIndicatorPaint;
+    private transient Stroke errorIndicatorStroke;
+    /**
+     * Default constructor.
+     */
+    public StatisticalBarRenderer() {
+        super();
+        this.errorIndicatorPaint = Color.gray;
+        this.errorIndicatorStroke = new BasicStroke(0.5f);
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testDrawWithNullMeanVertical() {
+        boolean success = false;
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            /* BufferedImage image = */ chart.createBufferedImage(300, 200, 
+                    null);
+            success = true;
+        }
+        catch ($EXCEPTION$ e) {
+            e.printStackTrace();
+            success = false;
+        }
+        _tmp_var_0_ = success;
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test

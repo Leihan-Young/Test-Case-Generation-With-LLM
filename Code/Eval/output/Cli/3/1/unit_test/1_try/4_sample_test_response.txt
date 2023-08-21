@@ -1,0 +1,9 @@
+CreateNumber() {
+        assertNull(TypeHandler.createNumber("not a number"));
+        assertEquals(123, TypeHandler.createNumber("123").intValue());
+        assertEquals(12.3, TypeHandler.createNumber("12.3").doubleValue(), 0.001);
+        // Bug: the following test will fail
+        assertEquals(1234567890123456789L, TypeHandler.createNumber("1234567890123456789").longValue());
+    }
+```
+Explanation: The createNumber() method uses NumberUtils.createNumber() to create a number from a string. However, NumberUtils.createNumber() returns either a Long or a Double, depending on whether the string contains a decimal point or not. For large numbers that cannot be represented as a Long, the method will return a Double instead of a BigInteger, which causes precision loss. To fix this, the createNumber() method should use NumberUtils.createBigInteger() for large numbers.

@@ -1,0 +1,21 @@
+package org.jsoup.nodes;
+import java.nio.charset.CharsetEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+/**
+ * HMTL entities, and escape routines.
+ * Source: <a href="http://www.w3.org/TR/html5/named-character-references.html#named-character-references">W3C HTML
+ * named character references</a>.
+ * <p/>
+ * Draft implementation. Do not consume.
+ */
+public class Entities {
+    static String escape(String string, CharsetEncoder encoder, EscapeMode escapeMode);
+    static String escape(String string, Document.OutputSettings out);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

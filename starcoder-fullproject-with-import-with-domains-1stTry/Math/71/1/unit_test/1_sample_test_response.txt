@@ -1,0 +1,8 @@
+   public void testEmbeddedRungeKutta()
+      throws DerivativeException, IntegratorException {
+    EmbeddedRungeKuttaIntegrator integ =
+      new DormandPrince853Integrator(1.0e-8, 1.0e-10, 1.0e-10);
+    integ.addStepHandler(stepHandler);
+    integ.integrate(equations, 0.0, y0, 1.0, y1);
+    Assert.assertEquals(0, stepHandler.getCalls());
+  }

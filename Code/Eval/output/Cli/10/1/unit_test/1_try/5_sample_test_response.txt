@@ -1,0 +1,18 @@
+Parser() {
+        // use the default parser
+        CommandLineParser parser = new DefaultParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+
+        String[] args = new String[]{"--help"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+            assertTrue(line.hasOption("help"));
+        } catch (ParseException e) {
+            fail("Unexpected exception: " + e.getMessage());
+        }
+    }
+```
+This test method checks if the "help" option is correctly identified by the parser. However, the current implementation of the Parser class does not properly handle options with a single dash, which causes the test to fail. Therefore, this test can reveal the bug in the program.

@@ -1,0 +1,6 @@
+     private static Document parse(String html, String baseUri) {
+        return Parser.parse(html, baseUri, ParseSettings.preserveCase);
+    }
+    private static Document parseBodyFragment(String html, String baseUri) {
+        return Parser.parseBodyFragment(html, baseUri, ParseSettings.preserveCase);
+    }

@@ -1,0 +1,13 @@
+Flatten() {
+        String[] args = new String[]{
+                "-abc"
+        };
+
+        CommandLine cl = parser.parse(options, args);
+        assertTrue("Confirm -a is set", cl.hasOption("a"));
+        assertTrue("Confirm -b is set", cl.hasOption("b"));
+        assertTrue("Confirm -c is set", cl.hasOption("c"));
+        assertTrue("Confirm all arguments recognized", cl.getArgs().length == 0);
+    }
+```
+This test method is testing if the PosixParser can handle multiple options passed together (e.g. "-abc"). The expected outcome is that all options (-a, -b, -c) are recognized and set in the CommandLine object. However, due to a bug in the PosixParser implementation, this test may fail. Specifically, the burstToken() method may not correctly handle multiple options passed together, causing some or all of the options to be unrecognized and not set in the CommandLine object.

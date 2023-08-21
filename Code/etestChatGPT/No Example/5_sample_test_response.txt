@@ -1,0 +1,11 @@
+WriteableCommandLineImpl() {
+    WriteableCommandLineImpl cmdLine = new WriteableCommandLineImpl();
+    Option option = new PropertyOption("-p", "Property option");
+    cmdLine.addOption(option);
+    cmdLine.addProperty(option, "key", "value");
+    String propertyValue = cmdLine.getProperty("-p", "key", "defaultValue");
+    assertEquals("value", propertyValue);
+}
+``` 
+# Bug:
+The `getProperty` method of `WriteableCommandLineImpl` class is not returning the expected value. It always returns the default value instead of the actual value of the property. This is because the `getProperty` method is not correctly implemented to fetch the value of the property from the `optionToProperties` map. Instead, it is trying to fetch the value from the `properties` map which is not used in the program.

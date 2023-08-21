@@ -1,0 +1,27 @@
+OptionBuilder() {
+    Option opt = OptionBuilder.withLongOpt("file")
+            .withDescription("file to be processed")
+            .isRequired()
+            .withValueSeparator('=')
+            .hasArgs()
+            .create('f');
+
+    Options options = new Options().addOption(opt);
+
+    String[] args = {"-f=file1.txt,file2.txt"};
+
+    CommandLineParser parser = new DefaultParser();
+    CommandLine cmd;
+
+    try {
+        cmd = parser.parse(options, args);
+    } catch (ParseException e) {
+        fail("Parsing failed: " + e.getMessage());
+    }
+
+    String[] values = cmd.getOptionValues("file");
+    assertEquals("file1.txt", values[0]);
+    assertEquals("file2.txt", values[1]);
+}
+```
+The test method tries to create an option with longOpt "file" and value separator '='. It sets the option as required and sets it to have multiple arguments. Then it creates an Options object and adds the option to it. The method creates an array of strings with the argument "-f=file1.txt,file2.txt" and parses it using the options object. It checks if the parsed values match the expected values. If the OptionBuilder class has a bug, this test method will reveal it by failing the assertion.

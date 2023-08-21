@@ -1,0 +1,37 @@
+package org.apache.commons.math.linear;
+import java.io.Serializable;
+import org.apache.commons.math.exception.MathArithmeticException;
+import org.apache.commons.math.exception.util.LocalizedFormats;
+import org.apache.commons.math.util.OpenIntToDoubleHashMap;
+import org.apache.commons.math.util.OpenIntToDoubleHashMap.Iterator;
+import org.apache.commons.math.util.FastMath;
+/**
+ * This class implements the {@link RealVector} interface with a
+ * {@link OpenIntToDoubleHashMap} backing store.
+ * @version $Id$
+ * @since 2.0
+*/
+public class OpenMapRealVector extends AbstractRealVector
+    implements SparseRealVector, Serializable {
+    public static final double DEFAULT_ZERO_TOLERANCE = 1.0e-12;
+    private static final long serialVersionUID = 8772222695580707260L;
+    private final OpenIntToDoubleHashMap entries;
+    private final int virtualSize;
+    private final double epsilon;
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector ebeDivide(double[] v);
+    /** {@inheritDoc} */
+    public OpenMapRealVector ebeDivide(RealVector v);
+    /** {@inheritDoc} */
+    @Override
+    public OpenMapRealVector ebeMultiply(double[] v);
+    /** {@inheritDoc} */
+    public void setEntry(int index, double value);
+    /** {@inheritDoc} */
+    public OpenMapRealVector ebeMultiply(RealVector v);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

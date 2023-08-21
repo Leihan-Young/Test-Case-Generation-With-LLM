@@ -1,0 +1,12 @@
+     public void testEqualsAndHashCode() {
+        Frequency f1 = new Frequency();
+        f1.addValue(1);
+        f1.addValue(2);
+        f1.addValue(3);
+        Frequency f2 = new Frequency();
+        f2.addValue(3);
+        f2.addValue(2);
+        f2.addValue(1);
+        assertEquals(f1, f2);
+        assertEquals(f1.hashCode(), f2.hashCode());
+    }

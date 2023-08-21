@@ -1,0 +1,146 @@
+package org.jsoup.parser;
+import org.apache.commons.lang.Validate;
+import java.util.*;
+/**
+ HTML Tag specifications. This is a very simplistic model without the full expressiveness as the DTD,
+ but it should capture most of what we need to know to intelligently parse a doc.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Tag {
+    private static final Map<String, Tag> tags = new HashMap<String, Tag>();
+    private static final Tag defaultAncestor;
+    public String toString();
+    public String getName();
+    /**
+     Test if this tag, the prospective parent, can accept the proposed child.
+     @param child potential child tag.
+     @return true if this can contain child.
+     */
+    boolean canContain(Tag child);
+    Tag getImplicitParent();
+}
+package org.jsoup.parser;
+import org.apache.commons.lang.Validate;
+import org.jsoup.nodes.*;
+import java.util.*;
+/**
+ Parses HTML into a {@link Document}. Generally best to use one of the  more convenient parse methods in {@link org.jsoup.Jsoup}.
+
+ @author Jonathan Hedley, jonathan@hedley.net */
+public class Parser {
+    private static final String SQ = "'";
+    private static final String DQ = "\"";
+    private static final Tag htmlTag = Tag.valueOf("html");
+    private static final Tag headTag = Tag.valueOf("head");
+    private static final Tag bodyTag = Tag.valueOf("body");
+    private static final Tag titleTag = Tag.valueOf("title");
+    private static final Tag textareaTag = Tag.valueOf("textarea");
+    private final LinkedList<Element> stack;
+    private final TokenQueue tq;
+    private final Document doc;
+    private String baseUri;
+    private Element addChildToParent(Element child, boolean isEmptyElement);
+    /**
+     Parse HTML into a Document.
+     @param html HTML to parse
+     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     @return parsed Document
+     */
+    public static Document parse(String html, String baseUri);
+    /**
+     Parse a fragment of HTML into the {@code body} of a Document.
+     @param bodyHtml fragment of HTML
+     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     @return Document, with empty head, and HTML parsed into body
+     */
+    public static Document parseBodyFragment(String bodyHtml, String baseUri);
+    private boolean stackHasValidParent(Tag childTag);
+    /**
+     Parse a fragment of HTML into the {@code body} of a Document, with relaxed parsing enabled. Relaxed, in this
+     context, means that implicit tags are not automatically created when missing.
+     @param bodyHtml fragment of HTML
+     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     @return Document, with empty head, and HTML parsed into body
+     */
+
+    private Document parse();
+}
+package org.jsoup.nodes;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Collector;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Selector;
+import java.util.*;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private final Tag tag;
+    private Set<String> classNames;
+    /**
+     Wrap the supplied HTML around this element.
+     @param html HTML to wrap around this element, e.g. {@code <div class="head"></div>}. Can be arbitralily deep.
+     @return this element, for chaining.
+     */
+    public Element wrap(String html);
+    /**
+     * Retrieves the element's inner HTML. E.g. on a {@code <div>} with one empty {@code <p>}, would return
+     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
+     * 
+     * @return String of HTML.
+     * @see #outerHtml()
+     */
+    public String html();
+    /**
+     * Find elements that match the selector query, with this element as the starting context. Matched elements
+     * may include this element, or any of its children.
+     * <p/>
+     * This method is generally more powerful to use than the DOM-type {@code getElementBy*} methods, because
+     * multiple filters can be combined, e.g.:
+     * <ul>
+     * <li>{@code el.select("a[href]")} - finds links ({@code a} tags with {@code href} attributes)
+     * <li>{@code el.select("a[href*=example.com]")} - finds links pointing to example.com (loosely)
+     * </ul>
+     * <p/>
+     * See the query syntax documentation in {@link org.jsoup.select.Selector}.
+     *
+     * @param query a {@link Selector} query
+     * @return elements that match the query (empty if none match)
+     * @see org.jsoup.select.Selector
+     */
+    public Elements select(String query);
+    /**
+     * Set this element's inner HTML. Clears the existing HTML first.
+     * @param html HTML to parse and set into this element
+     * @return this element
+     * @see #append(String)
+     */
+    public Element html(String html);
+    private void html(StringBuilder accum);
+    /**
+     * Add inner HTML to this element. The supplied HTML will be parsed, and each node prepended to the start of the children.
+     * @param html HTML to add inside this element, before the existing HTML
+     * @return this element
+     * @see #html(String)
+     */
+    public Element prepend(String html);
+    /**
+     * Add inner HTML to this element. The supplied HTML will be parsed, and each node appended to the end of the children.
+     * @param html HTML to add inside this element, after the existing HTML
+     * @return this element
+     * @see #html(String)
+     */
+    public Element append(String html);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

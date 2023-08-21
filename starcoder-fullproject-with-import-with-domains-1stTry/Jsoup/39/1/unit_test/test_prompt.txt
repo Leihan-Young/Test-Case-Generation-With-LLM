@@ -1,0 +1,24 @@
+package org.jsoup.helper;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Locale;
+/**
+ * Internal static utilities for handling data.
+ *
+ */
+public class DataUtil {
+    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)");
+    private static final int bufferSize = 0x20000; // ~130K.
+    static Document parseByteData(ByteBuffer byteData, String charsetName, String baseUri, Parser parser);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

@@ -1,0 +1,39 @@
+WriteableCommandLineImpl() {
+        final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
+        final Option a = obuilder.withShortName("a").create();
+
+        final WriteableCommandLineImpl cmd = new WriteableCommandLineImpl();
+        cmd.addOption(a);
+
+        // test addValue()
+        cmd.addValue(a, "value");
+        assertEquals("value", cmd.getValues(a, Collections.emptyList()).get(0));
+
+        // test addSwitch()
+        cmd.addSwitch(a, true);
+        assertTrue(cmd.getSwitch(a, false));
+
+        // test setDefaultValues()
+        final List<String> defaultValues = new ArrayList<>();
+        defaultValues.add("default");
+        cmd.setDefaultValues(a, defaultValues);
+        assertEquals("default", cmd.getValues(a, Collections.emptyList()).get(0));
+
+        // test setDefaultSwitch()
+        cmd.setDefaultSwitch(a, false);
+        assertFalse(cmd.getSwitch(a, true));
+
+        // test addProperty()
+        cmd.addProperty(a, "property", "value");
+        assertEquals("value", cmd.getProperty(a, "property", "defaultValue"));
+
+        // test looksLikeOption()
+        assertTrue(cmd.looksLikeOption("-a"));
+        assertFalse(cmd.looksLikeOption("value"));
+
+        // test getUndefaultedValues()
+        cmd.addValue(a, "value2");
+        assertEquals("value", cmd.getUndefaultedValues(a).get(0));
+        assertEquals("value2", cmd.getUndefaultedValues(a).get(1));
+    }
+```

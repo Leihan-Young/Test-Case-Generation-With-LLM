@@ -1,0 +1,61 @@
+Bug() throws Exception {
+        final Option help = new Option("h", "help", false, "print this message");
+        final Option version = new Option("v", "version", false, "print version information");
+        final Option newRun = new Option("n", "new", false, "Create NLT cache entries only for new items");
+        final Option trackerRun = new Option("t", "tracker", false, "Create NLT cache entries only for tracker items");
+
+        final Option timeLimit = OptionBuilder.withLongOpt("limit").hasArg()
+                                        .withValueSeparator()
+                                        .withDescription("Set time limit for execution, in minutes")
+                                        .create("l");
+
+        final Option age = OptionBuilder.withLongOpt("age").hasArg()
+                                  .withValueSeparator()
+                                  .withDescription("Age (in days) of cache item before being recomputed")
+                                  .create("a");
+
+        final Option server = OptionBuilder.withLongOpt("server").hasArg()
+                                     .withValueSeparator()
+                                     .withDescription("The NLT server address")
+                                     .create("s");
+
+        final Option numResults = OptionBuilder.withLongOpt("results").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Number of results per item")
+                                         .create("r");
+
+        final Option configFile = OptionBuilder.withLongOpt("file").hasArg()
+                                         .withValueSeparator()
+                                         .withDescription("Use the specified configuration file")
+                                         .create();
+
+        final Options options = new Options();
+        options.addOption(help);
+        options.addOption(version);
+        options.addOption(newRun);
+        options.addOption(trackerRun);
+        options.addOption(timeLimit);
+        options.addOption(age);
+        options.addOption(server);
+        options.addOption(numResults);
+        options.addOption(configFile);
+
+        // create the command line parser
+        final CommandLineParser parser = new PosixParser();
+
+        final String[] args = new String[] {
+                "-v",
+                "-l",
+                "10",
+                "-age",
+                "5",
+                "-file",
+                "filename",
+                "-x", // This is an invalid option
+                "invalidOption"
+            };
+
+        // This should throw a ParseException, but instead it throws a NullPointerException
+        final CommandLine line = parser.parse(options, args);
+    }
+```

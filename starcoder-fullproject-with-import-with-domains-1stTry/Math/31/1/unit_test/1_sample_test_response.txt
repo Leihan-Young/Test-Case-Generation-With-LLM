@@ -1,0 +1,28 @@
+ public void testContinuedFraction() {
+        ContinuedFraction cf = new ContinuedFraction() {
+            public double getB(int n) {
+                if (n == 0) {
+                    return 1.0;
+                } else if (n == 1) {
+                    return 1.0;
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            }
+            public double getA(int n) {
+                if (n == 0) {
+                    return 0.0;
+                } else if (n == 1) {
+                    return 1.0;
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            }
+        };
+        try {
+            cf.evaluate(100);
+            fail("Expecting convergence exception");
+        } catch (ConvergenceException e) {
+            // Expected
+        }
+    }

@@ -1,0 +1,367 @@
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+ * USA.  
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * in the United States and other countries.]
+ *
+ * -----------------
+ * CategoryPlot.java
+ * -----------------
+ * (C) Copyright 2000-2007, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   Jeremy Bowman;
+ *                   Arnaud Lelievre;
+ *
+ * Changes (from 21-Jun-2001)
+ * --------------------------
+ * 21-Jun-2001 : Removed redundant JFreeChart parameter from constructors (DG);
+ * 21-Aug-2001 : Added standard header. Fixed DOS encoding problem (DG);
+ * 18-Sep-2001 : Updated header (DG);
+ * 15-Oct-2001 : Data source classes moved to com.jrefinery.data.* (DG);
+ * 22-Oct-2001 : Renamed DataSource.java --> Dataset.java etc. (DG);
+ * 23-Oct-2001 : Changed intro and trail gaps on bar plots to use percentage of 
+ *               available space rather than a fixed number of units (DG);
+ * 12-Dec-2001 : Changed constructors to protected (DG);
+ * 13-Dec-2001 : Added tooltips (DG);
+ * 16-Jan-2002 : Increased maximum intro and trail gap percents, plus added 
+ *               some argument checking code.  Thanks to Taoufik Romdhane for 
+ *               suggesting this (DG);
+ * 05-Feb-2002 : Added accessor methods for the tooltip generator, incorporated
+ *               alpha-transparency for Plot and subclasses (DG);
+ * 06-Mar-2002 : Updated import statements (DG);
+ * 14-Mar-2002 : Renamed BarPlot.java --> CategoryPlot.java, and changed code 
+ *               to use the CategoryItemRenderer interface (DG);
+ * 22-Mar-2002 : Dropped the getCategories() method (DG);
+ * 23-Apr-2002 : Moved the dataset from the JFreeChart class to the Plot 
+ *               class (DG);
+ * 29-Apr-2002 : New methods to support printing values at the end of bars, 
+ *               contributed by Jeremy Bowman (DG);
+ * 11-May-2002 : New methods for label visibility and overlaid plot support, 
+ *               contributed by Jeremy Bowman (DG);
+ * 06-Jun-2002 : Removed the tooltip generator, this is now stored with the 
+ *               renderer.  Moved constants into the CategoryPlotConstants 
+ *               interface.  Updated Javadoc comments (DG);
+ * 10-Jun-2002 : Overridden datasetChanged() method to update the upper and 
+ *               lower bound on the range axis (if necessary), updated 
+ *               Javadocs (DG);
+ * 25-Jun-2002 : Removed redundant imports (DG);
+ * 20-Aug-2002 : Changed the constructor for Marker (DG);
+ * 28-Aug-2002 : Added listener notification to setDomainAxis() and 
+ *               setRangeAxis() (DG);
+ * 23-Sep-2002 : Added getLegendItems() method and fixed errors reported by 
+ *               Checkstyle (DG);
+ * 28-Oct-2002 : Changes to the CategoryDataset interface (DG);
+ * 05-Nov-2002 : Base dataset is now TableDataset not CategoryDataset (DG);
+ * 07-Nov-2002 : Renamed labelXXX as valueLabelXXX (DG);
+ * 18-Nov-2002 : Added grid settings for both domain and range axis (previously
+ *               these were set in the axes) (DG);
+ * 19-Nov-2002 : Added axis location parameters to constructor (DG);
+ * 17-Jan-2003 : Moved to com.jrefinery.chart.plot package (DG);
+ * 14-Feb-2003 : Fixed bug in auto-range calculation for secondary axis (DG);
+ * 26-Mar-2003 : Implemented Serializable (DG);
+ * 02-May-2003 : Moved render() method up from subclasses. Added secondary 
+ *               range markers. Added an attribute to control the dataset 
+ *               rendering order.  Added a drawAnnotations() method.  Changed 
+ *               the axis location from an int to an AxisLocation (DG);
+ * 07-May-2003 : Merged HorizontalCategoryPlot and VerticalCategoryPlot into 
+ *               this class (DG);
+ * 02-Jun-2003 : Removed check for range axis compatibility (DG);
+ * 04-Jul-2003 : Added a domain gridline position attribute (DG);
+ * 21-Jul-2003 : Moved DrawingSupplier to Plot superclass (DG);
+ * 19-Aug-2003 : Added equals() method and implemented Cloneable (DG);
+ * 01-Sep-2003 : Fixed bug 797466 (no change event when secondary dataset 
+ *               changes) (DG);
+ * 02-Sep-2003 : Fixed bug 795209 (wrong dataset checked in render2 method) and
+ *               790407 (initialise method) (DG);
+ * 08-Sep-2003 : Added internationalization via use of properties 
+ *               resourceBundle (RFE 690236) (AL); 
+ * 08-Sep-2003 : Fixed bug (wrong secondary range axis being used).  Changed 
+ *               ValueAxis API (DG);
+ * 10-Sep-2003 : Fixed bug in setRangeAxis() method (DG);
+ * 15-Sep-2003 : Fixed two bugs in serialization, implemented 
+ *               PublicCloneable (DG);
+ * 23-Oct-2003 : Added event notification for changes to renderer (DG);
+ * 26-Nov-2003 : Fixed bug (849645) in clearRangeMarkers() method (DG);
+ * 03-Dec-2003 : Modified draw method to accept anchor (DG);
+ * 21-Jan-2004 : Update for renamed method in ValueAxis (DG);
+ * 10-Mar-2004 : Fixed bug in axis range calculation when secondary renderer is
+ *               stacked (DG);
+ * 12-May-2004 : Added fixed legend items (DG);
+ * 19-May-2004 : Added check for null legend item from renderer (DG);
+ * 02-Jun-2004 : Updated the DatasetRenderingOrder class (DG);
+ * 05-Nov-2004 : Renamed getDatasetsMappedToRangeAxis() 
+ *               --> datasetsMappedToRangeAxis(), and ensured that returned 
+ *               list doesn't contain null datasets (DG);
+ * 12-Nov-2004 : Implemented new Zoomable interface (DG);
+ * 07-Jan-2005 : Renamed getRangeExtent() --> findRangeBounds() in 
+ *               CategoryItemRenderer (DG);
+ * 04-May-2005 : Fixed serialization of range markers (DG);
+ * 05-May-2005 : Updated draw() method parameters (DG);
+ * 20-May-2005 : Added setDomainAxes() and setRangeAxes() methods, as per
+ *               RFE 1183100 (DG);
+ * 01-Jun-2005 : Upon deserialization, register plot as a listener with its
+ *               axes, dataset(s) and renderer(s) - see patch 1209475 (DG);
+ * 02-Jun-2005 : Added support for domain markers (DG);
+ * 06-Jun-2005 : Fixed equals() method for use with GradientPaint (DG);
+ * 09-Jun-2005 : Added setRenderers(), as per RFE 1183100 (DG);
+ * 16-Jun-2005 : Added getDomainAxisCount() and getRangeAxisCount() methods, to
+ *               match XYPlot (see RFE 1220495) (DG);
+ * ------------- JFREECHART 1.0.x ---------------------------------------------
+ * 11-Jan-2006 : Added configureRangeAxes() to rendererChanged(), since the
+ *               renderer might influence the axis range (DG);
+ * 27-Jan-2006 : Added various null argument checks (DG);
+ * 18-Aug-2006 : Added getDatasetCount() method, plus a fix for bug drawing 
+ *               category labels, thanks to Adriaan Joubert (1277726) (DG);
+ * 05-Sep-2006 : Added MarkerChangeEvent support (DG);
+ * 30-Oct-2006 : Added getDomainAxisIndex(), datasetsMappedToDomainAxis() and 
+ *               getCategoriesForAxis() methods (DG);
+ * 22-Nov-2006 : Fire PlotChangeEvent from setColumnRenderingOrder() and
+ *               setRowRenderingOrder() (DG);
+ * 29-Nov-2006 : Fix for bug 1605207 (IntervalMarker exceeds bounds of data 
+ *               area) (DG);
+ * 26-Feb-2007 : Fix for bug 1669218 (setDomainAxisLocation() notify argument
+ *               ignored) (DG);
+ * 13-Mar-2007 : Added null argument checks for setRangeCrosshairPaint() and
+ *               setRangeCrosshairStroke(), fixed clipping for 
+ *               anntotations (DG);
+ * 07-Jun-2007 : Override drawBackground() for new GradientPaint handling (DG);
+ * 21-Jun-2007 : Removed JCommon dependencies (DG);
+ * 06-Jul-2007 : Updated annotation handling (DG);
+ * 10-Jul-2007 : Added getRangeAxisIndex(ValueAxis) method (DG);
+ * 24-Sep-2007 : Implemented new zoom methods (DG);
+ * 25-Oct-2007 : Added some argument checks (DG);
+ *
+ */
+package org.jfree.chart.plot;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.annotations.CategoryAnnotation;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisCollection;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.axis.AxisSpace;
+import org.jfree.chart.axis.AxisState;
+import org.jfree.chart.axis.CategoryAnchor;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.ValueTick;
+import org.jfree.chart.event.ChartChangeEventType;
+import org.jfree.chart.event.PlotChangeEvent;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRendererState;
+import org.jfree.chart.util.Layer;
+import org.jfree.chart.util.ObjectList;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.chart.util.RectangleEdge;
+import org.jfree.chart.util.RectangleInsets;
+import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SortOrder;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.DatasetUtilities;
+/**
+ * A general plotting class that uses data from a {@link CategoryDataset} and 
+ * renders each data item using a {@link CategoryItemRenderer}.
+ */
+public class CategoryPlot extends Plot implements ValueAxisPlot, 
+        Zoomable, RendererChangeListener, Cloneable, PublicCloneable, 
+        Serializable {
+    private static final long serialVersionUID = -3537691700434728188L;
+    public static final boolean DEFAULT_DOMAIN_GRIDLINES_VISIBLE = false;
+    public static final boolean DEFAULT_RANGE_GRIDLINES_VISIBLE = true;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Color.WHITE;
+    public static final boolean DEFAULT_CROSSHAIR_VISIBLE = false;
+    public static final Paint DEFAULT_CROSSHAIR_PAINT = Color.blue;
+    private PlotOrientation orientation;
+    private RectangleInsets axisOffset;
+    private ObjectList domainAxes;
+    private ObjectList domainAxisLocations;
+    private boolean drawSharedDomainAxis;
+    private ObjectList rangeAxes;
+    private ObjectList rangeAxisLocations;
+    private ObjectList datasets;
+    private ObjectList datasetToDomainAxisMap;
+    private ObjectList datasetToRangeAxisMap;
+    private ObjectList renderers;
+    private SortOrder columnRenderingOrder = SortOrder.ASCENDING;
+    private SortOrder rowRenderingOrder = SortOrder.ASCENDING;
+    private boolean domainGridlinesVisible;
+    private CategoryAnchor domainGridlinePosition;
+    private transient Stroke domainGridlineStroke;
+    private transient Paint domainGridlinePaint;
+    private boolean rangeGridlinesVisible;
+    private transient Stroke rangeGridlineStroke;
+    private transient Paint rangeGridlinePaint;
+    private double anchorValue;
+    private boolean rangeCrosshairVisible;
+    private double rangeCrosshairValue;
+    private transient Stroke rangeCrosshairStroke;
+    private transient Paint rangeCrosshairPaint;
+    private boolean rangeCrosshairLockedOnData = true;
+    private Map foregroundDomainMarkers;
+    private Map backgroundDomainMarkers;
+    private Map foregroundRangeMarkers;
+    private Map backgroundRangeMarkers;
+    private List annotations;
+    private int weight;
+    private AxisSpace fixedDomainAxisSpace;
+    private AxisSpace fixedRangeAxisSpace;
+    private LegendItemCollection fixedLegendItems;
+    /**
+     * Sets the domain axes for this plot and sends a {@link PlotChangeEvent}
+     * to all registered listeners.
+     * 
+     * @param axes  the axes (<code>null</code> not permitted).
+     * 
+     * @see #setRangeAxes(ValueAxis[])
+     */
+    public void setDomainAxes(CategoryAxis[] axes) {
+        for (int i = 0; i < axes.length; i++) {
+            setDomainAxis(i, axes[i], false);   
+        }
+        notifyListeners(new PlotChangeEvent(this));
+    }
+    /**
+     * Sets the range axis for the plot and sends a {@link PlotChangeEvent} to
+     * all registered listeners.
+     *
+     * @param axis  the axis (<code>null</code> permitted).
+     */
+    public void setRangeAxis(ValueAxis axis) {
+        setRangeAxis(0, axis);
+    }
+    /**
+     * Sets a range axis and sends a {@link PlotChangeEvent} to all registered
+     * listeners.
+     *
+     * @param index  the axis index.
+     * @param axis  the axis.
+     */
+    public void setRangeAxis(int index, ValueAxis axis) {
+        setRangeAxis(index, axis, true);
+    }
+    /**
+     * Returns the index of the specified axis, or <code>-1</code> if the axis
+     * is not assigned to the plot.
+     *
+     * @param axis  the axis (<code>null</code> not permitted).
+     *
+     * @return The axis index.
+     * 
+     * @see #getRangeAxis(int)
+     * @see #getDomainAxisIndex(CategoryAxis)
+     * 
+     * @since 1.0.7
+     */
+    public int getRangeAxisIndex(ValueAxis axis) {
+        int result = this.rangeAxes.indexOf(axis);
+        if (result < 0) { // try the parent plot
+            Plot parent = getParent();
+            if (parent instanceof CategoryPlot) {
+                CategoryPlot p = (CategoryPlot) parent;
+                result = p.getRangeAxisIndex(axis);
+            }
+        }
+        return result;
+    }
+    /**
+     * Sets the range axes for this plot and sends a {@link PlotChangeEvent}
+     * to all registered listeners.
+     * 
+     * @param axes  the axes (<code>null</code> not permitted).
+     * 
+     * @see #setDomainAxes(CategoryAxis[])
+     */
+    public void setRangeAxes(ValueAxis[] axes) {
+        for (int i = 0; i < axes.length; i++) {
+            setRangeAxis(i, axes[i], false);   
+        }
+        notifyListeners(new PlotChangeEvent(this));
+    }
+    /**
+     * Sets a range axis and, if requested, sends a {@link PlotChangeEvent} to 
+     * all registered listeners.
+     *
+     * @param index  the axis index.
+     * @param axis  the axis.
+     * @param notify  notify listeners?
+     */
+    public void setRangeAxis(int index, ValueAxis axis, boolean notify) {
+        ValueAxis existing = (ValueAxis) this.rangeAxes.get(index);
+        if (existing != null) {
+            existing.removeChangeListener(this);
+        }
+        if (axis != null) {
+            axis.setPlot(this);
+        }
+        this.rangeAxes.set(index, axis);
+        if (axis != null) {
+            axis.configure();
+            axis.addChangeListener(this);
+        }
+        if (notify) {
+            notifyListeners(new PlotChangeEvent(this));
+        }
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test

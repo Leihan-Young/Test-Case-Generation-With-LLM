@@ -1,0 +1,47 @@
+package org.joda.time.field;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.IllegalFieldValueException;
+/**
+ * General utilities that don't fit elsewhere.
+ * <p>
+ * FieldUtils is thread-safe and immutable.
+ *
+ * @author Stephen Colebourne
+ * @since 1.0
+ */
+public class FieldUtils {
+    /**
+     * Multiply two values throwing an exception if overflow occurs.
+     * 
+     * @param val1  the first value
+     * @param val2  the second value
+     * @return the new total
+     * @throws ArithmeticException if the value is too big or too small
+     * @since 1.2
+     */
+    public static long safeMultiply(long val1, int val2);
+    /**
+     * Multiply two values throwing an exception if overflow occurs.
+     * 
+     * @param val1  the first value
+     * @param val2  the second value
+     * @return the new total
+     * @throws ArithmeticException if the value is too big or too small
+     * @since 1.2
+     */
+    public static int safeMultiply(int val1, int val2);
+    /**
+     * Multiply two values throwing an exception if overflow occurs.
+     * 
+     * @param val1  the first value
+     * @param val2  the second value
+     * @return the new total
+     * @throws ArithmeticException if the value is too big or too small
+     */
+    public static long safeMultiply(long val1, long val2);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

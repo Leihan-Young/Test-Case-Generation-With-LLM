@@ -1,0 +1,23 @@
+PosixParser() throws Exception
+    {
+        String[] args = new String[]{
+                "--file=file.txt", "-d", "directory"
+        };
+
+        CommandLine cl = parser.parse(options, args);
+        assertTrue("Confirm --file option is set", cl.hasOption("file"));
+        assertTrue("Confirm -d option is set", cl.hasOption("d"));
+        assertTrue("Confirm all arguments recognized", cl.getArgs().length == 0);
+
+        String[] flattenedArgs = parser.flatten(options, args, false);
+        assertTrue("Confirm size of flattened arguments", flattenedArgs.length == 3);
+        assertEquals("Confirm first flattened argument", "--file=file.txt", flattenedArgs[0]);
+        assertEquals("Confirm second flattened argument", "-d", flattenedArgs[1]);
+        assertEquals("Confirm third flattened argument", "directory", flattenedArgs[2]);
+
+        String[] flattenedArgsStopAtNonOption = parser.flatten(options, args, true);
+        assertTrue("Confirm size of flattened arguments with stopAtNonOption", flattenedArgsStopAtNonOption.length == 1);
+        assertEquals("Confirm flattened argument", "--file=file.txt", flattenedArgsStopAtNonOption[0]);
+    }
+```
+The test method tries to parse a command-line argument that contains both a long option and a short option. The expected behavior is to recognize both options. However, there is a bug in the `processNonOptionToken` method that causes the program to ignore the short option and only recognize the long option. The test method will fail, revealing the bug.

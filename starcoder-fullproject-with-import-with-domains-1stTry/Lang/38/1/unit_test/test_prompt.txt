@@ -1,0 +1,201 @@
+package org.apache.commons.lang3.time;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import org.apache.commons.lang3.Validate;
+/**
+ * <p>FastDateFormat is a fast and thread-safe version of
+ * {@link java.text.SimpleDateFormat}.</p>
+ * 
+ * <p>This class can be used as a direct replacement to
+ * <code>SimpleDateFormat</code> in most formatting situations.
+ * This class is especially useful in multi-threaded server environments.
+ * <code>SimpleDateFormat</code> is not thread-safe in any JDK version,
+ * nor will it be as Sun have closed the bug/RFE.
+ * </p>
+ *
+ * <p>Only formatting is supported, but all patterns are compatible with
+ * SimpleDateFormat (except time zones - see below).</p>
+ *
+ * <p>Java 1.4 introduced a new pattern letter, <code>'Z'</code>, to represent
+ * time zones in RFC822 format (eg. <code>+0800</code> or <code>-1100</code>).
+ * This pattern letter can be used here (on all JDK versions).</p>
+ *
+ * <p>In addition, the pattern <code>'ZZ'</code> has been made to represent
+ * ISO8601 full format time zones (eg. <code>+08:00</code> or <code>-11:00</code>).
+ * This introduces a minor incompatibility with Java 1.4, but at a gain of
+ * useful functionality.</p>
+ *
+ * @author Apache Software Foundation
+ * @author TeaTrove project
+ * @author Brian S O'Neill
+ * @author Sean Schofield
+ * @author Gary Gregory
+ * @author Nikolay Metchev
+ * @since 2.0
+ * @version $Id$
+ */
+public class FastDateFormat extends Format {
+    private static final long serialVersionUID = 1L;
+    public static final int FULL = DateFormat.FULL;
+    public static final int LONG = DateFormat.LONG;
+    public static final int MEDIUM = DateFormat.MEDIUM;
+    public static final int SHORT = DateFormat.SHORT;
+    private static String cDefaultPattern; // lazily initialised by getInstance()
+    private static final Map<FastDateFormat, FastDateFormat> cInstanceCache = new HashMap<FastDateFormat, FastDateFormat>(7);
+    private static final Map<Object, FastDateFormat> cDateInstanceCache = new HashMap<Object, FastDateFormat>(7);
+    private static final Map<Object, FastDateFormat> cTimeInstanceCache = new HashMap<Object, FastDateFormat>(7);
+    private static final Map<Object, FastDateFormat> cDateTimeInstanceCache = new HashMap<Object, FastDateFormat>(7);
+    private static final Map<Object, String> cTimeZoneDisplayCache = new HashMap<Object, String>(7);
+    private final String mPattern;
+    private final TimeZone mTimeZone;
+    private final boolean mTimeZoneForced;
+    private final Locale mLocale;
+    private final boolean mLocaleForced;
+    private transient Rule[] mRules;
+    private transient int mMaxLengthEstimate;
+    /**
+     * <p>Formats a <code>Calendar</code> object.</p>
+     * 
+     * @param calendar  the calendar to format
+     * @return the formatted string
+     */
+    public String format(Calendar calendar);
+    /**
+     * <p>Gets a formatter instance using the specified pattern and
+     * locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param locale  optional locale, overrides system locale
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern, Locale locale);
+    /**
+     * <p>Gets a formatter instance using the default pattern in the
+     * default locale.</p>
+     * 
+     * @return a date/time formatter
+     */
+    public static FastDateFormat getInstance();
+    /**
+     * <p>Formats a <code>Date</code> object into the
+     * supplied <code>StringBuffer</code>.</p>
+     * 
+     * @param date  the date to format
+     * @param buf  the buffer to format into
+     * @return the specified string buffer
+     */
+    public StringBuffer format(Date date, StringBuffer buf);
+    /**
+     * <p>Gets a formatter instance using the specified pattern in the
+     * default locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern);
+    /**
+     * <p>Gets a formatter instance using the specified pattern, time zone
+     * and locale.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @param locale  optional locale, overrides system locale
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     *  or <code>null</code>
+     */
+    public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale);
+    /**
+     * <p>Formats a <code>Calendar</code> object into the
+     * supplied <code>StringBuffer</code>.</p>
+     * 
+     * @param calendar  the calendar to format
+     * @param buf  the buffer to format into
+     * @return the specified string buffer
+     */
+    public StringBuffer format(Calendar calendar, StringBuffer buf);
+    /**
+     * <p>Gets the time zone used by this formatter.</p>
+     *
+     * <p>This zone is always used for <code>Date</code> formatting.
+     * If a <code>Calendar</code> is passed in to be formatted, the
+     * time zone on that may be used depending on
+     * {@link #getTimeZoneOverridesCalendar()}.</p>
+     * 
+     * @return the time zone
+     */
+    public TimeZone getTimeZone();
+    /**
+     * <p>Formats a <code>Date</code>, <code>Calendar</code> or
+     * <code>Long</code> (milliseconds) object.</p>
+     * 
+     * @param obj  the object to format
+     * @param toAppendTo  the buffer to append to
+     * @param pos  the position - ignored
+     * @return the buffer passed in
+     */
+    @Override
+    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos);
+    /**
+     * <p>Formats a <code>Date</code> object.</p>
+     * 
+     * @param date  the date to format
+     * @return the formatted string
+     */
+    public String format(Date date);
+    /**
+     * <p>Formats a milliseond <code>long</code> value into the
+     * supplied <code>StringBuffer</code>.</p>
+     * 
+     * @param millis  the millisecond value to format
+     * @param buf  the buffer to format into
+     * @return the specified string buffer
+     * @since 2.1
+     */
+    public StringBuffer format(long millis, StringBuffer buf);
+    /**
+     * <p>Gets a formatter instance using the specified pattern and
+     * time zone.</p>
+     * 
+     * @param pattern  {@link java.text.SimpleDateFormat} compatible
+     *  pattern
+     * @param timeZone  optional time zone, overrides time zone of
+     *  formatted date
+     * @return a pattern based date/time formatter
+     * @throws IllegalArgumentException if pattern is invalid
+     */
+    public static FastDateFormat getInstance(String pattern, TimeZone timeZone);
+    /**
+     * <p>Formats a millisecond <code>long</code> value.</p>
+     * 
+     * @param millis  the millisecond value to format
+     * @return the formatted string
+     * @since 2.1
+     */
+    public String format(long millis);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

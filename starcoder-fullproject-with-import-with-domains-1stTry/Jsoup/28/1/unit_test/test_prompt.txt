@@ -1,0 +1,75 @@
+package org.jsoup.parser;
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Entities;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * Readers the input stream into tokens.
+ */
+class Tokeniser {
+    private CharacterReader reader; // html input
+    private ParseErrorList errors; // errors found while tokenising
+    private TokeniserState state = TokeniserState.Data; // current tokenisation state
+    private Token emitPending; // the token we are about to emit on next read
+    private boolean isEmitPending = false;
+    private StringBuilder charBuffer = new StringBuilder(); // buffers characters to output as one token
+    private Token.StartTag lastStartTag; // the last start tag emitted, to test appropriate end tag
+    private boolean selfClosingFlagAcknowledged = true;
+    Character consumeCharacterReference(Character additionalAllowedCharacter, boolean inAttribute);
+}
+package org.jsoup.parser;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import java.util.List;
+/**
+ * Parses HTML into a {@link org.jsoup.nodes.Document}. Generally best to use one of the  more convenient parse methods
+ * in {@link org.jsoup.Jsoup}.
+ */
+public class Parser {
+    private static final int DEFAULT_MAX_ERRORS = 0; // by default, error tracking is disabled.
+    private TreeBuilder treeBuilder;
+    private int maxErrors = DEFAULT_MAX_ERRORS;
+    private ParseErrorList errors;
+    /**
+     * Parse a fragment of HTML into the {@code body} of a Document.
+     *
+     * @param bodyHtml fragment of HTML
+     * @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
+     *
+     * @return Document, with empty head, and HTML parsed into body
+     */
+    public static Document parseBodyFragment(String bodyHtml, String baseUri);
+}
+package org.jsoup.nodes;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.CharsetEncoder;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+/**
+ * HTML entities, and escape routines.
+ * Source: <a href="http://www.w3.org/TR/html5/named-character-references.html#named-character-references">W3C HTML
+ * named character references</a>.
+ */
+public class Entities {
+    /**
+     * Check if the input is a known named entity
+     * @param name the possible entity name (e.g. "lt" or "amp")
+     * @return true if a known named entity
+     */
+    public static boolean isNamedEntity(String name);
+    static String unescape(String string);
+    /**
+     * Unescape the input string.
+     * @param string
+     * @param strict if "strict" (that is, requires trailing ';' char, otherwise that's optional)
+     * @return
+     */
+    static String unescape(String string, boolean strict);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

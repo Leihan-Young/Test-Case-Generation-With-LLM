@@ -1,0 +1,15 @@
+StatisticalBarRenderer() {
+    DefaultStatisticalCategoryDataset dataset = new DefaultStatisticalCategoryDataset();
+    dataset.add(1.0, 0.5, "S1", "C1");
+    dataset.add(2.0, 1.0, "S1", "C2");
+    dataset.add(3.0, 1.5, "S1", "C3");
+    CategoryAxis domainAxis = new CategoryAxis("Category");
+    NumberAxis rangeAxis = new NumberAxis("Value");
+    StatisticalBarRenderer renderer = new StatisticalBarRenderer();
+    CategoryPlot plot = new CategoryPlot(dataset, domainAxis, rangeAxis, renderer);
+    JFreeChart chart = new JFreeChart(plot);
+    BufferedImage image = chart.createBufferedImage(500, 300);
+    assertNotNull(image);
+}
+```
+The error occurred while building the test method is that the classes `

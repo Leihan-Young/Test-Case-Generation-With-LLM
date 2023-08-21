@@ -1,0 +1,20 @@
+     /**
+     * Test of optimize method, of class BOBYQAOptimizer.
+     */
+    @Test
+    public void testOptimize() {
+        System.out.println("optimize");
+        final GoalType goalType = GoalType.MINIMIZE;
+        final MultivariateFunction func = new MultivariateFunction() {
+
+            public double value(double[] point) {
+                final double x = point[0];
+                final double y = point[1];
+                return (x + 2 * y - 7) * (x + 2 * y - 7) + (2 * x + y - 5) * (2 * x + y - 5);
+            }
+        };
+        final BOBYQAOptimizer instance = new BOBYQAOptimizer(1e-8, 1e-8);
+        final RealPointValuePair expResult = new RealPointValuePair(new double[] { -3, -1 }, func.value(new double[] { -3, -1 }));
+        final RealPointValuePair result = instance.optimize(100, func, goalType, new double[] { -6, -6 }, new double[] { 6, 6 });
+        Assert.assertEquals(expResult, result);
+    }

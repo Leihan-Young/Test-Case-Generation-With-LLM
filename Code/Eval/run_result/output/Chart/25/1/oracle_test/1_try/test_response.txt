@@ -1,0 +1,20 @@
+DrawWithNullMeanVertical() {
+        try {
+            DefaultStatisticalCategoryDataset dataset 
+                    = new DefaultStatisticalCategoryDataset();
+            dataset.add(1.0, 2.0, "S1", "C1");
+            dataset.add(null, new Double(4.0), "S1", "C2");
+            CategoryPlot plot = new CategoryPlot(dataset, 
+                    new CategoryAxis("Category"), new NumberAxis("Value"), 
+                    new StatisticalBarRenderer());
+            JFreeChart chart = new JFreeChart(plot);
+            chart.createBufferedImage(300, 200, null);
+            fail("Expected exception not thrown.");
+        }
+        catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+        catch (Exception e) {
+            fail("Unexpected exception thrown: " + e.getMessage());
+        }
+    }

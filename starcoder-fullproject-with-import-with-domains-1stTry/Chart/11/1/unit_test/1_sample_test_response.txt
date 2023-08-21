@@ -1,0 +1,16 @@
+ public void testEqual() {
+        Ellipse2D e1 = new Ellipse2D.Double(1.0, 2.0, 3.0, 4.0);
+        Ellipse2D e2 = new Ellipse2D.Double(1.0, 2.0, 3.0, 4.0);
+        assertTrue(ShapeUtilities.equal(e1, e2));
+        assertFalse(ShapeUtilities.equal(e1, (Ellipse2D) null));
+        assertFalse(ShapeUtilities.equal((Ellipse2D) null, e1));
+        assertFalse(ShapeUtilities.equal((Ellipse2D) null, (Ellipse2D) null));
+
+        Line2D l1 = new Line2D.Double(1.0, 2.0, 3.0, 4.0);
+        Line2D l2 = new Line2D.Double(1.0, 2.0, 3.0, 4.0);
+        assertTrue(ShapeUtilities.equal(l1, l2));
+        assertFalse(ShapeUtilities.equal(l1, (Line2D) null));
+        assertFalse(ShapeUtilities.equal((Line2D) null, l1));
+        assertFalse(ShapeUtilities.equal((Line2D) null, (Line2D) null));
+
+        Arc2D a1 = new Arc2D.Double(1.0

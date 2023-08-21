@@ -1,0 +1,2838 @@
+Getting Chart-11 focal context...
+focal_context=/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+Getting Chart-11 test prefix...
+oracle_focal_context=/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java, test_prefix=    public void testEqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_0_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_1_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_2_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_3_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+        g2.closePath();
+        _tmp_var_4_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_5_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+    }
+
+Constructing unit test prompt for Chart-11
+unit_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-11 unit test
+unit_test_response=ShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+```
+Constructing test code for Chart-11 unit test
+Finished constructing test code for Chart-11 unit test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-11 unit test
+Constructing oracle test prompt for Chart-11
+oracle_test_prompt=# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testEqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_0_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_1_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_2_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_3_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+        g2.closePath();
+        _tmp_var_4_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_5_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+Invoking LLM(gpt-3.5-turbo) for Chart-11 oracle test
+oracle_test_response=EqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertTrue(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+       
+Constructing test code for Chart-11 oracle test
+Finished constructing test code for Chart-11 oracle test
+Finished invoking LLM(gpt-3.5-turbo) for Chart-11 oracle test
+Checking out Chart 11b...
+checkout_cmd=defects4j checkout -p Chart -v 11b -w /jTrans/Eval/src/Chart/11b >/dev/null 2>&1
+Finished checking out Chart 11b.
+Checking out Chart 11f...
+checkout_cmd=defects4j checkout -p Chart -v 11f -w /jTrans/Eval/src/Chart/11f >/dev/null 2>&1
+Finished checking out Chart 11f.
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11b, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11b/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11b -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11f, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11f/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11f -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+res_in_bug=Test passed, res_in_fix=Test passed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+
+[assistant]:ShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+```
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-11 NO.2 try
+runTestWithRetry NO.2 try
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11b, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11b/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11b -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11f, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11f/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11f -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+res_in_bug=Test passed, res_in_fix=Test passed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+```
+# Test Code:
+A test method that can reveal the bug of the java program.
+```
+public void test
+
+[assistant]:ShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+}
+```
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+[assistant]:ShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+```
+
+The added test checks if two ellipses with different coordinates are considered equal. According to the implementation of `equal(Ellipse2D e1, Ellipse2D e2)` method, this should return `false`. However, the current implementation of `equal(Shape s1, Shape s2)` method returns `true` for these two ellipses. This is a bug in the program.
+
+[user]:The test method you provided fails to find the bug in the java program. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-11 NO.3 try
+runTestWithRetry NO.3 try
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11b, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11b/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11b -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+runTest
+trigger_code=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+, check_out_path=/jTrans/Eval/src/Chart/11f, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11f/tests
+trigger_method_lines=public void testShapeUtilities() {
+    Shape s1 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s2 = new Rectangle2D.Double(0, 0, 10, 10);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(s1, s1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s1, s2));
+    
+    Polygon p1 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Polygon p2 = new Polygon(new int[] {0, 5, 10}, new int[] {0, 10, 0}, 3);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(p1, p2));
+    
+    GeneralPath path1 = new GeneralPath();
+    path1.moveTo(0, 0);
+    path1.lineTo(10, 10);
+    path1.lineTo(20, 0);
+    path1.closePath();
+    GeneralPath path2 = new GeneralPath();
+    path2.moveTo(0, 0);
+    path2.lineTo(10, 10);
+    path2.lineTo(20, 0);
+    path2.closePath();
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(path1, path2));
+    
+    Line2D line1 = new Line2D.Double(0, 0, 10, 10);
+    Line2D line2 = new Line2D.Double(0, 0, 5, 5);
+    Assert.assertTrue("Expected true", ShapeUtilities.equal(line1, line1));
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(line1, line2));
+    
+    // Test for a bug:
+    Shape s3 = new Ellipse2D.Double(0, 0, 10, 10);
+    Shape s4 = new Ellipse2D.Double(5, 5, 10, 10);
+    Assert.assertFalse("Expected false", ShapeUtilities.equal(s3, s4));
+}
+
+test_cmd=defects4j test -w /jTrans/Eval/src/Chart/11f -t org.jfree.chart.util.junit.ShapeUtilitiesTests::newTestMethod1
+org/jfree/chart/util/junit/ShapeUtilitiesTests::newTestMethod1:
+test_results.stderr
+Running ant (compile.tests)................................................ OK
+Running ant (run.dev.tests)................................................ OK
+
+test_results.stdout
+Failing tests: 0
+-----------------------------------------------
+res_in_bug=Test passed, res_in_fix=Test passed
+runTestWithRetry NO.1 try
+runTest
+trigger_code=public void testEqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertTrue(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+       
+, check_out_path=/jTrans/Eval/src/Chart/11b, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11b/tests
+Failed to parse trigger_code!
+runTest
+trigger_code=public void testEqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertTrue(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        Assert.assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+       
+, check_out_path=/jTrans/Eval/src/Chart/11f, test_class_path=org/jfree/chart/util/junit/ShapeUtilitiesTests.java
+test_code_path=/jTrans/Eval/src/Chart/11f/tests
+Failed to parse trigger_code!
+res_in_bug=Parse failed, res_in_fix=Parse failed
+[user]:# Java Program:
+A java program with one or more bugs.
+```
+/* ===========================================================
+ * JFreeChart : a free chart library for the Java(tm) platform
+ * ===========================================================
+ *
+ * (C) Copyright 2000-2008, by Object Refinery Limited and Contributors.
+ *
+ * Project Info:  http://www.jfree.org/jfreechart/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
+ *
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
+ * in the United States and other countries.]
+ *
+ * -------------------
+ * ShapeUtilities.java
+ * -------------------
+ * (C)opyright 2003-2008, by Object Refinery Limited and Contributors.
+ *
+ * Original Author:  David Gilbert (for Object Refinery Limited);
+ * Contributor(s):   -;
+ *
+ * Changes
+ * -------
+ * 13-Aug-2003 : Version 1 (DG);
+ * 16-Mar-2004 : Moved rotateShape() from RefineryUtilities.java to here (DG);
+ * 13-May-2004 : Added new shape creation methods (DG);
+ * 30-Sep-2004 : Added createLineRegion() method (DG);
+ *               Moved drawRotatedShape() method from RefineryUtilities class
+ *               to this class (DG);
+ * 04-Oct-2004 : Renamed ShapeUtils --> ShapeUtilities (DG);
+ * 26-Oct-2004 : Added a method to test the equality of two Line2D
+ *               instances (DG);
+ * 10-Nov-2004 : Added new translateShape() and equal(Ellipse2D, Ellipse2D)
+ *               methods (DG);
+ * 11-Nov-2004 : Renamed translateShape() --> createTranslatedShape() (DG);
+ * 07-Jan-2005 : Minor Javadoc fix (DG);
+ * 11-Jan-2005 : Removed deprecated code in preparation for 1.0.0 release (DG);
+ * 21-Jan-2005 : Modified return type of RectangleAnchor.coordinates()
+ *               method (DG);
+ * 22-Feb-2005 : Added equality tests for Arc2D and GeneralPath (DG);
+ * 16-Mar-2005 : Fixed bug where equal(Shape, Shape) fails for two Polygon
+ *               instances (DG);
+ * 20-Jun-2007 : Copied from JCommon (DG);
+ * 02-Jun-2008 : Fixed bug in equal(GeneralPath, GeneralPath) (DG);
+ *
+ */
+package org.jfree.chart.util;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+/**
+ * Utility methods for {@link Shape} objects.
+ */
+public class ShapeUtilities {
+    /**
+     * Tests two shapes for equality.  If both shapes are <code>null</code>,
+     * this method will return <code>true</code>.
+     * <p>
+     * In the current implementation, the following shapes are supported:
+     * <code>Ellipse2D</code>, <code>Line2D</code> and <code>Rectangle2D</code>
+     * (implicit).
+     *
+     * @param s1  the first shape (<code>null</code> permitted).
+     * @param s2  the second shape (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Shape s1, Shape s2) {
+        if (s1 instanceof Line2D && s2 instanceof Line2D) {
+            return equal((Line2D) s1, (Line2D) s2);
+        }
+        else if (s1 instanceof Ellipse2D && s2 instanceof Ellipse2D) {
+            return equal((Ellipse2D) s1, (Ellipse2D) s2);
+        }
+        else if (s1 instanceof Arc2D && s2 instanceof Arc2D) {
+            return equal((Arc2D) s1, (Arc2D) s2);
+        }
+        else if (s1 instanceof Polygon && s2 instanceof Polygon) {
+            return equal((Polygon) s1, (Polygon) s2);
+        }
+        else if (s1 instanceof GeneralPath && s2 instanceof GeneralPath) {
+            return equal((GeneralPath) s1, (GeneralPath) s2);
+        }
+        else {
+            // this will handle Rectangle2D...
+            return ObjectUtilities.equal(s1, s2);
+        }
+    }
+    /**
+     * Compares two lines are returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param l1  the first line (<code>null</code> permitted).
+     * @param l2  the second line (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Line2D l1, Line2D l2) {
+        if (l1 == null) {
+            return (l2 == null);
+        }
+        if (l2 == null) {
+            return false;
+        }
+        if (!l1.getP1().equals(l2.getP1())) {
+            return false;
+        }
+        if (!l1.getP2().equals(l2.getP2())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two ellipses and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param e1  the first ellipse (<code>null</code> permitted).
+     * @param e2  the second ellipse (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Ellipse2D e1, Ellipse2D e2) {
+        if (e1 == null) {
+            return (e2 == null);
+        }
+        if (e2 == null) {
+            return false;
+        }
+        if (!e1.getFrame().equals(e2.getFrame())) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Compares two arcs and returns <code>true</code> if they are equal or
+     * both <code>null</code>.
+     *
+     * @param a1  the first arc (<code>null</code> permitted).
+     * @param a2  the second arc (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Arc2D a1, Arc2D a2) {
+        if (a1 == null) {
+            return (a2 == null);
+        }
+        if (a2 == null) {
+            return false;
+        }
+        if (!a1.getFrame().equals(a2.getFrame())) {
+            return false;
+        }
+        if (a1.getAngleStart() != a2.getAngleStart()) {
+            return false;
+        }
+        if (a1.getAngleExtent() != a2.getAngleExtent()) {
+            return false;
+        }
+        if (a1.getArcType() != a2.getArcType()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  polygon 1 (<code>null</code> permitted).
+     * @param p2  polygon 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(Polygon p1, Polygon p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.npoints != p2.npoints) {
+            return false;
+        }
+        if (!Arrays.equals(p1.xpoints, p2.xpoints)) {
+            return false;
+        }
+        if (!Arrays.equals(p1.ypoints, p2.ypoints)) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Tests two polygons for equality.  If both are <code>null</code> this
+     * method returns <code>true</code>.
+     *
+     * @param p1  path 1 (<code>null</code> permitted).
+     * @param p2  path 2 (<code>null</code> permitted).
+     *
+     * @return A boolean.
+     */
+    public static boolean equal(GeneralPath p1, GeneralPath p2) {
+        if (p1 == null) {
+            return (p2 == null);
+        }
+        if (p2 == null) {
+            return false;
+        }
+        if (p1.getWindingRule() != p2.getWindingRule()) {
+            return false;
+        }
+        PathIterator iterator1 = p1.getPathIterator(null);
+        PathIterator iterator2 = p1.getPathIterator(null);
+        double[] d1 = new double[6];
+        double[] d2 = new double[6];
+        boolean done = iterator1.isDone() && iterator2.isDone();
+        while (!done) {
+            if (iterator1.isDone() != iterator2.isDone()) {
+                return false;
+            }
+            int seg1 = iterator1.currentSegment(d1);
+            int seg2 = iterator2.currentSegment(d2);
+            if (seg1 != seg2) {
+                return false;
+            }
+            if (!Arrays.equals(d1, d2)) {
+                return false;
+            }
+            iterator1.next();
+            iterator2.next();
+            done = iterator1.isDone() && iterator2.isDone();
+        }
+        return true;
+    }
+}
+
+```
+# Incomplete Test Code:
+A test method that is incomplete. To complete the test code, $ASSERT$ should be replaced with assert statements (assertTrue, assertFalse, fail, assertEquals, assertNotEquals, assertArrayEquals, assertNotNull, assertNull, assertSame, assertNotSame), and $EXCEPTION$ should be replaced with exception class. Other statements stay the same.
+```
+    public void testEqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_0_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_1_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_2_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_3_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+        g2.closePath();
+        _tmp_var_4_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.closePath();
+        _tmp_var_5_ = ShapeUtilities.equal(g1, g2);
+        $ASSERT$
+    }
+
+```
+# Test Code:
+A test method that completes the incomplete test code. And it contains no $ASSERT$ or $EXCEPTION$
+```
+public void test
+
+[assistant]:EqualGeneralPaths() {
+        GeneralPath g1 = new GeneralPath();
+        g1.moveTo(1.0f, 2.0f);
+        g1.lineTo(3.0f, 4.0f);
+        g1.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g1.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g1.closePath();
+        GeneralPath g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertTrue(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(11.0f, 22.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(33.0f, 44.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(55.0f, 66.0f, 77.0f, 88.0f, 99.0f, 100.0f);
+        g2.quadTo(1.0f, 2.0f, 3.0f, 4.0f);
+        g2.closePath();
+        assertFalse(ShapeUtilities.equal(g1, g2));
+
+        g2 = new GeneralPath();
+        g2.moveTo(1.0f, 2.0f);
+        g2.lineTo(3.0f, 4.0f);
+        g2.curveTo(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f);
+        g2.quadTo(11.0f, 22.0f, 33.0f, 44.0f);
+       
+
+[user]:The test method you provided is not able to be parsed. It doesn't satisfy the grammar of Java. Please complete the markdown file again.
+
+```
+public void test
+
+Invoking LLM(gpt-3.5-turbo) for Chart-11 NO.2 try
+Invoke failed:This model's maximum context length is 4097 tokens. However, your messages resulted in 4140 tokens. Please reduce the length of the messages.
+runTestWithRetry NO.2 try
+Fail to invoke LLM.
+unit_res_in_bug=Test passed,unit_res_in_fix=Test passed,oracle_res_in_bug=Parse failed,oracle_res_in_fix=Parse failed

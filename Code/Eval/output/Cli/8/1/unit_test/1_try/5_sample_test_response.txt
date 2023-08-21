@@ -1,0 +1,70 @@
+() {
+        // use the GNU parser
+        CommandLineParser parser = new GnuParser();
+        Options options = new Options();
+        options.addOption("help", false, "print this message");
+        options.addOption("version", false, "print the version information and exit");
+        options.addOption("quiet", false, "be extra quiet");
+        options.addOption("verbose", false, "be extra verbose");
+        options.addOption("debug", false, "print debug information");
+        options.addOption("logfile", true, "use given file for log");
+        options.addOption("logger", true, "the class which is to perform the logging");
+        options.addOption("listener", true, "add an instance of a class as a project listener");
+        options.addOption("buildfile", true, "use given buildfile");
+
+        String[] args = new String[]{"-buildfile", "mybuild.xml",
+                "-Dproperty=value", "-Dproperty1=value1",
+                "-projecthelp"};
+
+        try {
+            CommandLine line = parser.parse(options, args);
+
+            // check multiple values
+            String[] opts = line.getOptionValues("D");
+            assertEquals("property", opts[0]);
+            assertEquals("value", opts[1]);
+            assertEquals("property1", opts[2]);
+            assertEquals("value1", opts[3]);
+
+            // check single value
+            assertEquals(line.getOptionValue("buildfile"), "mybuild.xml");
+
+            // check option
+            assertTrue(line.hasOption("projecthelp"));
+        } catch (ParseException exp) {
+            fail("Unexpected exception:" + exp.getMessage());
+        }
+
+        // Test the printHelp method
+        HelpFormatter helpFormatter = new HelpFormatter();
+
+        // Test printHelp method 1
+        helpFormatter.printHelp("myApp", options);
+
+        // Test printHelp method 2
+        helpFormatter.printHelp("myApp", options, true);
+
+        // Test printHelp method 3
+        helpFormatter.printHelp("myApp", "Header", options, "Footer");
+
+        // Test printHelp method 4
+        helpFormatter.printHelp("myApp", "Header", options, "Footer", true);
+
+        // Test printHelp method 5
+        helpFormatter.printHelp(80, "myApp", "Header", options, "Footer");
+
+        // Test printHelp method 6
+        helpFormatter.printHelp(80, "myApp", "Header", options, "Footer", true);
+
+        // Test printHelp method 7
+        helpFormatter.printHelp(new PrintWriter(System.out), 80, "myApp", "Header", options, 1, 3, "Footer");
+
+        // Test printHelp method 8
+        helpFormatter.printHelp(new PrintWriter(System.out), 80, "myApp", "Header", options, 1, 3, "Footer", true);
+
+        // Test printUsage method 1
+        helpFormatter.printUsage(new PrintWriter(System.out), 80, "myApp", options);
+
+        // Test printUsage method 2
+        helpFormatter.printUsage(new PrintWriter(System.out), 80, "myApp");
+    }

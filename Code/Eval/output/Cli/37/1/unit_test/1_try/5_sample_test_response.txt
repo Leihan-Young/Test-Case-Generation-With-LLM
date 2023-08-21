@@ -1,0 +1,14 @@
+Bug() throws ParseException {
+        Option optionA = new Option("a", "first");
+        Option optionB = new Option("b", "second");
+        Options opts = new Options();
+        opts.addOption(optionA);
+        opts.addOption(optionB);
+        String[] args = {"-b", "-a"};
+        DefaultParser defaultParser = new DefaultParser();
+        CommandLine line = defaultParser.parse(opts, args);
+        assertTrue(line.hasOption("a"));
+        assertTrue(line.hasOption("b"));
+    }
+```
+The bug in the program is that it does not handle the order of options correctly. In the above test method, the options are passed in the order "-b" followed by "-a", but the program should have been able to handle them in any order. The expected behavior is that the program should have recognized both options and returned a CommandLine object with both options set to true. The test method reveals the bug by checking whether both options were correctly recognized.

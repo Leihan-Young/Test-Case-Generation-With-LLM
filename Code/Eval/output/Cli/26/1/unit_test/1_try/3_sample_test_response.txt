@@ -1,0 +1,14 @@
+OptionBuilder() {
+        Option option = OptionBuilder.withLongOpt("example")
+                .withDescription("an example option")
+                .hasArg()
+                .isRequired()
+                .create();
+        assertNotNull(option);
+        assertEquals("example", option.getLongOpt());
+        assertEquals("an example option", option.getDescription());
+        assertTrue(option.hasArg());
+        assertTrue(option.isRequired());
+    }
+```
+The above test method tests if the OptionBuilder is working correctly by creating an example option and checking its properties. If there is a bug in the OptionBuilder code, this test method should catch it.

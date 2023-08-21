@@ -1,0 +1,7 @@
+OptionBuilder() {
+    Option option = OptionBuilder.withLongOpt("test").withDescription("testing option builder").create();
+    assertEquals("test", option.getLongOpt());
+    assertEquals("testing option builder", option.getDescription());
+}
+```
+This test method tests the creation of a new option using OptionBuilder. It sets the longOpt and description properties and then creates the option object. The test checks if the created option has the expected values for longOpt and description. If there is a bug in the implementation of OptionBuilder, this test can reveal it.

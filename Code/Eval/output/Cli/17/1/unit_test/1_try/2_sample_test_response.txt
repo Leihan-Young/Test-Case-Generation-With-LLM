@@ -1,0 +1,21 @@
+PosixParser() throws Exception {
+    // use the Posix parser
+    CommandLineParser parser = new PosixParser();
+    Options options = new Options();
+    options.addOption("help", false, "print this message");
+    options.addOption("version", false, "print the version information and exit");
+    options.addOption("quiet", false, "be extra quiet");
+    options.addOption("verbose", false, "be extra verbose");
+    options.addOption("debug", false, "print debug information");
+    options.addOption("logfile", true, "use given file for log");
+    options.addOption("logger", true, "the class which is to perform the logging");
+    options.addOption("listener", true, "add an instance of a class as a project listener");
+
+    String[] args = new String[]{"-help", "-logfile"};
+
+    CommandLine line = parser.parse(options, args);
+
+    assertFalse(line.hasOption("help")); // bug: should return true
+    assertTrue(line.hasOption("logfile"));
+}
+```

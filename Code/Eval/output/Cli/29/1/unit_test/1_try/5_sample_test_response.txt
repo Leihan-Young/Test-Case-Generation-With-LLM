@@ -1,0 +1,7 @@
+StripLeadingAndTrailingQuotes() {
+        String str = "\"quoted string\"";
+        String result = Util.stripLeadingAndTrailingQuotes(str);
+        assertEquals("quoted string", result);
+    }
+```
+This test method checks if the method `stripLeadingAndTrailingQuotes()` correctly removes the leading and trailing quotes from a string. If the method fails to remove the quotes or removes more characters than it should, the test will fail, revealing the bug.

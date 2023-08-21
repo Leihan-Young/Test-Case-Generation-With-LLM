@@ -1,0 +1,75 @@
+package org.jfree.data.statistics;
+import java.util.List;
+import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.PublicCloneable;
+import org.jfree.data.KeyedObjects2D;
+import org.jfree.data.Range;
+import org.jfree.data.RangeInfo;
+import org.jfree.data.general.AbstractDataset;
+/**
+ * A convenience class that provides a default implementation of the
+ * {@link BoxAndWhiskerCategoryDataset} interface.
+ */
+public class DefaultBoxAndWhiskerCategoryDataset extends AbstractDataset
+        implements BoxAndWhiskerCategoryDataset, RangeInfo, PublicCloneable {
+    private double minimumRangeValue;
+    private int minimumRangeValueRow;
+    private int minimumRangeValueColumn;
+    private double maximumRangeValue;
+    private int maximumRangeValueRow;
+    private int maximumRangeValueColumn;
+    private Range rangeBounds;
+    /**
+     * Returns a list of outlier values for an item.
+     * 
+     * @param rowKey  the row key.
+     * @param columnKey  the column key.
+     * 
+     * @return A list of outlier values.
+     * 
+     * @see #getItem(int, int)
+     */
+    public List getOutliers(Comparable rowKey, Comparable columnKey);
+    /**
+     * Adds a list of values relating to one Box and Whisker entity to the 
+     * table.  The various median values are calculated.
+     *
+     * @param item  a box and whisker item (<code>null</code> not permitted).
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #add(List, Comparable, Comparable)
+     */
+    public void add(BoxAndWhiskerItem item, Comparable rowKey, 
+            Comparable columnKey);
+    /**
+     * Adds a list of values relating to one box-and-whisker entity to the 
+     * table.  The various median values are calculated.
+     *
+     * @param list  a collection of values from which the various medians will 
+     *              be calculated.
+     * @param rowKey  the row key (<code>null</code> not permitted).
+     * @param columnKey  the column key (<code>null</code> not permitted).
+     * 
+     * @see #add(BoxAndWhiskerItem, Comparable, Comparable)
+     */
+    public void add(List list, Comparable rowKey, Comparable columnKey);
+    /**
+     * Resets the cached bounds, by iterating over the entire dataset to find
+     * the current bounds.
+     */
+    private void updateBounds();
+    /**
+     * Returns the range of the values in this dataset's range.
+     *
+     * @param includeInterval  a flag that determines whether or not the
+     *                         y-interval is taken into account.
+     * 
+     * @return The range.
+     */
+    public Range getRangeBounds(boolean includeInterval);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

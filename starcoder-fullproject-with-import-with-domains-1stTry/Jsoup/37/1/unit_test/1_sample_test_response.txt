@@ -1,0 +1,22 @@
+ private void assertSelect(String html, String query, String... matches) {
+        assertSelect(html, query, false, matches);
+    }
+    private void assertNotSelect(String html, String query, String... matches) {
+        assertSelect(html, query, true, matches);
+    }
+    private void assertSelect(String html, String query, boolean not, String... matches) {
+        Elements elements = parse(html).select(query);
+        assertEquals(matches.length, elements.size());
+        for (int i = 0; i < matches.length; i++)
+            assertEquals(matches[i], elements.get(i).outerHtml());
+        if (not) assertEquals(0, elements.size());
+    }
+    private void assertNotSelect(String html, String query) {
+        assertSelect(html, query, true, new String[0]);
+    }
+    private Document parse(String html) {
+        return Parser.parseBodyFragment(html, "http://example.com/");
+    }
+    public void testMultiClassAttribute() {
+        assertSelect("<div class='one two'></div>", ".one.two");
+    }

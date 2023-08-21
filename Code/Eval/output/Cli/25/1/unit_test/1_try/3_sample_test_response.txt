@@ -1,0 +1,27 @@
+HelpFormatter() throws Exception {
+    HelpFormatter formatter = new HelpFormatter();
+    Options options = new Options();
+
+    Option option1 = new Option("a", "first", false, "first option");
+    Option option2 = new Option("b", "second", false, "second option");
+    Option option3 = new Option("c", "third", false, "third option");
+
+    options.addOption(option1);
+    options.addOption(option2);
+    options.addOption(option3);
+
+    StringWriter out = new StringWriter();
+    PrintWriter pw = new PrintWriter(out);
+
+    formatter.printHelp(pw, 80, "myapp", "header", options, 2, 2, "footer");
+
+    String expected = "header" + System.getProperty("line.separator") +
+            "usage: myapp" + System.getProperty("line.separator") +
+            "  -a,--first   first option" + System.getProperty("line.separator") +
+            "  -b,--second  second option" + System.getProperty("line.separator") +
+            "  -c,--third   third option" + System.getProperty("line.separator") +
+            "footer" + System.getProperty("line.separator");
+
+    assertEquals(expected, out.toString());
+}
+```

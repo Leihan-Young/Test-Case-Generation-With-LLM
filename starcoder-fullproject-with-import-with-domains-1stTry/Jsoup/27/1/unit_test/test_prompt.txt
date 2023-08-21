@@ -1,0 +1,29 @@
+package org.jsoup.helper;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Locale;
+/**
+ * Internal static utilities for handling data.
+ *
+ */
+public class DataUtil {
+    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+    private static final int bufferSize = 0x20000; // ~130K.
+    /**
+     * Parse out a charset from a content type header. If the charset is not supported, returns null (so the default
+     * will kick in.)
+     * @param contentType e.g. "text/html; charset=EUC-JP"
+     * @return "EUC-JP", or null if not found. Charset is trimmed and uppercased.
+     */
+    static String getCharsetFromContentType(String contentType);
+}
+
+public class Test { 
+   <FILL-HERE>
+}

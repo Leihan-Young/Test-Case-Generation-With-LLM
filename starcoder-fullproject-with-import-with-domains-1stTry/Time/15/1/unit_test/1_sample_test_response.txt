@@ -1,0 +1,30 @@
+ public void test_safeMultiply() {
+        assertEquals(0, FieldUtils.safeMultiply(0, 0));
+        assertEquals(0, FieldUtils.safeMultiply(0, 1));
+        assertEquals(0, FieldUtils.safeMultiply(1, 0));
+        assertEquals(1, FieldUtils.safeMultiply(1, 1));
+        try {
+            FieldUtils.safeMultiply(Integer.MAX_VALUE, 2);
+            fail();
+        } catch (ArithmeticException ex) {
+            // expected
+        }
+        try {
+            FieldUtils.safeMultiply(Integer.MIN_VALUE, -1);
+            fail();
+        } catch (ArithmeticException ex) {
+            // expected
+        }
+        try {
+            FieldUtils.safeMultiply(Long.MAX_VALUE, 2);
+            fail();
+        } catch (ArithmeticException ex) {
+            // expected
+        }
+        try {
+            FieldUtils.safeMultiply(Long.MIN_VALUE, -1);
+            fail();
+        } catch (ArithmeticException ex) {
+            // expected
+        }
+    }

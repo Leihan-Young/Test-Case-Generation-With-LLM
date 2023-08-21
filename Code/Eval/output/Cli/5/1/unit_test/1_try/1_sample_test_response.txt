@@ -1,0 +1,7 @@
+StripLeadingAndTrailingQuotes() {
+        String str = "\"quoted string\"";
+        String result = Util.stripLeadingAndTrailingQuotes(str);
+        assertEquals("quoted string", result);
+    }
+```
+The above test method will test if the `stripLeadingAndTrailingQuotes()` method is working as expected. If the method is not implemented correctly, the test will fail and reveal the bug.

@@ -1,0 +1,6 @@
+ private Document parseXml(String html) {
+        return parseXml(html, "");
+    }
+    private Document parseXml(String html, String baseUri) {
+        return Jsoup.parse(html, baseUri, Parser.xmlParser());
+    }

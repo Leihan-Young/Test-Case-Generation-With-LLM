@@ -1,0 +1,105 @@
+package org.jsoup.nodes;
+import org.jsoup.helper.ChangeNotifyingArrayList;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Collector;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
+import org.jsoup.select.QueryParser;
+import org.jsoup.select.Selector;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import static org.jsoup.internal.Normalizer.normalize;
+/**
+ * A HTML element consists of a tag name, attributes, and child nodes (including text nodes and
+ * other elements).
+ * 
+ * From an Element, you can extract data, traverse the node graph, and manipulate the HTML.
+ * 
+ * @author Jonathan Hedley, jonathan@hedley.net
+ */
+public class Element extends Node {
+    private static final List<Node> EMPTY_NODES = Collections.emptyList();
+    private static final Pattern classSplit = Pattern.compile("\\s+");
+    private Tag tag;
+    private WeakReference<List<Element>> shadowChildrenRef; // points to child elements shadowed from node children
+    private Attributes attributes;
+    private String baseUri;
+    protected List<Node> ensureChildNodes();
+    @Override
+    public Element clone();
+    /**
+     * Insert the specified HTML into the DOM after this element (as a following sibling).
+     *
+     * @param html HTML to add after this element
+     * @return this element, for chaining
+     * @see #before(String)
+     */
+    @Override
+    public Element after(String html);
+    /**
+     * Set the text of this element. Any existing contents (text or elements) will be cleared
+     * @param text unencoded text
+     * @return this element
+     */
+    public Element text(String text);
+    /**
+     * Gets the combined text of this element and all its children. Whitespace is normalized and trimmed.
+     * <p>
+     * For example, given HTML {@code <p>Hello  <b>there</b> now! </p>}, {@code p.text()} returns {@code "Hello there now!"}
+     *
+     * @return unencoded text, or empty string if none.
+     * @see #ownText()
+     * @see #textNodes()
+     */
+    public String text();
+    /**
+     * Get a child element of this element, by its 0-based index number.
+     * <p>
+     * Note that an element can have both mixed Nodes and Elements as children. This method inspects
+     * a filtered list of children that are elements, and the index is based on that filtered list.
+     * </p>
+     * 
+     * @param index the index number of the element to retrieve
+     * @return the child element, if it exists, otherwise throws an {@code IndexOutOfBoundsException}
+     * @see #childNode(int)
+     */
+    public Element child(int index);
+    /**
+     * Insert the specified node into the DOM after this node (as a following sibling).
+     * @param node to add after this element
+     * @return this element, for chaining
+     * @see #before(Node)
+     */
+    @Override
+    public Element after(Node node);
+    /**
+     * Gets the next sibling element of this element. E.g., if a {@code div} contains two {@code p}s, 
+     * the {@code nextElementSibling} of the first {@code p} is the second {@code p}.
+     * <p>
+     * This is similar to {@link #nextSibling()}, but specifically finds only Elements
+     * </p>
+     * @return the next element, or null if there is no next element
+     * @see #previousElementSibling()
+     */
+    public Element nextElementSibling();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

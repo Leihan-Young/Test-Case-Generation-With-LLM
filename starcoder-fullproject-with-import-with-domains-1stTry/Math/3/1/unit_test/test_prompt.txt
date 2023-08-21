@@ -1,0 +1,130 @@
+package org.apache.commons.math3.util;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import org.apache.commons.math3.Field;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.MathIllegalArgumentException;
+import org.apache.commons.math3.exception.MathInternalError;
+import org.apache.commons.math3.exception.NoDataException;
+import org.apache.commons.math3.exception.NonMonotonicSequenceException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+/**
+ * Arrays utilities.
+ *
+ * @since 3.0
+ * @version $Id$
+ */
+public class MathArrays {
+    private static final int SPLIT_FACTOR = 0x8000001;
+    /**
+     * Compute a linear combination accurately.
+     * <p>
+     * This method computes a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub>
+     * to high accuracy. It does so by using specific multiplication and
+     * addition algorithms to preserve accuracy and reduce cancellation effects.
+     * It is based on the 2005 paper <a
+     * href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
+     * Accurate Sum and Dot Product</a> by Takeshi Ogita,
+     * Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
+     * </p>
+     * @param a1 first factor of the first term
+     * @param b1 second factor of the first term
+     * @param a2 first factor of the second term
+     * @param b2 second factor of the second term
+     * @param a3 first factor of the third term
+     * @param b3 second factor of the third term
+     * @return a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub>
+     * @see #linearCombination(double, double, double, double)
+     * @see #linearCombination(double, double, double, double, double, double, double, double)
+     */
+    public static double linearCombination(final double a1, final double b1,
+                                           final double a2, final double b2,
+                                           final double a3, final double b3);
+    /**
+     * Compute a linear combination accurately.
+     * <p>
+     * This method computes a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub> to high accuracy. It does
+     * so by using specific multiplication and addition algorithms to
+     * preserve accuracy and reduce cancellation effects. It is based
+     * on the 2005 paper <a
+     * href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
+     * Accurate Sum and Dot Product</a> by Takeshi Ogita,
+     * Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
+     * </p>
+     * @param a1 first factor of the first term
+     * @param b1 second factor of the first term
+     * @param a2 first factor of the second term
+     * @param b2 second factor of the second term
+     * @return a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub>
+     * @see #linearCombination(double, double, double, double, double, double)
+     * @see #linearCombination(double, double, double, double, double, double, double, double)
+     */
+    public static double linearCombination(final double a1, final double b1,
+                                           final double a2, final double b2);
+    /**
+     * Compute a linear combination accurately.
+     * <p>
+     * This method computes a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub> +
+     * a<sub>4</sub>&times;b<sub>4</sub>
+     * to high accuracy. It does so by using specific multiplication and
+     * addition algorithms to preserve accuracy and reduce cancellation effects.
+     * It is based on the 2005 paper <a
+     * href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
+     * Accurate Sum and Dot Product</a> by Takeshi Ogita,
+     * Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
+     * </p>
+     * @param a1 first factor of the first term
+     * @param b1 second factor of the first term
+     * @param a2 first factor of the second term
+     * @param b2 second factor of the second term
+     * @param a3 first factor of the third term
+     * @param b3 second factor of the third term
+     * @param a4 first factor of the third term
+     * @param b4 second factor of the third term
+     * @return a<sub>1</sub>&times;b<sub>1</sub> +
+     * a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub> +
+     * a<sub>4</sub>&times;b<sub>4</sub>
+     * @see #linearCombination(double, double, double, double)
+     * @see #linearCombination(double, double, double, double, double, double)
+     */
+    public static double linearCombination(final double a1, final double b1,
+                                           final double a2, final double b2,
+                                           final double a3, final double b3,
+                                           final double a4, final double b4);
+    /**
+     * Compute a linear combination accurately.
+     * This method computes the sum of the products
+     * <code>a<sub>i</sub> b<sub>i</sub></code> to high accuracy.
+     * It does so by using specific multiplication and addition algorithms to
+     * preserve accuracy and reduce cancellation effects.
+     * <br/>
+     * It is based on the 2005 paper
+     * <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
+     * Accurate Sum and Dot Product</a> by Takeshi Ogita, Siegfried M. Rump,
+     * and Shin'ichi Oishi published in SIAM J. Sci. Comput.
+     *
+     * @param a Factors.
+     * @param b Factors.
+     * @return <code>&Sigma;<sub>i</sub> a<sub>i</sub> b<sub>i</sub></code>.
+     * @throws DimensionMismatchException if arrays dimensions don't match
+     */
+    public static double linearCombination(final double[] a, final double[] b)
+        throws DimensionMismatchException;
+}
+
+public class Test { 
+   <FILL-HERE>
+}

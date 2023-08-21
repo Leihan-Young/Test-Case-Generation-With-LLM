@@ -1,0 +1,6 @@
+     public void testAbs() {
+        assertEquals(Fraction.ONE, Fraction.ONE.abs());
+        assertEquals(Fraction.ONE, Fraction.MINUS_ONE.abs());
+        assertEquals(Fraction.ONE_HALF, Fraction.ONE_HALF.abs());
+        assertEquals(Fraction.ONE_HALF, Fraction.MINUS_ONE_HALF.abs());
+    }

@@ -1,0 +1,20 @@
+PiePlot() {
+    PiePlot plot = new PiePlot(new DefaultPieDataset());
+    DefaultPieDataset data = new DefaultPieDataset();
+    data.setValue("A", 50);
+    data.setValue("B", 25);
+    data.setValue("C", 10);
+    data.setValue("D", -15); // bug: negative values are ignored, but this is not being ignored
+    data.setValue("E", 30);
+    PieDataset dataset = data;
+    plot.setDataset(dataset);
+    JFreeChart chart = new JFreeChart(plot);
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame frame = new JFrame("Pie Chart");
+    frame.setContentPane(chartPanel);
+    frame.setSize(500, 500);
+    frame.setVisible(true);
+}
+``` 
+
+The bug in the original program is that it ignores negative values in the dataset, but the test code explicitly sets a negative value for one of the sections. This will cause the chart to display an incorrect value for that section. The fix is to use the PiePlot constructor that takes a PieDataset, and use data.setValue instead of data.addValue to set the values.

@@ -1,0 +1,19 @@
+StripLeadingAndTrailingQuotes() {
+        String str1 = "\"quote\"";
+        String str2 = "'quote'";
+        String str3 = "\"quote";
+        String str4 = "quote'";
+        String str5 = "quote";
+        String result1 = Util.stripLeadingAndTrailingQuotes(str1);
+        String result2 = Util.stripLeadingAndTrailingQuotes(str2);
+        String result3 = Util.stripLeadingAndTrailingQuotes(str3);
+        String result4 = Util.stripLeadingAndTrailingQuotes(str4);
+        String result5 = Util.stripLeadingAndTrailingQuotes(str5);
+        assertEquals("quote", result1);
+        assertEquals("quote", result2);
+        assertEquals("\"quote", result3);
+        assertEquals("quote'", result4);
+        assertEquals("quote", result5);
+    }
+```
+The test method tests the `stripLeadingAndTrailingQuotes()` method which is not implemented in the code. The expected output and the actual output are compared using the `assertEquals()` method. This method can reveal if the `stripLeadingAndTrailingQuotes()` method is implemented correctly or not.

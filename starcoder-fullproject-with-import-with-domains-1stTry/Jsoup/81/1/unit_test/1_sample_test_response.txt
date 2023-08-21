@@ -1,0 +1,17 @@
+ private void assertCharset(String html, String expectedCharset) {
+        Document doc = DataUtil.parseInputStream(new ByteArrayInputStream(html.getBytes(Charset.forName("UTF-8"))), "UTF-8", "", Parser.htmlParser());
+        XmlDeclaration decl = doc.childNode(0).asXmlDeclaration();
+        assertEquals(expectedCharset, decl.attr("encoding"));
+    }
+    private void assertCharset(String html, Charset expectedCharset) {
+        Document doc = DataUtil.parseInputStream(new ByteArrayInputStream(html.getBytes(Charset.forName("UTF-8"))), "UTF-8", "", Parser.htmlParser());
+        XmlDeclaration decl = doc.childNode(0).asXmlDeclaration();
+        assertEquals(expectedCharset.name(), decl.attr("encoding"));
+    }
+    private void assertCharset(String html, String defaultCharset, Charset expectedCharset) {
+        Document doc = DataUtil.parseInputStream(new ByteArrayInputStream(html.getBytes(Charset.forName("UTF-8"))), defaultCharset, "", Parser.htmlParser());
+        XmlDeclaration decl = doc.childNode(0).asXmlDeclaration();
+        assertEquals(expectedCharset.name(), decl.attr("encoding"));
+    }
+    private void assertCharset(String html, Charset defaultCharset, Charset expectedCharset) {
+        Document doc = DataUtil.parseInputStream(new ByteArrayInputStream(html.getBytes(Charset.forName("UTF-8"))), defaultCharset, "", Parser.htmlParse

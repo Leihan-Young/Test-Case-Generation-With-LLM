@@ -1,0 +1,34 @@
+package org.apache.commons.cli2.builder;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.commons.cli2.Argument;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.validation.ClassValidator;
+import org.apache.commons.cli2.validation.DateValidator;
+import org.apache.commons.cli2.validation.FileValidator;
+import org.apache.commons.cli2.validation.NumberValidator;
+import org.apache.commons.cli2.validation.UrlValidator;
+import org.apache.commons.cli2.validation.Validator;
+/**
+ * Builds Options using a String pattern
+ */
+public class PatternBuilder {
+    private final GroupBuilder gbuilder;
+    private final DefaultOptionBuilder obuilder;
+    private final ArgumentBuilder abuilder;
+    /**
+     * Builds an Option using a pattern string.
+     * @param pattern the pattern to build from
+     */
+    public void withPattern(final String pattern);
+    /**
+     * Creates a new Option instance.
+     * @return a new Option instance
+     */
+    public Option create();
+}
+
+public class Test { 
+   <FILL-HERE>
+}

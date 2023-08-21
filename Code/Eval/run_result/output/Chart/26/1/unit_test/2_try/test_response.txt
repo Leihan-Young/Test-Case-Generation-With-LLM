@@ -1,0 +1,46 @@
+() {
+    Axis axis = new Axis() {
+        @Override // This line causes an error
+        protected AxisState drawLabel(String label, Graphics2D g2, Rectangle2D plotArea, Rectangle2D dataArea,
+                RectangleEdge edge, AxisState state, PlotRenderingInfo plotState) {
+            return null; // the implementation of this method is not important for the test
+        }
+    };
+    axis.setLabel("Test Label");
+    axis.setLabelFont(new Font("Arial", Font.BOLD, 12));
+    axis.setLabelPaint(Color.RED);
+    axis.setLabelInsets(new RectangleInsets(5, 5, 5, 5));
+    axis.setLabelAngle(45);
+    axis.setVisible(true);
+    axis.setAxisLineVisible(true);
+    axis.setAxisLineStroke(new BasicStroke(2));
+    axis.setAxisLinePaint(Color.BLUE);
+    axis.setTickLabelsVisible(true);
+    axis.setTickLabelFont(new Font("Arial", Font.PLAIN, 10));
+    axis.setTickLabelPaint(Color.GREEN);
+    axis.setTickLabelInsets(new RectangleInsets(2, 2, 2, 2));
+    axis.setTickMarksVisible(true);
+    axis.setTickMarkInsideLength(1f);
+    axis.setTickMarkOutsideLength(3f);
+    axis.setTickMarkStroke(new BasicStroke(1.5f));
+    axis.setTickMarkPaint(Color.ORANGE);
+    axis.setFixedDimension(100);
+    axis.setPlot(new Plot()); // create an empty plot for testing
+    axis.setLabelToolTip("Test ToolTip");
+    axis.setLabelURL("Test URL");
+
+    // test the drawLabel method
+    Graphics2D g2 = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB).createGraphics();
+    Rectangle2D plotArea = new Rectangle2D.Double(50, 50, 400, 400);
+    Rectangle2D dataArea = new Rectangle2D.Double(100, 100, 200, 200);
+    AxisState state = new AxisState(300);
+    PlotRenderingInfo plotState = new PlotRenderingInfo(new ChartRenderingInfo());
+    axis.drawLabel("Test Label", g2, plotArea, dataArea, RectangleEdge.TOP, state, plotState);
+
+    // assert that the label is drawn correctly
+    // (this is just a basic example assertion,
+    // the actual assertion may depend on the implementation details of the drawLabel method)
+    assertNotNull(state);
+}
+```
+The error occurred because the `@Override` annotation is not supported in Java 1.4, which is the source version specified in the build file. To fix the error, either remove the `@Override` annotation or change the source version to 5 or higher in the build file.
